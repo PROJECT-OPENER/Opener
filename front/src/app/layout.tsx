@@ -1,4 +1,4 @@
-import Link from 'next/link';
+// import Link from 'next/link';
 import './globals.css';
 import TopNav from './components/TopNav';
 import BottomNav from './components/BottomNav';
@@ -18,10 +18,12 @@ export default function RootLayout({
       <head>
         <title>OPENER</title>
       </head>
-      <body className="border-2 m-3 p-3 h-[700px] relative min-w-[500px]">
-        <TopNav />
-        <div className="pb-[68px] shadow-xl">{children}</div>
-        <BottomNav />
+      <body>
+        <div className="container">
+          <TopNav />
+          <div>{children}</div>
+          <BottomNav />
+        </div>
       </body>
     </html>
   );
