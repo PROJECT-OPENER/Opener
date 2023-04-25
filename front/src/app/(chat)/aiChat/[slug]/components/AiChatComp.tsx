@@ -20,6 +20,7 @@ const AiChatComp = () => {
   }, [messages]);
 
   const handleSendMessage = (message: string) => {
+    console.log('handleSendMessage', message);
     setMessages((prevState) => [
       ...prevState,
       { text: message, sender: 'user' },

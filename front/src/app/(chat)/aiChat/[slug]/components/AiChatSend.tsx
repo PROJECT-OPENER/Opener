@@ -41,18 +41,6 @@ const AiChatSend = ({ onSendMessage, onReceiveMessage }: AiChatSendProps) => {
 
   const { transcript, listening, resetTranscript } = useSpeechRecognition();
 
-  const handleMic = async () => {
-    setisMic(!isMic);
-    if (!listening) {
-      SpeechRecognition.startListening({ language: 'en-US' });
-    } else {
-      await setMessage(transcript);
-      await sendMessage();
-      await resetTranscript();
-      SpeechRecognition.stopListening();
-    }
-  };
-
   const handleKeyboard = () => {
     console.log('qwdqw');
     setisChat(!isChat);
@@ -64,19 +52,39 @@ const AiChatSend = ({ onSendMessage, onReceiveMessage }: AiChatSendProps) => {
     }
   };
 
-  const sendMessage = async () => {
-    console.log(message);
+  const sendMessage = () => {
     if (message.trim()) {
-      await onSendMessage(message);
-      await setMessage('');
-      // ChatGPT API를 호출하여 답변을 받아오는 로직 추가
-      // 우선 더미 데이터로 대체
-      const answer = await chatGPT.getRandomAnswer();
-      setTimeout(() => {
-        onReceiveMessage(answer);
-      }, 1000);
+      onSendMessage(message);
+    } else {
+      onSendMessage(transcript);
+    }
+
+    // ChatGPT API를 호출하여 답변을 받아오는 로직 추가
+    // 우선 더미 데이터로 대체
+    const answer = chatGPT.getRandomAnswer();
+    setTimeout(() => {
+      onReceiveMessage(answer);
+    }, 1000);
+    setMessage('');
+  };
+
+  const handleMic = async () => {
+    if (!isMic) {
+      setisMic(true);
+      SpeechRecognition.startListening({
+        language: 'en-US',
+        continuous: true,
+      });
+    } else {
+      console.log('stop mic');
+      setisMic(false);
+      await setMessage(transcript);
+      await sendMessage();
+      await resetTranscript();
+      SpeechRecognition.stopListening();
     }
   };
+
   return (
     <>
       {!isChat && (
@@ -98,29 +106,31 @@ const AiChatSend = ({ onSendMessage, onReceiveMessage }: AiChatSendProps) => {
           </button>
         </div>
       )}
-      <div className="bg-brandP rounded-2xl m-5 p-5 text-white grid grid-cols-3">
-        <button
-          type="button"
-          className="flex flex-col justify-end text-3xl"
-          onClick={handleKeyboard}
-        >
-          <BsKeyboard />
-        </button>
-        <div className="flex flex-col justify-center items-center">
-          <div>{isMic ? '듣고있어요' : '말씀해주세요.'}</div>
-          <button
-            className="rounded-full bg-white p-1 text-3xl text-black w-20 h-20 flex justify-center items-center"
-            onClick={handleMic}
-          >
-            {isMic ? <BsArrowUp /> : <BsMic />}
-            {/* <BsMic />
-            <BsArrowUp /> */}
-          </button>
-          <p>{transcript}</p>
+      <div>
+        <div className="mx-5">
+          <div className="rounded-2xl bg-slate-100 p-3">{transcript}ww</div>
         </div>
-        <div>
-          <p>message : {message}</p>
-          <p>transc: {transcript}</p>
+        <div className="bg-brandP rounded-2xl mx-5 p-5 text-white grid grid-cols-3">
+          <button
+            type="button"
+            className="flex flex-col justify-end text-3xl"
+            onClick={handleKeyboard}
+          >
+            <BsKeyboard />
+          </button>
+          <div className="flex flex-col justify-center items-center">
+            <div>{isMic ? '듣고있어요' : '말씀해주세요.'}</div>
+            <button
+              className="rounded-full bg-white p-1 text-3xl text-black w-20 h-20 flex justify-center items-center"
+              onClick={handleMic}
+            >
+              {isMic ? <BsArrowUp /> : <BsMic />}
+              {/* <BsMic />
+            <BsArrowUp /> */}
+            </button>
+            <p>{transcript}</p>
+          </div>
+          <div></div>
         </div>
       </div>
     </>
