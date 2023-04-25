@@ -1,13 +1,8 @@
-import Video from './components/Video';
-import ViewCaption from './components/ViewCaption';
-import ViewDict from './components/ViewDict';
+import ViewScript from './components/ViewScript';
 const page = () => {
   return (
     <div>
-      <Video />
-      <ViewCaption />
-      <ViewDict />
-      <p></p>
+      <ViewScript />
     </div>
   );
 };
