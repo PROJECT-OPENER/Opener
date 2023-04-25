@@ -1,0 +1,7 @@
+.ai {
+  @apply bg-slate-400 rounded p-5 mr-10
+}
+
+.user {
+  @apply bg-brandY rounded p-5 ml-10 my-3
+}
