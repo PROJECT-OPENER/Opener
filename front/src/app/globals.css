@@ -3,15 +3,37 @@
 @tailwind utilities;
 
 .mobile-test {
-  @apply bg-green-300 font-bold text-3xl
+  @apply bg-green-300 font-bold text-3xl;
 }
-
+body {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+}
+.container {
+  width: 100%;
+  padding: 0 0 68px 0;
+}
 @media screen and (min-width: 640px) {
-  .mobile-test {
-    @apply bg-red-300 text-sm
+  /* .mobile-test {
+    @apply bg-red-300 text-sm;
+  } */
+  .container {
+    padding: 0;
+  }
+}
+@media screen and (min-width: 1024px) {
+  /* .mobile-test {
+    @apply bg-red-300 text-sm;
+  } */
+  .container {
+    width: 100%;
+    max-width: 1000px;
+    padding: 0;
   }
 }
 
 .mobile-button {
-  @apply border-2 p-3 m-3 rounded-3xl bg-blue-300
+  @apply border-2 p-3 m-3 rounded-3xl bg-blue-300;
 }
