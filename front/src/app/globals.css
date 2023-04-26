@@ -1,19 +1,35 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
+* {
+  color: #4b4b4b;
+}
 body {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
+  background-color: #f8f8f8;
 }
 
 .content {
   width: 100%;
   min-width: 330px;
+  padding: 0 0 68px 0;
 }
-
+.topnav {
+  width: 100%;
+  height: 60px;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 0 10px;
+}
+#logo {
+  width: 120px;
+  height: auto;
+}
 .tabmenu,
 .tabmenu-back {
   position: fixed;
@@ -60,7 +76,6 @@ body {
 @media screen and (min-width: 640px) {
   .content {
     max-width: 800px;
-    padding: 0 0 68px 0;
   }
 }
 
