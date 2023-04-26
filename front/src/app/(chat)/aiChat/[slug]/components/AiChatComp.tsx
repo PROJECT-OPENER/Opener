@@ -12,6 +12,23 @@ const AiChatComp = () => {
   const chatWindowRef = useRef<HTMLDivElement>(null);
   const [messages, setMessages] = useState<Message[]>([]);
 
+  const [synth, setSynth] = useState<SpeechSynthesisVoice[]>([]);
+  useEffect(() => {
+    const synth = window.speechSynthesis.getVoices();
+    setSynth(synth);
+  }, []);
+
+  const textToSpeech = (text: string) => {
+    const speech = new SpeechSynthesisUtterance(text);
+    speech.lang = 'en-US';
+    speech.rate = 1.0;
+    speech.pitch = 1.0;
+    speech.volume = 1.0;
+    speech.voice = synth[3];
+    console.log(speech);
+    window.speechSynthesis.speak(speech);
+  };
+
   useEffect(() => {
     // 스크롤이 최하단으로 자동으로 이동되도록 chatWindowRef의 scrollTop 속성을 최대값으로 설정합니다.
     if (chatWindowRef.current) {
@@ -20,6 +37,7 @@ const AiChatComp = () => {
   }, [messages]);
 
   const handleSendMessage = (message: string) => {
+    console.log('handleSendMessage', message);
     setMessages((prevState) => [
       ...prevState,
       { text: message, sender: 'user' },
@@ -43,6 +61,15 @@ const AiChatComp = () => {
               className={message.sender === 'user' ? styles.user : styles.ai}
             >
               {message.text}
+              <button
+                type="button"
+                className="border-2 bg-red-200"
+                onClick={() => {
+                  textToSpeech(message.text);
+                }}
+              >
+                말해
+              </button>
             </div>
           </div>
         ))}
