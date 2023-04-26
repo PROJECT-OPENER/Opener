@@ -15,6 +15,7 @@ module.exports = {
       colors: {
         brandP: '#7D17FF',
         brandY: '#FFD600',
+        brandText: '#4b4b4b',
       },
     },
   },
