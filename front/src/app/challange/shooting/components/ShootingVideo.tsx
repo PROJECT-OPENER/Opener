@@ -2,7 +2,7 @@
 
 import React from 'react';
 const ShootingVideo = () => {
-  return <div id="container"></div>;
+  return <div className="wrapper"></div>;
 };
 
 export default ShootingVideo;
