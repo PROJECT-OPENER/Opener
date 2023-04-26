@@ -1,46 +1,71 @@
 'use client';
 import { usePathname, useRouter } from 'next/navigation';
-import Button from './Button';
-import styles from './styles/BottomNav.module.css';
-import { mobileBottomRoutes } from '../util/route';
 import { bottomNavBackward, bottomNavNone } from '../util/navControl';
+import Link from 'next/link';
+import {
+  FiHome,
+  FiYoutube,
+  FiGrid,
+  FiMessageCircle,
+  FiMap,
+} from 'react-icons/fi';
+import { TfiAngleLeft } from 'react-icons/tfi';
 
 const BottomNav = () => {
   const router = useRouter();
   const pathname = usePathname();
   console.log(pathname);
-  if (bottomNavNone.includes(pathname)) return null;
+  if (bottomNavNone.includes(pathname)) return null; // 하단 네브바 없음
   if (bottomNavBackward.includes(pathname)) {
     return (
-      <div className={styles.mobile}>
-        <div>
-          <Button
-            type="button"
-            className="mobile-button"
-            text="<"
-            onClick={() => {
-              router.back();
-            }}
+      // 뒤로 가기 버튼만 존재
+      <div className="tabmenu-back">
+        <button
+          type="button"
+          className="tabmenu-back-items"
+          onClick={() => {
+            router.back();
+          }}
+        >
+          <TfiAngleLeft
+            className="tabmenu-items-ico"
+            size={'2rem'}
+            color="#838383"
           />
-        </div>
+        </button>
       </div>
     );
   }
   return (
-    <div className={styles.mobile}>
-      <div className="flex justify-around">
-        {mobileBottomRoutes.map((route) => (
-          <Button
-            key={route.text}
-            type="button"
-            className="mobile-button"
-            text={route.text}
-            onClick={() => {
-              router.push(`${route.path}`);
-            }}
-          />
-        ))}
-      </div>
+    <div className="tabmenu">
+      <Link href="/" className="tabmenu-items">
+        <FiHome className="tabmenu-items-ico" size={'1.3rem'} color="#838383" />
+        홈
+      </Link>
+      <Link href="/shadowing" className="tabmenu-items">
+        <FiYoutube
+          className="tabmenu-items-ico"
+          size={'1.3rem'}
+          color="#838383"
+        />
+        쉐도잉
+      </Link>
+      <Link href="/challange" className="tabmenu-items">
+        <FiGrid className="tabmenu-items-ico" size={'1.3rem'} color="#838383" />
+        챌린지
+      </Link>
+      <Link href="/chat" className="tabmenu-items">
+        <FiMessageCircle
+          className="tabmenu-items-ico"
+          size={'1.3rem'}
+          color="#838383"
+        />
+        AI 채팅
+      </Link>
+      <Link href="/roadmap" className="tabmenu-items">
+        <FiMap className="tabmenu-items-ico" size={'1.3rem'} color="#838383" />
+        로드맵
+      </Link>
     </div>
   );
 };

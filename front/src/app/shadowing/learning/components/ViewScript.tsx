@@ -5,12 +5,7 @@ import { useRef, useState } from 'react';
 import { WordTokenizer } from 'natural';
 import styles from './ViewScript.module.css';
 import YouTube, { YouTubePlayer } from 'react-youtube';
-
-type scriptType = {
-  startTime: number;
-  endTime: number;
-  text: string;
-};
+import { scriptType } from '@/app/types/user';
 
 const subtitles =
   '00:00:01.000 --> 00:00:04.000\n- Never drink liquid nitrogen.\n\n00:00:06.000 --> 00:00:10.000\n- It will perforate your stomach.\n- You could die.';
@@ -26,11 +21,9 @@ const ViewScript = () => {
 
   const convertTime = (time: string): number => {
     const parts = time.split(':');
-    // console.log(parts);
     const seconds = parseFloat(parts[2].replace(',', '.'));
     const minutes = parseInt(parts[1]);
     const hours = parseInt(parts[0]);
-    // console.log(seconds, minutes, hours);
     return hours * 3600 + minutes * 60 + seconds;
   };
 
@@ -55,7 +48,6 @@ const ViewScript = () => {
 
   const findSubtitle = (time: number) => {
     for (let i = 0; i < subtitleArray.length; i++) {
-      // console.log(time, subtitleArray[i].startTime);
       if (
         time >= subtitleArray[i].startTime &&
         time < subtitleArray[i].endTime
@@ -81,7 +73,7 @@ const ViewScript = () => {
     }, 50);
   }
   return (
-    <div className="p-6 min-h-[150px]">
+    <div className="min-h-[150px]">
       <div className={styles.videoContainer}>
         <YouTube
           onReady={(event) => {
@@ -103,12 +95,6 @@ const ViewScript = () => {
             },
           }}
         />
-        {/* <iframe
-          ref={video}
-          src="https://www.youtube.com/embed/ak490-PtOuU"
-          title="YouTube video player"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-        ></iframe> */}
       </div>
       {checkDiction ? (
         <div>
