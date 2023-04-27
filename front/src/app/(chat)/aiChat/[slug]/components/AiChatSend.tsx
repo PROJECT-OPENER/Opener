@@ -125,10 +125,12 @@ const AiChatSend = ({ onSendMessage, onReceiveMessage }: AiChatSendProps) => {
             className="flex flex-col justify-end text-3xl"
             onClick={handleKeyboard}
           >
-            <BsKeyboard />
+            <BsKeyboard className="fill-white" />
           </button>
           <div className="flex flex-col justify-center items-center">
-            <div>{isMic ? '듣고있어요' : '말씀해주세요.'}</div>
+            <div className="text-white">
+              {isMic ? '듣고있어요' : '말씀해주세요.'}
+            </div>
             <button
               className="rounded-full bg-white p-1 text-3xl text-black w-20 h-20 flex justify-center items-center"
               onClick={handleMic}
