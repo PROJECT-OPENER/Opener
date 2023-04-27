@@ -1,3 +1,5 @@
+import { useState } from 'react';
+
 export const secToTime = (duration: number) => {
   let seconds: string | number = Math.floor(duration % 60);
   let minutes: string | number = Math.floor((duration / 60) % 60);
