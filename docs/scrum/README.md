@@ -143,3 +143,31 @@
     - API Request, Response 작성
     - 역할 분담
     - 프로젝트 구조 만들기
+
+## 2023-04-27
+
+### 1. Yesterday
+
+- 프론트
+    - 챌린지 촬영 공식문서 활용하여 타입스크립트 에러 해결 및 무한스크롤 라이브러리 찾아볼 예정
+- 백엔드
+    - Open AI Java 작동 확인
+- 공통
+    - API URL 네이밍 검토
+    - API Request, Response 작성
+    - 기능 역할분담
+
+### 2. Today Todo
+
+- 프론트
+    - 마이페이지 생성
+    - 메모리 누수 코드 수정
+    - 챌린지 촬영 공식문서 활용하여 타입스크립트 에러 해결 및 무한스크롤 라이브러리 선택
+- 백엔드
+    - 건의 사항 : db 추가 - 게임 전적이 있어야 elo 가능
+        - 승, 패, 상대 닉네임, 내 닉네임, 상대 점수, 내 점수 ??
+    - 프로젝트 구조 만들기
+    - Spring Cloud Eureka-Service 만들기
+    - Spring Cloud API-Gateway 만들기
+- 공통
+    - API Request, Response 검토
