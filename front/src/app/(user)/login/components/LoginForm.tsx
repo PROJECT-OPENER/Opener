@@ -71,8 +71,7 @@ const LoginForm = () => {
       <div className="my-3 text-red-500">
         {errors.email ? errors.email.message : errors.password?.message}
       </div>
-      <div className="flex justify-between font-bold">
-        <Link href="/findpw">비밀번호 찾기</Link>
+      <div className="flex justify-end font-bold">
         <Link href="/register">회원가입</Link>
       </div>
       <Button type="submit" text="로그인" className="validator-submit" />

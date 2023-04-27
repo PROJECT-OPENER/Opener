@@ -20,11 +20,11 @@ const AiChatComp = () => {
 
   const textToSpeech = (text: string) => {
     const speech = new SpeechSynthesisUtterance(text);
-    speech.lang = 'en-US';
-    speech.rate = 1.0;
+    speech.lang = 'ko-KR';
+    speech.rate = 0.7;
     speech.pitch = 1.0;
     speech.volume = 1.0;
-    speech.voice = synth[3];
+    speech.voice = synth[0];
     console.log(speech);
     window.speechSynthesis.speak(speech);
   };

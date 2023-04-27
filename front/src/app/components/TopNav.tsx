@@ -2,13 +2,12 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import Image from 'next/image';
-// import styles from './styles/TopNav.module.css';
-// import Link from 'next/link';
 import logo from 'public/images/logo.png';
+import { topNavNone } from '../util/navControl';
 
 const TopNav = () => {
   const pathname: string = usePathname();
-  if (pathname.includes('learning')) return <div></div>;
+  if (topNavNone.includes(pathname)) return <div></div>;
   return (
     <div className="topnav">
       <Link href={'/'}>
@@ -22,9 +21,14 @@ const TopNav = () => {
         />
         {/* <img id="logo" src={logo.src} alt="logo" /> */}
       </Link>
-      <Link href={'/login'}>
-        <button type="button">로그인</button>
-      </Link>
+      <div className="space-x-5">
+        <Link href={'/login'}>
+          <button type="button">로그인</button>
+        </Link>
+        <Link href={'/interest'}>
+          <button type="button">관심사</button>
+        </Link>
+      </div>
     </div>
   );
 };
