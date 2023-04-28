@@ -171,3 +171,36 @@
     - Spring Cloud API-Gateway 만들기
 - 공통
     - API Request, Response 검토
+
+## 2023-04-28
+
+### 1. Yesterday
+
+- 프론트
+    - 챌린지 상황에 맞게 원본 영상 출력 완료
+    - 로그인, 회원가입 레아아웃 완료
+    - 쉐도잉 학습페이지 메모리 누수 해결 완료
+- 백엔드
+    - 프로젝트 구조 설계 완료
+    - Eureka-service 생성
+    - API-service 생성
+    - config server 생성
+    - (Member, Shadowing, Challenge, Chatting) Service 생성
+    - 채팅 점수 테이블 수정
+- 공통
+    - API Request, Response 검토
+
+### 2. Today Todo
+
+- 프론트
+    - 유튜브 유저가 컨트롤 못하게 막기, 제목 및 구독 버튼 뜨는 거 해결하기
+    - AI 채팅 레이아웃 완성
+    - 마이페이지 레이아웃 시작
+    - 로드맵 레이아웃 시작
+    - 3시 PR
+- 백엔드
+    - Shadowing Service Entity, Repository, Service 생성을 통한 CRUD 생성
+    - Challenge Service Entity, Repository, Service 생성을 통한 CRUD 생성
+    - SQL database EC2 서버에 올리고 연결
+- 공통
+    - 다음주 Jira 생성
