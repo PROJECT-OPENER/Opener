@@ -34,6 +34,6 @@ public class ShadowingStatusEntity implements Serializable {
 	@ManyToOne
 	@JoinColumn(name = "video_id", nullable = false)
 	private ShadowingVideoEntity shadowingVideoEntity;
-	private int repeat_count;
+	private int repeatCount;
 	private LocalDate statusDate;
 }
