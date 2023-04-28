@@ -11,24 +11,35 @@ type contentType = {
 const content: contentType[] = [
   {
     sentence: 'How are you?',
-    href: '/shadowing/learning',
+    href: '/shadowing/learning/1',
     img: '#',
   },
   {
     sentence: 'How are you?',
-    href: '/shadowing/learning',
+    href: '/shadowing/learning/2',
     img: '#',
   },
   {
     sentence: 'How are you?',
-    href: '/shadowing/learning',
+    href: '/shadowing/learning/3',
     img: '#',
   },
 ];
 
 const Categories = () => {
-  const [selected, setSelected] = useState<string>('');
-  const categories = ['전체', '추천', 'sns', '여행'];
+  const [selected, setSelected] = useState<string>('전체');
+  const categories = [
+    '전체',
+    '추천',
+    'sns',
+    '여행',
+    '여행2',
+    '여행3',
+    '여행4',
+    '여행5',
+    '여행6',
+    '여행8',
+  ];
   const clickCat = (category: string) => {
     setSelected(category);
   };
@@ -40,7 +51,11 @@ const Categories = () => {
             <li
               style={{ cursor: 'pointer' }}
               key={index}
-              className={category === selected ? 'active' : ''}
+              className={
+                category === selected
+                  ? `${styles.catItem} ${styles.catItemActive}`
+                  : `${styles.catItem}`
+              }
               onClick={() => clickCat(category)}
             >
               {category}
