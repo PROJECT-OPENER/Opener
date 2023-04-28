@@ -1,8 +1,7 @@
-const bottomNavBackward = [
+export const bottomNavBackward = [
   '/aiChat',
   '/shadowing/learning',
   '/challange/shooting',
 ];
-const bottomNavNone = ['/aiChat/room', '/login'];
-const topNavNone = ['/learning', '/challange/shooting'];
-export { bottomNavBackward, bottomNavNone, topNavNone };
+export const bottomNavNone = ['/aiChat/room', '/login'];
+export const topNavNone = ['/aiChat/room', '/learning', '/challange/shooting'];

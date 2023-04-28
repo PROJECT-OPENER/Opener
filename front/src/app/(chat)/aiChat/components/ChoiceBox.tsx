@@ -46,7 +46,7 @@ const ChoiceBox = () => {
             }`}
             onClick={() => setActiveIndex(i)}
           >
-            <span>{v}</span>
+            <span className={activeIndex === i ? 'text-white' : ''}>{v}</span>
           </div>
         );
       })}

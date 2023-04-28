@@ -1,5 +1,6 @@
 // import Link from 'next/link';
 import './globals.css';
+import './styles/index.scss';
 import TopNav from './components/TopNav';
 import BottomNav from './components/BottomNav';
 

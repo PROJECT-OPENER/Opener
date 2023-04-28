@@ -1,0 +1,7 @@
+.validator-input {
+  @apply p-3 w-full border-slate-100 focus:outline-none focus:border-[1px] focus:border-brandP pl-12;
+}
+
+.validator-submit {
+  @apply w-full bg-brandP text-white font-bold py-3 rounded-md text-xl mt-5
+}

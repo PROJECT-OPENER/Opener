@@ -5,7 +5,7 @@ import { useRef, useState, useEffect } from 'react';
 import { WordTokenizer } from 'natural';
 import styles from './ViewScript.module.css';
 import YouTube, { YouTubePlayer } from 'react-youtube';
-import { scriptType } from '@/app/types/user';
+import { scriptType } from '@/app/types/share';
 
 const subtitles =
   '00:00:01.000 --> 00:00:04.000\n- Never drink liquid nitrogen.\n\n00:00:06.000 --> 00:00:10.000\n- It will perforate your stomach.\n- You could die.';

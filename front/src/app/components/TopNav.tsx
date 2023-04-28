@@ -1,7 +1,7 @@
 'use client';
+import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-// import styles from './styles/TopNav.module.css';
-// import Link from 'next/link';
+import Image from 'next/image';
 import logo from 'public/images/logo.png';
 import { topNavNone } from '../util/navControl';
 
@@ -11,7 +11,25 @@ const TopNav = () => {
   if (topNavNone.includes(pathname)) return <div></div>;
   return (
     <div className="topnav">
-      <img id="logo" src={logo.src} alt="logo" />
+      <Link href={'/'}>
+        <Image
+          src={logo.src}
+          alt="Logo"
+          className=""
+          width={100}
+          height={24}
+          priority
+        />
+        {/* <img id="logo" src={logo.src} alt="logo" /> */}
+      </Link>
+      <div className="space-x-5">
+        <Link href={'/login'}>
+          <button type="button">로그인</button>
+        </Link>
+        <Link href={'/interest'}>
+          <button type="button">관심사</button>
+        </Link>
+      </div>
     </div>
   );
 };
