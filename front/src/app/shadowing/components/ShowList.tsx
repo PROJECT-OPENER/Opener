@@ -13,7 +13,7 @@ interface propsType {
 const ShowList = (props: propsType) => {
   return (
     <div className={styles.content}>
-      <p>카테고리 : {props.category}</p>
+      {/* <p>카테고리 : {props.category}</p> */}
       {props.content.map((c, index) => {
         return (
           <Link href={c.href} key={index} className={styles.contentItem}>
