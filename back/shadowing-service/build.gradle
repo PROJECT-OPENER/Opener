@@ -23,6 +23,8 @@ ext {
 }
 
 dependencies {
+    implementation 'org.springframework.cloud:spring-cloud-starter-config' // config 추가
+    implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap'// bootstrap 추가
     implementation 'org.springframework.cloud:spring-cloud-starter-openfeign' // feignclient 추가
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-amqp'
