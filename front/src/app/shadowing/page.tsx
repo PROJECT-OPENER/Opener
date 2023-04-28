@@ -2,8 +2,9 @@ import React from 'react';
 import Categories from './components/Categories';
 const page = () => {
   return (
-    <div>
-      <p>쉐도잉 목록 페이지임</p>
+    <div className="inner-content">
+      <h1 className="text-2xl font-extrabold my-2">영어 쉐도잉</h1>
+      <p className="text-sm">영어는 씹어야 제 맛이지</p>
       <Categories />
     </div>
   );
