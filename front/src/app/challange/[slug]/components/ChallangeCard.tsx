@@ -4,7 +4,7 @@ import React from 'react';
 
 const ChallangeCard = () => {
   return (
-    <div className="grid grid-cols-3 gap-4 mt-5">
+    <div className="grid grid-cols-3 gap-4 my-16">
       <div className="relative">
         <img
           className="h-auto max-w-full rounded-lg"
