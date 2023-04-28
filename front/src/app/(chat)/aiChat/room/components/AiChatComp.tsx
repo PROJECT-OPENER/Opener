@@ -18,14 +18,14 @@ const AiChatComp = () => {
   const [robotClick, setRobotClick] = useState(0);
 
   useEffect(() => {
-    const synth = window.speechSynthesis.getVoices();
-    setSynth(synth);
+    const voice = window.speechSynthesis.getVoices();
+    setSynth(voice);
   }, []);
 
   const textToSpeech = (text: string) => {
     const speech = new SpeechSynthesisUtterance(text);
     speech.lang = 'ko-KR';
-    speech.rate = 0.7;
+    speech.rate = 1.5;
     speech.voice = synth[0];
     console.log(speech);
     window.speechSynthesis.speak(speech);
@@ -68,7 +68,7 @@ const AiChatComp = () => {
     <div className="h-full">
       <div
         ref={chatWindowRef}
-        className="min-h-[70vh] max-h-[70vh] overflow-y-scroll"
+        className="min-h-[80vh] max-h-[80vh] overflow-y-scroll"
       >
         {/* 첫 문장 */}
         <div className="flex mt-2">
@@ -99,12 +99,12 @@ const AiChatComp = () => {
         {messages.map((message, index) => (
           <div
             key={index}
-            className={
-              message.sender === 'user' ? 'text-right flex justify-end' : 'flex'
-            }
+            className={message.sender === 'user' ? 'flex justify-end' : 'flex'}
           >
             {message.sender === 'user' && (
-              <div className={styles.user}>{message.text}</div>
+              <div>
+                <div className={styles.user}>{message.text}</div>
+              </div>
             )}
             {message.sender === 'ai' && (
               <div className="flex mt-2">

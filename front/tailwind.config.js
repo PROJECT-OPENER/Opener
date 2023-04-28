@@ -17,6 +17,9 @@ module.exports = {
         brandY: '#FFD600',
         brandText: '#4b4b4b',
       },
+      boxShadow: {
+        custom: '0 2px 10px 0 rgba(0, 0, 0, 0.1)',
+      },
     },
   },
   plugins: [],

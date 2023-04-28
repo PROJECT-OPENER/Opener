@@ -3,5 +3,5 @@
 }
 
 .user {
-  @apply bg-brandY rounded-br-none rounded-2xl p-5 ml-10 mb-1 w-fit mr-3
+  @apply bg-brandY rounded-br-none rounded-2xl p-5 ml-24 mb-1 w-fit mr-3 break-words mt-3
 }
