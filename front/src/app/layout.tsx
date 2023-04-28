@@ -20,11 +20,9 @@ export default function RootLayout({
         <title>OPENER</title>
       </head>
       <body>
-        <div className="content">
-          <TopNav />
-          {children}
-          <BottomNav />
-        </div>
+        <TopNav />
+        <div className="content">{children}</div>
+        <BottomNav />
       </body>
     </html>
   );

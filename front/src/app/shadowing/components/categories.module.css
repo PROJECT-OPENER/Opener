@@ -1,19 +1,31 @@
 .categories {
   display: flex;
   flex-direction: row;
+  padding: 1rem 0;
+  overflow-x: auto;
 }
 
-.categories > li {
+.catItem {
+  font-size: 0.85rem;
   margin-right: 10px;
-  background-color: lightgrey;
-  padding: 2px 10px;
-  border-radius: 15px;
+  background-color: #fff;
+  padding: 3px 20px;
+  border-radius: 12px;
+  white-space: nowrap;
 }
-.categories > li:hover {
-  background-color: blue;
+.catItemActive {
+  color: white;
+  background-color: #6713d4;
 }
-.categories > li:active {
-  background-color: red;
+.catItem:hover,
+.contentItem:hover {
+  color: white;
+  background-color: #6713d4;
+}
+.catItem:active,
+.contentItem:active {
+  color: white;
+  background-color: #5e10c3;
 }
 .content {
   display: flex;
@@ -22,13 +34,8 @@
 .contentItem {
   padding: 10px;
   border-radius: 10px;
-  box-shadow: 0 2px 10px 0 #00000010;
+  box-shadow: 0 2px 10px 0 rgb(0 0 0 / 10%);
   margin-bottom: 8px;
   cursor: pointer;
-}
-.contentItem:hover {
-  background-color: lightgrey;
-}
-.contentItem:active {
-  background-color: blue;
+  background-color: white;
 }

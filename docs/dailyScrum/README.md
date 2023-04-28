@@ -121,3 +121,86 @@
     - 프로젝트 구조 설계
 - 공통
     - Request, Response DTO 설계
+
+## 2023-04-26
+
+### 1. Yesterday
+
+- 프론트
+    - 각자 맡은 레이아웃 하나로 MERGE
+- 백엔드
+    - ERD 검토 및 완료
+    - API 네이밍
+
+### 2. Today Todo
+
+- 프론트
+    - STT 인식 제한에 대한 이슈로 다른 라이브러리 찾아볼 예정
+    - Glosbe API(영어사전) 서비스 종료된 관계로 다른 API 찾아볼 예정
+    - 챌린지 촬영 공식문서 활용하여 타입스크립트 에러 해결 및 무한스크롤 라이브러리 찾아볼 예정
+- 백엔드
+    - API 네이밍 검토
+    - API Request, Response 작성
+    - 역할 분담
+    - 프로젝트 구조 만들기
+
+## 2023-04-27
+
+### 1. Yesterday
+
+- 프론트
+    - 챌린지 촬영 공식문서 활용하여 타입스크립트 에러 해결 및 무한스크롤 라이브러리 찾아볼 예정
+- 백엔드
+    - Open AI Java 작동 확인
+- 공통
+    - API URL 네이밍 검토
+    - API Request, Response 작성
+    - 기능 역할분담
+
+### 2. Today Todo
+
+- 프론트
+    - 마이페이지 생성
+    - 메모리 누수 코드 수정
+    - 챌린지 촬영 공식문서 활용하여 타입스크립트 에러 해결 및 무한스크롤 라이브러리 선택
+- 백엔드
+    - 건의 사항 : db 추가 - 게임 전적이 있어야 elo 가능
+        - 승, 패, 상대 닉네임, 내 닉네임, 상대 점수, 내 점수 ??
+    - 프로젝트 구조 만들기
+    - Spring Cloud Eureka-Service 만들기
+    - Spring Cloud API-Gateway 만들기
+- 공통
+    - API Request, Response 검토
+
+## 2023-04-28
+
+### 1. Yesterday
+
+- 프론트
+    - 챌린지 상황에 맞게 원본 영상 출력 완료
+    - 로그인, 회원가입 레아아웃 완료
+    - 쉐도잉 학습페이지 메모리 누수 해결 완료
+- 백엔드
+    - 프로젝트 구조 설계 완료
+    - Eureka-service 생성
+    - API-service 생성
+    - config server 생성
+    - (Member, Shadowing, Challenge, Chatting) Service 생성
+    - 채팅 점수 테이블 수정
+- 공통
+    - API Request, Response 검토
+
+### 2. Today Todo
+
+- 프론트
+    - 유튜브 유저가 컨트롤 못하게 막기, 제목 및 구독 버튼 뜨는 거 해결하기
+    - AI 채팅 레이아웃 완성
+    - 마이페이지 레이아웃 시작
+    - 로드맵 레이아웃 시작
+    - 3시 PR
+- 백엔드
+    - Shadowing Service Entity, Repository, Service 생성을 통한 CRUD 생성
+    - Challenge Service Entity, Repository, Service 생성을 통한 CRUD 생성
+    - SQL database EC2 서버에 올리고 연결
+- 공통
+    - 다음주 Jira 생성

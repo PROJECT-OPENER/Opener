@@ -7,6 +7,7 @@ import { topNavNone } from '../util/navControl';
 
 const TopNav = () => {
   const pathname: string = usePathname();
+
   if (topNavNone.includes(pathname)) return <div></div>;
   return (
     <div className="topnav">
