@@ -1,7 +1,14 @@
 import React from 'react';
+import MypageTopSection from './components/MypageTopSection';
+import MypageBotSection from './components/MypageBotSection';
 
 const page = () => {
-  return <div>마이페이지임</div>;
+  return (
+    <div>
+      <MypageTopSection />
+      <MypageBotSection />
+    </div>
+  );
 };
 
 export default page;
