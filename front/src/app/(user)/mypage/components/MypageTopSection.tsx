@@ -6,7 +6,7 @@ const dummy = ['여행', '일상'];
 
 const MypageTopSection = () => {
   return (
-    <div className="h-[200px] flex px-10 py-12">
+    <div className="h-[200px] flex px-10 py-12 bg-white m-3 rounded-3xl">
       <div className="mr-10 max-w-[100px]">
         <ProfileImage
           className="w-full h-full"

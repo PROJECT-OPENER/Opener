@@ -1,4 +1,5 @@
 import axios, { AxiosRequestConfig, AxiosResponse, AxiosError } from 'axios';
+import { responseInterface } from '../types/share';
 
 const hostname = window && window.location && window.location.hostname;
 const BASE_URL =
@@ -7,7 +8,7 @@ const BASE_URL =
     : 'http://localhost:8080/';
 
 export const memberApi = axios.create({
-  baseURL: BASE_URL + 'member-s',
+  baseURL: BASE_URL + 'member-service',
   withCredentials: true,
   headers: {
     'Content-Type': 'application/json',
@@ -40,7 +41,32 @@ const handleResponseSuccess = (response: AxiosResponse): AxiosResponse => {
 
 // Function to handle response errors
 const handleResponseError = (error: AxiosError): Promise<AxiosError> => {
-  // Add common error handling here, such as handling 401 Unauthorized errors
+  if (!error.response) {
+    // Handle Network Error
+    // Show an error message to the user
+    return Promise.reject(error);
+  }
+
+  if (error.response.status === 401) {
+    // Handle Authentication Error
+    // Redirect to the login page
+  }
+
+  const errCode = (error.response?.data as responseInterface)?.code;
+  if (errCode === undefined) {
+    // Handle Empty Response Error
+    // Show an error message to the user
+  } else if (errCode === -100) {
+    // Handle Email Already Used Error
+    // Show an error message to the user
+  } else if (errCode === -101) {
+    // Handle Invalid Email Format Error
+    // Show an error message to the user
+  } else if (errCode === -104) {
+    // Handle Email Required Error
+    // Show an error message to the user
+  }
+
   return Promise.reject(error);
 };
 
@@ -49,9 +75,6 @@ memberApi.interceptors.request.use(
   (config) => setAuthTokenHeader(config as AxiosRequestConfig) as any,
   handleRequestError,
 );
-//   (config) => setAuthTokenHeader(config as AxiosRequestConfig) as any,
-//   handleRequestError,
-// );
 
 // Add the response interceptor for handling successful responses and errors
 memberApi.interceptors.response.use(handleResponseSuccess, handleResponseError);

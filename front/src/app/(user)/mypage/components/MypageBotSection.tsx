@@ -14,7 +14,7 @@ const MypageBotSection = () => {
   };
   const [activeTab, setActiveTab] = useState(0);
   return (
-    <div className="bg-white">
+    <div className="bg-white m-3 rounded-3xl">
       <div className="tab-box flex justify-around p-3 text-3xl border-b-2">
         <button
           type="button"

@@ -36,46 +36,49 @@ const LoginForm = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit(handleLogin)} className="mt-5 w-[450px]">
-      <div className="shadow rounded-md">
-        <div className="relative" onBlur={() => setIsEmailActive(false)}>
-          <input
-            type="text"
-            className="validator-input rounded-t-md"
-            placeholder="이메일"
-            onFocus={() => setIsEmailActive(true)}
-            {...register('email')}
-          />
-          <AiOutlineMail
-            className={`${
-              isEmailActive ? 'fill-brandText' : 'fill-gray-400'
-            } absolute top-[0.7rem] w-7 h-7 left-3 `}
-          />
+    <>
+      <h1 className="text-4xl font-bold mb-10">OPENER</h1>
+      <form onSubmit={handleSubmit(handleLogin)} className="mt-5 w-[450px]">
+        <div className="shadow rounded-md">
+          <div className="relative" onBlur={() => setIsEmailActive(false)}>
+            <input
+              type="text"
+              className="validator-input rounded-t-md"
+              placeholder="이메일"
+              onFocus={() => setIsEmailActive(true)}
+              {...register('email')}
+            />
+            <AiOutlineMail
+              className={`${
+                isEmailActive ? 'fill-brandText' : 'fill-gray-400'
+              } absolute top-[0.7rem] w-7 h-7 left-3 `}
+            />
+          </div>
+          <hr />
+          <div className="relative" onBlur={() => setIsPasswordActive(false)}>
+            <input
+              type="password"
+              className="validator-input rounded-b"
+              placeholder="비밀번호"
+              {...register('password')}
+              onFocus={() => setIsPasswordActive(true)}
+            />
+            <AiOutlineLock
+              className={`${
+                isPasswordActive ? 'fill-brandText' : 'fill-gray-400'
+              } absolute top-[0.7rem] w-7 h-7 left-3 `}
+            />
+          </div>
         </div>
-        <hr />
-        <div className="relative" onBlur={() => setIsPasswordActive(false)}>
-          <input
-            type="password"
-            className="validator-input rounded-b"
-            placeholder="비밀번호"
-            {...register('password')}
-            onFocus={() => setIsPasswordActive(true)}
-          />
-          <AiOutlineLock
-            className={`${
-              isPasswordActive ? 'fill-brandText' : 'fill-gray-400'
-            } absolute top-[0.7rem] w-7 h-7 left-3 `}
-          />
+        <div className="my-3 text-red-500">
+          {errors.email ? errors.email.message : errors.password?.message}
         </div>
-      </div>
-      <div className="my-3 text-red-500">
-        {errors.email ? errors.email.message : errors.password?.message}
-      </div>
-      <div className="flex justify-end font-bold">
-        <Link href="/register">회원가입</Link>
-      </div>
-      <Button type="submit" text="로그인" className="validator-submit" />
-    </form>
+        <div className="flex justify-end font-bold">
+          <Link href="/register">회원가입</Link>
+        </div>
+        <Button type="submit" text="로그인" className="validator-submit" />
+      </form>
+    </>
   );
 };
 
