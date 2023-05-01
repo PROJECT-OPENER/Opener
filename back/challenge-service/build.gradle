@@ -23,6 +23,8 @@ ext {
 }
 
 dependencies {
+    implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap' // bootstrap 사용 (application.yml 실행 전 설정파일)
+    implementation 'org.springframework.cloud:spring-cloud-starter-config' // config 사용
     implementation 'org.springframework.cloud:spring-cloud-starter-openfeign' // feignclient 추가
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-amqp'
