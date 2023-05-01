@@ -1,6 +1,5 @@
 'use client';
 import React, { useEffect, useRef, useState } from 'react';
-import styles from './AiChatComp.module.css';
 import AiChatSend from './AiChatSend';
 import { BsVolumeUp } from 'react-icons/bs';
 import ProfileImage from '@/app/components/ProfileImage';
@@ -81,7 +80,7 @@ const AiChatComp = () => {
           />
           <div>
             <div>AI</div>
-            <div className={`${styles.ai}`}>
+            <div className="other-chat">
               {first}
               <button
                 type="button"
@@ -103,7 +102,7 @@ const AiChatComp = () => {
           >
             {message.sender === 'user' && (
               <div>
-                <div className={styles.user}>{message.text}</div>
+                <div className="my-chat">{message.text}</div>
               </div>
             )}
             {message.sender === 'ai' && (
@@ -117,7 +116,7 @@ const AiChatComp = () => {
                 />
                 <div>
                   <div>AI</div>
-                  <div className={`${styles.ai}`}>
+                  <div className="other-chat">
                     {message.text}
                     <button
                       type="button"

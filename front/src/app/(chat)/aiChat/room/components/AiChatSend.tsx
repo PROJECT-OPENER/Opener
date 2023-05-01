@@ -44,8 +44,20 @@ const AiChatSend = ({ onSendMessage, onReceiveMessage }: AiChatSendProps) => {
   const [isChat, setisChat] = useState(true);
   const [isMic, setisMic] = useState(false); // 마이크 기본값 : 꺼짐
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const [transcript, setTranscript] = useState('');
 
-  const { transcript, listening, resetTranscript } = useSpeechRecognition();
+  // const { transcript, listening, resetTranscript } = useSpeechRecognition();
+
+  const SpeechRecognition =
+    window.SpeechRecognition || window.webkitSpeechRecognition;
+  const recognition = new SpeechRecognition();
+  recognition.continuous = true;
+  recognition.interimResults = true;
+  recognition.lang = 'en-US';
+
+  recognition.onresult = (event) => {
+    setTranscript(event.results[0][0].transcript);
+  };
 
   const handleKeyboardChange = (event: {
     target: { value: React.SetStateAction<string> };
@@ -100,19 +112,19 @@ const AiChatSend = ({ onSendMessage, onReceiveMessage }: AiChatSendProps) => {
     stopMic();
   };
   const stopMic = () => {
-    SpeechRecognition.stopListening();
+    recognition.continuous = false;
+    recognition.stop();
+    setTranscript('');
     setisMic(false);
-    resetTranscript();
   };
 
   const handleMic = () => {
-    if (!listening) {
+    if (!isMic) {
       // 마이크가 꺼져 있으면 켜고 리스닝 시작
+      console.log('start mic');
       setisMic(true);
-      SpeechRecognition.startListening({
-        language: 'en-US ',
-        continuous: true,
-      });
+      recognition.start();
+      recognition.continuous = true;
     } else {
       // 아니면 마이크 끄고 setMessage, sendMessage
       console.log('stop mic');
