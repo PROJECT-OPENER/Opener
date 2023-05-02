@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.memberservice.common.annotation.Email;
 import com.example.memberservice.common.annotation.Nickname;
 import com.example.memberservice.dto.BaseResponseDto;
+import com.example.memberservice.dto.request.member.CheckEmailCodeRequestDto;
 import com.example.memberservice.dto.request.member.EmailRequestDto;
 import com.example.memberservice.service.MemberServiceImpl;
 
@@ -43,5 +44,12 @@ public class MemberController {
 	public ResponseEntity<BaseResponseDto<?>> sendEmailCode(@Valid @RequestBody EmailRequestDto emailRequestDto) {
 		memberService.sendEmailCode(emailRequestDto.getEmail());
 		return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseDto<>(200, "인증 코드를 전송했습니다."));
+	}
+
+	@PostMapping("/email")
+	public ResponseEntity<BaseResponseDto<?>> checkEmailCode(
+		@Valid @RequestBody CheckEmailCodeRequestDto checkEmailCodeRequestDto) {
+		memberService.checkEmailCode(checkEmailCodeRequestDto);
+		return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseDto<>(200, "이메일 인증에 성공했습니다."));
 	}
 }
