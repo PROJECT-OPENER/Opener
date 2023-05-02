@@ -4,12 +4,14 @@ import static com.example.memberservice.entity.redis.RedisKey.*;
 
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.memberservice.common.exception.ApiException;
 import com.example.memberservice.common.exception.ExceptionEnum;
 import com.example.memberservice.common.util.MailUtil;
+import com.example.memberservice.dto.request.member.SignUpMemberRequestDto;
 import com.example.memberservice.dto.request.member.CheckEmailCodeRequestDto;
 import com.example.memberservice.repository.MemberRepository;
 
@@ -23,6 +25,7 @@ public class MemberServiceImpl implements MemberService {
 	private final MemberRepository memberRepository;
 	private final RedisService redisService;
 	private final JavaMailSender javaMailSender;
+	private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
 	@Override
 	@Transactional
@@ -82,4 +85,19 @@ public class MemberServiceImpl implements MemberService {
 		}
 	}
 
+	@Transactional
+	@Override
+	public void signUpMember(SignUpMemberRequestDto signUpMemberRequestDto) {
+		String email = signUpMemberRequestDto.getEmail();
+		checkEmail(email);
+
+		String nickname = signUpMemberRequestDto.getNickname();
+		checkNickname(nickname);
+
+		String encryptedPwd = bCryptPasswordEncoder.encode(signUpMemberRequestDto.getPassword());
+
+		redisService.deleteData(AUTH_EMAIL.getKey() + email);
+
+		memberRepository.save(signUpMemberRequestDto.toEntity(encryptedPwd));
+	}
 }
