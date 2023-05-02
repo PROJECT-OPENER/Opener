@@ -3,28 +3,53 @@ import { useState } from 'react';
 import ShowList from './ShowList';
 import styles from './categories.module.css';
 
-type contentType = {
-  sentence: string;
-  href: string;
-  img: string;
+type listType = {
+  video_id: string;
+  thumbnail_url: string;
+  eng_sentence: string;
+  kor_sentence: string;
+  is_marked: string;
 };
-const content: contentType[] = [
-  {
-    sentence: 'How are you?',
-    href: '/shadowing/learning/1',
-    img: '#',
-  },
-  {
-    sentence: 'How are you?',
-    href: '/shadowing/learning/2',
-    img: '#',
-  },
-  {
-    sentence: 'How are you?',
-    href: '/shadowing/learning/3',
-    img: '#',
-  },
-];
+type contentType = {
+  length: number;
+  list: listType[];
+};
+// const content: contentType[] = [
+//   {
+//     sentence: 'How are you?',
+//     href: '/shadowing/learning/1',
+//     img: '#',
+//   },
+//   {
+//     sentence: 'How are you?',
+//     href: '/shadowing/learning/2',
+//     img: '#',
+//   },
+//   {
+//     sentence: 'How are you?',
+//     href: '/shadowing/learning/3',
+//     img: '#',
+//   },
+// ];
+const content: contentType = {
+  length: 2,
+  list: [
+    {
+      video_id: '1',
+      thumbnail_url: '/',
+      eng_sentence: 'How are you?',
+      kor_sentence: '어떻게 지내?',
+      is_marked: 'false',
+    },
+    {
+      video_id: '2',
+      thumbnail_url: '/',
+      eng_sentence: 'How are you?',
+      kor_sentence: '어떻게 지내?',
+      is_marked: 'false',
+    },
+  ],
+};
 
 const Categories = () => {
   const [selected, setSelected] = useState<string>('전체');
