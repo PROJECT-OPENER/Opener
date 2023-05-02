@@ -6,4 +6,5 @@ public interface MemberService {
 
 	void checkNickname(String nickname);
 
+	void sendEmailCode(String email);
 }

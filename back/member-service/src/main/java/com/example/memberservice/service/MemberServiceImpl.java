@@ -1,10 +1,15 @@
 package com.example.memberservice.service;
 
+import static com.example.memberservice.entity.redis.RedisKey.*;
+
+import org.springframework.mail.MailException;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.memberservice.common.exception.ApiException;
 import com.example.memberservice.common.exception.ExceptionEnum;
+import com.example.memberservice.common.util.MailUtil;
 import com.example.memberservice.repository.MemberRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -15,6 +20,8 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {
 	private final MemberRepository memberRepository;
+	private final RedisService redisService;
+	private final JavaMailSender javaMailSender;
 
 	@Override
 	@Transactional
@@ -29,6 +36,22 @@ public class MemberServiceImpl implements MemberService {
 	public void checkNickname(String nickname) {
 		if (memberRepository.existsByNickname(nickname)) {
 			throw new ApiException(ExceptionEnum.NICKNAME_EXIST_EXCEPTION);
+		}
+	}
+
+	@Override
+	@Transactional
+	public void sendEmailCode(String email) {
+		checkEmail(email);
+
+		String authNumber = MailUtil.makeRandomNumber(10);
+		redisService.setDataWithExpiration(SEND_CODE.getKey() + email, authNumber, 60 * 5L);
+		redisService.setDataWithStatus(AUTH_EMAIL.getKey() + email, false);
+
+		try {
+			javaMailSender.send(MailUtil.setMailForAuth(email, authNumber));
+		} catch (MailException e) {
+			throw new ApiException(ExceptionEnum.SEND_EMAIL_FAIL_EXCEPTION);
 		}
 	}
 }
