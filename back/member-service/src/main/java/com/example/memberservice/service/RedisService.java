@@ -14,8 +14,8 @@ public class RedisService {
 
 	private final RedisTemplate redisTemplate;
 
-	public String getData(String key) {
-		return (String)redisTemplate.opsForValue().get(key);
+	public Object getData(String key) {
+		return redisTemplate.opsForValue().get(key);
 	}
 
 	public void deleteData(String key) {
