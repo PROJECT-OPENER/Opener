@@ -3,5 +3,10 @@ export const bottomNavBackward = [
   '/shadowing/learning',
   '/challange/shooting',
 ];
-export const bottomNavNone = ['/aiChat/room', '/login'];
-export const topNavNone = ['/aiChat/room', '/learning', '/challange/shooting'];
+export const bottomNavNone = ['/aiChat/room', '/login', '/userChat/Result'];
+export const topNavNone = [
+  '/aiChat/room',
+  '/learning',
+  '/challange/shooting',
+  '/userChat/Result',
+];

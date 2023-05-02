@@ -20,7 +20,17 @@ export interface userRegisterInterface {
   birth: string; // YYYY-MM-DD string format
   gender: 'MALE' | 'FEMALE'; // enum
 }
+export interface emailAuthCheckInterface {
+  email: string;
+  code: string;
+}
 // end of 유저 관련 타입
+
+// response 관련 타입
+export interface responseInterface {
+  code: number;
+  message: string;
+}
 
 // 쉐도잉 관련 타입
 export interface scriptType {

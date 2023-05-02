@@ -23,12 +23,9 @@ const TopNav = () => {
         {/* <img id="logo" src={logo.src} alt="logo" /> */}
       </Link>
       <div className="space-x-5">
-        <Link href={'/login'}>
-          <button type="button">로그인</button>
-        </Link>
-        <Link href={'/interest'}>
-          <button type="button">관심사</button>
-        </Link>
+        <Link href={'/mypage'}>마이페이지</Link>
+        <Link href={'/login'}>로그인</Link>
+        <Link href={'/interest'}>관심사</Link>
       </div>
     </div>
   );

@@ -5,3 +5,11 @@
 .validator-submit {
   @apply w-full bg-brandP text-white font-bold py-3 rounded-md text-xl mt-5
 }
+
+.other-chat {
+  @apply bg-slate-400 rounded-tl-none rounded-2xl p-5 mr-10 w-fit mb-1
+}
+
+.my-chat {
+  @apply bg-brandY rounded-br-none rounded-2xl p-5 ml-24 mb-1 w-fit mr-3 break-words mt-3
+}
