@@ -1,15 +1,16 @@
 'use client';
 
-import React, { useRef } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import useSWRInfinite from 'swr/infinite';
 import ChallangeDetail from './ChallangeDetail';
+
 interface Issue {
   id: number;
   title: string;
 }
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
-const PAGE_SIZE = 10; // 페이지 수
+const PAGE_SIZE = 1; // 페이지 수
 
 const ChallangeList: React.FC = () => {
   // data: 각 페이지의 응답 값의 배열
@@ -37,29 +38,32 @@ const ChallangeList: React.FC = () => {
   const isReachingEnd =
     isEmpty || (data && data[data.length - 1]?.length < PAGE_SIZE);
 
-  // 옵션 객체
-  const options = {
-    // null을 설정하거나 무엇도 설정하지 않으면 브라우저 viewport가 기준이 된다.
-    root: null,
-    // 타겟 요소의 50%가 루트 요소와 겹치면 콜백을 실행한다.
-    threshold: 0.5,
-  };
-
-  const observer = useRef<IntersectionObserver>(
-    new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.intersectionRatio > 0 && !isReachingEnd) {
-          setSize((prev) => prev + 5);
-        }
-      });
-    }, options),
-  );
+  const [observer, setObserver] = useState<IntersectionObserver | null>(null);
 
   const listEndRef = useRef<HTMLParagraphElement>(null);
 
-  if (listEndRef.current) {
-    observer.current.observe(listEndRef.current); // list의 끝부분을 알려주는 p 타겟 요소를 관찰
-  }
+  useEffect(() => {
+    const options = {
+      root: null,
+      threshold: 0.5,
+    };
+    if (!observer) {
+      const newObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach((entry) => {
+          if (entry.intersectionRatio > 0.2 && !isReachingEnd) {
+            setSize((prev) => prev + 1);
+          }
+          if (isReachingEnd) {
+            observer.unobserve;
+          }
+        });
+      }, options);
+      if (listEndRef.current && newObserver) {
+        newObserver.observe(listEndRef.current); // list의 끝부분을 알려주는 p 타겟 요소를 관찰
+      }
+      setObserver(newObserver);
+    }
+  }, []);
 
   return (
     <>
