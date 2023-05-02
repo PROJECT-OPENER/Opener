@@ -77,7 +77,7 @@ public class MemberServiceImpl implements MemberService {
 		}
 
 		try {
-			String emailCode = redisService.getData(SEND_CODE.getKey() + email);
+			String emailCode = (String) (redisService.getData(SEND_CODE.getKey() + email));
 			String authCode = checkEmailCodeRequestDto.getAuthCode();
 			if (!emailCode.equals(authCode)) {
 				throw new ApiException(ExceptionEnum.WRONG_EMAIL_CODE_EXCEPTION);
