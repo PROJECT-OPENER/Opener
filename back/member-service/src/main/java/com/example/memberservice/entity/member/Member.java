@@ -1,4 +1,4 @@
-package com.example.memberservice.entity;
+package com.example.memberservice.entity.member;
 
 import java.time.LocalDate;
 
@@ -11,6 +11,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.Email;
+
+import com.example.memberservice.entity.BaseEntity;
+import com.example.memberservice.entity.member.enums.Gender;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
