@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.example.memberservice.common.exception.ApiException;
 import com.example.memberservice.common.exception.ExceptionEnum;
 import com.example.memberservice.common.util.MailUtil;
+import com.example.memberservice.dto.request.member.CheckEmailCodeRequestDto;
 import com.example.memberservice.repository.MemberRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -54,4 +55,31 @@ public class MemberServiceImpl implements MemberService {
 			throw new ApiException(ExceptionEnum.SEND_EMAIL_FAIL_EXCEPTION);
 		}
 	}
+
+	@Override
+	@Transactional
+	public void checkEmailCode(CheckEmailCodeRequestDto checkEmailCodeRequestDto) {
+		String email = checkEmailCodeRequestDto.getEmail();
+		checkEmail(email);
+
+		try {
+			redisService.getData(AUTH_EMAIL.getKey() + email);
+		} catch (NullPointerException e) {
+			throw new NullPointerException();
+		}
+
+		try {
+			String emailCode = redisService.getData(SEND_CODE.getKey() + email);
+			String authCode = checkEmailCodeRequestDto.getAuthCode();
+			if (!emailCode.equals(authCode)) {
+				throw new ApiException(ExceptionEnum.WRONG_EMAIL_CODE_EXCEPTION);
+			}
+
+			redisService.deleteData(SEND_CODE.getKey() + email);
+			redisService.setDataWithStatus(AUTH_EMAIL.getKey() + email, true);
+		} catch (NullPointerException e) {
+			throw new ApiException(ExceptionEnum.INVALID_EMAIL_CODE_EXCEPTION);
+		}
+	}
+
 }
