@@ -1,11 +1,7 @@
 import axios, { AxiosRequestConfig, AxiosResponse, AxiosError } from 'axios';
 import { responseInterface } from '../types/share';
 
-const hostname = window && window.location && window.location.hostname;
-const BASE_URL =
-  hostname !== 'localhost'
-    ? 'http://j8c202.p.ssafy.io:8080/'
-    : 'http://localhost:8080/';
+const BASE_URL = 'http://k8c104.p.ssafy.io:8000/';
 
 export const memberApi = axios.create({
   baseURL: BASE_URL + 'member-service',

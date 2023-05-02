@@ -10,7 +10,10 @@ export const emailDuplicateCheckApi = async (email: string) => {
 
 // 이메일 인증 코드 발송
 export const emailAuthApi = async (email: string) => {
-  const response = await memberApi.post(`/members/email-code`, email);
+  // console.log(email);
+  const payload = { email: email };
+  const response = await memberApi.post(`/members/email-code`, payload);
+  console.log(response);
   return response.data;
 };
 

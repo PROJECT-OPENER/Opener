@@ -142,6 +142,7 @@ const RegisterForm = () => {
       // 중복 확인
       if (!checkEmailDuplicate) {
         const duplicateCheck = await emailDuplicateCheckApi(email);
+        console.log(duplicateCheck);
         if (duplicateCheck) {
           setCheckEmailDuplicate(!checkEmailDuplicate);
         }
