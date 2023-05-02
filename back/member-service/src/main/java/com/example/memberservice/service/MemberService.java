@@ -4,4 +4,6 @@ public interface MemberService {
 
 	void checkEmail(String email);
 
+	void checkNickname(String nickname);
+
 }

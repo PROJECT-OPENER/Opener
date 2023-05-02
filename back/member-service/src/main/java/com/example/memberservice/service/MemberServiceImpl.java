@@ -23,4 +23,12 @@ public class MemberServiceImpl implements MemberService {
 			throw new ApiException(ExceptionEnum.EMAIL_EXIST_EXCEPTION);
 		}
 	}
+
+	@Override
+	@Transactional
+	public void checkNickname(String nickname) {
+		if (memberRepository.existsByNickname(nickname)) {
+			throw new ApiException(ExceptionEnum.NICKNAME_EXIST_EXCEPTION);
+		}
+	}
 }
