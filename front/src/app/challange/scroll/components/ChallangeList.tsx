@@ -9,7 +9,7 @@ interface Issue {
 }
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
-const PAGE_SIZE = 1; // 페이지 수
+const PAGE_SIZE = 10; // 페이지 수
 
 const ChallangeList: React.FC = () => {
   // data: 각 페이지의 응답 값의 배열
@@ -49,8 +49,7 @@ const ChallangeList: React.FC = () => {
     new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (entry.intersectionRatio > 0 && !isReachingEnd) {
-          console.log('감지');
-          setSize((prev) => prev + 1);
+          setSize((prev) => prev + 5);
         }
       });
     }, options),
@@ -70,7 +69,7 @@ const ChallangeList: React.FC = () => {
         </p>
         {isEmpty ? <p>조회된 챌린지가 없습니다.</p> : null}
         {issues.map((issue) => (
-          <ChallangeDetail key={issue.id} title={issue.title}></ChallangeDetail>
+          <ChallangeDetail title={issue.title} key={issue.id}></ChallangeDetail>
         ))}
         {isLoadingMore ? '로딩중...' : isReachingEnd ? 'no more issues' : ''}
       </div>

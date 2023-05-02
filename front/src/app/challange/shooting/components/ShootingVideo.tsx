@@ -16,6 +16,7 @@ const ShootingVideo = () => {
     alert('영상 공유를 성공하였습니다.');
     router.push('/challange');
   };
+
   // --------------------------------------- youtube
   const youtubeRecordRef = useRef<YouTube>(null); // 촬영할 때의 원본 화면
   const youtubePlayRef = useRef<YouTube>(null); // 실행할 때의 원본 화면
@@ -44,15 +45,6 @@ const ShootingVideo = () => {
     },
   };
 
-  // const opts2: YouTubeProps['opts'] = {
-  //   height: '224',
-  //   width: '126',
-  //   playerVars: {
-  //     controls: 0,
-  //     loop: 1,
-  //   },
-  // };
-
   const recordingStateChange = (event: any) => {
     if (event.data === YouTube.PlayerState.ENDED) {
       stopRecording();
@@ -69,7 +61,6 @@ const ShootingVideo = () => {
       if (youtubePlayRef.current) {
         const player = youtubePlayRef.current?.internalPlayer;
         player.playVideo();
-        // 테스트 중
         if (recordingPlayer.current) {
           recordingPlayer.current.pause();
           recordingPlayer.current.load();
@@ -77,7 +68,6 @@ const ShootingVideo = () => {
       }
     }
     if (event.data === YouTube.PlayerState.PLAYING) {
-      // 테스트 중
       if (recordingPlayer.current) {
         recordingPlayer.current.play();
       }
@@ -89,7 +79,6 @@ const ShootingVideo = () => {
     }
   };
 
-  // 스타일 테스트
   const videoStyle = {
     // borderRadius: '10px', // 가장자리 둥글게 만들기
     // overflow: 'hidden', // 둥글게 만든 가장자리 넘치는 부분 잘라내기 -- 하얗게 보이는 버그있음
