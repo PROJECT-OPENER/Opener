@@ -1,6 +1,9 @@
 package com.example.memberservice.common.config.security;
 
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.filter.CorsFilter;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -13,7 +16,14 @@ public class CorsConfig implements WebMvcConfigurer {
 			.allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
 			.allowedHeaders("*")
 			.allowCredentials(true)
-			.exposedHeaders("*")
 			.maxAge(3600);
+	}
+
+	@Bean
+	public FilterRegistrationBean<CorsFilter> corsFilterRegistration() {
+		FilterRegistrationBean<CorsFilter> registration = new FilterRegistrationBean<>();
+		registration.setName("CORS Filter");
+		registration.setOrder(1);
+		return registration;
 	}
 }
