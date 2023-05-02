@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.memberservice.common.annotation.Email;
 import com.example.memberservice.common.annotation.Nickname;
 import com.example.memberservice.dto.BaseResponseDto;
+import com.example.memberservice.dto.request.member.EmailRequestDto;
+import com.example.memberservice.dto.request.member.SignUpMemberRequestDto;
 import com.example.memberservice.dto.request.member.CheckEmailCodeRequestDto;
 import com.example.memberservice.dto.request.member.EmailRequestDto;
 import com.example.memberservice.service.MemberServiceImpl;
@@ -52,4 +54,12 @@ public class MemberController {
 		memberService.checkEmailCode(checkEmailCodeRequestDto);
 		return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseDto<>(200, "이메일 인증에 성공했습니다."));
 	}
+
+	@PostMapping
+	public ResponseEntity<BaseResponseDto<?>> signUpMember(
+		@Valid @RequestBody SignUpMemberRequestDto signUpMemberRequestDto) {
+		memberService.signUpMember(signUpMemberRequestDto);
+		return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseDto<>(200, "회원가입에 성공했습니다."));
+	}
+
 }
