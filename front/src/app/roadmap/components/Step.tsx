@@ -25,7 +25,7 @@ const Step = (props: stepType) => {
 
   return (
     <>
-      <p className="text-center text-4xl my-10">STEP {props.data.step_no}</p>
+      <p className="text-center text-2xl my-10">STEP {props.data.step_no}</p>
       {steps.list.map((theme, index) => {
         return <Theme data={theme} key={index} />;
       })}

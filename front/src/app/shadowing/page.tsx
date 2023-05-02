@@ -1,5 +1,17 @@
-import React from 'react';
 import Categories from './components/Categories';
+
+type listType = {
+  video_id: string;
+  thumbnail_url: string;
+  eng_sentence: string;
+  kor_sentence: string;
+  is_marked: string;
+};
+type contentType = {
+  length: number;
+  list: listType[];
+};
+
 const page = () => {
   return (
     <div className="inner-content">
