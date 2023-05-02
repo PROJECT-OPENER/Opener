@@ -77,7 +77,7 @@ public class MemberServiceImpl implements MemberService {
 		}
 
 		try {
-			String emailCode = (String) (redisService.getData(SEND_CODE.getKey() + email));
+			String emailCode = (String)(redisService.getData(SEND_CODE.getKey() + email));
 			String authCode = checkEmailCodeRequestDto.getAuthCode();
 			if (!emailCode.equals(authCode)) {
 				throw new ApiException(ExceptionEnum.WRONG_EMAIL_CODE_EXCEPTION);
@@ -103,7 +103,10 @@ public class MemberServiceImpl implements MemberService {
 
 		boolean isNotAuthenticated = redisService.existsByKey(AUTH_EMAIL.getKey() + email);
 		if (isNotAuthenticated) {
-			throw new ApiException(ExceptionEnum.NOT_AUTHENTICATED_EMAIL_EXCEPTION);
+			boolean isCheckedEmail = (Boolean)redisService.getData(AUTH_EMAIL.getKey() + email);
+			if (!isCheckedEmail) {
+				throw new ApiException(ExceptionEnum.NOT_AUTHENTICATED_EMAIL_EXCEPTION);
+			}
 		}
 
 		redisService.deleteData(AUTH_EMAIL.getKey() + email);
