@@ -1,7 +1,12 @@
 import React from 'react';
+import ChallangeList from './components/ChallangeList';
 
-const page = () => {
-  return <div className=""></div>;
+const Page = () => {
+  return (
+    <div>
+      <ChallangeList></ChallangeList>
+    </div>
+  );
 };
 
-export default page;
+export default Page;
