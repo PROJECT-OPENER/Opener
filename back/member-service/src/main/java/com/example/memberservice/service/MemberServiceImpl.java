@@ -101,6 +101,11 @@ public class MemberServiceImpl implements MemberService {
 
 		String encryptedPwd = bCryptPasswordEncoder.encode(signUpMemberRequestDto.getPassword());
 
+		boolean isNotAuthenticated = redisService.existsByKey(AUTH_EMAIL.getKey() + email);
+		if (isNotAuthenticated) {
+			throw new ApiException(ExceptionEnum.NOT_AUTHENTICATED_EMAIL_EXCEPTION);
+		}
+
 		redisService.deleteData(AUTH_EMAIL.getKey() + email);
 
 		memberRepository.save(signUpMemberRequestDto.toEntity(encryptedPwd));
