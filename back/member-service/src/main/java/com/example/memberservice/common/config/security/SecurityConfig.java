@@ -48,33 +48,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		// .and()
 		// .apply(new JwtSecurityConfig(jwtTokenProvider, jwtExceptionFilter));
 	}
-
-	@Bean
-	public CorsFilter corsFilter() {
-		CorsConfiguration config = new CorsConfiguration();
-		config.setAllowCredentials(true);
-		config.addAllowedOriginPattern("*");
-		config.addAllowedHeader("*");
-		config.addAllowedMethod("*");
-
-		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-		source.registerCorsConfiguration("/**", config);
-		return new CorsFilter(source);
-	}
-
-	@Bean
-	public WebMvcConfigurer corsConfigurer() {
-		return new WebMvcConfigurer() {
-			@Override
-			public void addCorsMappings(CorsRegistry registry) {
-				registry.addMapping("/**")
-					.allowedOriginPatterns("*")
-					.allowedMethods("*")
-					.allowedHeaders("*")
-					.allowCredentials(true);
-			}
-		};
-	}
 }
 
 
