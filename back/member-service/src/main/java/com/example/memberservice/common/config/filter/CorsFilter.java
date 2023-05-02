@@ -31,7 +31,7 @@ public class CorsFilter implements Filter {
 		HttpServletRequest request = (HttpServletRequest)servletRequest;
 		HttpServletResponse response = (HttpServletResponse)servletResponse;
 
-		response.setHeader("Access-Control-Allow-Origin", "http://localhost:3000"); //dev
+		response.setHeader("Access-Control-Allow-Origin", "http://localhost:3000, http://k8c104.p.ssafy.io:8000"); //dev
 		response.setHeader("Access-Control-Allow-Credentials", "true");
 		response.setHeader("Access-Control-Allow-Methods", "GET, POST, DELETE, PATCH, PUT, OPTIONS");
 		response.setHeader("Access-Control-Max-Age", "3600");
@@ -40,11 +40,11 @@ public class CorsFilter implements Filter {
 		response.setHeader("Access-Control-Allow-Headers",
 			"*");
 
-		// if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
-		// 	response.setStatus(HttpServletResponse.SC_OK);
-		// } else {
+		if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
+			response.setStatus(HttpServletResponse.SC_OK);
+		} else {
 			filterChain.doFilter(servletRequest, servletResponse);
-		// }
+		}
 	}
 
 	@Override
