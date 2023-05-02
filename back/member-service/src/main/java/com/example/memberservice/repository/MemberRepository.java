@@ -8,4 +8,6 @@ import com.example.memberservice.entity.member.Member;
 @Repository
 public interface MemberRepository extends JpaRepository<Member, Long>, MemberRepositoryCustom {
 	boolean existsByEmail(String email);
+
+	boolean existsByNickname(String nickname);
 }
