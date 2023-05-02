@@ -8,11 +8,15 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.example.memberservice.common.config.security.JwtTokenProvider;
 import com.example.memberservice.common.exception.ApiException;
 import com.example.memberservice.common.exception.ExceptionEnum;
 import com.example.memberservice.common.util.MailUtil;
+import com.example.memberservice.dto.request.member.LoginRequestDto;
 import com.example.memberservice.dto.request.member.SignUpMemberRequestDto;
 import com.example.memberservice.dto.request.member.CheckEmailCodeRequestDto;
+import com.example.memberservice.dto.response.member.LoginResponseDto;
+import com.example.memberservice.entity.member.Member;
 import com.example.memberservice.repository.MemberRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -26,6 +30,7 @@ public class MemberServiceImpl implements MemberService {
 	private final RedisService redisService;
 	private final JavaMailSender javaMailSender;
 	private final BCryptPasswordEncoder bCryptPasswordEncoder;
+	private final JwtTokenProvider jwtTokenProvider;
 
 	@Override
 	@Transactional
@@ -99,5 +104,31 @@ public class MemberServiceImpl implements MemberService {
 		redisService.deleteData(AUTH_EMAIL.getKey() + email);
 
 		memberRepository.save(signUpMemberRequestDto.toEntity(encryptedPwd));
+	}
+
+	@Override
+	@Transactional
+	public LoginResponseDto login(LoginRequestDto loginRequestDto) {
+		String email = loginRequestDto.getEmail();
+		boolean isNotAuthenticated = redisService.existsByKey(AUTH_EMAIL.getKey() + email);
+
+		if (isNotAuthenticated) {
+			throw new ApiException(ExceptionEnum.NOT_AUTHENTICATED_EMAIL_EXCEPTION);
+		}
+
+		Member member = memberRepository.findByEmail(email)
+			.orElseThrow(() -> new ApiException(ExceptionEnum.MEMBER_NOT_FOUND_EXCEPTION));
+
+		String password = loginRequestDto.getPassword();
+		if (!bCryptPasswordEncoder.matches(password, member.getPassword())) {
+			throw new ApiException(ExceptionEnum.WRONG_PASSWORD_EXCEPTION);
+		}
+
+		String accessToken = jwtTokenProvider.createToken(email);
+		return LoginResponseDto.builder()
+			.accessToken(accessToken)
+			.nickname(member.getNickname())
+			.build();
+
 	}
 }

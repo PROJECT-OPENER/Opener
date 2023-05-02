@@ -2,6 +2,7 @@ package com.example.memberservice.controller;
 
 import javax.validation.Valid;
 
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -16,9 +17,11 @@ import com.example.memberservice.common.annotation.Email;
 import com.example.memberservice.common.annotation.Nickname;
 import com.example.memberservice.dto.BaseResponseDto;
 import com.example.memberservice.dto.request.member.EmailRequestDto;
+import com.example.memberservice.dto.request.member.LoginRequestDto;
 import com.example.memberservice.dto.request.member.SignUpMemberRequestDto;
 import com.example.memberservice.dto.request.member.CheckEmailCodeRequestDto;
 import com.example.memberservice.dto.request.member.EmailRequestDto;
+import com.example.memberservice.dto.response.member.LoginResponseDto;
 import com.example.memberservice.service.MemberServiceImpl;
 
 import lombok.RequiredArgsConstructor;
@@ -60,6 +63,16 @@ public class MemberController {
 		@Valid @RequestBody SignUpMemberRequestDto signUpMemberRequestDto) {
 		memberService.signUpMember(signUpMemberRequestDto);
 		return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseDto<>(200, "회원가입에 성공했습니다."));
+	}
+
+	@PostMapping("/login")
+	public ResponseEntity<BaseResponseDto<?>> login(@Valid @RequestBody LoginRequestDto loginRequestDto) {
+		LoginResponseDto loginResponseDto = memberService.login(loginRequestDto);
+		HttpHeaders headers = new HttpHeaders();
+		headers.add("accessToken", loginResponseDto.getAccessToken());
+		headers.add("nickname", loginResponseDto.getNickname());
+		return null;
+		// return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseDto<>(200, "이메일 인증에 성공했습니다."));
 	}
 
 }
