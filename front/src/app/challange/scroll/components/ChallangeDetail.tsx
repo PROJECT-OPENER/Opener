@@ -4,7 +4,7 @@ type Props = {
   title: string;
 };
 
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 
 const ChallangeDetail = ({ title }: Props) => {
   const options = {
@@ -12,24 +12,27 @@ const ChallangeDetail = ({ title }: Props) => {
     threshold: 1,
   };
 
-  const Detailobserver = useRef<IntersectionObserver>(
-    new IntersectionObserver((entries, observer) => {
-      entries.forEach((entry) => {
-        if (
-          entry.intersectionRatio > 0.05 &&
-          entry.isIntersecting &&
-          colorRef.current
-        ) {
-          colorRef.current.className = 'w-52 h-52 bg-yellow-300';
-          observer.unobserve(entry.target);
-        }
-      });
-    }, options),
-  );
+  const [detailobserver, setDetailobserver] =
+    useState<IntersectionObserver | null>(null);
 
   useEffect(() => {
-    if (videoRef.current) {
-      Detailobserver.current.observe(videoRef.current);
+    if (!detailobserver) {
+      const newObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach((entry) => {
+          if (
+            entry.intersectionRatio > 0.05 &&
+            entry.isIntersecting &&
+            colorRef.current
+          ) {
+            colorRef.current.className = 'w-52 h-52 bg-yellow-300';
+            observer.unobserve(entry.target);
+          }
+        });
+      }, options);
+      if (videoRef.current && newObserver) {
+        newObserver.observe(videoRef.current);
+      }
+      setDetailobserver(newObserver);
     }
   }, []);
 
