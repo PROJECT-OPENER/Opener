@@ -25,25 +25,22 @@ public class CorsFilter implements Filter {
 	}
 
 	@Override
-	public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws
-		IOException,
-		ServletException {
-		HttpServletRequest request = (HttpServletRequest)servletRequest;
-		HttpServletResponse response = (HttpServletResponse)servletResponse;
+	public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws
+		IOException, ServletException {
+		HttpServletRequest request = (HttpServletRequest)req;
+		HttpServletResponse response = (HttpServletResponse)res;
 
-		response.setHeader("Access-Control-Allow-Origin", "http://localhost:3000, http://k8c104.p.ssafy.io:8000"); //dev
+		response.setHeader("Access-Control-Allow-Origin", "http://localhost:3000, http://k8c104.p.ssafy.io"); //dev
 		response.setHeader("Access-Control-Allow-Credentials", "true");
-		response.setHeader("Access-Control-Allow-Methods", "GET, POST, DELETE, PATCH, PUT, OPTIONS");
+		response.setHeader("Access-Control-Allow-Methods", "GET, POST, PATCH, DELETE, PUT, OPTIONS");
 		response.setHeader("Access-Control-Max-Age", "3600");
-		// response.setHeader("Access-Control-Allow-Headers",
-		// 	"Origin, X-Requested-With, Content-Type, Accept, Authorization");
 		response.setHeader("Access-Control-Allow-Headers",
-			"*");
+			"Origin, X-Requested-With, Content-Type, Accept, Authorization");
 
 		if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
 			response.setStatus(HttpServletResponse.SC_OK);
 		} else {
-			filterChain.doFilter(servletRequest, servletResponse);
+			chain.doFilter(req, res);
 		}
 	}
 
