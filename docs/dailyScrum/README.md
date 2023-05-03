@@ -278,3 +278,28 @@
 - 백엔드
     - Spring Security 끝내기
     - QueryDsl 학습 및 쿼리 작성
+
+## 2023-05-03
+
+### 1. Yesterday
+
+- 프론트
+    - 무한스크롤 시 지연 로딩 intersection observer로 구현하기
+    - 회원가입 API 연결 및 테스트
+    - 쉐도잉 목록 페이지 무한스크롤 구현하기 << API 연결 후로 미룸
+- 백엔드
+    - Spring Security 끝내기
+    - QueryDsl 학습 및 쿼리 작성
+    - CI / CD 구축 완료
+
+### 2. Today Todo
+
+- 프론트
+    - 메인페이지 레이아웃 완성
+    - 데스크탑 네브바 제작
+    - 로그인 api
+    - 무한스크롤 페이지 CSS
+    - 마이페이지
+- 백엔드
+    - 챌린지 서비스 원본 영상 API 개발
+    - 쉐도잉 영상 조회  api 개발
