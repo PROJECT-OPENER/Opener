@@ -2,6 +2,8 @@
 import { useState } from 'react';
 import ShowList from './ShowList';
 import styles from './categories.module.css';
+import 'react-perfect-scrollbar/dist/css/styles.css';
+import PerfectScrollbar from 'react-perfect-scrollbar';
 
 type listType = {
   video_id: string;
@@ -10,10 +12,10 @@ type listType = {
   kor_sentence: string;
   is_marked: string;
 };
-type contentType = {
-  length: number;
-  list: listType[];
-};
+// type contentType = {
+//   length: number;
+//   list: listType[];
+// };
 // const content: contentType[] = [
 //   {
 //     sentence: 'How are you?',
@@ -31,27 +33,14 @@ type contentType = {
 //     img: '#',
 //   },
 // ];
-const content: contentType = {
-  length: 2,
-  list: [
-    {
-      video_id: '1',
-      thumbnail_url: '/',
-      eng_sentence: 'How are you?',
-      kor_sentence: '어떻게 지내?',
-      is_marked: 'false',
-    },
-    {
-      video_id: '2',
-      thumbnail_url: '/',
-      eng_sentence: 'How are you?',
-      kor_sentence: '어떻게 지내?',
-      is_marked: 'false',
-    },
-  ],
-};
 
 const Categories = () => {
+  const option = {
+    wheelSpeed: 2,
+    handlers: ['touch', 'click-rail', 'drag-thumb', 'keyboard', 'wheel'],
+    wheelPropagation: true,
+    minScrollbarLength: 2,
+  };
   const [selected, setSelected] = useState<string>('전체');
   const categories = [
     '전체',
@@ -70,25 +59,27 @@ const Categories = () => {
   };
   return (
     <div>
-      <ul className={styles.categories}>
-        {categories.map((category: string, index: number) => {
-          return (
-            <li
-              style={{ cursor: 'pointer' }}
-              key={index}
-              className={
-                category === selected
-                  ? `${styles.catItem} ${styles.catItemActive}`
-                  : `${styles.catItem}`
-              }
-              onClick={() => clickCat(category)}
-            >
-              {category}
-            </li>
-          );
-        })}
-      </ul>
-      <ShowList category={selected} content={content} />
+      <PerfectScrollbar option={option} className="w-full h-full py-4 my-2">
+        <ul className={styles.categories}>
+          {categories.map((category: string, index: number) => {
+            return (
+              <li
+                style={{ cursor: 'pointer' }}
+                key={index}
+                className={
+                  category === selected
+                    ? `${styles.catItem} ${styles.catItemActive}`
+                    : `${styles.catItem}`
+                }
+                onClick={() => clickCat(category)}
+              >
+                {category}
+              </li>
+            );
+          })}
+        </ul>
+      </PerfectScrollbar>
+      <ShowList category={selected} />
     </div>
   );
 };

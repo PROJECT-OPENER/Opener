@@ -31,6 +31,7 @@
     "react-hook-form": "^7.43.9",
     "react-icons": "^4.8.0",
     "react-loader-spinner": "^5.3.4",
+    "react-perfect-scrollbar": "^1.5.8",
     "react-slick": "^0.29.0",
     "react-speech-recognition": "^3.10.0",
     "react-toastify": "^9.1.2",
