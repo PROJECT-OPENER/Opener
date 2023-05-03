@@ -4,7 +4,7 @@ type Props = {
   };
 };
 
-import ChallangeCard from './components/ChallangeCard';
+import ChallengeCard from './components/ChallengeCard';
 import VoiceInfo from './components/VoiceInfo';
 
 const page = ({ params }: Props) => {
@@ -12,7 +12,7 @@ const page = ({ params }: Props) => {
     <>
       <div>
         <VoiceInfo voiceId={params.slug}></VoiceInfo>
-        <ChallangeCard></ChallangeCard>
+        <ChallengeCard></ChallengeCard>
       </div>
     </>
   );

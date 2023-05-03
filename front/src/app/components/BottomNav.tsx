@@ -59,7 +59,7 @@ const BottomNav = () => {
           />
           쉐도잉
         </Link>
-        <Link href="/challange" className="tabmenu-items">
+        <Link href="/challenge" className="tabmenu-items">
           <FiGrid
             className="tabmenu-items-ico"
             size={'1.3rem'}

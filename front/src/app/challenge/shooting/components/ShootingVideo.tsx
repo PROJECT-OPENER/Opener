@@ -107,7 +107,7 @@ const ShootingVideo = () => {
       })
       .then((stream: MediaStream) => {
         if (previewPlayer.current) {
-          console.log('videoStart-previewPlayer');
+          // console.log('videoStart-previewPlayer');
           previewPlayer.current.srcObject = stream;
         }
       });
@@ -133,7 +133,7 @@ const ShootingVideo = () => {
         srcObj
           .getTracks()
           .forEach((track: { stop: () => any }) => track.stop());
-        console.log(srcObj.getTracks());
+        // console.log(srcObj.getTracks());
       }
     }
     recorderRef.current?.stop();
@@ -184,7 +184,7 @@ const ShootingVideo = () => {
   }, [recordedChunks]);
 
   return (
-    <div className="h-full">
+    <div className="w-full h-full">
       <div className="flex justify-center relative">
         {!isPreview && (
           <>

@@ -18,7 +18,7 @@ const VoiceCard = ({ voiceList }: Props) => {
       {voiceList.map((voice) => (
         <div key={voice.id} className="my-3">
           <Link
-            href={`challange/${voice.id}`}
+            href={`challenge/${voice.id}`}
             className="block p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700"
           >
             <div className="grid grid-cols-3">
