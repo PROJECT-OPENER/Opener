@@ -10,6 +10,9 @@ import 'regenerator-runtime';
 import SpeechRecognition, {
   useSpeechRecognition,
 } from 'react-speech-recognition';
+import axios from 'axios';
+import { openAiChatApi } from '@/app/api/openAi';
+import { handleChatLog, pushChatLog } from '@/app/util/AiChat';
 
 type SendMessageFunction = (message: string) => void;
 type onReceiveMessage = (message: string) => void;
@@ -17,29 +20,14 @@ type onReceiveMessage = (message: string) => void;
 interface AiChatSendProps {
   onSendMessage: SendMessageFunction;
   onReceiveMessage: onReceiveMessage;
+  promptData: string;
 }
 
-class ChatGPT {
-  getRandomAnswer() {
-    const answers = [
-      "I'm sorry, but I don't think I can make it to the meeting tomorrow.",
-      "Could you please repeat that? I didn't quite catch what you said.",
-      "That's a great idea! Let's definitely look into it further.",
-      "I'm really looking forward to the concert this weekend.",
-      "I'm afraid I won't be able to make it to your party next week.",
-      "It's been a pleasure working with you on this project.",
-      'Do you mind if we reschedule our call for later this week?',
-      "I completely understand where you're coming from on this issue.",
-      "I'm excited to see what new opportunities this job will bring.",
-      'Can you give me a few more details about the proposal before I make a decision?',
-    ];
-    const randomIndex = Math.floor(Math.random() * answers.length);
-    return answers[randomIndex];
-  }
-}
-
-const AiChatSend = ({ onSendMessage, onReceiveMessage }: AiChatSendProps) => {
-  const chatGPT = new ChatGPT();
+const AiChatSend = ({
+  onSendMessage,
+  onReceiveMessage,
+  promptData,
+}: AiChatSendProps) => {
   const [message, setMessage] = useState('');
   const [isChat, setisChat] = useState(true);
   const [isMic, setisMic] = useState(false); // 마이크 기본값 : 꺼짐
@@ -47,7 +35,6 @@ const AiChatSend = ({ onSendMessage, onReceiveMessage }: AiChatSendProps) => {
   const [transcript, setTranscript] = useState('');
 
   // const { transcript, listening, resetTranscript } = useSpeechRecognition();
-
   const SpeechRecognition =
     window.SpeechRecognition || window.webkitSpeechRecognition;
   const recognition = new SpeechRecognition();
@@ -92,7 +79,23 @@ const AiChatSend = ({ onSendMessage, onReceiveMessage }: AiChatSendProps) => {
     }
   };
 
-  const sendMessage = () => {
+  const chatAi = async (data: string) => {
+    try {
+      setMessage('');
+      stopMic();
+      console.log(promptData);
+      console.log(data);
+      const prompt = pushChatLog(promptData, data);
+      const res = await openAiChatApi(prompt);
+      const result = await res.data.choices[0].text.replace(/^\n{2}AI:\s*/, '');
+      await onReceiveMessage(result);
+    } catch (error) {
+      console.log(error);
+      // setWaitAnswer((prev) => !prev);?
+    }
+  };
+
+  const sendMessage = async () => {
     if (message.trim()) {
       console.log('send message trim');
       onSendMessage(message);
@@ -101,15 +104,10 @@ const AiChatSend = ({ onSendMessage, onReceiveMessage }: AiChatSendProps) => {
       console.log('send message');
       onSendMessage(transcript);
     }
-
-    // ChatGPT API를 호출하여 답변을 받아오는 로직 추가
-    // 우선 더미 데이터로 대체
-    const answer = chatGPT.getRandomAnswer();
-    setTimeout(() => {
-      onReceiveMessage(answer);
-    }, 1000);
-    setMessage('');
+    const question = message.trim() || transcript;
     stopMic();
+    setMessage('');
+    chatAi(question);
   };
   const stopMic = () => {
     recognition.continuous = false;

@@ -8,7 +8,7 @@ import Button from '@/app/components/Button';
 const AiChatNav = () => {
   const searchParams = useSearchParams();
   const subject = searchParams.get('sub');
-  const [isTip, setIsTip] = useState(false);
+  const [isTip, setIsTip] = useState(true);
   const handleTip = () => {
     setIsTip(!isTip);
   };
