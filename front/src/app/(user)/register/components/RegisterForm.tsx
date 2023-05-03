@@ -71,7 +71,7 @@ const RegisterForm = () => {
   const [checkEmailDuplicate, setCheckEmailDuplicate] = useState(false);
   const [isSendEmail, setIsSendEmail] = useState(false);
   const [isAuthEmail, setIsAuthEmail] = useState(false);
-  const [count, setCount] = useState(9999);
+  const [count, setCount] = useState(180);
   const [eamilAuthCode, setEmailAuthCode] = useState('');
   // 비밀번호 state
   const [isPasswordActive, setIsPasswordActive] = useState(false);
@@ -87,7 +87,7 @@ const RegisterForm = () => {
   // 이메일 인증 시간
   useEffect(() => {
     if (isSendEmail) {
-      setCount(5);
+      setCount(180);
       const id = setInterval(() => {
         setCount((count) => {
           if (count === 0) {
@@ -110,7 +110,7 @@ const RegisterForm = () => {
   } = useForm<userRegisterInterface>({
     resolver: yupResolver(schema),
   });
-  // form submit
+  // form submit : 회원가입
   const handleRegister: SubmitHandler<userRegisterInterface> = async (data) => {
     if (!isAuthEmail) return alert('이메일 인증을 해주세요.');
     if (!isNicknameDuplicate) return alert('닉네임 중복확인을 해주세요.');
@@ -126,39 +126,41 @@ const RegisterForm = () => {
         window.location.href = '/';
       }
     } catch (err) {
-      if (err instanceof AxiosError) return alert(err.message);
+      if (typeof err === 'string') return alert(err);
+      return alert('예상치 못한 오류가 발생했습니다.');
     }
   };
-  // emailDuplicateCheck
+  // 이메일 value 체크
   const watchEmail = watch('email');
   useEffect(() => {
     setCheckEmailDuplicate(false);
     setIsSendEmail(false);
     setIsAuthEmail(false);
+    setEmailAuthCode('');
   }, [watchEmail]);
+  // 이메일 중복확인
   const handleEmailDuplicateCheck = async () => {
     try {
       const email = await schema.validateAt('email', { email: watchEmail });
-      // 중복 확인
-      if (!checkEmailDuplicate) {
-        const duplicateCheck = await emailDuplicateCheckApi(email);
-        console.log(duplicateCheck);
-        if (duplicateCheck) {
-          setCheckEmailDuplicate(!checkEmailDuplicate);
-        }
-      }
-      // 이메일 인증
-      if (checkEmailDuplicate) {
-        const emailAuthCheck = await emailAuthApi(email);
-        if (emailAuthCheck) {
-          setIsSendEmail(!isSendEmail);
-        }
-      }
+      const duplicateCheck = await emailDuplicateCheckApi(email);
+      if (duplicateCheck) setCheckEmailDuplicate(!checkEmailDuplicate);
+      alert('사용 가능한 이메일입니다.');
     } catch (err) {
-      if (err instanceof AxiosError) return alert(err.message);
+      if (typeof err === 'string') return alert(err);
+      return alert('예상치 못한 오류가 발생했습니다.');
     }
   };
-  // emailAuth
+  // 이메일 인증 코드 발송
+  const handleSendEmailAuthCode = async () => {
+    try {
+      const emailAuthCheck = await emailAuthApi(watchEmail);
+      if (emailAuthCheck) setIsSendEmail(!isSendEmail);
+    } catch (err) {
+      if (typeof err === 'string') return alert(err);
+      return alert('예상치 못한 오류가 발생했습니다.');
+    }
+  };
+  // 이메일 인증 코드 확인
   const handleEmailAuth = async () => {
     if (count === 0) {
       alert('인증 시간이 초과되었습니다.');
@@ -173,15 +175,14 @@ const RegisterForm = () => {
         code: eamilAuthCode,
       };
       const res = await emailAuthCheckApi(payload);
-      if (res) {
-        setIsAuthEmail(!isAuthEmail);
-        alert('인증되었습니다.');
-      }
+      if (res) setIsAuthEmail(!isAuthEmail);
+      alert('인증되었습니다.');
     } catch (err) {
-      if (err instanceof AxiosError) return alert(err.message);
+      if (typeof err === 'string') return alert(err);
+      return alert('예상치 못한 오류가 발생했습니다.');
     }
   };
-  // nicknameDuplicateCheck
+  // 닉네임 중복확인
   const watchNickname = watch('nickname');
   useEffect(() => {
     setIsNicknameDuplicate(false);
@@ -191,16 +192,13 @@ const RegisterForm = () => {
       const nickname = await schema.validateAt('nickname', {
         nickname: watchNickname,
       });
-      console.log(nickname);
-      // 중복 확인
-      if (!isNicknameDuplicate) {
-        const res = await nicknameDuplicateCheckApi(nickname);
-        if (res) {
-          setIsNicknameDuplicate(!isNicknameDuplicate);
-        }
+      const res = await nicknameDuplicateCheckApi(nickname);
+      if (res) {
+        setIsNicknameDuplicate(!isNicknameDuplicate);
       }
     } catch (err) {
-      if (err instanceof AxiosError) return alert(err.message);
+      if (typeof err === 'string') return alert(err);
+      return alert('예상치 못한 오류가 발생했습니다.');
     }
   };
 
@@ -222,23 +220,37 @@ const RegisterForm = () => {
               isEmailActive ? 'fill-brandText' : 'fill-gray-400'
             } absolute top-[0.7rem] w-7 h-7 left-3 `}
           />
-          <button
-            type="button"
-            className={`${
-              checkEmailDuplicate ? 'bg-brandP' : 'bg-brandP'
-            } absolute top-[0.5rem] p-2 bg-brandP text-white right-1 rounded-md text-sm ${
-              isSendEmail &&
-              'min-w-[77px] bg-white text-brandP border-2 border-brandP'
-            }`}
-            onClick={handleEmailDuplicateCheck}
-            disabled={isSendEmail}
-          >
-            {isSendEmail
-              ? secToTime(count)
-              : checkEmailDuplicate
-              ? '인증 하기'
-              : '중복 확인'}
-          </button>
+          {!checkEmailDuplicate && !isSendEmail && (
+            <button
+              type="button"
+              className="absolute top-[0.5rem] p-2 bg-brandP text-white right-1 rounded-md text-sm"
+              onClick={handleEmailDuplicateCheck}
+            >
+              중복 확인
+            </button>
+          )}
+          {checkEmailDuplicate && !isSendEmail && (
+            <button
+              type="button"
+              className="absolute top-[0.5rem] p-2 bg-brandP text-white right-1 rounded-md text-sm"
+              onClick={handleSendEmailAuthCode}
+            >
+              인증 하기
+            </button>
+          )}
+          {checkEmailDuplicate && isSendEmail && (
+            <button
+              type="button"
+              className={`${
+                isAuthEmail
+                  ? 'hidden'
+                  : 'absolute top-[0.3rem] w-[77px] p-2 bg-white text-brandP border-2 border-brandP right-1 rounded-md text-sm'
+              }`}
+              disabled={true}
+            >
+              {secToTime(count)}
+            </button>
+          )}
         </div>
         <hr />
         <div className="relative" onBlur={() => setIsEmailAuthActive(false)}>
@@ -246,23 +258,27 @@ const RegisterForm = () => {
             type="text"
             className="validator-input rounded-b"
             placeholder="인증코드"
-            maxLength={6}
             onChange={(e) => setEmailAuthCode(e.target.value)}
+            value={eamilAuthCode}
             disabled={!isSendEmail}
             onFocus={() => setIsEmailAuthActive(true)}
           />
-          {isSendEmail && (
+          {isSendEmail && !isAuthEmail && (
             <button
               type="button"
-              className={`${
-                isAuthEmail
-                  ? 'border-2 border-green-300 hover:cursor-default text-green-300'
-                  : 'bg-brandP'
-              } absolute top-[0.5rem] p-2 text-white right-1 rounded-md text-sm`}
+              className="absolute top-[0.5rem] p-2 bg-brandP text-white right-1 rounded-md text-sm"
               onClick={handleEmailAuth}
-              disabled={isAuthEmail}
             >
-              {isAuthEmail ? '인증 완료' : '인증 하기'}
+              인증 하기
+            </button>
+          )}
+          {isSendEmail && isAuthEmail && (
+            <button
+              type="button"
+              className="absolute top-[0.5rem] p-2 bg-white text-brandP border-2 border-brandP right-1 rounded-md text-sm"
+              disabled
+            >
+              인증 완료
             </button>
           )}
           <MdOutlineMailLock

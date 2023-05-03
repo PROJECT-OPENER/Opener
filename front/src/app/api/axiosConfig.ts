@@ -1,5 +1,5 @@
+import { responseInterface } from './../types/share';
 import axios, { AxiosRequestConfig, AxiosResponse, AxiosError } from 'axios';
-import { responseInterface } from '../types/share';
 
 const BASE_URL = 'http://k8c104.p.ssafy.io:8000/';
 
@@ -26,6 +26,7 @@ const setAuthTokenHeader = (config: AxiosRequestConfig): AxiosRequestConfig => {
 
 // Function to handle request errors
 const handleRequestError = (error: AxiosError): Promise<AxiosError> => {
+  console.log(error);
   return Promise.reject(error);
 };
 
@@ -37,37 +38,31 @@ const handleResponseSuccess = (response: AxiosResponse): AxiosResponse => {
 
 // Function to handle response errors
 const handleResponseError = (error: AxiosError): Promise<AxiosError> => {
+  console.log(error);
+  // Handle Network Error
   if (!error.response) {
-    // Handle Network Error
-    // Show an error message to the user
-    return Promise.reject(error);
+    const errMsg = 'Network Error';
+    return Promise.reject(errMsg);
   }
 
+  // Handle Authentication Error
+  // Redirect to the login page
   if (error.response.status === 401) {
-    // Handle Authentication Error
-    // Redirect to the login page
+    console.log(error);
+    console.log('401 error');
   }
 
   const errCode = (error.response?.data as responseInterface)?.code;
-  if (errCode === undefined) {
-    // Handle Empty Response Error
-    // Show an error message to the user
-  } else if (errCode === -100) {
-    // Handle Email Already Used Error
-    // Show an error message to the user
-  } else if (errCode === -101) {
-    // Handle Invalid Email Format Error
-    // Show an error message to the user
-  } else if (errCode === -104) {
-    // Handle Email Required Error
-    // Show an error message to the user
-  }
+  const errMsg = (error.response?.data as responseInterface)?.message;
+  // custom error handling : member-service
+  if (errCode >= -121 && errCode <= -100) return Promise.reject(errMsg);
 
   return Promise.reject(error);
 };
 
 // Add the request interceptor with a type assertion to bypass the type error
 memberApi.interceptors.request.use(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   (config) => setAuthTokenHeader(config as AxiosRequestConfig) as any,
   handleRequestError,
 );
