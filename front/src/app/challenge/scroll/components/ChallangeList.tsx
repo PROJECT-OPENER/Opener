@@ -27,7 +27,6 @@ const ChallangeList: React.FC = () => {
       }`,
     fetcher,
   ); // API 나오기 전 임시로 데이터 불러온 거
-
   const issues = data ? ([] as Issue[]).concat(...data) : []; // 가져온 데이터 배열
 
   const isLoadingMore =
@@ -51,7 +50,7 @@ const ChallangeList: React.FC = () => {
       const newObserver = new IntersectionObserver((entries, observer) => {
         entries.forEach((entry) => {
           if (entry.intersectionRatio > 0.2 && !isReachingEnd) {
-            setSize((prev) => prev + 1);
+            setSize((prev) => prev + 1); // 받아오는 사이즈 증가
           }
           if (isReachingEnd) {
             observer.unobserve;
@@ -68,9 +67,10 @@ const ChallangeList: React.FC = () => {
   return (
     <>
       <div>
-        <p className="bg-yellow-50 text-2xl">
-          전체: {isLoadingMore ? '...' : issues.length} 페이지 호출됨
-        </p>
+        {/* <p className="bg-yellow-50 text-2xl">
+          전체: {isLoadingMore ? '...' : issues.length} 페이지 호출됨 무한
+          스크롤 확인용
+        </p> */}
         {isEmpty ? <p>조회된 챌린지가 없습니다.</p> : null}
         {issues.map((issue) => (
           <ChallangeDetail title={issue.title} key={issue.id}></ChallangeDetail>

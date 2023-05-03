@@ -30,7 +30,7 @@ const TopNav = () => {
             className={
               'hover:text-brandP active:text-black hover:underline underline-offset-4'
             }
-            href={'/challange'}
+            href={'/challenge'}
           >
             챌린지
           </Link>

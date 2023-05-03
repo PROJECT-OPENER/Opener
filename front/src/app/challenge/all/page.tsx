@@ -1,5 +1,5 @@
 import React from 'react';
-import ChallangeCard from './components/ChallageCard';
+import ChallengeCard from './components/ChallengeCard';
 import Button from '@/app/components/Button';
 const page = () => {
   return (
@@ -17,7 +17,7 @@ const page = () => {
             className="ml-4 bg-white w-32 text-black rounded-xl shadow-xl py-3"
           />
         </div>
-        <ChallangeCard />
+        <ChallengeCard />
       </div>
     </>
   );
