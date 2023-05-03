@@ -36,7 +36,7 @@ const BottomNav = () => {
             />
           </button>
         </div>
-        <div className="blankbox" />
+        <div className="blankbox lg:hidden" />
       </>
     );
   }
@@ -84,7 +84,7 @@ const BottomNav = () => {
           로드맵
         </Link>
       </div>
-      <div className="blankbox" />
+      <div className="blankbox lg:hidden" />
     </>
   );
 };
