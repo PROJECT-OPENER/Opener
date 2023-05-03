@@ -25,13 +25,15 @@ body {
 }
 .topnav {
   width: 100%;
+  max-width: 1200px;
   height: 60px;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  padding: 0 10px;
+  padding: 0 1rem;
 }
+
 #logo {
   width: 120px;
   height: auto;
@@ -86,6 +88,10 @@ body {
 }
 
 @media screen and (min-width: 1024px) {
+  .topnav {
+    padding: 0 50px;
+    height: 100px;
+  }
   .content {
     width: 100%;
     max-width: 1024px;
