@@ -67,11 +67,9 @@ public class MemberController {
 	@PostMapping("/login")
 	public ResponseEntity<BaseResponseDto> login(@Valid @RequestBody LoginRequestDto loginRequestDto) {
 		LoginResponseDto loginResponseDto = memberService.login(loginRequestDto);
-		HttpHeaders headers = new HttpHeaders();
-		headers.add("accessToken", loginResponseDto.getAccessToken());
-		headers.add("nickname", loginResponseDto.getNickname());
-		return null;
-		// return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseDto<>(200, "이메일 인증에 성공했습니다."));
+		return ResponseEntity.status(HttpStatus.OK)
+			.headers(loginResponseDto.toHeaders())
+			.body(new BaseResponseDto<>(200, "로그인에 성공했습니다."));
 	}
 
 }

@@ -133,10 +133,7 @@ public class MemberServiceImpl implements MemberService {
 		}
 
 		String accessToken = jwtTokenProvider.createToken(email);
-		return LoginResponseDto.builder()
-			.accessToken(accessToken)
-			.nickname(member.getNickname())
-			.build();
-
+		redisService.setMemberWithDuration(accessToken, member, JwtTokenProvider.ACCESS_TOKEN_VALID_TIME);
+		return LoginResponseDto.builder().accessToken(accessToken).nickname(member.getNickname()).build();
 	}
 }
