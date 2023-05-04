@@ -39,7 +39,7 @@ public class ShadowingStatus implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long statusId;
-	@Column(nullable = false, unique = true)
+	@Column(nullable = false)
 	private Long memberId;
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "video_id", nullable = false)

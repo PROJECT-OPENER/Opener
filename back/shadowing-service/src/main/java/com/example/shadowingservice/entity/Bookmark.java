@@ -29,7 +29,7 @@ public class Bookmark implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long bookmarkId;
-	@Column(nullable = false, unique = true)
+	@Column(nullable = false)
 	private Long memberId;
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "video_id", nullable = false)
