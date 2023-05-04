@@ -1,20 +1,15 @@
 type Props = {
   params: {
-    slug: string;
+    slug: number;
   };
 };
-
-import ChallengeCard from './components/ChallengeCard';
-import VoiceInfo from './components/VoiceInfo';
+import ChallengeInfo from './components/ChallengeInfo';
 
 const page = ({ params }: Props) => {
   return (
-    <>
-      <div>
-        <VoiceInfo voiceId={params.slug}></VoiceInfo>
-        <ChallengeCard></ChallengeCard>
-      </div>
-    </>
+    <div className="flex justify-center">
+      <ChallengeInfo voiceId={params.slug}></ChallengeInfo>
+    </div>
   );
 };
 

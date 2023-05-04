@@ -12,6 +12,10 @@ export const memberApi = axios.create({
   },
 });
 
+export const challengeApi = axios.create({
+  baseURL: BASE_URL + 'challenge-service',
+});
+
 // Function to set the Authorization header if a token is available in localStorage
 const setAuthTokenHeader = (config: AxiosRequestConfig): AxiosRequestConfig => {
   const accessToken = localStorage.getItem('accessToken');
@@ -69,3 +73,7 @@ memberApi.interceptors.request.use(
 
 // Add the response interceptor for handling successful responses and errors
 memberApi.interceptors.response.use(handleResponseSuccess, handleResponseError);
+challengeApi.interceptors.response.use(
+  handleResponseSuccess,
+  handleResponseError,
+);

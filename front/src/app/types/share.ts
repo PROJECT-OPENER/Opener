@@ -1,3 +1,5 @@
+import { LargeNumberLike } from 'crypto';
+
 // 유저 관련 타입
 export interface userInterface {
   name: string;
@@ -39,3 +41,38 @@ export interface scriptType {
   text: string;
 }
 // end of 쉐도잉 관련 타입
+
+// 챌린지 원본 타입
+export interface originalChallenge {
+  challengeId: number;
+  title: string;
+  challengeImg: string;
+  joinCount: number;
+}
+
+// 챌린지 인덱스 설정
+export interface ChallengeIndex {
+  startIndex: number;
+  endIndex: number;
+}
+
+// index별로 가져오는 멤버 챌린지 리스트
+export interface indexMemberChallengeList {
+  originalChallengeResponseDto: originalChallenge;
+  totalLength: number;
+  memberChallengeResponseDtoList: memberChallenge[];
+}
+
+// 불러오는 멤버 챌린지
+export interface memberChallenge {
+  memberChallengeId: number;
+  memberChallengeImg: string;
+  likeCount: number;
+}
+
+export interface originalChallenge {
+  challengeId: number;
+  title: string;
+  challengeImg: string;
+  joinCount: number;
+}
