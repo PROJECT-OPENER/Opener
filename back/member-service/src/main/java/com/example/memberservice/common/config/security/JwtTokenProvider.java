@@ -29,6 +29,12 @@ public class JwtTokenProvider {
 		secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
 	}
 
+	/**
+	 * 김윤미
+	 * explain : Jwt Token 생성
+	 * @param email : 이메일(subject)
+	 * @return : Token
+	 */
 	public String createToken(String email) {
 		Date now = new Date();
 
@@ -37,16 +43,6 @@ public class JwtTokenProvider {
 			.setExpiration(new Date(now.getTime() + ACCESS_TOKEN_VALID_TIME))
 			.signWith(SignatureAlgorithm.HS256, secretKey)
 			.compact();
-	}
-
-	public boolean validateToken(String jwtToken) {
-		try {
-			Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(jwtToken);
-			return !claims.getBody().getExpiration().before(new Date());
-		} catch (Exception e) {
-			log.info("유효하지 않은 토큰");
-			return false;
-		}
 	}
 }
 
