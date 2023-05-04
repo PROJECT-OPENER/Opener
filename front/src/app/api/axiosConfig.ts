@@ -33,6 +33,7 @@ const handleRequestError = (error: AxiosError): Promise<AxiosError> => {
 // Function to handle successful responses
 const handleResponseSuccess = (response: AxiosResponse): AxiosResponse => {
   // You can also handle common successful response scenarios here
+  console.log(response);
   return response;
 };
 

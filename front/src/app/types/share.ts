@@ -1,4 +1,9 @@
 // 유저 관련 타입
+export interface User {
+  nickname?: string;
+  email?: string;
+  accessToken?: string;
+}
 export interface userInterface {
   name: string;
   nickname: string;
