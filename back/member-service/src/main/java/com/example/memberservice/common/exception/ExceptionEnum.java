@@ -25,7 +25,7 @@ public enum ExceptionEnum {
 	WRONG_EMAIL_CODE_EXCEPTION(HttpStatus.BAD_REQUEST, -114, "인증 코드가 틀렸습니다."),
 	SEND_EMAIL_FAIL_EXCEPTION(HttpStatus.BAD_REQUEST, -115, "이메일 발송에 실패했습니다."),
 	MEMBER_NOT_FOUND_EXCEPTION(HttpStatus.NOT_FOUND, -116, "가입된 이메일이 아닙니다."),
-	WRONG_PASSWORD_EXCEPTION(HttpStatus.NOT_FOUND, -117, "비밀번호가 틀렸습니다."),
+	WRONG_PASSWORD_EXCEPTION(HttpStatus.BAD_REQUEST, -117, "비밀번호가 틀렸습니다."),
 	;
 	private final HttpStatus status;
 	private final int code;
