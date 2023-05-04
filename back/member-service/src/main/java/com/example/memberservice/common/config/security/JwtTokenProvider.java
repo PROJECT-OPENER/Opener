@@ -22,7 +22,7 @@ public class JwtTokenProvider {
 	@Value("${spring.jwt.secretKey}")
 	private String secretKey;
 
-	private static Long ACCESS_TOKEN_VALID_TIME = 60 * 60 * 1000L;
+	public static Long ACCESS_TOKEN_VALID_TIME = 60 * 60 * 1000L;
 
 	@PostConstruct
 	protected void init() {

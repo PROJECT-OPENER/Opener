@@ -8,6 +8,9 @@ import org.springframework.data.redis.core.RedisTemplate;
 
 import java.time.Duration;
 
+import com.example.memberservice.dto.response.member.MemberResponseDto;
+import com.example.memberservice.entity.member.Member;
+
 @Service
 @RequiredArgsConstructor
 public class RedisService {
@@ -41,6 +44,12 @@ public class RedisService {
 
 	public boolean existsByKey(String key) {
 		return redisTemplate.hasKey(key);
+	}
+
+	public void setMemberWithDuration(String key, Member member, Long time) {
+		MemberResponseDto setMemberDto = new MemberResponseDto(member);
+		Duration expireDuration = Duration.ofSeconds(time);
+		redisTemplate.opsForValue().set(key, setMemberDto, expireDuration);
 	}
 }
 
