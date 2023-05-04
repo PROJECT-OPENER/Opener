@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -24,15 +25,15 @@ import lombok.Setter;
 @Builder
 @Entity
 @Table(name = "bookmark")
-public class BookmarkEntity implements Serializable {
+public class Bookmark implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long bookmarkId;
 	@Column(nullable = false, unique = true)
 	private Long memberId;
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "video_id", nullable = false)
-	private ShadowingVideoEntity shadowingVideoEntity;
-	private boolean isMarked;
+	private ShadowingVideo shadowingVideo;
+	private Boolean isMarked;
 
 }
