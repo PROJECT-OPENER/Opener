@@ -67,9 +67,14 @@ public class MemberController {
 	@PostMapping("/login")
 	public ResponseEntity<BaseResponseDto> login(@Valid @RequestBody LoginRequestDto loginRequestDto) {
 		LoginResponseDto loginResponseDto = memberService.login(loginRequestDto);
+		if (loginResponseDto.isHasInterest()) {
+			return ResponseEntity.status(HttpStatus.OK)
+				.headers(loginResponseDto.toHeaders())
+				.body(new BaseResponseDto<>(200, "로그인에 성공했습니다."));
+		}
 		return ResponseEntity.status(HttpStatus.OK)
 			.headers(loginResponseDto.toHeaders())
-			.body(new BaseResponseDto<>(200, "로그인에 성공했습니다."));
+			.body(new BaseResponseDto<>(204, "선택된 관심사가 없습니다."));
 	}
 
 }
