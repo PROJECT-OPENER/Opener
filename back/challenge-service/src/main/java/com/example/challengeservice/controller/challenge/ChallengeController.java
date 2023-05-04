@@ -6,10 +6,7 @@ import com.example.challengeservice.dto.BaseResponseDto;
 import com.example.challengeservice.dto.response.SelectOriginalResponseDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.example.challengeservice.dto.BaseListResponseDto;
 import com.example.challengeservice.dto.response.OriginalChallengeResponseDto;
@@ -43,8 +40,9 @@ public class ChallengeController {
      * @return
      */
     @GetMapping("/challenges/{challengeId}")
-    public ResponseEntity<BaseResponseDto<SelectOriginalResponseDto>> selectOriginalChallenge(@PathVariable Long challengeId) {
-        SelectOriginalResponseDto selectOriginalResponseDto = challengeService.selectOriginalChallenge(challengeId);
+    public ResponseEntity<BaseResponseDto<SelectOriginalResponseDto>> selectOriginalChallenge(@PathVariable Long challengeId,
+                                                                                              @RequestParam("startIndex") Integer startIndex, @RequestParam("endIndex") Integer endIndex) {
+        SelectOriginalResponseDto selectOriginalResponseDto = challengeService.selectOriginalChallenge(challengeId, startIndex, endIndex);
         return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseDto<SelectOriginalResponseDto>(200, "챌린지 선택 조회 성공", selectOriginalResponseDto));
     }
 }

@@ -23,6 +23,8 @@ ext {
 }
 
 dependencies {
+    implementation 'commons-io:commons-io:2.11.0' // io 사용
+    implementation group: 'com.google.firebase', name: 'firebase-admin', version: '8.1.0' // firebase 사용
     implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap' // bootstrap 사용 (application.yml 실행 전 설정파일)
     implementation 'org.springframework.cloud:spring-cloud-starter-config' // config 사용
     implementation 'org.springframework.cloud:spring-cloud-starter-openfeign' // feignclient 추가
