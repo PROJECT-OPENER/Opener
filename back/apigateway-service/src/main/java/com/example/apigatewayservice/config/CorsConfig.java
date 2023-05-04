@@ -1,4 +1,4 @@
-package com.example.apigatewayservice.filter;
+package com.example.apigatewayservice.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
