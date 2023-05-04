@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.shadowingservice.dto.response.LoginShadowingDetailDto;
 import com.example.shadowingservice.dto.response.RecommendationDto;
+import com.example.shadowingservice.dto.response.RoadMapResponseDto;
 import com.example.shadowingservice.dto.response.ShadowingCategoryDto;
 import com.example.shadowingservice.dto.response.ShadowingDetailDto;
 import com.example.shadowingservice.entity.Interest;
@@ -32,9 +33,10 @@ public class ShadowingServiceImpl implements ShadowingService {
 	@Override
 	public List<ShadowingCategoryDto> getShadowingCategoryList(String category, Pageable pageable) {
 		Interest interest = interestRepository.getByInterest(category);
-		Page<ShadowingCategoryDto> shadowingCategoryDtoPage = shadowingVideoRepository
-			.findAllByInterest_InterestId(interest.getInterestId(), pageable);
-		return (List<ShadowingCategoryDto>)shadowingCategoryDtoPage;
+		// Page<ShadowingCategoryDto> shadowingCategoryDtoPage = shadowingVideoRepository
+
+		// return (List<ShadowingCategoryDto>)shadowingCategoryDtoPage;
+		return null;
 	}
 
 	// ======================== 쉐도잉 영상 조회 ====================================
@@ -51,17 +53,24 @@ public class ShadowingServiceImpl implements ShadowingService {
 	}
 
 	@Override
-	public LoginShadowingDetailDto getLoginShadowingDetailDto(Long videoId) {
-		Long memberId = 2L;
+	public LoginShadowingDetailDto getLoginShadowingDetailDto(Long videoId,Long memberId) {
 		LoginShadowingDetailDto loginShadowingDetailDto = shadowingVideoRepository
 			.getLoginShadowingDetailDto(videoId, memberId);
 		return loginShadowingDetailDto;
 	}
 
-	// =========================== 메인페이지 추천 문장 ===========================
+	// ======================== 메인 페이지 추천 로드맵 ===========================
 
 	@Override
-	public List<RecommendationDto> getRecommendationDtos(Pageable pageable) {
+	public List<RoadMapResponseDto> getRoadMapList() {
+		List<RoadMapResponseDto> roadMapResponseDtoList = shadowingVideoRepository.getRoadMapResponseDtoList();
+		return roadMapResponseDtoList;
+	}
+
+	// =========================== 메인 페이지 추천 문장 ===========================
+
+	@Override
+	public List<RecommendationDto> getRecommendationList(Pageable pageable) {
 		List<ShadowingVideo> recommendationList = shadowingVideoRepository
 			.findRecommendation(
 				pageable);

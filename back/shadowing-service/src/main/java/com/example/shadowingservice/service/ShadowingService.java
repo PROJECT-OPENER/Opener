@@ -19,7 +19,7 @@ public interface ShadowingService {
 	ShadowingDetailDto getShadowingDetailDto(Long videoId);
 
 	/** 로그인 쉐도잉 영상 조회 **/
-	LoginShadowingDetailDto getLoginShadowingDetailDto(Long videoId);
+	LoginShadowingDetailDto getLoginShadowingDetailDto(Long videoId, Long memberId);
 
 	/** 비로그인 메인 페이지 로드맵 **/
 	List<RoadMapResponseDto> getRoadMapList();
