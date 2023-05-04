@@ -3,17 +3,23 @@ package com.example.shadowingservice.repository;
 import static com.example.shadowingservice.entity.QBookmark.*;
 import static com.example.shadowingservice.entity.QShadowingStatus.*;
 import static com.example.shadowingservice.entity.QShadowingVideo.*;
+import static com.example.shadowingservice.entity.QStep.*;
 
 import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 
 import com.example.shadowingservice.dto.response.LoginShadowingDetailDto;
 
+import com.example.shadowingservice.dto.response.RoadMapResponseDto;
 import com.example.shadowingservice.entity.ShadowingStatus;
 import com.example.shadowingservice.entity.ShadowingVideo;
 import com.querydsl.core.Tuple;
+import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import lombok.RequiredArgsConstructor;
@@ -84,4 +90,27 @@ public class ShadowingVideoRepositoryCustomImpl implements ShadowingVideoReposit
 			isMarked
 		);
 	}
+
+	@Override
+	public List<RoadMapResponseDto> getRoadMapResponseDtoList() {
+
+		return queryFactory
+			.select(Projections.constructor(RoadMapResponseDto.class,
+					shadowingVideo.videoId,
+					shadowingVideo.engSentence,
+					shadowingVideo.korSentence,
+					Expressions.cases()
+						.when(step.stepTheme.eq(1)).then("아이브")
+						.when(step.stepTheme.eq(2)).then("뉴진스")
+						.otherwise("Unknown"),
+					step.sentenceNo
+				)
+			)
+			.from(shadowingVideo)
+			.leftJoin(step)
+			.on(shadowingVideo.Step.stepId.eq(step.stepId))
+			.where(step.stepNo.eq(1).and(step.stepTheme.eq(1)))
+			.fetch();
+	}
+
 }

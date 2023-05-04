@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import com.example.shadowingservice.dto.request.IndexDto;
 import com.example.shadowingservice.dto.response.LoginShadowingDetailDto;
 import com.example.shadowingservice.dto.response.RecommendationDto;
+import com.example.shadowingservice.dto.response.RoadMapResponseDto;
 import com.example.shadowingservice.dto.response.ShadowingCategoryDto;
 import com.example.shadowingservice.dto.response.ShadowingDetailDto;
 
@@ -20,7 +21,10 @@ public interface ShadowingService {
 	/** 로그인 쉐도잉 영상 조회 **/
 	LoginShadowingDetailDto getLoginShadowingDetailDto(Long videoId);
 
+	/** 비로그인 메인 페이지 로드맵 **/
+	List<RoadMapResponseDto> getRoadMapList();
+
 	/** 비로그인 메인 페이지 추천 문장 **/
-	List<RecommendationDto> getRecommendationDtos(Pageable pageable);
+	List<RecommendationDto> getRecommendationList(Pageable pageable);
 
 }

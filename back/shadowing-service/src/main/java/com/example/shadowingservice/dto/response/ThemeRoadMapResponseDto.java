@@ -1,5 +1,9 @@
 package com.example.shadowingservice.dto.response;
 
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -9,12 +13,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class RoadMapResponseDto {
-
-	private Long videoId;
-	private String engSentence;
-	private String korSentence;
+public class ThemeRoadMapResponseDto {
 	private String stepTheme;
-	private int sentenceNo;
+	private List<RoadMapResponseDto> roadMapResponseDtoList;
 
 }
