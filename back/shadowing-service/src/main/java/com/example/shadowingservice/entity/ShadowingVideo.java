@@ -1,11 +1,10 @@
 package com.example.shadowingservice.entity;
 
 import java.io.Serializable;
-import java.sql.Time;
 import java.time.LocalTime;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -26,7 +25,7 @@ import lombok.Setter;
 @Builder
 @Entity
 @Table(name = "shadowingvideo")
-public class ShadowingVideoEntity implements Serializable {
+public class ShadowingVideo implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,12 +34,12 @@ public class ShadowingVideoEntity implements Serializable {
 	private String videoUrl;
 	private LocalTime startTime;
 	private LocalTime endTime;
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "step_id", nullable = false)
-	private StepEntity StepEntity;
-	@ManyToOne
+	private Step Step;
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "interest_id", nullable = false)
-	private InterestEntity interestEntity;
+	private Interest interest;
 	private String engSentence;
 	private String korSentence;
 	private String engCaption;

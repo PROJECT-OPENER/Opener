@@ -5,6 +5,7 @@ import java.time.LocalDate;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -25,15 +26,24 @@ import lombok.Setter;
 @Builder
 @Entity
 @Table(name = "shadowingstatus")
-public class ShadowingStatusEntity implements Serializable {
+public class ShadowingStatus implements Serializable {
+
+	public ShadowingStatus(Long memberId, ShadowingVideo shadowingVideo, int repeatCount,
+		LocalDate statusDate) {
+		this.memberId = memberId;
+		this.shadowingVideo = shadowingVideo;
+		this.repeatCount = repeatCount;
+		this.statusDate = statusDate;
+	}
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long statusId;
 	@Column(nullable = false, unique = true)
 	private Long memberId;
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "video_id", nullable = false)
-	private ShadowingVideoEntity shadowingVideoEntity;
-	private int repeat_count;
+	private ShadowingVideo shadowingVideo;
+	private int repeatCount;
 	private LocalDate statusDate;
 }

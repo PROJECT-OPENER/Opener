@@ -21,7 +21,7 @@ import lombok.Setter;
 @Builder
 @Entity
 @Table(name = "step")
-public class StepEntity implements Serializable {
+public class Step implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long stepId;
