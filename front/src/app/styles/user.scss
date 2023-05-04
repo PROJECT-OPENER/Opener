@@ -13,3 +13,7 @@
 .my-chat {
   @apply bg-brandY rounded-br-none rounded-2xl p-5 ml-24 mb-1 w-fit mr-3 break-words mt-3
 }
+
+.modification-submit {
+  @apply absolute right-5 w-24 bg-brandP text-white font-bold py-1 rounded-md text-xl
+}

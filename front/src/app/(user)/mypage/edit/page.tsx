@@ -1,8 +1,12 @@
 import React from 'react';
-
+import MypageEditTopSection from './components/MypageEditTopSection';
+import MypageEditBotSection from './components/MypageEditBotSection';
 const page = () => {
   return (
-    <div className="text-xl text-center font-bold text-cyan-400">edit page</div>
+    <>
+      <MypageEditTopSection></MypageEditTopSection>
+      <MypageEditBotSection></MypageEditBotSection>
+    </>
   );
 };
 
