@@ -17,6 +17,7 @@ import com.example.memberservice.dto.request.member.SignUpMemberRequestDto;
 import com.example.memberservice.dto.request.member.CheckEmailCodeRequestDto;
 import com.example.memberservice.dto.response.member.LoginResponseDto;
 import com.example.memberservice.entity.member.Member;
+import com.example.memberservice.repository.MemberInterestRepository;
 import com.example.memberservice.repository.MemberRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -26,6 +27,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {
+	private final MemberInterestRepository memberInterestRepository;
 	private final MemberRepository memberRepository;
 	private final RedisService redisService;
 	private final JavaMailSender javaMailSender;
@@ -132,8 +134,15 @@ public class MemberServiceImpl implements MemberService {
 			throw new ApiException(ExceptionEnum.WRONG_PASSWORD_EXCEPTION);
 		}
 
+		int memberInterests = memberInterestRepository.countDistinctInterestIdsByMember(member);
+		boolean hasInterest = memberInterests >= 2 ? true : false;
+
 		String accessToken = jwtTokenProvider.createToken(email);
 		redisService.setMemberWithDuration(accessToken, member, JwtTokenProvider.ACCESS_TOKEN_VALID_TIME);
-		return LoginResponseDto.builder().accessToken(accessToken).nickname(member.getNickname()).build();
+		return LoginResponseDto.builder()
+			.accessToken(accessToken)
+			.nickname(member.getNickname())
+			.hasInterest(hasInterest)
+			.build();
 	}
 }
