@@ -14,6 +14,8 @@ import com.example.challengeservice.entity.challenge.MemberChallenge;
 public interface MemberChallengeRepository extends JpaRepository<MemberChallenge, Long> {
     int countByChallenge(Challenge challenge);
 
+    int countByChallenge_ChallengeIdAndMember_MemberId(Long challengeId, Long memberId);
+
     @Query("select mc from MemberChallenge mc where mc.challenge.challengeId=:challengeId")
     List<MemberChallenge> findAllByChallengeId(Long challengeId);
 

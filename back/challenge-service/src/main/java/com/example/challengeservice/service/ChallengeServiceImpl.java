@@ -100,13 +100,14 @@ public class ChallengeServiceImpl implements ChallengeService {
             IOException, FirebaseAuthException {
         Challenge challenge = challengeRepository.findByChallengeId(challengeId)
                 .orElseThrow(() -> new ApiException(ExceptionEnum.CHALLENGE_NOT_FOUND_EXCEPTION));
-        String fileName = challenge.getTitle() + "_" + memberChallengeRequestDto.getNickName();
         // Todo : 하드코딩 바꿔야할 부분
         Member member = memberRepository.findByMemberId(1L)
                 .orElseThrow(() -> new ApiException(ExceptionEnum.WRONG_MEMBER_EXCEPTION));
-        if (memberChallengeRepository.findByChallenge_ChallengeIdAndMember_MemberId(challengeId, member.getMemberId()).isPresent()) {
-            throw new ApiException(ExceptionEnum.MEMBER_CHALLENGE_EXIST_EXCEPTION);
-        }
+        int myCount = memberChallengeRepository.countByChallenge_ChallengeIdAndMember_MemberId(challengeId, member.getMemberId()) + 1;
+        String fileName = challenge.getTitle() + "_" + memberChallengeRequestDto.getNickName() + myCount;
+//        if (memberChallengeRepository.findByChallenge_ChallengeIdAndMember_MemberId(challengeId, member.getMemberId()).isPresent()) {
+//            throw new ApiException(ExceptionEnum.MEMBER_CHALLENGE_EXIST_EXCEPTION);
+//        }
         if (memberChallengeRequestDto.getMemberChallengeFile().isEmpty()) {
             throw new ApiException(ExceptionEnum.FILE_NOT_FOUND_EXCEPTION);
         }
