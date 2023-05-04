@@ -8,6 +8,7 @@ import Button from '@/app/components/Button';
 import Link from 'next/link';
 import { AiOutlineLock, AiOutlineMail } from 'react-icons/ai';
 import { loginApi } from '@/app/api/userApi';
+import { signIn } from 'next-auth/react';
 
 const schema = yup
   .object({
@@ -35,8 +36,14 @@ const LoginForm = () => {
   const handleLogin: SubmitHandler<userLoginInterface> = async (data) => {
     console.log(data);
     try {
-      const res = loginApi(data);
-      console.log(res);
+      // const res = loginApi(data);
+      const result = await signIn('credentials', {
+        email: data.email,
+        password: data.password,
+        redirect: true,
+        callbackUrl: '/',
+      });
+      console.log(result);
     } catch (err) {
       if (typeof err === 'string') return alert(err);
       return alert('예상치 못한 오류가 발생했습니다.');

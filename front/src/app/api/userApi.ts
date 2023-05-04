@@ -47,9 +47,6 @@ export const registerApi = async (payload: userRegisterInterface) => {
 // 로그인
 export const loginApi = async (payload: userLoginInterface) => {
   const response = await memberApi.post(`/members/login`, payload);
-  console.log(response);
-  if (response.statusText === 'OK') {
-    localStorage.setItem('accessToken', 'dummyToken');
-  }
+  console.log(response.headers);
   return response.data;
 };

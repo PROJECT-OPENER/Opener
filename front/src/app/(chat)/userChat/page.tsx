@@ -7,6 +7,9 @@ const page = () => {
     <div>
       <Loading />
       <Link href={'./userChat/Result'}>Result</Link>
+      <br />
+      <br />
+      <Link href={'./userChat/chatRoom'}>Chattest</Link>
     </div>
   );
 };
