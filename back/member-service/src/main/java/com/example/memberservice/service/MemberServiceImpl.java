@@ -34,6 +34,11 @@ public class MemberServiceImpl implements MemberService {
 	private final BCryptPasswordEncoder bCryptPasswordEncoder;
 	private final JwtTokenProvider jwtTokenProvider;
 
+	/**
+	 * 김윤미
+	 * explain : 이메일 중복 검사
+	 * @param email : 이메일
+	 */
 	@Override
 	@Transactional
 	public void checkEmail(String email) {
@@ -42,6 +47,11 @@ public class MemberServiceImpl implements MemberService {
 		}
 	}
 
+	/**
+	 * 김윤미
+	 * explain : 닉네임 중복 검사
+	 * @param nickname : 닉네임
+	 */
 	@Override
 	@Transactional
 	public void checkNickname(String nickname) {
@@ -50,12 +60,17 @@ public class MemberServiceImpl implements MemberService {
 		}
 	}
 
+	/**
+	 * 김윤미
+	 * explain : 이메일 인증 코드 전송
+	 * @param email : 이메일
+	 */
 	@Override
 	@Transactional
 	public void sendEmailCode(String email) {
 		checkEmail(email);
 
-		String authNumber = MailUtil.makeRandomNumber(10);
+		String authNumber = MailUtil.makeRandomNumber(6);
 		redisService.setDataWithExpiration(SEND_CODE.getKey() + email, authNumber, 60 * 5L);
 		redisService.setDataWithStatus(AUTH_EMAIL.getKey() + email, false);
 
@@ -66,6 +81,11 @@ public class MemberServiceImpl implements MemberService {
 		}
 	}
 
+	/**
+	 * 김윤미
+	 * explain : 이메일 인증 코드 검증
+	 * @param checkEmailCodeRequestDto : 이메일, 인증 코드 정보
+	 */
 	@Override
 	@Transactional
 	public void checkEmailCode(CheckEmailCodeRequestDto checkEmailCodeRequestDto) {
@@ -92,6 +112,11 @@ public class MemberServiceImpl implements MemberService {
 		}
 	}
 
+	/**
+	 * 김윤미
+	 * explain : 회원가입
+	 * @param signUpMemberRequestDto : 사용자 정보
+	 */
 	@Transactional
 	@Override
 	public void signUpMember(SignUpMemberRequestDto signUpMemberRequestDto) {
@@ -116,6 +141,12 @@ public class MemberServiceImpl implements MemberService {
 		memberRepository.save(signUpMemberRequestDto.toEntity(encryptedPwd));
 	}
 
+	/**
+	 * 김윤미
+	 * explain : 로그인
+	 * @param loginRequestDto : 이메일, 비밀번호 정보
+	 * @return : 로그인 정보
+	 */
 	@Override
 	@Transactional
 	public LoginResponseDto login(LoginRequestDto loginRequestDto) {
