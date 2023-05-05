@@ -21,3 +21,6 @@ services:
       - zookeeper
     networks:
       - opener-network
+networks:
+  opener-network:
+    external: true
