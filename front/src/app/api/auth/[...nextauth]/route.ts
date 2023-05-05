@@ -56,7 +56,9 @@ const handler = NextAuth({
             ...user,
             email: user.email,
             nickname: decodeURI(res.headers.get('nickname') as string),
+            accessToken: res.headers.get('accessToken'),
           };
+          console.log('users : ', users);
           return users;
         } else return null;
       },
@@ -65,16 +67,15 @@ const handler = NextAuth({
 
   callbacks: {
     async jwt({ token, user }) {
-      // console.log('jwt : ', user);
       // return { ...token, ...user };
       user && (token.user = user); // authorize에 리턴했던 값이 user 정보에 있면 token에 추가.
       return Promise.resolve(token);
     },
     async session({ session, token }) {
       // Send properties to the client, like an access_token from a provider.
-      const users = await session?.user;
-      await console.log('token : ', token);
-      console.log('users : ', users);
+      // const users = await session?.user;
+      // await console.log('token : ', token);
+      // console.log('users : ', users);
       session.user = token;
       console.log('session : ', session);
       return session;
