@@ -11,6 +11,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.example.memberservice.entity.BaseEntity;
+import com.example.memberservice.entity.shadowing.Interest;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -34,6 +35,7 @@ public class MemberInterest extends BaseEntity {
 	@JoinColumn(name = "member_id", nullable = false)
 	private Member member;
 
-	@Column(name = "interest_id", nullable = false)
-	private Long interestId;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "interest_id", nullable = false)
+	private Interest interest;
 }

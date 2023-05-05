@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import com.example.memberservice.entity.member.Member;
 import com.example.memberservice.entity.member.enums.Gender;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -38,5 +39,22 @@ public class MemberDto implements Serializable {
 
 	public void setNickname(String nickname) {
 		this.nickname = nickname;
+	}
+
+	public Member toEntity(MemberDto memberDto) {
+		Member member = Member.builder()
+			.memberId(memberDto.getMemberId())
+			.email(memberDto.getEmail())
+			.password(memberDto.getPassword())
+			.nickname(memberDto.getNickname())
+			.birth(memberDto.getBirth())
+			.gender(memberDto.getGender())
+			.profile(memberDto.getProfile())
+			.score(memberDto.getScore())
+			.loginDate(memberDto.getLoginDate())
+			.build();
+		member.setBaseDateInfo(this.createDate, this.lastModifiedDate);
+
+		return member;
 	}
 }

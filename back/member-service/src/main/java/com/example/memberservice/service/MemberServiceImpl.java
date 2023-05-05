@@ -2,21 +2,28 @@ package com.example.memberservice.service;
 
 import static com.example.memberservice.entity.redis.RedisKey.*;
 
+import java.util.Set;
+
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.example.memberservice.client.ShadowingServiceClient;
 import com.example.memberservice.common.config.security.JwtTokenProvider;
 import com.example.memberservice.common.exception.ApiException;
 import com.example.memberservice.common.exception.ExceptionEnum;
 import com.example.memberservice.common.util.MailUtil;
+import com.example.memberservice.dto.MemberDto;
 import com.example.memberservice.dto.request.member.LoginRequestDto;
+import com.example.memberservice.dto.request.member.MemberInterestsRequestDto;
 import com.example.memberservice.dto.request.member.SignUpMemberRequestDto;
 import com.example.memberservice.dto.request.member.CheckEmailCodeRequestDto;
 import com.example.memberservice.dto.response.member.LoginResponseDto;
 import com.example.memberservice.entity.member.Member;
+import com.example.memberservice.entity.member.MemberInterest;
+import com.example.memberservice.entity.shadowing.Interest;
 import com.example.memberservice.repository.MemberInterestRepository;
 import com.example.memberservice.repository.MemberRepository;
 
@@ -33,6 +40,7 @@ public class MemberServiceImpl implements MemberService {
 	private final JavaMailSender javaMailSender;
 	private final BCryptPasswordEncoder bCryptPasswordEncoder;
 	private final JwtTokenProvider jwtTokenProvider;
+	private final ShadowingServiceClient shadowingServiceClient;
 
 	/**
 	 * 김윤미
@@ -175,5 +183,30 @@ public class MemberServiceImpl implements MemberService {
 			.nickname(member.getNickname())
 			.hasInterest(hasInterest)
 			.build();
+	}
+
+	/**
+	 * 김윤미
+	 * explain : 사용자 초기 관심사 등록
+	 * @param memberInterestsRequestDto : 등록하고자 하는 관심사 ID 배열 정보
+	 * @param memberDto : 현재 사용자 정보
+	 */
+	@Override
+	public void createInterests(MemberInterestsRequestDto memberInterestsRequestDto, MemberDto memberDto) {
+		Set<Long> interests = memberInterestsRequestDto.getInterests();
+
+		if (interests.size() < 2) {
+			throw new ApiException(ExceptionEnum.INSUFFICIENT_INTERESTS_EXCEPTION);
+		}
+		Member member = memberDto.toEntity(memberDto);
+
+		interests.forEach((interestId) -> {
+			Interest interest = shadowingServiceClient.getInterest().getData().toEntity();
+			MemberInterest memberInterest = MemberInterest.builder()
+				.member(member)
+				.interest(interest)
+				.build();
+			memberInterestRepository.save(memberInterest);
+		});
 	}
 }
