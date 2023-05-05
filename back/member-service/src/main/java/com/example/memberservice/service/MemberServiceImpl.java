@@ -25,6 +25,7 @@ import com.example.memberservice.dto.response.member.LoginResponseDto;
 import com.example.memberservice.entity.member.Member;
 import com.example.memberservice.entity.member.MemberInterest;
 import com.example.memberservice.entity.shadowing.Interest;
+import com.example.memberservice.messagequeue.KafkaProducer;
 import com.example.memberservice.repository.MemberInterestRepository;
 import com.example.memberservice.repository.MemberRepository;
 
@@ -42,6 +43,7 @@ public class MemberServiceImpl implements MemberService {
 	private final BCryptPasswordEncoder bCryptPasswordEncoder;
 	private final JwtTokenProvider jwtTokenProvider;
 	private final ShadowingServiceClient shadowingServiceClient;
+	private final KafkaProducer kafkaProducer;
 
 	/**
 	 * 김윤미
@@ -146,7 +148,7 @@ public class MemberServiceImpl implements MemberService {
 		}
 
 		redisService.deleteData(AUTH_EMAIL.getKey() + email);
-
+		kafkaProducer.sendSignUpMember(signUpMemberRequestDto);
 		memberRepository.save(signUpMemberRequestDto.toEntity(encryptedPwd));
 	}
 
