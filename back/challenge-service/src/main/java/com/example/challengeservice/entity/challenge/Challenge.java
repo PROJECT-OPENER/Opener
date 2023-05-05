@@ -27,14 +27,14 @@ public class Challenge extends BaseEntity {
 	private Long challengeId;
 	@Column(name = "title")
 	private String title;
-	@Column(name="challenge_url")
+	@Column(name="challenge_url", length = 1000)
 	private String challengeUrl;
-	@Column(name="challenge_img")
+	@Column(name="challenge_img", length = 1000)
 	private String challengeImg;
-	@Column(name="eng_caption")
+	@Column(name="eng_caption", length = 2000)
 	private String engCaption;
-	@Column(name="kor_capotion")
+	@Column(name="kor_capotion", length = 2000)
 	private String korCaption;
-	@Column(name="caption_time")
+	@Column(name="caption_time", length = 1000)
 	private String captionTime;
 }
