@@ -28,7 +28,7 @@ public class AuthChallengeController {
 
     /**
      * 신대득
-     * explain : 원본 챌린지 선택 삭제
+     * explain : 회원 챌린지 선택 삭제
      */
     @DeleteMapping("/member-challenges/{member-challenge-id}")
     public ResponseEntity<BaseResponseDto> deleteMemberChallenge(@PathVariable Long memberChallengeId){

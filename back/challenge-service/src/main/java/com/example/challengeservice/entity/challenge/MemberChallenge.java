@@ -17,6 +17,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Getter
 @NoArgsConstructor
@@ -46,5 +48,10 @@ public class MemberChallenge extends BaseEntity {
                 .memberChallengeImg(memberChallengeImg)
                 .memberChallengeUrl(memberChallengeUrl)
                 .build();
+    }
+
+    public void setBaseDateInfo(LocalDateTime createDate, LocalDateTime lastModifiedDate) {
+        this.createDate = createDate;
+        this.lastModifiedDate = lastModifiedDate;
     }
 }
