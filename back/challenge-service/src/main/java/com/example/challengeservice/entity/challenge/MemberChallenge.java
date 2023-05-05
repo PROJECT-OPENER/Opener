@@ -34,9 +34,9 @@ public class MemberChallenge extends BaseEntity {
     @ManyToOne(targetEntity = Member.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
-    @Column(name = "member_challenge_img")
+    @Column(name = "member_challenge_img", length = 1000)
     private String memberChallengeImg;
-    @Column(name = "member_challenge_url")
+    @Column(name = "member_challenge_url", length = 1000)
     private String memberChallengeUrl;
 
     public static MemberChallenge from(Challenge challenge, Member member, String memberChallengeImg, String memberChallengeUrl) {

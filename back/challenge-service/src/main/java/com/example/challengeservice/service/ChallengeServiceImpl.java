@@ -93,7 +93,7 @@ public class ChallengeServiceImpl implements ChallengeService {
      * 신대득
      * explain : 멤버 챌린지 영상 등록
      *
-     * @param challengeId : 선택한 챌린지Id
+     * @param challengeId : 원본 챌린지 Id
      */
     @Override
     public void createMemberChallenge(Long challengeId, MemberChallengeRequestDto memberChallengeRequestDto) throws
@@ -117,5 +117,17 @@ public class ChallengeServiceImpl implements ChallengeService {
         String fileUrl = fireBaseService.uploadFiles(memberChallengeRequestDto.getMemberChallengeFile(), fileName + "_file");
         String imgUrl = fireBaseService.uploadFiles(memberChallengeRequestDto.getMemberChallengeImg(), fileName + "_img");
         memberChallengeRepository.save(MemberChallenge.from(challenge, member, imgUrl, fileUrl));
+    }
+
+    /**
+     * 신대득
+     * explain : 멤버 챌린지 영상 삭제
+     * @param memberChallengeId : 멤버 챌린지 id
+     */
+    @Override
+    public void deleteMemberChallenge(Long memberChallengeId) {
+        MemberChallenge memberChallenge = memberChallengeRepository.findByMemberChallengeId(memberChallengeId)
+                .orElseThrow(() -> new ApiException(ExceptionEnum.MEMBER_CHALLENGE_NOT_FOUND_EXCEPTION));
+        memberChallengeRepository.delete(memberChallenge);
     }
 }

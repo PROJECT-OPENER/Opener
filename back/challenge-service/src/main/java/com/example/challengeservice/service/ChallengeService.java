@@ -16,4 +16,6 @@ public interface ChallengeService {
     /** 멤버 챌린지 영상 등록 **/
     void createMemberChallenge(Long challengeId, MemberChallengeRequestDto memberChallengeRequestDto)
             throws IOException, FirebaseAuthException;
+    /** 멤버 챌린지 영상 삭제 **/
+    void deleteMemberChallenge(Long memberChallengeId);
 }
