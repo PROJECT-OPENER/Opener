@@ -9,7 +9,5 @@ done
 /opt/kafka/bin/kafka-topics.sh \
   --create \
   --topic "$1" \
-  --partitions "${2:-1}" \
-  --replication-factor "${3:-1}" \
-  --if-not-exists \
-  --zookeeper k8c104.p.ssafy.io:2181
+  --bootstrap-server k8c104.p.ssafy.io:9092 \
+  --partitions "${2:-1}"
