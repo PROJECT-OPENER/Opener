@@ -332,3 +332,31 @@
     - Spring security 적용
     - 멤버 챌린지 영상 API 개발
     - 쉐도잉 서비스 비로그인 관련 API 개발
+
+## 2023-05-05
+
+### 1. YesterDay
+
+- 프론트
+    - next-auth 통한 로그인, 토큰 관리
+    - 챌린지 api 연결
+    - 영어사전 json파일 제작
+    - 쉐도잉 녹음 기능 일부 수정
+- 백엔드
+    - Firebase를 통해서 동영상 파일 업로드, 이미지 업로드 완료
+    - jwt token 설정
+    - 유저 정보 헤더에 쏴주기
+
+### 2. Today Todo
+
+- 프론트
+    - 녹음관련 디테일한 부분(카운트, 한글자막 등) 추가해야함
+    - AI 채팅 녹음, 키보드 안정화
+    - 로그인 안정화
+    - 소켓 채팅 테스트 시작
+    - Three.js 강의 듣기 시작
+- 백엔드
+    - Kafka 연동을 통해서 challenge-service에서 member-service의 member 엔티티 연동하기
+    - kafka 컨테이너 띄우기
+    - kafka producer, consumer 파일 설정
+    - chatting-service 구조 생성
