@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { userRegisterInterface } from '@/app/types/share';
+import { userRegisterInterface } from '@/types/share';
 import {
   AiOutlineCalendar,
   AiOutlineCheck,
@@ -12,7 +12,7 @@ import {
   AiOutlineUser,
 } from 'react-icons/ai';
 import { MdOutlineMailLock } from 'react-icons/md';
-import { handleDate, secToTime } from '@/app/util/Math';
+import { handleDate, secToTime } from '@/util/Math';
 import Button from '@/app/components/Button';
 import {
   emailAuthApi,

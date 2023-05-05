@@ -1,6 +1,6 @@
 'use client';
 import React, { useCallback, useEffect, useState } from 'react';
-import { interest } from '@/app/util/Interest';
+import { interest } from '@/util/Interest';
 import Button from '@/app/components/Button';
 import { useRouter, useSearchParams } from 'next/navigation';
 

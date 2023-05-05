@@ -1,14 +1,16 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { userLoginInterface } from '@/app/types/share';
+import { userLoginInterface } from '@/types/share';
 import Button from '@/app/components/Button';
 import Link from 'next/link';
 import { AiOutlineLock, AiOutlineMail } from 'react-icons/ai';
 import { loginApi } from '@/app/api/userApi';
 import { signIn } from 'next-auth/react';
+import { useSearchParams } from 'next/navigation';
+// import { useRouter } from 'next/router';
 
 const schema = yup
   .object({
@@ -23,7 +25,32 @@ const schema = yup
 const LoginForm = () => {
   const [isEmailActive, setIsEmailActive] = useState(false);
   const [isPasswordActive, setIsPasswordActive] = useState(false);
+  const [customError, setCustomError] = useState('');
+  const searchParams = useSearchParams();
+  const subject = searchParams.get('error');
+  console.log(subject);
   // react-hook-form, yup
+  useEffect(() => {
+    switch (subject) {
+      case '-102':
+        setCustomError('비밀번호가 틀렸습니다.');
+        break;
+      case '-112':
+        setCustomError('가입된 이메일이 아닙니다.');
+        break;
+      case '-116':
+        setCustomError('가입된 이메일이 아닙니다.');
+        break;
+      case '-117':
+        setCustomError('비밀번호가 틀렸습니다.');
+        break;
+      case '-118':
+        setCustomError('이미 로그인된 유저입니다.');
+        break;
+      default:
+        break;
+    }
+  }, [subject]);
   const {
     register,
     handleSubmit,
@@ -36,7 +63,7 @@ const LoginForm = () => {
   const handleLogin: SubmitHandler<userLoginInterface> = async (data) => {
     console.log(data);
     try {
-      // const res = loginApi(data);
+      // const result = loginApi(data);
       const result = await signIn('credentials', {
         email: data.email,
         password: data.password,
@@ -87,6 +114,7 @@ const LoginForm = () => {
         </div>
         <div className="my-3 text-red-500">
           {errors.email ? errors.email.message : errors.password?.message}
+          {customError && customError}
         </div>
         <div className="flex justify-end font-bold">
           <Link href="/register">회원가입</Link>

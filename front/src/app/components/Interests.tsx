@@ -1,7 +1,7 @@
 'use client';
 import { useState } from 'react';
-import { interest } from '../util/Interest';
 import Button from './Button';
+import { interest } from '@/util/Interest';
 
 const Interests = () => {
   const [activeIndex, setActiveIndex] = useState<number[]>([]);

@@ -2,7 +2,7 @@ import {
   emailAuthCheckInterface,
   userLoginInterface,
   userRegisterInterface,
-} from '../types/share';
+} from '@/types/share';
 import { memberApi } from './axiosConfig';
 
 // 이메일 중복 확인
@@ -47,6 +47,6 @@ export const registerApi = async (payload: userRegisterInterface) => {
 // 로그인
 export const loginApi = async (payload: userLoginInterface) => {
   const response = await memberApi.post(`/members/login`, payload);
-  console.log(response.headers);
+  console.log(response);
   return response.data;
 };

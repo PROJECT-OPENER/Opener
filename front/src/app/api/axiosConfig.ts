@@ -1,4 +1,4 @@
-import { responseInterface } from './../types/share';
+import { responseInterface } from '@/types/share';
 import axios, { AxiosRequestConfig, AxiosResponse, AxiosError } from 'axios';
 
 const BASE_URL = 'http://k8c104.p.ssafy.io:8000/';

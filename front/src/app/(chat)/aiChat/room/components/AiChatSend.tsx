@@ -12,7 +12,7 @@ import SpeechRecognition, {
 } from 'react-speech-recognition';
 import axios from 'axios';
 import { openAiChatApi } from '@/app/api/openAi';
-import { handleChatLog, pushChatLog } from '@/app/util/AiChat';
+import { handleChatLog, pushChatLog } from '@/util/AiChat';
 
 type SendMessageFunction = (message: string) => void;
 type onReceiveMessage = (message: string) => void;
