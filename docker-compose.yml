@@ -8,8 +8,10 @@ services:
     networks:
       - opener-network
   kafka:
-    image: wurstmeister/kafka
     container_name: kafka
+    build:
+      context: ./kafka
+      dockerfile: Dockerfile
     ports:
       - "9092:9092"
     environment:
