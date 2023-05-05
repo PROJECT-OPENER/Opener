@@ -21,7 +21,6 @@ import {
   nicknameDuplicateCheckApi,
   registerApi,
 } from '@/app/api/userApi';
-import { AxiosError } from 'axios';
 
 const schema = yup
   .object({

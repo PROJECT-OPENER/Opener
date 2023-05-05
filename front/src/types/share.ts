@@ -4,6 +4,10 @@ export interface User {
   email?: string | null | undefined;
   accessToken?: string;
   image?: string;
+  user?: {
+    accessToken?: string;
+    code?: number;
+  };
 }
 export interface userInterface {
   name: string;

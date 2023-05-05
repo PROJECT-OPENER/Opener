@@ -63,7 +63,6 @@ const LoginForm = () => {
   const handleLogin: SubmitHandler<userLoginInterface> = async (data) => {
     console.log(data);
     try {
-      // const result = loginApi(data);
       const result = await signIn('credentials', {
         email: data.email,
         password: data.password,

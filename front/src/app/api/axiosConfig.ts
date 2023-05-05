@@ -1,6 +1,8 @@
 import { responseInterface } from '@/types/share';
 import axios, { AxiosRequestConfig, AxiosResponse, AxiosError } from 'axios';
-
+import { getToken } from 'next-auth/jwt';
+import { getSession } from 'next-auth/react';
+import { NextRequest } from 'next/server';
 const BASE_URL = 'http://k8c104.p.ssafy.io:8000/';
 
 export const memberApi = axios.create({
@@ -13,12 +15,16 @@ export const memberApi = axios.create({
 });
 
 // Function to set the Authorization header if a token is available in localStorage
-const setAuthTokenHeader = (config: AxiosRequestConfig): AxiosRequestConfig => {
-  const accessToken = localStorage.getItem('accessToken');
+const setAuthTokenHeader = async (
+  config: AxiosRequestConfig,
+): Promise<AxiosRequestConfig> => {
+  const session = await getSession();
+  const accessToken = session?.user?.user?.accessToken;
+
   if (accessToken) {
     config.headers = {
       ...config.headers,
-      accessToken: `Bearer ${accessToken}`,
+      Authorization: `Bearer ${accessToken}`,
     };
   }
   return config;
