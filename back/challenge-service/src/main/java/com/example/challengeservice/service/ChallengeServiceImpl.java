@@ -1,11 +1,13 @@
 package com.example.challengeservice.service;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.*;
 
 import com.example.challengeservice.common.exception.ApiException;
 import com.example.challengeservice.common.exception.ExceptionEnum;
 import com.example.challengeservice.dto.request.MemberChallengeRequestDto;
+import com.example.challengeservice.dto.response.MemberChallengeListResponseDto;
 import com.example.challengeservice.dto.response.MemberChallengeResponseDto;
 import com.example.challengeservice.dto.response.SelectOriginalResponseDto;
 import com.example.challengeservice.entity.challenge.MemberChallenge;
@@ -86,7 +88,45 @@ public class ChallengeServiceImpl implements ChallengeService {
                 return o2.getLikeCount() - o1.getLikeCount();
             }
         });
-        return SelectOriginalResponseDto.from(originalChallengeResponseDto, memberChallenges.size(), memberChallengeResponseDtoList.subList(startIndex, endIndex));
+        return SelectOriginalResponseDto.from(originalChallengeResponseDto, memberChallengeResponseDtoList.size(), memberChallengeResponseDtoList.subList(startIndex, endIndex));
+    }
+
+    @Override
+    public MemberChallengeListResponseDto categoryMemberChallenge(String category, Integer startIndex, Integer endIndex) {
+        if (!category.equals("LIKE") && !category.equals("RECENT")) {
+            throw new ApiException(ExceptionEnum.CATEGORY_NOT_FOUND_EXCEPTION);
+        }
+        List<MemberChallengeResponseDto> memberChallengeResponseDtoList = new ArrayList<>();
+        List<MemberChallenge> memberChallengeList = memberChallengeRepository.findAll();
+        if (memberChallengeList.isEmpty()) {
+            throw new ApiException(ExceptionEnum.MEMBER_CHALLENGES_NOT_FOUND_EXCEPTION);
+        }
+        for (MemberChallenge memberChallenge : memberChallengeList) {
+            int likeCount = loveRepository.countByMemberChallenge(memberChallenge);
+            MemberChallengeResponseDto memberChallengeResponseDto = MemberChallengeResponseDto.from(memberChallenge, likeCount);
+            memberChallengeResponseDtoList.add(memberChallengeResponseDto);
+        }
+        Comparator likeComparator = new Comparator<MemberChallengeResponseDto>() {
+            @Override
+            public int compare(MemberChallengeResponseDto o1, MemberChallengeResponseDto o2) {
+                return o2.getLikeCount() - o1.getLikeCount();
+            }
+        };
+        Comparator dateComparator = new Comparator<MemberChallengeResponseDto>() {
+            @Override
+            public int compare(MemberChallengeResponseDto o1, MemberChallengeResponseDto o2) {
+                return o2.getMemberChallengeDate().compareTo(o1.getMemberChallengeDate());
+            }
+        };
+        switch (category) {
+            case "LIKE":
+                Collections.sort(memberChallengeResponseDtoList, likeComparator);
+                break;
+            case "RECENT":
+                Collections.sort(memberChallengeResponseDtoList, dateComparator);
+                break;
+        }
+        return MemberChallengeListResponseDto.from(memberChallengeResponseDtoList.size(), memberChallengeResponseDtoList.subList(startIndex, endIndex));
     }
 
     /**
@@ -116,7 +156,9 @@ public class ChallengeServiceImpl implements ChallengeService {
         }
         String fileUrl = fireBaseService.uploadFiles(memberChallengeRequestDto.getMemberChallengeFile(), fileName + "_file");
         String imgUrl = fireBaseService.uploadFiles(memberChallengeRequestDto.getMemberChallengeImg(), fileName + "_img");
-        memberChallengeRepository.save(MemberChallenge.from(challenge, member, imgUrl, fileUrl));
+        MemberChallenge memberChallenge = MemberChallenge.from(challenge, member, imgUrl, fileUrl);
+        memberChallenge.setBaseDateInfo(LocalDateTime.now(), LocalDateTime.now());
+        memberChallengeRepository.save(memberChallenge);
     }
 
     /**
