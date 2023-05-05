@@ -19,9 +19,9 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
 	 */
 	@Override
 	public int countDistinctInterestIdsByMember(Member member) {
-		return Math.toIntExact(queryFactory.selectDistinct(memberInterest.interestId)
+		return Math.toIntExact(queryFactory.selectDistinct(memberInterest.interest.interestId)
 			.from(memberInterest)
-			.where(memberInterest.member.eq(member))
+			.where(memberInterest.member.memberId.eq(member.getMemberId()))
 			.fetchFirst());
 	}
 }
