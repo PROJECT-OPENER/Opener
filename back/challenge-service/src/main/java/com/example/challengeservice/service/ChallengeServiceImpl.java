@@ -7,9 +7,7 @@ import java.util.*;
 import com.example.challengeservice.common.exception.ApiException;
 import com.example.challengeservice.common.exception.ExceptionEnum;
 import com.example.challengeservice.dto.request.MemberChallengeRequestDto;
-import com.example.challengeservice.dto.response.MemberChallengeListResponseDto;
-import com.example.challengeservice.dto.response.MemberChallengeResponseDto;
-import com.example.challengeservice.dto.response.SelectOriginalResponseDto;
+import com.example.challengeservice.dto.response.*;
 import com.example.challengeservice.entity.challenge.MemberChallenge;
 import com.example.challengeservice.entity.member.Member;
 import com.example.challengeservice.repository.LoveRepository;
@@ -17,7 +15,6 @@ import com.example.challengeservice.repository.MemberRepository;
 import com.google.firebase.auth.FirebaseAuthException;
 import org.springframework.stereotype.Service;
 
-import com.example.challengeservice.dto.response.OriginalChallengeResponseDto;
 import com.example.challengeservice.entity.challenge.Challenge;
 import com.example.challengeservice.repository.ChallengeRepository;
 import com.example.challengeservice.repository.MemberChallengeRepository;
@@ -89,6 +86,20 @@ public class ChallengeServiceImpl implements ChallengeService {
             }
         });
         return SelectOriginalResponseDto.from(originalChallengeResponseDto, memberChallengeResponseDtoList.size(), memberChallengeResponseDtoList.subList(startIndex, endIndex));
+    }
+
+    /**
+     * 신대득
+     * explain : 원본 챌린지 영상 보기
+     * @param challengeId : 원본 챌린지의 Id
+     * @return
+     */
+    @Override
+    public WatchOriginalChallengeResponseDto watchOriginalChallenge(Long challengeId) {
+        Challenge challenge=challengeRepository.findByChallengeId(challengeId)
+                .orElseThrow(() -> new ApiException(ExceptionEnum.CHALLENGE_NOT_FOUND_EXCEPTION));
+        int joinCount=memberChallengeRepository.countByChallenge(challenge);
+        return WatchOriginalChallengeResponseDto.from(challenge, joinCount);
     }
 
     @Override
