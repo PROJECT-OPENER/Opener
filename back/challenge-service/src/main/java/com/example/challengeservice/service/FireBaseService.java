@@ -13,6 +13,7 @@ import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class FireBaseService {
@@ -32,6 +33,6 @@ public class FireBaseService {
         Bucket bucket = StorageClient.getInstance().bucket(firebaseBucket);
         InputStream content = new ByteArrayInputStream(file.getBytes());
         Blob blob = bucket.create(nameFile.toString(), content, file.getContentType());
-        return blob.getMediaLink();
+        return blob.signUrl(10, TimeUnit.DAYS).toString();
     }
 }

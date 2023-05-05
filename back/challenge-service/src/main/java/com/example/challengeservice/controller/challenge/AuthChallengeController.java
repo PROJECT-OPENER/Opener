@@ -26,4 +26,14 @@ public class AuthChallengeController {
         return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseDto<>(200, "나의 영상 등록 완료"));
     }
 
+    /**
+     * 신대득
+     * explain : 원본 챌린지 선택 삭제
+     */
+    @DeleteMapping("/member-challenges/{member-challenge-id}")
+    public ResponseEntity<BaseResponseDto> deleteMemberChallenge(@PathVariable Long memberChallengeId){
+        challengeService.deleteMemberChallenge(memberChallengeId);
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseDto<>(200, "나의 영상 삭제 완료"));
+    }
+
 }
