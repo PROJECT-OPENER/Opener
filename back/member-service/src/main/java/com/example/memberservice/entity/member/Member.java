@@ -1,6 +1,7 @@
 package com.example.memberservice.entity.member;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -58,4 +59,9 @@ public class Member extends BaseEntity {
 
 	@Column(name = "login_date")
 	private LocalDate loginDate;
+
+	public void setBaseDateInfo(LocalDateTime createDate, LocalDateTime lastModifiedDate) {
+		this.createDate = createDate;
+		this.lastModifiedDate = lastModifiedDate;
+	}
 }
