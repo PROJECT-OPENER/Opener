@@ -5,7 +5,6 @@ import { useRef, useState, useEffect, useCallback } from 'react';
 import { WordTokenizer } from 'natural';
 import styles from './ViewScript.module.css';
 import YouTube, { YouTubePlayer } from 'react-youtube';
-import { scriptType } from '@/app/types/share';
 import {
   BsMic,
   BsBookmarkPlus,
@@ -14,6 +13,7 @@ import {
   BsChevronLeft,
   BsChevronRight,
 } from 'react-icons/bs';
+import { scriptType } from '@/types/share';
 
 const start = '00:00:01.000';
 const end = '00:00:09.000';

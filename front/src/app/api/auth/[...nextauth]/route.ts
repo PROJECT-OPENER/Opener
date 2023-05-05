@@ -1,9 +1,5 @@
-import { interest } from '@/app/util/Interest';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import NextAuth from 'next-auth';
-import type { NextAuthOptions } from 'next-auth';
-import { User } from 'next-auth';
-import { redirect } from 'next/dist/server/api-utils';
 
 const handler = NextAuth({
   providers: [
@@ -41,14 +37,21 @@ const handler = NextAuth({
             }),
           },
         );
-        console.log('res : ', res.headers.get('nickname'));
+        console.log('res : ', res);
+        // console.log('res : ', res.headers.get('nickname'));
         // const user = await decodeURI(res.headers.get('nickname') as string);
         const user = await res.json();
 
-        // console.log('user : ', { user });
+        console.log('user : ', { user });
+        // 에러 핸들링 : 커스텀 에러 핸들리을 위해 에러코드를 searchParams로 넘긴다.
+        // 에러코드는 member-service의 ErrorCode를 참고한다.
+        // 넘긴 코드를 바탕으로 LoginFrom.tsx에서 처리
+        if (!res.ok && user) {
+          throw new Error(user.code);
+        }
 
         if (res.ok && user) {
-          console.log('user : ', user);
+          // console.log('user : ', user);
           const users = {
             ...user,
             email: user.email,

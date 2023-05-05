@@ -2,7 +2,7 @@ import './globals.css';
 import './styles/index.scss';
 import TopNav from './components/TopNav';
 import BottomNav from './components/BottomNav';
-import AuthContext from './context/AuthContext';
+import AuthContext from '@/context/AuthContext';
 
 export const metadata = {
   title: 'Create Next App',

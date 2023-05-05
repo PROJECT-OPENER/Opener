@@ -1,6 +1,5 @@
 'use client';
 import { usePathname, useRouter } from 'next/navigation';
-import { bottomNavBackward, bottomNavNone } from '../util/navControl';
 import Link from 'next/link';
 import {
   FiHome,
@@ -10,6 +9,7 @@ import {
   FiMap,
 } from 'react-icons/fi';
 import { TfiAngleLeft } from 'react-icons/tfi';
+import { bottomNavBackward, bottomNavNone } from '@/util/navControl';
 
 const BottomNav = () => {
   const router = useRouter();

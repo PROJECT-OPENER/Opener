@@ -3,9 +3,9 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import Image from 'next/image';
 import logo from 'public/images/logo.png';
-import { topNavNone } from '../util/navControl';
 import ProfileImage from './ProfileImage';
 import { useSession, signOut } from 'next-auth/react';
+import { topNavNone } from '@/util/navControl';
 
 const TopNav = () => {
   const { data: session } = useSession();
