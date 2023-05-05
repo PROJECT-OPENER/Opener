@@ -5,6 +5,8 @@ services:
     container_name: zookeeper 
     ports:
       - "2181:2181"
+    networks:
+      - opener-network
   kafka:
     image: wurstmeister/kafka
     container_name: kafka
@@ -17,6 +19,5 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     depends_on:
       - zookeeper
-networks:
-  opener-network:
-    external: true
+    networks:
+      - opener-network
