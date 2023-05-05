@@ -1,4 +1,4 @@
-FROM kafka:latest
+FROM wurstmeister/kafka
 
 # create-kafka-topic.sh 파일 복사
 COPY create-kafka-topic.sh /usr/bin/
