@@ -20,6 +20,7 @@ import com.example.memberservice.dto.request.member.LoginRequestDto;
 import com.example.memberservice.dto.request.member.MemberInterestsRequestDto;
 import com.example.memberservice.dto.request.member.SignUpMemberRequestDto;
 import com.example.memberservice.dto.request.member.CheckEmailCodeRequestDto;
+import com.example.memberservice.dto.response.member.LoginMemberResponseDto;
 import com.example.memberservice.dto.response.member.LoginResponseDto;
 import com.example.memberservice.entity.member.Member;
 import com.example.memberservice.entity.member.MemberInterest;
@@ -176,12 +177,18 @@ public class MemberServiceImpl implements MemberService {
 		int memberInterests = memberInterestRepository.countDistinctInterestIdsByMember(member);
 		boolean hasInterest = memberInterests >= 2 ? true : false;
 
+		LoginMemberResponseDto loginMemberResponseDto = LoginMemberResponseDto.builder()
+			.email(member.getEmail())
+			.nickname(member.getNickname())
+			.profile(member.getProfile())
+			.build();
+
 		String accessToken = jwtTokenProvider.createToken(email);
 		redisService.setMemberWithDuration(accessToken, member, JwtTokenProvider.ACCESS_TOKEN_VALID_TIME);
 		return LoginResponseDto.builder()
 			.accessToken(accessToken)
-			.nickname(member.getNickname())
 			.hasInterest(hasInterest)
+			.loginMemberResponseDto(loginMemberResponseDto)
 			.build();
 	}
 

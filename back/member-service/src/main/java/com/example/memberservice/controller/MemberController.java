@@ -2,7 +2,6 @@ package com.example.memberservice.controller;
 
 import javax.validation.Valid;
 
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -20,6 +19,7 @@ import com.example.memberservice.dto.request.member.EmailRequestDto;
 import com.example.memberservice.dto.request.member.LoginRequestDto;
 import com.example.memberservice.dto.request.member.SignUpMemberRequestDto;
 import com.example.memberservice.dto.request.member.CheckEmailCodeRequestDto;
+import com.example.memberservice.dto.response.member.LoginMemberResponseDto;
 import com.example.memberservice.dto.response.member.LoginResponseDto;
 import com.example.memberservice.service.MemberServiceImpl;
 
@@ -101,16 +101,19 @@ public class MemberController {
 	 * @return
 	 */
 	@PostMapping("/login")
-	public ResponseEntity<BaseResponseDto> login(@Valid @RequestBody LoginRequestDto loginRequestDto) {
+	public ResponseEntity<BaseResponseDto<LoginMemberResponseDto>> login(
+		@Valid @RequestBody LoginRequestDto loginRequestDto) {
 		LoginResponseDto loginResponseDto = memberService.login(loginRequestDto);
 		if (loginResponseDto.isHasInterest()) {
 			return ResponseEntity.status(HttpStatus.OK)
 				.headers(loginResponseDto.toHeaders())
-				.body(new BaseResponseDto<>(200, "로그인에 성공했습니다."));
+				.body(new BaseResponseDto<LoginMemberResponseDto>(200, "로그인에 성공했습니다.",
+					loginResponseDto.getLoginMemberResponseDto()));
 		}
 		return ResponseEntity.status(HttpStatus.OK)
 			.headers(loginResponseDto.toHeaders())
-			.body(new BaseResponseDto<>(204, "선택된 관심사가 없습니다."));
+			.body(new BaseResponseDto<LoginMemberResponseDto>(204, "선택된 관심사가 없습니다.",
+				loginResponseDto.getLoginMemberResponseDto()));
 	}
 
 }
