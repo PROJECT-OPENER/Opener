@@ -243,6 +243,12 @@ public class MemberServiceImpl implements MemberService {
 		redisService.deleteData(token);
 	}
 
+	/**
+	 * 김윤미
+	 * explain : 사용자 닉네임 변경
+	 * @param memberDto : 사용자 정보
+	 * @param nicknameRequestDto : 변경 닉네임 정보
+	 */
 	@Override
 	@Transactional
 	public void updateNickname(MemberDto memberDto, NicknameRequestDto nicknameRequestDto) {
