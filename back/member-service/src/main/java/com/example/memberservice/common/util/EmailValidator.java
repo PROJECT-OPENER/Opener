@@ -14,7 +14,7 @@ public class EmailValidator implements ConstraintValidator<Email, String> {
 
 	@Override
 	public boolean isValid(String value, ConstraintValidatorContext context) {
-		if (value == null || value.trim() == "") {
+		if (value == null || value.trim().equals("")) {
 			throw new ApiException(ExceptionEnum.EMAIL_NULL_EXCEPTION);
 		}
 

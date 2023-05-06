@@ -15,8 +15,6 @@ import com.example.memberservice.common.util.MemberUtil;
 import com.example.memberservice.dto.BaseResponseDto;
 import com.example.memberservice.dto.MemberDto;
 import com.example.memberservice.dto.request.member.MemberInterestsRequestDto;
-import com.example.memberservice.dto.response.member.LoginMemberResponseDto;
-import com.example.memberservice.dto.response.member.LoginResponseDto;
 import com.example.memberservice.service.MemberServiceImpl;
 
 import lombok.RequiredArgsConstructor;

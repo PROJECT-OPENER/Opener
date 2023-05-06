@@ -13,6 +13,8 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.Email;
 
+import org.hibernate.annotations.DynamicUpdate;
+
 import com.example.memberservice.entity.BaseEntity;
 import com.example.memberservice.entity.member.enums.Gender;
 
@@ -27,6 +29,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
+@DynamicUpdate
 @Table(name = "member")
 public class Member extends BaseEntity {
 	@Id
@@ -63,5 +66,9 @@ public class Member extends BaseEntity {
 	public void setBaseDateInfo(LocalDateTime createDate, LocalDateTime lastModifiedDate) {
 		this.createDate = createDate;
 		this.lastModifiedDate = lastModifiedDate;
+	}
+
+	public void updateNickname(String nickname) {
+		this.nickname = nickname;
 	}
 }
