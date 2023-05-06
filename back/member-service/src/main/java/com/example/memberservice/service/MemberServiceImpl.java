@@ -201,7 +201,7 @@ public class MemberServiceImpl implements MemberService {
 		LoginMemberResponseDto loginMemberResponseDto = LoginMemberResponseDto.builder()
 			.email(member.getEmail())
 			.nickname(member.getNickname())
-			.profile(member.getProfile())
+			.profile(member.getProfile() == null ? baseImgUrl : member.getProfile())
 			.interests(interests)
 			.build();
 
