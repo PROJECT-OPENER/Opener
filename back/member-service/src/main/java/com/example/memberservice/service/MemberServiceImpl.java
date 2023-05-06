@@ -3,6 +3,7 @@ package com.example.memberservice.service;
 import static com.example.memberservice.entity.redis.RedisKey.*;
 
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -220,11 +221,11 @@ public class MemberServiceImpl implements MemberService {
 		Member member = memberDto.toEntity(memberDto);
 
 		interests.forEach((interestId) -> {
-			Interest interest = shadowingServiceClient.getInterest().getData().toEntity();
-			MemberInterest memberInterest = MemberInterest.builder()
-				.member(member)
-				.interest(interest)
-				.build();
+			Interest interest = shadowingServiceClient.getInterest(interestId)
+				.orElseThrow(() -> new ApiException(ExceptionEnum.INTEREST_NOT_FOUND))
+				.getData()
+				.toEntity();
+			MemberInterest memberInterest = MemberInterest.builder().member(member).interest(interest).build();
 			memberInterestRepository.save(memberInterest);
 		});
 	}
