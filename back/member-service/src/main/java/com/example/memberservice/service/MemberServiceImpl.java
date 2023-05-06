@@ -188,8 +188,7 @@ public class MemberServiceImpl implements MemberService {
 				.orElseThrow(() -> new ApiException(ExceptionEnum.INTEREST_NOT_FOUND))
 				.getData()
 				.getInterest())
-			.collect(
-				Collectors.toSet());
+			.collect(Collectors.toSet());
 
 		LoginMemberResponseDto loginMemberResponseDto = LoginMemberResponseDto.builder()
 			.email(member.getEmail())
@@ -277,5 +276,36 @@ public class MemberServiceImpl implements MemberService {
 		String encryptedPwd = bCryptPasswordEncoder.encode(passwordRequestDto.getPassword());
 
 		member.updatePassword(encryptedPwd);
+	}
+
+	/***
+	 * 김윤미
+	 * explain : 사용자 관심사 변경
+	 * @param memberDto : 사용자 정보
+	 * @param memberInterestsRequestDto : 변경 관심사 정보
+	 */
+	@Override
+	@Transactional
+	public void updateMemberInterests(MemberDto memberDto, MemberInterestsRequestDto memberInterestsRequestDto) {
+		Set<Long> interests = memberInterestsRequestDto.getInterests();
+
+		if (interests.size() < 2) {
+			throw new ApiException(ExceptionEnum.INSUFFICIENT_INTERESTS_EXCEPTION);
+		}
+
+		Member member = memberRepository.findById(memberDto.getMemberId())
+			.orElseThrow(() -> new ApiException(ExceptionEnum.MEMBER_NOT_FOUND_EXCEPTION));
+
+		memberInterestRepository.deleteAllInBatch(memberInterestRepository.findAllByMember(member));
+
+		interests.forEach((interestId) -> {
+			memberInterestRepository.save(MemberInterest.builder()
+				.member(member)
+				.interest(shadowingServiceClient.getInterest(interestId)
+					.orElseThrow(() -> new ApiException(ExceptionEnum.INTEREST_NOT_FOUND))
+					.getData()
+					.toEntity())
+				.build());
+		});
 	}
 }

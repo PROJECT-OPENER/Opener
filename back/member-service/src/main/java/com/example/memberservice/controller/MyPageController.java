@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.memberservice.common.util.MemberUtil;
 import com.example.memberservice.dto.BaseResponseDto;
 import com.example.memberservice.dto.MemberDto;
+import com.example.memberservice.dto.request.member.MemberInterestsRequestDto;
 import com.example.memberservice.dto.request.member.NicknameRequestDto;
 import com.example.memberservice.dto.request.member.PasswordRequestDto;
 import com.example.memberservice.service.MemberServiceImpl;
@@ -40,8 +41,7 @@ public class MyPageController {
 		@Valid @RequestBody NicknameRequestDto nicknameRequestDto) {
 		MemberDto memberDto = MemberUtil.getMember(request.getHeader("member"));
 		memberService.updateNickname(memberDto, nicknameRequestDto);
-		return ResponseEntity.status(HttpStatus.OK)
-			.body(new BaseResponseDto<>(200, "닉네임 변경에 성공했습니다."));
+		return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseDto<>(200, "닉네임 변경에 성공했습니다."));
 	}
 
 	/**
@@ -56,7 +56,21 @@ public class MyPageController {
 		@Valid @RequestBody PasswordRequestDto passwordRequestDto) {
 		MemberDto memberDto = MemberUtil.getMember(request.getHeader("member"));
 		memberService.updatePassword(memberDto, passwordRequestDto);
-		return ResponseEntity.status(HttpStatus.OK)
-			.body(new BaseResponseDto<>(200, "비밀번호 변경에 성공했습니다."));
+		return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseDto<>(200, "비밀번호 변경에 성공했습니다."));
+	}
+
+	/**
+	 * 김윤미
+	 * explain : 사용자 관심사 변경
+	 * @param request
+	 * @param memberInterestsRequestDto
+	 * @return
+	 */
+	@PatchMapping("/interests")
+	public ResponseEntity<BaseResponseDto> updateInterests(HttpServletRequest request,
+		@Valid @RequestBody MemberInterestsRequestDto memberInterestsRequestDto) {
+		MemberDto memberDto = MemberUtil.getMember(request.getHeader("member"));
+		memberService.updateMemberInterests(memberDto, memberInterestsRequestDto);
+		return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseDto<>(200, "관심사 변경에 성공했습니다."));
 	}
 }

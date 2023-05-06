@@ -39,4 +39,7 @@ public interface MemberService {
 
 	/** 비밀번호 변경 **/
 	void updatePassword(MemberDto memberDto, PasswordRequestDto passwordRequestDto);
+
+	/** 관심사 변경 **/
+	void updateMemberInterests(MemberDto memberDto, MemberInterestsRequestDto memberInterestsRequestDto);
 }
