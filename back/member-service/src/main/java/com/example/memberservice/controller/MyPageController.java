@@ -68,7 +68,7 @@ public class MyPageController {
 	 */
 	@PatchMapping("/interests")
 	public ResponseEntity<BaseResponseDto> updateInterests(HttpServletRequest request,
-		@Valid @RequestBody MemberInterestsRequestDto memberInterestsRequestDto) {
+		@RequestBody MemberInterestsRequestDto memberInterestsRequestDto) {
 		MemberDto memberDto = MemberUtil.getMember(request.getHeader("member"));
 		memberService.updateMemberInterests(memberDto, memberInterestsRequestDto);
 		return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseDto<>(200, "관심사 변경에 성공했습니다."));
