@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class LoginShadowingDetailDto {
-
+	private String videoUrl;
 	private LocalTime start;
 	private LocalTime end;
 	private String engCaption;
