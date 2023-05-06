@@ -18,7 +18,7 @@ import reactor.core.publisher.Mono;
 public class CorsConfig {
 	private static final String ALLOWED_HEADERS = "authorization, Content-Type, Content-Length, Authorization, credential, X-XSRF-TOKEN";
 	private static final String ALLOWED_METHODS = "GET, PUT, POST, DELETE, OPTIONS, PATCH";
-	private static final String EXPOSE_HEADERS = "*, Authorization";
+	private static final String EXPOSE_HEADERS = "accessToken, nickname";
 	private static final String MAX_AGE = "7200"; //2 hours (2 * 60 * 60)
 
 	@Bean
@@ -31,7 +31,7 @@ public class CorsConfig {
 				ServerHttpResponse response = ctx.getResponse();
 				HttpHeaders headers = response.getHeaders();
 
-				if (origin.startsWith("http://localhost:3000") || origin.startsWith("http://k8c104.p.ssafy.io")) {
+				if (origin.startsWith("http://localhost:3000") || origin.startsWith("http://k8c104.p.ssafy.io") || origin.startsWith("https://k8c104.p.ssafy.io")) {
 					headers.add("Access-Control-Allow-Origin", origin);
 				}
 

@@ -1,6 +1,6 @@
 'use client';
 
-import { interest } from '@/app/util/Interest';
+import { interest } from '@/util/Interest';
 import { useState } from 'react';
 import Button from '@/app/components/Button';
 

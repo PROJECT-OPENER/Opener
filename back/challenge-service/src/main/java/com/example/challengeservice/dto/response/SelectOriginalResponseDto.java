@@ -9,15 +9,15 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class SelectOriginalResponseDto {
-    OriginalChallengeResponseDto originalChallengeResponseDto;
-    int totalLength;
-    List<MemberChallengeResponseDto> memberChallengeResponseDtoList;
+    private OriginalChallengeResponseDto original;
+    private int totalLength;
+    private List<MemberChallengeResponseDto> memberChallengeList;
 
     public static SelectOriginalResponseDto from(OriginalChallengeResponseDto originalChallengeResponseDto, int totalLength, List<MemberChallengeResponseDto> memberChallengeResponseDtoList) {
         return SelectOriginalResponseDto.builder()
-                .originalChallengeResponseDto(originalChallengeResponseDto)
+                .original(originalChallengeResponseDto)
                 .totalLength(totalLength)
-                .memberChallengeResponseDtoList(memberChallengeResponseDtoList)
+                .memberChallengeList(memberChallengeResponseDtoList)
                 .build();
     }
 }

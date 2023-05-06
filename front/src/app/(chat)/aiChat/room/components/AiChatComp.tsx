@@ -7,7 +7,7 @@ import { BsVolumeUp } from 'react-icons/bs';
 import ProfileImage from '@/app/components/ProfileImage';
 import { openAiChatApi } from '@/app/api/openAi';
 import { useSearchParams } from 'next/navigation';
-import { handleChatLog } from '@/app/util/AiChat';
+import { handleChatLog } from '@/util/AiChat';
 
 interface Message {
   text: string;

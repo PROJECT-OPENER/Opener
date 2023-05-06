@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { userRegisterInterface } from '@/app/types/share';
+import { userRegisterInterface } from '@/types/share';
 import {
   AiOutlineCalendar,
   AiOutlineCheck,
@@ -12,7 +12,7 @@ import {
   AiOutlineUser,
 } from 'react-icons/ai';
 import { MdOutlineMailLock } from 'react-icons/md';
-import { handleDate, secToTime } from '@/app/util/Math';
+import { handleDate, secToTime } from '@/util/Math';
 import Button from '@/app/components/Button';
 import {
   emailAuthApi,
@@ -21,7 +21,6 @@ import {
   nicknameDuplicateCheckApi,
   registerApi,
 } from '@/app/api/userApi';
-import { AxiosError } from 'axios';
 
 const schema = yup
   .object({
@@ -127,6 +126,7 @@ const RegisterForm = () => {
       }
     } catch (err) {
       if (typeof err === 'string') return alert(err);
+      if (err instanceof yup.ValidationError) return alert(err.message);
       return alert('예상치 못한 오류가 발생했습니다.');
     }
   };
@@ -157,6 +157,7 @@ const RegisterForm = () => {
       if (emailAuthCheck) setIsSendEmail(!isSendEmail);
     } catch (err) {
       if (typeof err === 'string') return alert(err);
+      if (err instanceof yup.ValidationError) return alert(err.message);
       return alert('예상치 못한 오류가 발생했습니다.');
     }
   };
@@ -198,6 +199,7 @@ const RegisterForm = () => {
       }
     } catch (err) {
       if (typeof err === 'string') return alert(err);
+      if (err instanceof yup.ValidationError) return alert(err.message);
       return alert('예상치 못한 오류가 발생했습니다.');
     }
   };

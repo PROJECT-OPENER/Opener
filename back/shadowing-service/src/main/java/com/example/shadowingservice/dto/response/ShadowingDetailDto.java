@@ -15,6 +15,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class ShadowingDetailDto {
 
+	private String videoUrl;
 	private LocalTime start;
 	private LocalTime end;
 	private String engCaption;

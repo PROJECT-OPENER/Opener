@@ -3,11 +3,13 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import Image from 'next/image';
 import logo from 'public/images/logo.png';
-import { topNavNone } from '../util/navControl';
 import ProfileImage from './ProfileImage';
+import { useSession, signOut } from 'next-auth/react';
+import { topNavNone } from '@/util/navControl';
 
 const TopNav = () => {
-  const isAuthenticated = true;
+  const { data: session } = useSession();
+  console.log({ session });
   const pathname: string = usePathname();
 
   if (topNavNone.includes(pathname)) return <div></div>;
@@ -52,19 +54,28 @@ const TopNav = () => {
           </Link>
         </div>
         <div className="ml-[5rem]">
-          {isAuthenticated ? (
-            <Link href={'/mypage'}>
-              <ProfileImage
-                className="h-10 w-10 lg:h-12 lg:w-12 hover:cursor-pointer shadow-custom rounded-full"
-                profileUrl="/images/ai.png"
-                height={500}
-                width={500}
-              />
-            </Link>
+          {session ? (
+            <div className="flex space-x-3">
+              <button
+                type="button"
+                className="border-2 p-3 bg-red-200"
+                onClick={() => signOut()}
+              >
+                로그아웃
+              </button>
+              <Link href={'/mypage'}>
+                <ProfileImage
+                  className="h-10 w-10 lg:h-12 lg:w-12 hover:cursor-pointer shadow-custom rounded-full"
+                  profileUrl="/images/ai.png"
+                  height={500}
+                  width={500}
+                />
+              </Link>
+            </div>
           ) : (
             <div>
               <Link
-                href={'/login'}
+                href={'/auth/login'}
                 className="rounded-lg bg-[#636363] py-1 px-4 text-white hover:bg-[#4f4f4f] active:bg-[#2f2f2f]"
               >
                 로그인

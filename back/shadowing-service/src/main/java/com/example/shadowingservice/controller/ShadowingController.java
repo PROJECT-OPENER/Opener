@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.shadowingservice.dto.BaseListResponseDto;
 import com.example.shadowingservice.dto.BaseResponseDto;
 import com.example.shadowingservice.dto.request.IndexDto;
+import com.example.shadowingservice.dto.response.InterestResponseDto;
 import com.example.shadowingservice.dto.response.LoginShadowingDetailDto;
 import com.example.shadowingservice.dto.response.NoRoadMapResponseDto;
 import com.example.shadowingservice.dto.response.RecommendationDto;
@@ -39,6 +40,14 @@ public class ShadowingController {
 		System.out.println("asdfsdafsdf");
 		return "asadfsadfsdafasdf";
 	}
+
+	/**
+	 * 이우승
+	 * explain : 비로그인 카테고리 영상 목록 조회
+	 * @param category
+	 * @param indexDto
+	 * @return
+	 */
 
 	@GetMapping("/shadowings")
 	public ResponseEntity<BaseResponseDto<Object>> getCategoryList(@RequestParam String category,
@@ -105,4 +114,16 @@ public class ShadowingController {
 		return ResponseEntity.status(HttpStatus.OK)
 			.body(new BaseListResponseDto<>(200, "비로그인 추천 문장 불러오기 완료", recommendationDtoList));
 	}
+
+	@GetMapping("/interests/{interest-id}")
+	public ResponseEntity<BaseResponseDto<InterestResponseDto>> getInterest(
+		@PathVariable("interest-id") Long interestId) {
+
+		InterestResponseDto interestResponseDto = shadowingService.getInterest(interestId);
+
+		return ResponseEntity.status(HttpStatus.OK)
+			.body(new BaseResponseDto<>(200, "관심사 조회 성공", interestResponseDto));
+	}
+
+
 }

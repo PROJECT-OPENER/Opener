@@ -1,3 +1,4 @@
+'use client';
 type listType = {
   video_id: string;
   thumbnail_url: string;
@@ -28,8 +29,7 @@ const contents: contentType = {
     },
   ],
 };
-//----------------------------------------------------------------
-
+//----------------------------------------------------------------''
 import Link from 'next/link';
 import styles from './categories.module.css';
 import Image from 'next/image';
