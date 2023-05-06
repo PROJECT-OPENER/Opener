@@ -20,6 +20,7 @@ import com.example.memberservice.dto.MemberDto;
 import com.example.memberservice.dto.request.member.LoginRequestDto;
 import com.example.memberservice.dto.request.member.MemberInterestsRequestDto;
 import com.example.memberservice.dto.request.member.NicknameRequestDto;
+import com.example.memberservice.dto.request.member.PasswordRequestDto;
 import com.example.memberservice.dto.request.member.SignUpMemberRequestDto;
 import com.example.memberservice.dto.request.member.CheckEmailCodeRequestDto;
 import com.example.memberservice.dto.response.member.LoginMemberResponseDto;
@@ -259,5 +260,22 @@ public class MemberServiceImpl implements MemberService {
 		checkNickname(nickname);
 
 		member.updateNickname(nickname);
+	}
+
+	/**
+	 * 김윤미
+	 * explain : 사용자 비밀번호 변경
+	 * @param memberDto : 사용자 정보
+	 * @param passwordRequestDto : 변경 비밀번호 변경
+	 */
+	@Override
+	@Transactional
+	public void updatePassword(MemberDto memberDto, PasswordRequestDto passwordRequestDto) {
+		Member member = memberRepository.findById(memberDto.getMemberId())
+			.orElseThrow(() -> new ApiException(ExceptionEnum.MEMBER_NOT_FOUND_EXCEPTION));
+
+		String encryptedPwd = bCryptPasswordEncoder.encode(passwordRequestDto.getPassword());
+
+		member.updatePassword(encryptedPwd);
 	}
 }
