@@ -15,6 +15,7 @@ import com.example.memberservice.common.util.MemberUtil;
 import com.example.memberservice.dto.BaseResponseDto;
 import com.example.memberservice.dto.MemberDto;
 import com.example.memberservice.dto.request.member.NicknameRequestDto;
+import com.example.memberservice.dto.request.member.PasswordRequestDto;
 import com.example.memberservice.service.MemberServiceImpl;
 
 import lombok.RequiredArgsConstructor;
@@ -41,5 +42,21 @@ public class MyPageController {
 		memberService.updateNickname(memberDto, nicknameRequestDto);
 		return ResponseEntity.status(HttpStatus.OK)
 			.body(new BaseResponseDto<>(200, "닉네임 변경에 성공했습니다."));
+	}
+
+	/**
+	 * 김윤미
+	 * explain : 사용자 비밀번호 변경
+	 * @param request
+	 * @param passwordRequestDto
+	 * @return
+	 */
+	@PatchMapping("/password")
+	public ResponseEntity<BaseResponseDto> updatePassword(HttpServletRequest request,
+		@Valid @RequestBody PasswordRequestDto passwordRequestDto) {
+		MemberDto memberDto = MemberUtil.getMember(request.getHeader("member"));
+		memberService.updatePassword(memberDto, passwordRequestDto);
+		return ResponseEntity.status(HttpStatus.OK)
+			.body(new BaseResponseDto<>(200, "비밀번호 변경에 성공했습니다."));
 	}
 }
