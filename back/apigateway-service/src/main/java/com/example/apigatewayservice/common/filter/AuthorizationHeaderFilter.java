@@ -1,4 +1,4 @@
-package com.example.apigatewayservice.filter;
+package com.example.apigatewayservice.common.filter;
 
 import java.net.URLEncoder;
 import java.util.Base64;
@@ -62,6 +62,9 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
 
 			jwt = jwt.trim();
 			Object member = redisService.getMember(jwt);
+			if(member == null) {
+				return onError(exchange, "사용자 정보가 없습니다.", HttpStatus.NOT_FOUND);
+			}
 			MemberDto memberDto = mapper.convertValue(member, MemberDto.class);
 			try {
 				memberDto.setNickname(URLEncoder.encode(memberDto.getNickname(), "UTF-8"));
