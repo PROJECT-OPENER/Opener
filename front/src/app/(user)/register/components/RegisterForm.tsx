@@ -126,6 +126,7 @@ const RegisterForm = () => {
       }
     } catch (err) {
       if (typeof err === 'string') return alert(err);
+      if (err instanceof yup.ValidationError) return alert(err.message);
       return alert('예상치 못한 오류가 발생했습니다.');
     }
   };
@@ -156,6 +157,7 @@ const RegisterForm = () => {
       if (emailAuthCheck) setIsSendEmail(!isSendEmail);
     } catch (err) {
       if (typeof err === 'string') return alert(err);
+      if (err instanceof yup.ValidationError) return alert(err.message);
       return alert('예상치 못한 오류가 발생했습니다.');
     }
   };
@@ -197,6 +199,7 @@ const RegisterForm = () => {
       }
     } catch (err) {
       if (typeof err === 'string') return alert(err);
+      if (err instanceof yup.ValidationError) return alert(err.message);
       return alert('예상치 못한 오류가 발생했습니다.');
     }
   };
