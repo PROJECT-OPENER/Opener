@@ -3,7 +3,7 @@ import axios, { AxiosRequestConfig, AxiosResponse, AxiosError } from 'axios';
 import { getToken } from 'next-auth/jwt';
 import { getSession } from 'next-auth/react';
 import { NextRequest } from 'next/server';
-const BASE_URL = 'http://k8c104.p.ssafy.io:8000/';
+const BASE_URL = process.env.SERVER_URL;
 
 export const memberApi = axios.create({
   baseURL: BASE_URL + 'member-service',
