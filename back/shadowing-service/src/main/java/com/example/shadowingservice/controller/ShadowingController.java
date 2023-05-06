@@ -61,11 +61,12 @@ public class ShadowingController {
 			indexDto.toPageable());
 		int length = shadowingCategoryDtoList.size();
 
-		ShadowingCategoryResponseDto shadowingCategoryResponseDto = new ShadowingCategoryResponseDto(length,
-			shadowingCategoryDtoList);
-
 		return ResponseEntity.status(HttpStatus.OK)
-			.body(new BaseResponseDto<>(200, "영상 조회 완료", shadowingCategoryResponseDto));
+			.body(new BaseResponseDto<>(200, "영상 조회 완료", ShadowingCategoryResponseDto
+				.builder()
+				.length(length)
+				.shadowingCategoryDtoList(shadowingCategoryDtoList)
+				.build()));
 	}
 
 	/**
@@ -114,6 +115,8 @@ public class ShadowingController {
 		return ResponseEntity.status(HttpStatus.OK)
 			.body(new BaseListResponseDto<>(200, "비로그인 추천 문장 불러오기 완료", recommendationDtoList));
 	}
+
+	// ======================= 윤미가 다시 살림 ======================
 
 	@GetMapping("/interests/{interest-id}")
 	public ResponseEntity<BaseResponseDto<InterestResponseDto>> getInterest(

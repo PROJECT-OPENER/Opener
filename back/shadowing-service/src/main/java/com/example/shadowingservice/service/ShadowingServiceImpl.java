@@ -42,14 +42,14 @@ public class ShadowingServiceImpl implements ShadowingService {
 		System.out.println("service 시작");
 		Optional<Interest> interest = interestRepository.findByInterest(category);
 		System.out.println(interest.get().getInterestId());
-		List<ShadowingVideoInterest> videoIdList = shadowingVideoInterestRepository.findByInterest_InterestId(
-			interest.get().getInterestId());
-		System.out.println(videoIdList.get(0).getShadowingVideo().getVideoId());
-		// List<ShadowingVideo> shadowingCategoryDtoPage = shadowingVideoRepository.findByVideoIdIn(videoIdList, pageable);
-		// System.out.println(shadowingCategoryDtoPage.get(0).getVideoId());
-		System.out.println("===============================");
-		// return (List<ShadowingCategoryDto>)shadowingCategoryDtoPage;
-		return null;
+		System.out.println("========================================");
+
+		List<Long> videoIdList = shadowingVideoInterestRepository.findAllVideoId(interest.get().getInterestId());
+		System.out.println("vidoeIdList : " + videoIdList.get(0) + " , " + videoIdList.get(1));
+		System.out.println("=========================================");
+
+		List<ShadowingCategoryDto> shadowingVideoList = shadowingVideoRepository.getCategoryDotoList(videoIdList, pageable);
+		return shadowingVideoList;
 	}
 
 	// ======================== 쉐도잉 영상 조회 ====================================

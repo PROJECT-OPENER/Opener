@@ -1,6 +1,5 @@
 package com.example.shadowingservice.repository;
 
-
 import static com.example.shadowingservice.entity.shadowing.QBookmark.*;
 import static com.example.shadowingservice.entity.shadowing.QShadowingStatus.*;
 import static com.example.shadowingservice.entity.shadowing.QShadowingVideo.*;
@@ -13,13 +12,17 @@ import java.util.Optional;
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 
+import org.springframework.data.domain.Pageable;
+
 import com.example.shadowingservice.dto.response.LoginShadowingDetailDto;
 
 import com.example.shadowingservice.dto.response.RoadMapResponseDto;
+import com.example.shadowingservice.dto.response.ShadowingCategoryDto;
 import com.example.shadowingservice.entity.shadowing.ShadowingStatus;
 import com.example.shadowingservice.entity.shadowing.ShadowingVideo;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
@@ -97,8 +100,7 @@ public class ShadowingVideoRepositoryCustomImpl implements ShadowingVideoReposit
 	@Override
 	public List<RoadMapResponseDto> getRoadMapResponseDtoList() {
 
-		return queryFactory
-			.select(Projections.constructor(RoadMapResponseDto.class,
+		return queryFactory.select(Projections.constructor(RoadMapResponseDto.class,
 					shadowingVideo.videoId,
 					shadowingVideo.engSentence,
 					shadowingVideo.korSentence,
@@ -116,6 +118,27 @@ public class ShadowingVideoRepositoryCustomImpl implements ShadowingVideoReposit
 			.fetch();
 	}
 
+	// private Long videoId;
+	// private String thumbnailUrl;
+	// private String engSentence;
+	// private String korSentence;
+	@Override
+	public List<ShadowingCategoryDto> getCategoryDotoList(List<Long> videoIdList, Pageable pageable) {
+		BooleanExpression inVideoIdList = shadowingVideo.videoId.in(videoIdList);
 
+		return queryFactory.select(Projections.constructor(ShadowingCategoryDto.class,
+				shadowingVideo.videoId,
+				shadowingVideo.thumbnailUrl,
+				shadowingVideo.engSentence,
+				shadowingVideo.korSentence)
+			)
+			.from(shadowingVideo)
+			.where(inVideoIdList)
+			.offset(pageable.getOffset())
+			.limit(pageable.getPageSize())
+			.orderBy(shadowingVideo.videoId.asc())
+			.fetch();
+
+	}
 
 }
