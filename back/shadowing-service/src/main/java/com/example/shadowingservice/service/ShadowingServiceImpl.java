@@ -60,8 +60,8 @@ public class ShadowingServiceImpl implements ShadowingService {
 		ShadowingVideo shadowingVideo = shadowingVideoRepository.findByVideoId(videoId)
 			.orElseThrow(() -> new ApiException(ExceptionEnum.SHADOWING_NOT_FOUND_EXCEPTION));
 
-
 		return ShadowingDetailDto.builder()
+			.videoUrl(shadowingVideo.getVideoUrl())
 			.start(shadowingVideo.getStartTime())
 			.end(shadowingVideo.getEndTime())
 			.engCaption(shadowingVideo.getEngCaption())

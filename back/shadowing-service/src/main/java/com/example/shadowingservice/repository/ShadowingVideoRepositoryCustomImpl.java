@@ -84,6 +84,7 @@ public class ShadowingVideoRepositoryCustomImpl implements ShadowingVideoReposit
 		}
 
 		return Optional.of(new LoginShadowingDetailDto(
+			result.get(shadowingVideo.videoUrl),
 			result.get(shadowingVideo.startTime),
 			result.get(shadowingVideo.endTime),
 			result.get(shadowingVideo.engCaption),
