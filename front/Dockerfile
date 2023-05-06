@@ -17,4 +17,4 @@ FROM nginx:1.23.4-alpine
 
 COPY ./conf /etc/nginx/
 
-COPY --from=builder /app/dist /usr/share/nginx/html
+COPY --from=builder /app/out /usr/share/nginx/html
