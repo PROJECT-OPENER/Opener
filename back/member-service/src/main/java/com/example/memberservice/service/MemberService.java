@@ -3,6 +3,7 @@ package com.example.memberservice.service;
 import com.example.memberservice.dto.MemberDto;
 import com.example.memberservice.dto.request.member.LoginRequestDto;
 import com.example.memberservice.dto.request.member.MemberInterestsRequestDto;
+import com.example.memberservice.dto.request.member.NicknameRequestDto;
 import com.example.memberservice.dto.request.member.SignUpMemberRequestDto;
 import com.example.memberservice.dto.request.member.CheckEmailCodeRequestDto;
 import com.example.memberservice.dto.response.member.LoginResponseDto;
@@ -31,4 +32,7 @@ public interface MemberService {
 
 	/** 로그아웃 **/
 	void logout(String token);
+
+	/** 닉네임 변경 **/
+	void updateNickname(MemberDto memberDto, NicknameRequestDto nicknameRequestDto);
 }

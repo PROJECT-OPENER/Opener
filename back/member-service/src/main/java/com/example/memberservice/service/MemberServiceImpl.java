@@ -19,6 +19,7 @@ import com.example.memberservice.common.util.MailUtil;
 import com.example.memberservice.dto.MemberDto;
 import com.example.memberservice.dto.request.member.LoginRequestDto;
 import com.example.memberservice.dto.request.member.MemberInterestsRequestDto;
+import com.example.memberservice.dto.request.member.NicknameRequestDto;
 import com.example.memberservice.dto.request.member.SignUpMemberRequestDto;
 import com.example.memberservice.dto.request.member.CheckEmailCodeRequestDto;
 import com.example.memberservice.dto.response.member.LoginMemberResponseDto;
@@ -240,5 +241,17 @@ public class MemberServiceImpl implements MemberService {
 	@Transactional
 	public void logout(String token) {
 		redisService.deleteData(token);
+	}
+
+	@Override
+	@Transactional
+	public void updateNickname(MemberDto memberDto, NicknameRequestDto nicknameRequestDto) {
+		Member member = memberRepository.findById(memberDto.getMemberId())
+			.orElseThrow(() -> new ApiException(ExceptionEnum.MEMBER_NOT_FOUND_EXCEPTION));
+
+		String nickname = nicknameRequestDto.getNickname();
+		checkNickname(nickname);
+
+		member.updateNickname(nickname);
 	}
 }
