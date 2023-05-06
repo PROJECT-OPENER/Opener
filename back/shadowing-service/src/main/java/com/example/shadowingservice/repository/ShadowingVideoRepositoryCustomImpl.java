@@ -94,9 +94,9 @@ public class ShadowingVideoRepositoryCustomImpl implements ShadowingVideoReposit
 	}
 
 	@Override
-	public Optional<List<RoadMapResponseDto>> getRoadMapResponseDtoList() {
+	public List<RoadMapResponseDto> getRoadMapResponseDtoList() {
 
-		return Optional.ofNullable(queryFactory
+		return queryFactory
 			.select(Projections.constructor(RoadMapResponseDto.class,
 					shadowingVideo.videoId,
 					shadowingVideo.engSentence,
@@ -112,7 +112,7 @@ public class ShadowingVideoRepositoryCustomImpl implements ShadowingVideoReposit
 			.leftJoin(step)
 			.on(shadowingVideo.Step.stepId.eq(step.stepId))
 			.where(step.stepNo.eq(1).and(step.stepTheme.eq(1)))
-			.fetch());
+			.fetch();
 	}
 
 

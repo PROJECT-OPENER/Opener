@@ -57,46 +57,42 @@ public class ShadowingServiceImpl implements ShadowingService {
 	@Override
 	public ShadowingDetailDto getShadowingDetailDto(Long videoId) {
 		// ModelMapper mapper = new ModelMapper();
-		Optional<ShadowingVideo> shadowingVideo = shadowingVideoRepository.findByVideoId(videoId);
-		if (shadowingVideo.isEmpty()) {
-			throw new ApiException(ExceptionEnum.SHADOWING_NOT_FOUND_EXCEPTION);
-		}
+		ShadowingVideo shadowingVideo = shadowingVideoRepository.findByVideoId(videoId)
+			.orElseThrow(() -> new ApiException(ExceptionEnum.SHADOWING_NOT_FOUND_EXCEPTION));
+
 
 		return ShadowingDetailDto.builder()
-			.start(shadowingVideo.get().getStartTime())
-			.end(shadowingVideo.get().getEndTime())
-			.engCaption(shadowingVideo.get().getEngCaption())
-			.korCaption(shadowingVideo.get().getKorCaption())
+			.start(shadowingVideo.getStartTime())
+			.end(shadowingVideo.getEndTime())
+			.engCaption(shadowingVideo.getEngCaption())
+			.korCaption(shadowingVideo.getKorCaption())
 			.build();
 	}
 
 	@Override
 	public LoginShadowingDetailDto getLoginShadowingDetailDto(Long videoId, Long memberId) {
-		Optional<LoginShadowingDetailDto> loginShadowingDetailDto = shadowingVideoRepository
-			.getLoginShadowingDetailDto(videoId, memberId);
-		if (loginShadowingDetailDto.isEmpty()) {
-			throw new ApiException(ExceptionEnum.SHADOWING_NOT_FOUND_EXCEPTION);
-		}
-		return loginShadowingDetailDto.get();
+		LoginShadowingDetailDto loginShadowingDetailDto = shadowingVideoRepository
+			.getLoginShadowingDetailDto(videoId, memberId)
+			.orElseThrow(() -> new ApiException(ExceptionEnum.SHADOWING_NOT_FOUND_EXCEPTION));
+
+		return loginShadowingDetailDto;
 	}
 
 	// ======================== 메인 페이지 추천 로드맵 ===========================
 
 	@Override
 	public List<RoadMapResponseDto> getRoadMapList() {
-		Optional<List<RoadMapResponseDto>> roadMapResponseDtoList =
+		List<RoadMapResponseDto> roadMapResponseDtoList =
 			shadowingVideoRepository.getRoadMapResponseDtoList();
-		if (roadMapResponseDtoList.isEmpty()) {
-			throw new ApiException(ExceptionEnum.ROADMAPS_NOT_FOUND_EXCEPTION);
-		}
-		return roadMapResponseDtoList.get();
+
+		return roadMapResponseDtoList;
 	}
 
 	// =========================== 메인 페이지 추천 문장 ===========================
 
 	@Override
 	public List<RecommendationDto> getRecommendationList(Pageable pageable) {
-		Optional<List<ShadowingVideo>> recommendationList = shadowingVideoRepository
+		List<ShadowingVideo> recommendationList = shadowingVideoRepository
 			.findRecommendation(
 				pageable);
 		if (recommendationList.isEmpty()) {
@@ -104,7 +100,7 @@ public class ShadowingServiceImpl implements ShadowingService {
 		}
 
 		List<RecommendationDto> recommendationDtos = new ArrayList<>();
-		for (ShadowingVideo shadowingVideo : recommendationList.get()) {
+		for (ShadowingVideo shadowingVideo : recommendationList) {
 
 			recommendationDtos.add(
 				RecommendationDto.builder()
@@ -118,15 +114,15 @@ public class ShadowingServiceImpl implements ShadowingService {
 		return recommendationDtos;
 	}
 
+	// =========================== 관심사 조회 =========================
 	@Override
 	public InterestResponseDto getInterest(Long interestId) {
-		Optional<Interest> interest = interestRepository.findByInterestId(interestId);
-		if (interest.isEmpty()) {
-			throw new ApiException(ExceptionEnum.CATEGORY_NOT_FOUND_EXCEPTION);
-		}
+		Interest interest = interestRepository.findByInterestId(interestId)
+			.orElseThrow(() -> new ApiException(ExceptionEnum.CATEGORY_NOT_FOUND_EXCEPTION));
+
 		InterestResponseDto interestResponseDto = new InterestResponseDto(
-			interest.get().getInterestId(),
-			interest.get().getInterest()
+			interest.getInterestId(),
+			interest.getInterest()
 		);
 		return InterestResponseDto.builder()
 			.interestId(interestResponseDto.getInterestId())
