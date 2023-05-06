@@ -230,4 +230,15 @@ public class MemberServiceImpl implements MemberService {
 			memberInterestRepository.save(memberInterest);
 		});
 	}
+
+	/**
+	 * 김윤미
+	 * explain : 로그아웃 - Redis에서 사용자 정보 삭제
+	 * @param token : 사용자 토큰
+	 */
+	@Override
+	@Transactional
+	public void logout(String token) {
+		redisService.deleteData(token);
+	}
 }
