@@ -179,10 +179,20 @@ public class MemberServiceImpl implements MemberService {
 		int memberInterests = memberInterestRepository.countDistinctInterestIdsByMember(member);
 		boolean hasInterest = memberInterests >= 2 ? true : false;
 
+		Set<String> interests = memberInterestRepository.findAllByMember(member)
+			.stream()
+			.map(memberInterest -> shadowingServiceClient.getInterest(memberInterest.getInterest().getInterestId())
+				.orElseThrow(() -> new ApiException(ExceptionEnum.INTEREST_NOT_FOUND))
+				.getData()
+				.getInterest())
+			.collect(
+				Collectors.toSet());
+
 		LoginMemberResponseDto loginMemberResponseDto = LoginMemberResponseDto.builder()
 			.email(member.getEmail())
 			.nickname(member.getNickname())
 			.profile(member.getProfile())
+			.interests(interests)
 			.build();
 
 		String accessToken = jwtTokenProvider.createToken(email);

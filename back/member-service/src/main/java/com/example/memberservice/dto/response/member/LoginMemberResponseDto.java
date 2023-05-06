@@ -1,5 +1,7 @@
 package com.example.memberservice.dto.response.member;
 
+import java.util.Set;
+
 import lombok.Builder;
 import lombok.Getter;
 
@@ -9,9 +11,5 @@ public class LoginMemberResponseDto {
 	private String email;
 	private String nickname;
 	private String profile;
-
-	/**
-	 * TODO: 사용자 관심사
-	 */
-	// private Set<String> interests;
+	private Set<String> interests;
 }
