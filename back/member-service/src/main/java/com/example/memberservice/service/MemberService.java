@@ -5,6 +5,7 @@ import com.example.memberservice.dto.request.member.LoginRequestDto;
 import com.example.memberservice.dto.request.member.MemberInterestsRequestDto;
 import com.example.memberservice.dto.request.member.NicknameRequestDto;
 import com.example.memberservice.dto.request.member.PasswordRequestDto;
+import com.example.memberservice.dto.request.member.ProfileImgRequestDto;
 import com.example.memberservice.dto.request.member.SignUpMemberRequestDto;
 import com.example.memberservice.dto.request.member.CheckEmailCodeRequestDto;
 import com.example.memberservice.dto.response.member.LoginResponseDto;
@@ -42,4 +43,7 @@ public interface MemberService {
 
 	/** 관심사 변경 **/
 	void updateMemberInterests(MemberDto memberDto, MemberInterestsRequestDto memberInterestsRequestDto);
+
+	/** 프로필 사진 변경 **/
+	void updateProfileImg(MemberDto memberDto, ProfileImgRequestDto profileImgRequestDto);
 }

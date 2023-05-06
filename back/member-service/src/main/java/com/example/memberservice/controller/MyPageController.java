@@ -6,6 +6,7 @@ import javax.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,6 +18,7 @@ import com.example.memberservice.dto.MemberDto;
 import com.example.memberservice.dto.request.member.MemberInterestsRequestDto;
 import com.example.memberservice.dto.request.member.NicknameRequestDto;
 import com.example.memberservice.dto.request.member.PasswordRequestDto;
+import com.example.memberservice.dto.request.member.ProfileImgRequestDto;
 import com.example.memberservice.service.MemberServiceImpl;
 
 import lombok.RequiredArgsConstructor;
@@ -72,5 +74,20 @@ public class MyPageController {
 		MemberDto memberDto = MemberUtil.getMember(request.getHeader("member"));
 		memberService.updateMemberInterests(memberDto, memberInterestsRequestDto);
 		return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseDto<>(200, "관심사 변경에 성공했습니다."));
+	}
+
+	/**
+	 * 김윤미
+	 * explain : 사용자 프로필 사진 변경
+	 * @param request
+	 * @param profileImgRequestDto
+	 * @return
+	 */
+	@PatchMapping("/image")
+	public ResponseEntity<BaseResponseDto> updateProfileImg(HttpServletRequest request,
+		@ModelAttribute ProfileImgRequestDto profileImgRequestDto) {
+		MemberDto memberDto = MemberUtil.getMember(request.getHeader("member"));
+		memberService.updateProfileImg(memberDto, profileImgRequestDto);
+		return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseDto<>(200, "프로필 사진 변경에 성공했습니다."));
 	}
 }

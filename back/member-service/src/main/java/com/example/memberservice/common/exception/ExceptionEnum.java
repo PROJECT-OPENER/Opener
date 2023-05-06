@@ -27,6 +27,7 @@ public enum ExceptionEnum {
 	MEMBER_NOT_FOUND_EXCEPTION(HttpStatus.NOT_FOUND, -116, "가입된 사용자가 아닙니다."),
 	WRONG_PASSWORD_EXCEPTION(HttpStatus.BAD_REQUEST, -117, "비밀번호가 틀렸습니다."),
 	INSUFFICIENT_INTERESTS_EXCEPTION(HttpStatus.BAD_REQUEST, -119, "2개 이상의 관심사를 선택해주세요."),
+	PROFILE_UPLOAD_EXCEPTION(HttpStatus.FORBIDDEN, -120, "프로필 이미지 변경에 실패했습니다."),
 	INTEREST_NOT_FOUND(HttpStatus.NOT_FOUND, -122, "존재하지 않는 관심사입니다."),
 	;
 	private final HttpStatus status;
