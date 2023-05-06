@@ -212,6 +212,7 @@ public class MemberServiceImpl implements MemberService {
 	 * @param memberDto : 현재 사용자 정보
 	 */
 	@Override
+	@Transactional
 	public void createInterests(MemberInterestsRequestDto memberInterestsRequestDto, MemberDto memberDto) {
 		Set<Long> interests = memberInterestsRequestDto.getInterests();
 
@@ -228,5 +229,16 @@ public class MemberServiceImpl implements MemberService {
 			MemberInterest memberInterest = MemberInterest.builder().member(member).interest(interest).build();
 			memberInterestRepository.save(memberInterest);
 		});
+	}
+
+	/**
+	 * 김윤미
+	 * explain : 로그아웃 - Redis에서 사용자 정보 삭제
+	 * @param token : 사용자 토큰
+	 */
+	@Override
+	@Transactional
+	public void logout(String token) {
+		redisService.deleteData(token);
 	}
 }

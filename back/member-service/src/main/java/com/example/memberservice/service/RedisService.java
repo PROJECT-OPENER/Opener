@@ -33,7 +33,9 @@ public class RedisService {
 	 * @param key : key
 	 */
 	public void deleteData(String key) {
-		redisTemplate.delete(key);
+		if (this.getData(key) != null) {
+			redisTemplate.delete(key);
+		}
 	}
 
 	/**

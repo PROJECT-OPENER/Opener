@@ -28,4 +28,7 @@ public interface MemberService {
 
 	/** 사용자 최초 관심사 등록 **/
 	void createInterests(MemberInterestsRequestDto memberInterestsRequestDto, MemberDto member);
+
+	/** 로그아웃 **/
+	void logout(String token);
 }
