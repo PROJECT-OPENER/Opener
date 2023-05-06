@@ -26,7 +26,7 @@ public class ShadowingVideoInterest {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long ShadowingVideoInterestId;
+	private Long shadowingVideoInterestId;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "video_id", nullable = false)

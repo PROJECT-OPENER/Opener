@@ -10,4 +10,5 @@ public interface ShadowingVideoRepositoryCustom {
 
 	List<RoadMapResponseDto> getRoadMapResponseDtoList();
 
+
 }
