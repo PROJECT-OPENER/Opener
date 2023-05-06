@@ -1,10 +1,10 @@
 import React from 'react';
-import Test from './components/Test';
+import ChatRoom from './components/ChatRoom';
 
 const page = () => {
   return (
     <div>
-      <Test />
+      <ChatRoom />
     </div>
   );
 };
