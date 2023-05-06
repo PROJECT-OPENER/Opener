@@ -9,6 +9,10 @@ RUN npm install
 
 COPY . .
 
+ENV NODE_OPTIONS=--max_old_space_size=2048
+
+CMD npm run build
+
 EXPOSE 3000
 
-CMD [ "npm", "start" ]
+CMD npm run start
