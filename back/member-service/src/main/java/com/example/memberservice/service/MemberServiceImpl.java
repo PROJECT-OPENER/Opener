@@ -266,7 +266,7 @@ public class MemberServiceImpl implements MemberService {
 	 * 김윤미
 	 * explain : 사용자 비밀번호 변경
 	 * @param memberDto : 사용자 정보
-	 * @param passwordRequestDto : 변경 비밀번호 변경
+	 * @param passwordRequestDto : 변경 비밀번호 정보
 	 */
 	@Override
 	@Transactional
