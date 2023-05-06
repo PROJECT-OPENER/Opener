@@ -212,6 +212,7 @@ public class MemberServiceImpl implements MemberService {
 	 * @param memberDto : 현재 사용자 정보
 	 */
 	@Override
+	@Transactional
 	public void createInterests(MemberInterestsRequestDto memberInterestsRequestDto, MemberDto memberDto) {
 		Set<Long> interests = memberInterestsRequestDto.getInterests();
 
