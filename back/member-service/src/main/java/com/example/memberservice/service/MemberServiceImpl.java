@@ -5,22 +5,26 @@ import static com.example.memberservice.entity.redis.RedisKey.*;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.example.memberservice.client.ShadowingServiceClient;
 import com.example.memberservice.common.config.security.JwtTokenProvider;
 import com.example.memberservice.common.exception.ApiException;
 import com.example.memberservice.common.exception.ExceptionEnum;
+import com.example.memberservice.common.util.AwsS3Uploader;
 import com.example.memberservice.common.util.MailUtil;
 import com.example.memberservice.dto.MemberDto;
 import com.example.memberservice.dto.request.member.LoginRequestDto;
 import com.example.memberservice.dto.request.member.MemberInterestsRequestDto;
 import com.example.memberservice.dto.request.member.NicknameRequestDto;
 import com.example.memberservice.dto.request.member.PasswordRequestDto;
+import com.example.memberservice.dto.request.member.ProfileImgRequestDto;
 import com.example.memberservice.dto.request.member.SignUpMemberRequestDto;
 import com.example.memberservice.dto.request.member.CheckEmailCodeRequestDto;
 import com.example.memberservice.dto.response.member.LoginMemberResponseDto;
@@ -47,6 +51,10 @@ public class MemberServiceImpl implements MemberService {
 	private final JwtTokenProvider jwtTokenProvider;
 	private final ShadowingServiceClient shadowingServiceClient;
 	private final KafkaProducer kafkaProducer;
+	private final AwsS3Uploader awsS3Uploader;
+
+	@Value("${spring.img.baseurl}")
+	private String baseImgUrl;
 
 	/**
 	 * 김윤미
@@ -307,5 +315,22 @@ public class MemberServiceImpl implements MemberService {
 					.toEntity())
 				.build());
 		});
+	}
+
+	/**
+	 * 김윤미
+	 * explain : 사용자 프로필 사진 변경
+	 * @param memberDto : 사용자 정보
+	 * @param profileImgRequestDto : 프로필 사진 데이터 정보
+	 */
+	@Override
+	@Transactional
+	public void updateProfileImg(MemberDto memberDto, ProfileImgRequestDto profileImgRequestDto) {
+		Member member = memberRepository.findById(memberDto.getMemberId())
+			.orElseThrow(() -> new ApiException(ExceptionEnum.MEMBER_NOT_FOUND_EXCEPTION));
+
+		MultipartFile profileImg = profileImgRequestDto.getProfileImg();
+		String profileImgUrl = profileImg == null ? null : awsS3Uploader.uploadImage(profileImg);
+		member.updateProfile(profileImgUrl);
 	}
 }
