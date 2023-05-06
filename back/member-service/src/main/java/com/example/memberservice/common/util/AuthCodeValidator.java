@@ -11,7 +11,7 @@ public class AuthCodeValidator implements ConstraintValidator<AuthCode, String> 
 
 	@Override
 	public boolean isValid(String value, ConstraintValidatorContext context) {
-		if (value == null || value.trim() == "") {
+		if (value == null || value.trim().equals("")) {
 			throw new ApiException(ExceptionEnum.AUTH_CODE_NULL_EXCEPTION);
 		}
 
