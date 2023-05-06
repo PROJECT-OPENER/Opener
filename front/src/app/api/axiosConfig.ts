@@ -1,8 +1,7 @@
 import { responseInterface } from '@/types/share';
 import axios, { AxiosRequestConfig, AxiosResponse, AxiosError } from 'axios';
-import { getToken } from 'next-auth/jwt';
 import { getSession } from 'next-auth/react';
-import { NextRequest } from 'next/server';
+
 const BASE_URL = process.env.NEXT_PUBLIC_SERVER_URL;
 
 export const memberApi = axios.create({
@@ -19,7 +18,7 @@ const setAuthTokenHeader = async (
   config: AxiosRequestConfig,
 ): Promise<AxiosRequestConfig> => {
   const session = await getSession();
-  const accessToken = session?.user?.user?.accessToken;
+  const accessToken = session?.user.user?.accessToken;
 
   if (accessToken) {
     config.headers = {

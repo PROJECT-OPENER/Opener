@@ -37,12 +37,12 @@ const handler = NextAuth({
             }),
           },
         );
-        console.log('res : ', res);
+        // console.log('res : ', res);
         // console.log('res : ', res.headers.get('nickname'));
         // const user = await decodeURI(res.headers.get('nickname') as string);
         const user = await res.json();
 
-        console.log('user : ', { user });
+        // console.log('user : ', { user });
         // 에러 핸들링 : 커스텀 에러 핸들리을 위해 에러코드를 searchParams로 넘긴다.
         // 에러코드는 member-service의 ErrorCode를 참고한다.
         // 넘긴 코드를 바탕으로 LoginFrom.tsx에서 처리
@@ -77,7 +77,7 @@ const handler = NextAuth({
       // await console.log('token : ', token);
       // console.log('users : ', users);
       session.user = token;
-      console.log('session : ', session);
+      // console.log('session : ', session);
       return session;
     },
     // async redirect({ url, baseUrl }) {
