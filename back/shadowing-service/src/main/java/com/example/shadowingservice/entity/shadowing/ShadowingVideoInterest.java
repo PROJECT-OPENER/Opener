@@ -1,7 +1,4 @@
-package com.example.shadowingservice.entity;
-
-import java.io.Serializable;
-import java.time.LocalTime;
+package com.example.shadowingservice.entity.shadowing;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -11,6 +8,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
+import com.example.shadowingservice.entity.BaseEntity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,22 +23,18 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "shadowingvideo")
-public class ShadowingVideo implements Serializable {
+@Table(name = "shadowingvideointerest")
+public class ShadowingVideoInterest extends BaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long videoId;
-	private String thumbnailUrl;
-	private String videoUrl;
-	private LocalTime startTime;
-	private LocalTime endTime;
+	private Long shadowingVideoInterestId;
+
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "step_id", nullable = false)
-	private Step Step;
-	private String engSentence;
-	private String korSentence;
-	private String engCaption;
-	private String korCaption;
+	@JoinColumn(name = "video_id", nullable = false)
+	private ShadowingVideo shadowingVideo;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "interest_id", nullable = false)
+	private Interest interest;
 
 }

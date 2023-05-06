@@ -15,9 +15,9 @@ import com.example.shadowingservice.dto.response.RecommendationDto;
 import com.example.shadowingservice.dto.response.RoadMapResponseDto;
 import com.example.shadowingservice.dto.response.ShadowingCategoryDto;
 import com.example.shadowingservice.dto.response.ShadowingDetailDto;
-import com.example.shadowingservice.entity.Interest;
-import com.example.shadowingservice.entity.ShadowingVideo;
-import com.example.shadowingservice.entity.ShadowingVideoInterest;
+import com.example.shadowingservice.entity.shadowing.Interest;
+import com.example.shadowingservice.entity.shadowing.ShadowingVideo;
+import com.example.shadowingservice.entity.shadowing.ShadowingVideoInterest;
 import com.example.shadowingservice.repository.BookmarkRepository;
 import com.example.shadowingservice.repository.InterestRepository;
 import com.example.shadowingservice.repository.ShadowingVideoInterestRepository;
@@ -42,7 +42,8 @@ public class ShadowingServiceImpl implements ShadowingService {
 		System.out.println("service 시작");
 		Optional<Interest> interest = interestRepository.findByInterest(category);
 		System.out.println(interest.get().getInterestId());
-		List<ShadowingVideoInterest> videoIdList = shadowingVideoInterestRepository.findByInterest_InterestId(interest.get().getInterestId());
+		List<ShadowingVideoInterest> videoIdList = shadowingVideoInterestRepository.findByInterest_InterestId(
+			interest.get().getInterestId());
 		System.out.println(videoIdList.get(0).getShadowingVideo().getVideoId());
 		// List<ShadowingVideo> shadowingCategoryDtoPage = shadowingVideoRepository.findByVideoIdIn(videoIdList, pageable);
 		// System.out.println(shadowingCategoryDtoPage.get(0).getVideoId());
@@ -56,46 +57,63 @@ public class ShadowingServiceImpl implements ShadowingService {
 	@Override
 	public ShadowingDetailDto getShadowingDetailDto(Long videoId) {
 		// ModelMapper mapper = new ModelMapper();
-		ShadowingVideo shadowingVideo = shadowingVideoRepository.findByVideoId(videoId);
-		ShadowingDetailDto shadowingDetailDto = new ShadowingDetailDto(
-			shadowingVideo.getStartTime(), shadowingVideo.getEndTime(),
-			shadowingVideo.getEngCaption(), shadowingVideo.getKorCaption()
-		);
-		return shadowingDetailDto;
+		Optional<ShadowingVideo> shadowingVideo = shadowingVideoRepository.findByVideoId(videoId);
+		if (shadowingVideo.isEmpty()) {
+			throw new ApiException(ExceptionEnum.SHADOWING_NOT_FOUND_EXCEPTION);
+		}
+
+		return ShadowingDetailDto.builder()
+			.start(shadowingVideo.get().getStartTime())
+			.end(shadowingVideo.get().getEndTime())
+			.engCaption(shadowingVideo.get().getEngCaption())
+			.korCaption(shadowingVideo.get().getKorCaption())
+			.build();
 	}
 
 	@Override
-	public LoginShadowingDetailDto getLoginShadowingDetailDto(Long videoId,Long memberId) {
-		LoginShadowingDetailDto loginShadowingDetailDto = shadowingVideoRepository
+	public LoginShadowingDetailDto getLoginShadowingDetailDto(Long videoId, Long memberId) {
+		Optional<LoginShadowingDetailDto> loginShadowingDetailDto = shadowingVideoRepository
 			.getLoginShadowingDetailDto(videoId, memberId);
-		return loginShadowingDetailDto;
+		if (loginShadowingDetailDto.isEmpty()) {
+			throw new ApiException(ExceptionEnum.SHADOWING_NOT_FOUND_EXCEPTION);
+		}
+		return loginShadowingDetailDto.get();
 	}
 
 	// ======================== 메인 페이지 추천 로드맵 ===========================
 
 	@Override
 	public List<RoadMapResponseDto> getRoadMapList() {
-		List<RoadMapResponseDto> roadMapResponseDtoList = shadowingVideoRepository.getRoadMapResponseDtoList();
-		return roadMapResponseDtoList;
+		Optional<List<RoadMapResponseDto>> roadMapResponseDtoList =
+			shadowingVideoRepository.getRoadMapResponseDtoList();
+		if (roadMapResponseDtoList.isEmpty()) {
+			throw new ApiException(ExceptionEnum.ROADMAPS_NOT_FOUND_EXCEPTION);
+		}
+		return roadMapResponseDtoList.get();
 	}
 
 	// =========================== 메인 페이지 추천 문장 ===========================
 
 	@Override
 	public List<RecommendationDto> getRecommendationList(Pageable pageable) {
-		List<ShadowingVideo> recommendationList = shadowingVideoRepository
+		Optional<List<ShadowingVideo>> recommendationList = shadowingVideoRepository
 			.findRecommendation(
 				pageable);
+		if (recommendationList.isEmpty()) {
+			throw new ApiException(ExceptionEnum.RECOMMENDATIONS_NOT_FOUND_EXCEPTION);
+		}
 
 		List<RecommendationDto> recommendationDtos = new ArrayList<>();
-		for (ShadowingVideo shadowingVideo : recommendationList) {
-			RecommendationDto recommendationDto = new RecommendationDto(
-				shadowingVideo.getVideoId(),
-				shadowingVideo.getThumbnailUrl(),
-				shadowingVideo.getEngSentence(),
-				shadowingVideo.getKorSentence()
+		for (ShadowingVideo shadowingVideo : recommendationList.get()) {
+
+			recommendationDtos.add(
+				RecommendationDto.builder()
+					.videoId(shadowingVideo.getVideoId())
+					.thumbnailUrl(shadowingVideo.getThumbnailUrl())
+					.engSentence(shadowingVideo.getEngSentence())
+					.korSentence(shadowingVideo.getKorSentence())
+					.build()
 			);
-			recommendationDtos.add(recommendationDto);
 		}
 		return recommendationDtos;
 	}
@@ -103,14 +121,17 @@ public class ShadowingServiceImpl implements ShadowingService {
 	@Override
 	public InterestResponseDto getInterest(Long interestId) {
 		Optional<Interest> interest = interestRepository.findByInterestId(interestId);
-		if(interest.isEmpty()) {
+		if (interest.isEmpty()) {
 			throw new ApiException(ExceptionEnum.CATEGORY_NOT_FOUND_EXCEPTION);
 		}
 		InterestResponseDto interestResponseDto = new InterestResponseDto(
 			interest.get().getInterestId(),
 			interest.get().getInterest()
 		);
-		return interestResponseDto;
+		return InterestResponseDto.builder()
+			.interestId(interestResponseDto.getInterestId())
+			.interest(interestResponseDto.getInterest())
+			.build();
 	}
 
 }

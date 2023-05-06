@@ -1,4 +1,4 @@
-package com.example.shadowingservice.entity;
+package com.example.shadowingservice.entity.shadowing;
 
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -13,6 +13,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.example.shadowingservice.entity.BaseEntity;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -26,7 +28,7 @@ import lombok.Setter;
 @Builder
 @Entity
 @Table(name = "shadowingstatus")
-public class ShadowingStatus implements Serializable {
+public class ShadowingStatus extends BaseEntity {
 
 	public ShadowingStatus(Long memberId, ShadowingVideo shadowingVideo, int repeatCount,
 		LocalDate statusDate) {

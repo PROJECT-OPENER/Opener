@@ -1,13 +1,14 @@
 package com.example.shadowingservice.repository;
 
-import static com.example.shadowingservice.entity.QBookmark.*;
-import static com.example.shadowingservice.entity.QShadowingStatus.*;
-import static com.example.shadowingservice.entity.QShadowingVideo.*;
-import static com.example.shadowingservice.entity.QStep.*;
+
+import static com.example.shadowingservice.entity.shadowing.QBookmark.*;
+import static com.example.shadowingservice.entity.shadowing.QShadowingStatus.*;
+import static com.example.shadowingservice.entity.shadowing.QShadowingVideo.*;
+import static com.example.shadowingservice.entity.shadowing.QStep.*;
 
 import java.time.LocalDate;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
@@ -15,8 +16,8 @@ import javax.transaction.Transactional;
 import com.example.shadowingservice.dto.response.LoginShadowingDetailDto;
 
 import com.example.shadowingservice.dto.response.RoadMapResponseDto;
-import com.example.shadowingservice.entity.ShadowingStatus;
-import com.example.shadowingservice.entity.ShadowingVideo;
+import com.example.shadowingservice.entity.shadowing.ShadowingStatus;
+import com.example.shadowingservice.entity.shadowing.ShadowingVideo;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.Expressions;
@@ -33,13 +34,14 @@ public class ShadowingVideoRepositoryCustomImpl implements ShadowingVideoReposit
 	/**
 	 * 해당 유저의 학습 데이터와 북마크 데이터가 있는지 확인하고
 	 * 학습 데이터가 없으면 생성, 북마크가 없으면 isMarked에 false처리
+	 *
 	 * @param videoId
 	 * @param memberId
 	 * @return
 	 */
 	@Override
 	@Transactional
-	public LoginShadowingDetailDto getLoginShadowingDetailDto(Long videoId, Long memberId) {
+	public Optional<LoginShadowingDetailDto> getLoginShadowingDetailDto(Long videoId, Long memberId) {
 
 		Tuple result = queryFactory
 			.select(shadowingVideo.startTime,
@@ -81,20 +83,20 @@ public class ShadowingVideoRepositoryCustomImpl implements ShadowingVideoReposit
 			isMarked = true;
 		}
 
-		return new LoginShadowingDetailDto(
+		return Optional.of(new LoginShadowingDetailDto(
 			result.get(shadowingVideo.startTime),
 			result.get(shadowingVideo.endTime),
 			result.get(shadowingVideo.engCaption),
 			result.get(shadowingVideo.korCaption),
 			repeatCount,
 			isMarked
-		);
+		));
 	}
 
 	@Override
-	public List<RoadMapResponseDto> getRoadMapResponseDtoList() {
+	public Optional<List<RoadMapResponseDto>> getRoadMapResponseDtoList() {
 
-		return queryFactory
+		return Optional.ofNullable(queryFactory
 			.select(Projections.constructor(RoadMapResponseDto.class,
 					shadowingVideo.videoId,
 					shadowingVideo.engSentence,
@@ -110,7 +112,7 @@ public class ShadowingVideoRepositoryCustomImpl implements ShadowingVideoReposit
 			.leftJoin(step)
 			.on(shadowingVideo.Step.stepId.eq(step.stepId))
 			.where(step.stepNo.eq(1).and(step.stepTheme.eq(1)))
-			.fetch();
+			.fetch());
 	}
 
 
