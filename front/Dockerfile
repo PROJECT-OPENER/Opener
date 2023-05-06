@@ -7,14 +7,8 @@ COPY package*.json ./
 
 RUN npm install
 
-COPY . ./
+COPY . .
 
-ENV NODE_OPTIONS=--max_old_space_size=2048
+EXPOSE 3000
 
-RUN npm run build
-
-FROM nginx:1.23.4-alpine
-
-COPY ./conf /etc/nginx/
-
-COPY --from=builder /app/out /usr/share/nginx/html
+CMD [ "npm", "start" ]
