@@ -1,8 +1,8 @@
-package com.example.shadowingservice.entity;
+package com.example.shadowingservice.entity.shadowing;
 
 import java.io.Serializable;
+import java.time.LocalTime;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -12,6 +12,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.example.shadowingservice.entity.BaseEntity;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,20 +22,26 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "bookmark")
-public class Bookmark implements Serializable {
+@Table(name = "shadowingvideo")
+public class ShadowingVideo extends BaseEntity {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long bookmarkId;
-	@Column(nullable = false)
-	private Long memberId;
+	private Long videoId;
+	private String thumbnailUrl;
+	private String videoUrl;
+	private LocalTime startTime;
+	private LocalTime endTime;
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "video_id", nullable = false)
-	private ShadowingVideo shadowingVideo;
-	private Boolean isMarked;
+	@JoinColumn(name = "step_id", nullable = false)
+	private Step Step;
+	private String engSentence;
+	private String korSentence;
+	private String engCaption;
+	private String korCaption;
 
 }

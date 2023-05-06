@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.example.shadowingservice.entity.ShadowingVideoInterest;
+import com.example.shadowingservice.entity.shadowing.ShadowingVideoInterest;
 
 public interface ShadowingVideoInterestRepository extends JpaRepository<ShadowingVideoInterest, Long> {
 

@@ -1,15 +1,14 @@
-package com.example.shadowingservice.entity;
+package com.example.shadowingservice.entity.shadowing;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import com.example.shadowingservice.entity.BaseEntity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,11 +22,12 @@ import lombok.Setter;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "interest")
-public class Interest implements Serializable {
+@Table(name = "step")
+public class Step extends BaseEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long interestId;
-	private String interest;
-
+	private Long stepId;
+	private int stepNo;
+	private int stepTheme;
+	private int sentenceNo;
 }
