@@ -13,8 +13,9 @@
   position: relative;
   padding-bottom: 56.25%;
   padding-top: 30px;
-  height: 0;
   overflow: hidden;
+  width: 100%;
+  background-color: black;
 }
 
 .videoContainer iframe,
@@ -26,30 +27,39 @@
   width: 100%;
   height: 100%;
 }
-.content {
-  width: 100%;
-  padding: 1.2rem 2rem;
-}
-.scriptBox,
-.dictBox {
-  position: relative;
-  width: 100%;
-  border-radius: 10px;
-  min-height: 200px;
-  background-color: #fff;
-  box-shadow: 0 2px 30px 0 rgb(0 0 0 / 10%);
-  padding: 1.5rem 2rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-.dictBox {
-  margin-top: 1rem;
-}
 
 @media screen and (min-width: 1024px) {
-  .content {
+  .videoContainer {
+    padding-bottom: 49%;
+    padding-top: 0;
+    max-height: 500px;
+    max-width: 960px;
+    overflow: hidden;
+    border-radius: 10px;
+  }
+  .videoContainer iframe,
+  .videoContainer object,
+  .videoContainer embed {
+    max-height: 500px;
+    max-width: 960px;
+  }
+}
+@media screen and (max-width: 639px) {
+  .videoContainer {
+    position: relative;
+    padding-bottom: 56.25%;
+    padding-top: 30px;
+    overflow: hidden;
     width: 100%;
-    padding: 1.2rem 0;
+  }
+
+  .videoContainer iframe,
+  .videoContainer object,
+  .videoContainer embed {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
   }
 }
