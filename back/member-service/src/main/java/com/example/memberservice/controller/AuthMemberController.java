@@ -15,6 +15,7 @@ import com.example.memberservice.common.util.MemberUtil;
 import com.example.memberservice.dto.BaseResponseDto;
 import com.example.memberservice.dto.MemberDto;
 import com.example.memberservice.dto.request.member.MemberInterestsRequestDto;
+import com.example.memberservice.dto.response.member.LoginMemberResponseDto;
 import com.example.memberservice.service.MemberServiceImpl;
 
 import lombok.RequiredArgsConstructor;
@@ -58,5 +59,19 @@ public class AuthMemberController {
 		memberService.logout(token);
 		return ResponseEntity.status(HttpStatus.OK)
 			.body(new BaseResponseDto(200, "로그아웃에 성공했습니다."));
+	}
+
+	/**
+	 * 김윤미
+	 * explain : 내 정보 조회
+	 * @param request
+	 * @return
+	 */
+	@GetMapping("/myinfo")
+	public ResponseEntity<BaseResponseDto<LoginMemberResponseDto>> getMyInfo(HttpServletRequest request) {
+		MemberDto memberDto = MemberUtil.getMember(request.getHeader("member"));
+		return ResponseEntity.status(HttpStatus.OK)
+			.body(new BaseResponseDto<LoginMemberResponseDto>(200, "내 정보 조회에 성공했습니다.",
+				memberService.getMyInfo(memberDto)));
 	}
 }
