@@ -13,6 +13,15 @@ export const memberApi = axios.create({
   },
 });
 
+export const chatApi = axios.create({
+  baseURL: BASE_URL + 'chatting-service',
+  withCredentials: true,
+  headers: {
+    'Content-Type': 'application/json',
+    Accept: 'application/json',
+  },
+});
+
 // Function to set the Authorization header if a token is available in localStorage
 const setAuthTokenHeader = async (
   config: AxiosRequestConfig,
@@ -72,6 +81,12 @@ memberApi.interceptors.request.use(
   (config) => setAuthTokenHeader(config as AxiosRequestConfig) as any,
   handleRequestError,
 );
+chatApi.interceptors.request.use(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  (config) => setAuthTokenHeader(config as AxiosRequestConfig) as any,
+  handleRequestError,
+);
 
 // Add the response interceptor for handling successful responses and errors
 memberApi.interceptors.response.use(handleResponseSuccess, handleResponseError);
+chatApi.interceptors.response.use(handleResponseSuccess, handleResponseError);

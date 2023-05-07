@@ -50,3 +50,23 @@ export const loginApi = async (payload: userLoginInterface) => {
   console.log(response);
   return response.data;
 };
+
+// 관심사 등록
+export const interestRegisterApi = async (payload: number[]) => {
+  const response = await memberApi.post(`/auth/members/interests`, {
+    data: payload,
+  });
+  return response.data;
+};
+
+// 로그아웃
+export const logoutApi = async () => {
+  const response = await memberApi.get(`/auth/members/logout`);
+  return response.data;
+};
+
+// 마이페이지 겟미
+export const myPageApi = async () => {
+  const response = await memberApi.get(`/auth/members/myinfo`);
+  return response.data;
+};

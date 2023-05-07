@@ -1,3 +1,4 @@
+import { interest } from '@/util/Interest';
 // 유저 관련 타입
 export interface User {
   email?: string | null | undefined;
@@ -36,6 +37,10 @@ export interface userRegisterInterface {
 export interface emailAuthCheckInterface {
   email: string;
   code: string;
+}
+export interface interestInterface {
+  interestId: number;
+  interest: string;
 }
 // end of 유저 관련 타입
 
