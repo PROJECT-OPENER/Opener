@@ -2,6 +2,8 @@ package com.example.memberservice.service;
 
 import static com.example.memberservice.entity.redis.RedisKey.*;
 
+import java.util.Comparator;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -19,6 +21,7 @@ import com.example.memberservice.common.exception.ApiException;
 import com.example.memberservice.common.exception.ExceptionEnum;
 import com.example.memberservice.common.util.AwsS3Uploader;
 import com.example.memberservice.common.util.MailUtil;
+import com.example.memberservice.dto.InterestDto;
 import com.example.memberservice.dto.MemberDto;
 import com.example.memberservice.dto.request.member.LoginRequestDto;
 import com.example.memberservice.dto.request.member.MemberInterestsRequestDto;
@@ -190,27 +193,12 @@ public class MemberServiceImpl implements MemberService {
 		int memberInterests = memberInterestRepository.countDistinctInterestIdsByMember(member);
 		boolean hasInterest = memberInterests >= 2 ? true : false;
 
-		Set<String> interests = memberInterestRepository.findAllByMember(member)
-			.stream()
-			.map(memberInterest -> shadowingServiceClient.getInterest(memberInterest.getInterest().getInterestId())
-				.orElseThrow(() -> new ApiException(ExceptionEnum.INTEREST_NOT_FOUND))
-				.getData()
-				.getInterest())
-			.collect(Collectors.toSet());
-
-		LoginMemberResponseDto loginMemberResponseDto = LoginMemberResponseDto.builder()
-			.email(member.getEmail())
-			.nickname(member.getNickname())
-			.profile(member.getProfile() == null ? baseImgUrl : member.getProfile())
-			.interests(interests)
-			.build();
-
 		String accessToken = jwtTokenProvider.createToken(email);
 		redisService.setMemberWithDuration(accessToken, member, JwtTokenProvider.ACCESS_TOKEN_VALID_TIME);
 		return LoginResponseDto.builder()
 			.accessToken(accessToken)
 			.hasInterest(hasInterest)
-			.loginMemberResponseDto(loginMemberResponseDto)
+			.loginMemberResponseDto(getMyInfo(member))
 			.build();
 	}
 
@@ -228,7 +216,7 @@ public class MemberServiceImpl implements MemberService {
 		if (interests.size() < 2) {
 			throw new ApiException(ExceptionEnum.INSUFFICIENT_INTERESTS_EXCEPTION);
 		}
-		Member member = memberDto.toEntity(memberDto);
+		Member member = memberDto.toEntity();
 
 		interests.forEach((interestId) -> {
 			Interest interest = shadowingServiceClient.getInterest(interestId)
@@ -332,5 +320,41 @@ public class MemberServiceImpl implements MemberService {
 		MultipartFile profileImg = profileImgRequestDto.getProfileImg();
 		String profileImgUrl = profileImg == null ? null : awsS3Uploader.uploadImage(profileImg);
 		member.updateProfile(profileImgUrl);
+	}
+
+	/**
+	 * 김윤미
+	 * explain : 내 정보 조회
+	 * @param memberDto : 로그인한 사용자 정보
+	 * @return : 사용자 정보
+	 */
+	@Override
+	@Transactional
+	public LoginMemberResponseDto getMyInfo(MemberDto memberDto) {
+		return getMyInfo(memberDto.toEntity());
+	}
+
+	/**
+	 * 김윤미
+	 * explain : Entity로 이메일, 닉네임, 프로필, 관심사 정보 조회
+	 * @param member : 사용자 정보 Entity
+	 * @return : 사용자 정보
+	 */
+	@Transactional
+	public LoginMemberResponseDto getMyInfo(Member member) {
+		List<InterestDto> interests = memberInterestRepository.findAllByMember(member)
+			.stream()
+			.map(MemberInterest::getInterest).collect(Collectors.toSet())
+			.stream()
+			.map(InterestDto::new)
+			.sorted(Comparator.comparing(InterestDto::getInterestId))
+			.collect(Collectors.toList());
+
+		return LoginMemberResponseDto.builder()
+			.email(member.getEmail())
+			.nickname(member.getNickname())
+			.profile(member.getProfile() == null ? baseImgUrl : member.getProfile())
+			.interests(interests)
+			.build();
 	}
 }

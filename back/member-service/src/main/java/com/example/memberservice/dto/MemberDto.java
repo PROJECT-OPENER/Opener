@@ -41,17 +41,17 @@ public class MemberDto implements Serializable {
 		this.nickname = nickname;
 	}
 
-	public Member toEntity(MemberDto memberDto) {
+	public Member toEntity() {
 		Member member = Member.builder()
-			.memberId(memberDto.getMemberId())
-			.email(memberDto.getEmail())
-			.password(memberDto.getPassword())
-			.nickname(memberDto.getNickname())
-			.birth(memberDto.getBirth())
-			.gender(memberDto.getGender())
-			.profile(memberDto.getProfile())
-			.score(memberDto.getScore())
-			.loginDate(memberDto.getLoginDate())
+			.memberId(this.memberId)
+			.email(this.email)
+			.password(this.password)
+			.nickname(this.nickname)
+			.birth(this.birth)
+			.gender(this.gender)
+			.profile(this.profile)
+			.score(this.score)
+			.loginDate(this.loginDate)
 			.build();
 		member.setBaseDateInfo(this.createDate, this.lastModifiedDate);
 

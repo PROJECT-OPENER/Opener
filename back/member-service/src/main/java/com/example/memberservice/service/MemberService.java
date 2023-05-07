@@ -8,6 +8,7 @@ import com.example.memberservice.dto.request.member.PasswordRequestDto;
 import com.example.memberservice.dto.request.member.ProfileImgRequestDto;
 import com.example.memberservice.dto.request.member.SignUpMemberRequestDto;
 import com.example.memberservice.dto.request.member.CheckEmailCodeRequestDto;
+import com.example.memberservice.dto.response.member.LoginMemberResponseDto;
 import com.example.memberservice.dto.response.member.LoginResponseDto;
 
 public interface MemberService {
@@ -46,4 +47,7 @@ public interface MemberService {
 
 	/** 프로필 사진 변경 **/
 	void updateProfileImg(MemberDto memberDto, ProfileImgRequestDto profileImgRequestDto);
+
+	/** 내 정보 조회 **/
+	LoginMemberResponseDto getMyInfo(MemberDto memberDto);
 }
