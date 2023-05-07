@@ -11,8 +11,9 @@ const TopNav = () => {
   const { data: session } = useSession();
   console.log({ session });
   const pathname: string = usePathname();
-
-  if (topNavNone.includes(pathname)) return <div></div>;
+  for (let i = 0; i < topNavNone.length; i++) {
+    if (pathname.startsWith(topNavNone[i])) return <div></div>;
+  }
   return (
     <div className="topnav">
       <Link href={'/'}>

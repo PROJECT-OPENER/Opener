@@ -15,30 +15,33 @@ const BottomNav = () => {
   const router = useRouter();
   const pathname = usePathname();
   console.log(pathname);
-  if (bottomNavNone.includes(pathname))
-    return <div className="blankbox-zero" />; // 하단 네브바 없음
-  if (bottomNavBackward.includes(pathname)) {
-    return (
+  for (let i = 0; i < bottomNavNone.length; i++) {
+    if (pathname.startsWith(bottomNavNone[i]))
+      return <div className="blankbox-zero" />; // 하단 네브바 없음
+  }
+  for (let i = 0; i < bottomNavBackward.length; i++) {
+    if (pathname.startsWith(bottomNavBackward[i]))
       // 뒤로 가기 버튼만 존재
-      <>
-        <div className="tabmenu-back">
-          <button
-            type="button"
-            className="tabmenu-back-items"
-            onClick={() => {
-              router.back();
-            }}
-          >
-            <TfiAngleLeft
-              className="tabmenu-items-ico"
-              size={'2rem'}
-              color="#838383"
-            />
-          </button>
-        </div>
-        <div className="blankbox lg:hidden" />
-      </>
-    );
+      return (
+        <>
+          <div className="tabmenu-back">
+            <button
+              type="button"
+              className="tabmenu-back-items"
+              onClick={() => {
+                router.back();
+              }}
+            >
+              <TfiAngleLeft
+                className="tabmenu-items-ico"
+                size={'2rem'}
+                color="#838383"
+              />
+            </button>
+          </div>
+          <div className="blankbox lg:hidden" />
+        </>
+      );
   }
   return (
     <>
