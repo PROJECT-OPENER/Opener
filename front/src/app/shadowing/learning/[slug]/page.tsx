@@ -1,8 +1,8 @@
 import ViewScript from './components/ViewScript';
-const page = () => {
+const page = ({ params }: { params: { slug: string } }) => {
   return (
     <div>
-      <ViewScript />
+      <ViewScript params={params} />
     </div>
   );
 };

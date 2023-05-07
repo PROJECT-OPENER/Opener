@@ -5,13 +5,13 @@ import styles from './categories.module.css';
 import 'react-perfect-scrollbar/dist/css/styles.css';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 
-type listType = {
-  video_id: string;
-  thumbnail_url: string;
-  eng_sentence: string;
-  kor_sentence: string;
-  is_marked: string;
-};
+// type listType = {
+//   video_id: string;
+//   thumbnail_url: string;
+//   eng_sentence: string;
+//   kor_sentence: string;
+//   is_marked: string;
+// };
 // type contentType = {
 //   length: number;
 //   list: listType[];

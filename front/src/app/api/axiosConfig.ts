@@ -13,6 +13,15 @@ export const memberApi = axios.create({
   },
 });
 
+export const shadowingApi = axios.create({
+  baseURL: BASE_URL + 'shadowing-service',
+  withCredentials: true,
+  headers: {
+    'Content-Type': 'application/json',
+    Accept: 'application/json',
+  },
+});
+
 // Function to set the Authorization header if a token is available in localStorage
 const setAuthTokenHeader = async (
   config: AxiosRequestConfig,
@@ -75,3 +84,14 @@ memberApi.interceptors.request.use(
 
 // Add the response interceptor for handling successful responses and errors
 memberApi.interceptors.response.use(handleResponseSuccess, handleResponseError);
+
+shadowingApi.interceptors.request.use(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  (config) => setAuthTokenHeader(config as AxiosRequestConfig) as any,
+  handleRequestError,
+);
+
+shadowingApi.interceptors.response.use(
+  handleResponseSuccess,
+  handleResponseError,
+);

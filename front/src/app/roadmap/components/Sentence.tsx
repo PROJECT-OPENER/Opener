@@ -1,16 +1,17 @@
-type sentenceType = {
-  data: {
-    video_id: string;
-    eng_sentence: string;
-    kor_sentence: string;
-    sentence_no: string;
-    status_date: string;
-  };
-};
+// type sentenceType = {
+//   data: {
+//     video_id: string;
+//     eng_sentence: string;
+//     kor_sentence: string;
+//     sentence_no: string;
+//     status_date: string;
+//   };
+// };
+import { sentenceInterface } from '@/types/share';
 import Link from 'next/link';
 import { RiCheckFill } from 'react-icons/ri';
-const Sentence = (props: sentenceType) => {
-  const videoInfo = props.data;
+const Sentence = ({ data }: { data: sentenceInterface }) => {
+  const videoInfo = data;
   return (
     <Link
       href={'/shadowing/learning/' + videoInfo.video_id}

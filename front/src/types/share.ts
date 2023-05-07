@@ -45,10 +45,46 @@ export interface responseInterface {
   message: string;
 }
 
+// 로드맵 관련 타입
+export interface stepInterface {
+  step_no: string;
+  list: themeInterface[];
+}
+
+export interface themeInterface {
+  step_theme: string;
+  list: sentenceInterface[];
+}
+
+export interface sentenceInterface {
+  video_id: string;
+  eng_sentence: string;
+  kor_sentence: string;
+  step_theme: string;
+  sentence_no: string;
+  status_date: string;
+}
+
+// end of 로드맵 관련 타입
+
 // 쉐도잉 관련 타입
-export interface scriptType {
+export interface scriptInterface {
   startTime: number;
   endTime: number;
   text: string;
 }
+
+export interface contentInterface {
+  length: number;
+  list: listInterface[];
+}
+
+export interface listInterface {
+  video_id: string;
+  thumbnail_url: string;
+  eng_sentence: string;
+  kor_sentence: string;
+  is_marked: string;
+}
+
 // end of 쉐도잉 관련 타입
