@@ -71,7 +71,7 @@ export interface ChallengeIndex {
 
 // index별로 가져오는 멤버 챌린지 리스트
 export interface indexMemberChallengeList {
-  originalChallengeResponseDto: originalChallenge;
+  original: originalChallenge;
   totalLength: number;
   memberChallengeResponseDtoList: memberChallenge[];
 }
@@ -95,4 +95,15 @@ export interface originalChallenge {
 export interface allMemberChallengeList {
   totalLength: number;
   memberChallengeList: memberChallenge[];
+}
+
+// 원본 영상
+export interface originalVideo {
+  challengeId: number;
+  title: string;
+  korCaption: string;
+  engCaption: string;
+  captionTime: string;
+  challengeUrl: string;
+  joinCount: number;
 }

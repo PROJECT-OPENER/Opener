@@ -7,7 +7,7 @@ export const originalChallengeApi = async () => {
   return response.data.data;
 };
 
-// 원본별 사용자 챌린지 리스트 가져오기
+// 원본별 챌린지 리스트 가져오기
 export const memberChallengeOriginalApi = async (
   challengeId: number,
   payload: ChallengeIndex,
@@ -39,7 +39,13 @@ export const allChallengeApi = async (
   endIndex: number,
 ) => {
   const response = await challengeApi.get(
-    `member-challenges?category=${category}&startIndex=${startIndex}&endIndex=${endIndex}`,
+    `/member-challenges?category=${category}&startIndex=${startIndex}&endIndex=${endIndex}`,
   );
+  return response.data.data;
+};
+
+// 챌린지 원본 영상 가져오기
+export const originalVideoApi = async (challengeId: number) => {
+  const response = await challengeApi.get(`/watch/challenges/${challengeId}`);
   return response.data.data;
 };
