@@ -47,7 +47,7 @@ const Recommended = () => {
           <h1 className="text-lg">추천 문장</h1>
           <button>더 보기</button>
         </div>
-        <div className="hidden lg:flex flex-row justify-around w-full h-full">
+        <div className="hidden lg:flex flex-row justify-between w-full h-full">
           {contents.memberChallengeList.slice(0, 3).map((content, index) => {
             return (
               <div

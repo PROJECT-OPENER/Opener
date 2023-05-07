@@ -62,7 +62,7 @@ const Famous = () => {
           <h1 className="text-lg">인기 챌린지</h1>
           <button>더 보기</button>
         </div>
-        <div className="hidden lg:flex flex-row justify-around w-full h-full">
+        <div className="hidden lg:flex flex-row justify-between w-full h-full">
           {contents.memberChallengeList.slice(0, 6).map((content, index) => {
             return (
               <div
