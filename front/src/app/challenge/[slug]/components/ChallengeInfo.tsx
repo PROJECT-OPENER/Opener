@@ -1,7 +1,7 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import { memberChallengeOriginalApi } from '@/app/api/challengeApi';
-import { indexMemberChallengeList } from '@/app/types/share';
+import { indexMemberChallengeList } from '@/types/share';
 import VoiceChallengeCard from './VoiceChallengeCard';
 import VoiceChallengeInfo from './VoiceChallengeInfo';
 
@@ -16,7 +16,7 @@ const ChallengeInfo = ({ voiceId }: Props) => {
     const getData = async () => {
       const response = await memberChallengeOriginalApi(voiceId, {
         startIndex: 0,
-        endIndex: 10,
+        endIndex: 1,
       });
       console.log('안됨?', response);
       setMemberChallengeList({
@@ -26,6 +26,7 @@ const ChallengeInfo = ({ voiceId }: Props) => {
       });
     };
     getData();
+    console.log('memberChallengeList:', memberChallengeList);
   }, []);
 
   const originalChallenge = memberChallengeList?.originalChallengeResponseDto;

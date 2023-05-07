@@ -81,6 +81,7 @@ export interface memberChallenge {
   memberChallengeId: number;
   memberChallengeImg: string;
   likeCount: number;
+  memberChallengeDate: string;
 }
 
 export interface originalChallenge {
@@ -88,4 +89,10 @@ export interface originalChallenge {
   title: string;
   challengeImg: string;
   joinCount: number;
+}
+
+// all 페이지에서 가져오는 챌린지 리스트
+export interface allMemberChallengeList {
+  totalLength: number;
+  memberChallengeList: memberChallenge[];
 }

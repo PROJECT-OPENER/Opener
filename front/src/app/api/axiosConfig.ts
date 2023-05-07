@@ -13,8 +13,15 @@ export const memberApi = axios.create({
   },
 });
 
+// 챌린지 API
 export const challengeApi = axios.create({
   baseURL: BASE_URL + 'challenge-service',
+  withCredentials: true,
+  headers: {
+    // 'Content-Type': 'application/json',
+    'Content-Type': 'multipart/form-data',
+    Accept: 'application/json',
+  },
 });
 
 // Function to set the Authorization header if a token is available in localStorage
@@ -72,6 +79,11 @@ const handleResponseError = (error: AxiosError): Promise<AxiosError> => {
 
 // Add the request interceptor with a type assertion to bypass the type error
 memberApi.interceptors.request.use(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  (config) => setAuthTokenHeader(config as AxiosRequestConfig) as any,
+  handleRequestError,
+);
+challengeApi.interceptors.request.use(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   (config) => setAuthTokenHeader(config as AxiosRequestConfig) as any,
   handleRequestError,

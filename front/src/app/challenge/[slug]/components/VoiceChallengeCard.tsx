@@ -1,5 +1,5 @@
 import React from 'react';
-import { memberChallenge } from '@/app/types/share';
+import { memberChallenge } from '@/types/share';
 
 type Props = {
   memberChallengeResponseDtoList: memberChallenge[];
@@ -21,7 +21,7 @@ const VoiceChallengeCard = ({
         {memberChallengeResponseDtoList?.map((memberChallenge) => (
           <div className="relative" key={memberChallenge.memberChallengeId}>
             <img
-              className="h-auto max-w-full rounded-lg"
+              className="bg-gray-200  h-48 w-32 rounded-lg"
               src={memberChallenge.memberChallengeImg}
               alt=""
             />
