@@ -1,6 +1,6 @@
 package com.example.memberservice.dto.response.member;
 
-import java.util.Set;
+import java.util.List;
 
 import com.example.memberservice.dto.InterestDto;
 
@@ -13,5 +13,5 @@ public class LoginMemberResponseDto {
 	private String email;
 	private String nickname;
 	private String profile;
-	private Set<InterestDto> interests;
+	private List<InterestDto> interests;
 }

@@ -2,6 +2,8 @@ package com.example.memberservice.service;
 
 import static com.example.memberservice.entity.redis.RedisKey.*;
 
+import java.util.Comparator;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -340,11 +342,14 @@ public class MemberServiceImpl implements MemberService {
 	 */
 	@Transactional
 	public LoginMemberResponseDto getMyInfo(Member member) {
-		Set<InterestDto> interests = memberInterestRepository.findAllByMember(member)
+		List<InterestDto> interests = memberInterestRepository.findAllByMember(member)
 			.stream()
 			.map(memberInterest -> new InterestDto(memberInterest.getInterest()))
 			.collect(
-				Collectors.toSet());
+				Collectors.toSet())
+			.stream()
+			.sorted(Comparator.comparing(InterestDto::getInterestId))
+			.collect(Collectors.toList());
 
 		return LoginMemberResponseDto.builder()
 			.email(member.getEmail())
