@@ -344,10 +344,9 @@ public class MemberServiceImpl implements MemberService {
 	public LoginMemberResponseDto getMyInfo(Member member) {
 		List<InterestDto> interests = memberInterestRepository.findAllByMember(member)
 			.stream()
-			.map(memberInterest -> new InterestDto(memberInterest.getInterest()))
-			.collect(
-				Collectors.toSet())
+			.map(MemberInterest::getInterest).collect(Collectors.toSet())
 			.stream()
+			.map(InterestDto::new)
 			.sorted(Comparator.comparing(InterestDto::getInterestId))
 			.collect(Collectors.toList());
 
