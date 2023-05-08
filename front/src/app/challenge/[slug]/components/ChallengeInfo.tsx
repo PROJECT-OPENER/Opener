@@ -18,7 +18,7 @@ const ChallengeInfo = ({ voiceId }: Props) => {
         startIndex: 0,
         endIndex: 1,
       });
-      console.log('안됨?', response);
+      // console.log('안됨?', response);
       setMemberChallengeList({
         original: response.original,
         memberChallengeResponseDtoList: response.memberChallengeResponseDtoList,
@@ -26,7 +26,7 @@ const ChallengeInfo = ({ voiceId }: Props) => {
       });
     };
     getData();
-    console.log('memberChallengeList:', memberChallengeList);
+    // console.log('memberChallengeList:', memberChallengeList);
   }, []);
 
   const originalChallenge = memberChallengeList?.original;

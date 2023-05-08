@@ -7,37 +7,37 @@ import Image from 'next/image';
 import Button from '@/app/components/Button';
 import { getSession } from 'next-auth/react';
 import { uploadChallenge } from '@/app/api/challengeApi';
-import { createFFmpeg, fetchFile } from '@ffmpeg/ffmpeg';
+// import { createFFmpeg, fetchFile } from '@ffmpeg/ffmpeg';
 
-const ffmpeg = createFFmpeg({ log: true });
+// const ffmpeg = createFFmpeg({ log: true });
 
 const ShootingVideo = () => {
   const [file, setFile] = useState<File>();
   const [challengeFile, setChallengeFile] = useState<Blob>();
-  const [thumbnail, setThumbnail] = useState<File>();
+  // const [thumbnail, setThumbnail] = useState<File>();
   const router = useRouter();
 
-  const generateThumbnail = async (videoFile: File) => {
-    await ffmpeg.load();
-    ffmpeg.FS('writeFile', 'video.webm', await fetchFile(videoFile));
-    await ffmpeg.run(
-      '-i',
-      'video.webm',
-      '-ss',
-      '00:00:05',
-      '-vframes',
-      '1',
-      '-s',
-      '320x240',
-      'thumbnail.jpg',
-    );
-    const thumbnailData = ffmpeg.FS('readFile', 'thumbnail.jpg');
-    const data = new Uint8Array(thumbnailData.buffer);
-    const file = new File([data], 'demo.jpg', {
-      type: 'image/jpg',
-    });
-    return file;
-  };
+  // const generateThumbnail = async (videoFile: File) => {
+  //   await ffmpeg.load();
+  //   ffmpeg.FS('writeFile', 'video.webm', await fetchFile(videoFile));
+  //   await ffmpeg.run(
+  //     '-i',
+  //     'video.webm',
+  //     '-ss',
+  //     '00:00:05',
+  //     '-vframes',
+  //     '1',
+  //     '-s',
+  //     '320x240',
+  //     'thumbnail.jpg',
+  //   );
+  //   const thumbnailData = ffmpeg.FS('readFile', 'thumbnail.jpg');
+  //   const data = new Uint8Array(thumbnailData.buffer);
+  //   const file = new File([data], 'demo.jpg', {
+  //     type: 'image/jpg',
+  //   });
+  //   return file;
+  // };
 
   const formData = new FormData();
   const uploadClick = async () => {
