@@ -331,7 +331,9 @@ public class MemberServiceImpl implements MemberService {
 	@Override
 	@Transactional
 	public LoginMemberResponseDto getMyInfo(MemberDto memberDto) {
-		return getMyInfo(memberDto.toEntity());
+		Member member = memberRepository.findById(memberDto.getMemberId())
+			.orElseThrow(() -> new ApiException(ExceptionEnum.MEMBER_NOT_FOUND_EXCEPTION));
+		return getMyInfo(member);
 	}
 
 	/**
