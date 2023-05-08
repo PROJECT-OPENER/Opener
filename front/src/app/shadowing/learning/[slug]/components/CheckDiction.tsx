@@ -31,7 +31,7 @@ const CheckDiction = (props: any) => {
     nBestPhonemeCount: 5,
   };
 
-  // Cognitive Services 계정 정보
+  // Cognitive Services 계정 정보 <================================ 숨겨야함
   const subscriptionKey = '73f54ad18a1942b98944cca014f59386';
   const serviceRegion = 'eastus';
 
@@ -81,7 +81,7 @@ const CheckDiction = (props: any) => {
           index: index,
           word: word,
           isPron: true,
-          pronunciationAssessment: '',
+          pronunciationAssessment: undefined, // 평가 전
         };
         list.push(info);
       });
@@ -89,7 +89,7 @@ const CheckDiction = (props: any) => {
         aassessment: {},
         list: list,
       });
-      console.log(`인식된 글자 : ${e.result.text}`);
+      // console.log(`인식된 글자 : ${e.result.text}`);
     };
     recognizer.recognized = (s, e) => {
       const res = e.result.properties.getProperty(
@@ -132,13 +132,6 @@ const CheckDiction = (props: any) => {
       const res = result.NBest[0];
       const Lexical = res.Lexical.split(' ');
       const caption = props.captionArray;
-      const assessment = {
-        accuracy: res.PronunciationAssessment.AccuracyScore,
-        fluency: res.PronunciationAssessment.FluencyScore,
-        completeness: res.PronunciationAssessment.CompletenessScore,
-        pron: res.PronunciationAssessment.PronScore,
-      };
-
       // caption과 Lexical 비교 =>  최장공통부분수열 LCS(Longest Common Subsequence)
       // 1. 2차원 배열 초기화
       const n = caption.length;
@@ -174,18 +167,28 @@ const CheckDiction = (props: any) => {
         }
       }
       const recognized = []; // 단어의 발음 정보를 담는 배열
+
       for (let i = 0; i < n; i++) {
         const info = {
           index: i,
           word: caption[i],
           isPron: false,
-          pronunciationAssessment: res.Words[i]?.PronunciationAssessment,
+          pronunciationAssessment: undefined,
         };
         if (resCaptionIdx.includes(i)) {
           info.isPron = true;
+          info.pronunciationAssessment = res.Words[i]?.PronunciationAssessment;
         }
         recognized.push(info);
       }
+      const r = resCaptionIdx.length;
+      const assessment = {
+        accuracy: (res.PronunciationAssessment.AccuracyScore * r) / n,
+        fluency: (res.PronunciationAssessment.FluencyScore * r) / n,
+        completeness: (res.PronunciationAssessment.CompletenessScore * r) / n,
+        pron: (res.PronunciationAssessment.PronScore * r) / n,
+      };
+
       setAssessmentResult({
         assessment: assessment,
         list: recognized,
