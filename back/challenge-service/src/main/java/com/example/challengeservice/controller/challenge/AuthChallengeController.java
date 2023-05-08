@@ -19,6 +19,13 @@ import java.io.IOException;
 public class AuthChallengeController {
     private final ChallengeService challengeService;
 
+    /**
+     * 신대득
+     * explain : 멤버챌린지 영상 등록
+     *
+     * @param challengeId
+     * @param memberChallengeRequestDto
+     */
     @PostMapping("/challenges/{challengeId}/member-challenge")
     public ResponseEntity<BaseResponseDto> createMemberChallenge(@PathVariable Long challengeId, @ModelAttribute MemberChallengeRequestDto memberChallengeRequestDto)
             throws IOException, FirebaseAuthException {

@@ -1,6 +1,7 @@
 package com.example.challengeservice.entity.challenge;
 
 import com.example.challengeservice.entity.BaseEntity;
+import com.example.challengeservice.entity.member.Member;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,8 +18,9 @@ public class Love extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "love_id")
     private Long loveId;
-    @Column(name = "member_id")
-    private String memberId;
+    @ManyToOne(targetEntity = Member.class, fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private Member member;
     @ManyToOne(targetEntity = MemberChallenge.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "member_challenge_id")
     private MemberChallenge memberChallenge;

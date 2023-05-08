@@ -4,10 +4,7 @@ import java.io.IOException;
 import java.util.List;
 
 import com.example.challengeservice.dto.request.MemberChallengeRequestDto;
-import com.example.challengeservice.dto.response.MemberChallengeListResponseDto;
-import com.example.challengeservice.dto.response.OriginalChallengeResponseDto;
-import com.example.challengeservice.dto.response.SelectOriginalResponseDto;
-import com.example.challengeservice.dto.response.WatchOriginalChallengeResponseDto;
+import com.example.challengeservice.dto.response.*;
 import com.google.firebase.auth.FirebaseAuthException;
 
 public interface ChallengeService {
@@ -17,6 +14,8 @@ public interface ChallengeService {
     SelectOriginalResponseDto selectOriginalChallenge(Long challengeId, Integer startIndex, Integer endIndex);
     /** 원본 챌린지 영상 보기 **/
     WatchOriginalChallengeResponseDto watchOriginalChallenge(Long challengeId);
+    /** 멤버 챌린지 영상 보기 **/
+    WatchMemberChallengeResponseDto watchMemberChallenge(Long memberChallengeId, String nickname);
     /** 카테고리로 멤버 챌린지 영상 조회 **/
     MemberChallengeListResponseDto categoryMemberChallenge(String category, Integer startIndex, Integer endIndex);
     /** 멤버 챌린지 영상 등록 **/
