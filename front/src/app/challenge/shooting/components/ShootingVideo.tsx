@@ -2,19 +2,58 @@
 
 import React, { useRef, useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-
 import YouTube, { YouTubeProps } from 'react-youtube';
 import Image from 'next/image';
 import Button from '@/app/components/Button';
+import { getSession } from 'next-auth/react';
+import { uploadChallenge } from '@/app/api/challengeApi';
+// import { createFFmpeg, fetchFile } from '@ffmpeg/ffmpeg';
+
+// const ffmpeg = createFFmpeg({ log: true });
 
 const ShootingVideo = () => {
+  const [file, setFile] = useState<File>();
   const [challengeFile, setChallengeFile] = useState<Blob>();
+  // const [thumbnail, setThumbnail] = useState<File>();
   const router = useRouter();
 
-  const uploadClick = () => {
-    console.log(challengeFile);
+  // const generateThumbnail = async (videoFile: File) => {
+  //   await ffmpeg.load();
+  //   ffmpeg.FS('writeFile', 'video.webm', await fetchFile(videoFile));
+  //   await ffmpeg.run(
+  //     '-i',
+  //     'video.webm',
+  //     '-ss',
+  //     '00:00:05',
+  //     '-vframes',
+  //     '1',
+  //     '-s',
+  //     '320x240',
+  //     'thumbnail.jpg',
+  //   );
+  //   const thumbnailData = ffmpeg.FS('readFile', 'thumbnail.jpg');
+  //   const data = new Uint8Array(thumbnailData.buffer);
+  //   const file = new File([data], 'demo.jpg', {
+  //     type: 'image/jpg',
+  //   });
+  //   return file;
+  // };
+
+  const formData = new FormData();
+  const uploadClick = async () => {
+    const session = await getSession();
+    // if (file) { // 썸네일 생성 - ffmpeg.load(); 오류로 인해 잠시 멈춤. 다시 시도해봐야함.
+    //   const thumbnailFile = await generateThumbnail(file);
+    //   setThumbnail(thumbnailFile);
+    // }
+    const nickname = session?.user.user?.data.nickname;
+    formData.append('memberChallengeFile', file || '');
+    formData.append('memberChallengeImg', file || '');
+    formData.append('nicknasme', nickname || '');
+    const res = uploadChallenge(1, formData);
+    console.log(res);
     alert('영상 공유를 성공하였습니다.');
-    router.push('/challange');
+    // router.push('/challenge');
   };
 
   // --------------------------------------- youtube
@@ -169,7 +208,6 @@ const ShootingVideo = () => {
   }, [onPlayReady]);
 
   // recordedChunks 입력되면 바로 영상 출력 준비 완료.
-  // 이 영상을 onPlayerStateChange2에서 실행
   useEffect(() => {
     const recordedBlob = new Blob(recordedChunks, { type: 'video/webm' });
     if (recordingPlayer.current) {
@@ -180,6 +218,15 @@ const ShootingVideo = () => {
         downloadButton.current.href = recordingPlayer.current.src;
         downloadButton.current.download = `recording_${new Date()}.webm`;
       }
+      // const link = document.createElement('a');
+      // link.href = recordingPlayer.current.src;
+      // link.download = `recording_${new Date()}.webm`;
+      // link.click();
+
+      const myFile = new File([recordedBlob], 'demo.webm', {
+        type: 'video/webm',
+      });
+      setFile(myFile);
     }
   }, [recordedChunks]);
 

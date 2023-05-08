@@ -13,6 +13,17 @@ export const memberApi = axios.create({
   },
 });
 
+// 챌린지 API
+export const challengeApi = axios.create({
+  baseURL: BASE_URL + 'challenge-service',
+  withCredentials: true,
+  headers: {
+    // 'Content-Type': 'application/json',
+    'Content-Type': 'multipart/form-data',
+    Accept: 'application/json',
+  },
+});
+
 export const chatApi = axios.create({
   baseURL: BASE_URL + 'chatting-service',
   withCredentials: true,
@@ -89,4 +100,8 @@ chatApi.interceptors.request.use(
 
 // Add the response interceptor for handling successful responses and errors
 memberApi.interceptors.response.use(handleResponseSuccess, handleResponseError);
+challengeApi.interceptors.response.use(
+  handleResponseSuccess,
+  handleResponseError,
+);
 chatApi.interceptors.response.use(handleResponseSuccess, handleResponseError);

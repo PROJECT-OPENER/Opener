@@ -57,3 +57,56 @@ export interface scriptType {
   text: string;
 }
 // end of 쉐도잉 관련 타입
+
+// 챌린지 원본 타입
+export interface originalChallenge {
+  challengeId: number;
+  title: string;
+  challengeImg: string;
+  joinCount: number;
+}
+
+// 챌린지 인덱스 설정
+export interface ChallengeIndex {
+  startIndex: number;
+  endIndex: number;
+}
+
+// index별로 가져오는 멤버 챌린지 리스트
+export interface indexMemberChallengeList {
+  original: originalChallenge;
+  totalLength: number;
+  memberChallengeResponseDtoList: memberChallenge[];
+}
+
+// 불러오는 멤버 챌린지
+export interface memberChallenge {
+  memberChallengeId: number;
+  memberChallengeImg: string;
+  likeCount: number;
+  memberChallengeDate: string;
+}
+
+export interface originalChallenge {
+  challengeId: number;
+  title: string;
+  challengeImg: string;
+  joinCount: number;
+}
+
+// all 페이지에서 가져오는 챌린지 리스트
+export interface allMemberChallengeList {
+  totalLength: number;
+  memberChallengeList: memberChallenge[];
+}
+
+// 원본 영상
+export interface originalVideo {
+  challengeId: number;
+  title: string;
+  korCaption: string;
+  engCaption: string;
+  captionTime: string;
+  challengeUrl: string;
+  joinCount: number;
+}

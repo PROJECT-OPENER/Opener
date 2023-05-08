@@ -3,12 +3,13 @@ type Props = {
     slug: number;
   };
 };
-import ChallengeInfo from './components/ChallengeInfo';
+
+import OriginalVideo from './components/OriginalVideo';
 
 const page = ({ params }: Props) => {
   return (
     <div className="flex justify-center">
-      <ChallengeInfo voiceId={params.slug}></ChallengeInfo>
+      <OriginalVideo challengeId={params.slug}></OriginalVideo>
     </div>
   );
 };

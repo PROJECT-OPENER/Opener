@@ -9,6 +9,9 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@ffmpeg-installer/ffmpeg": "^1.1.0",
+    "@ffmpeg/core": "^0.11.0",
+    "@ffmpeg/ffmpeg": "^0.11.6",
     "@hookform/resolvers": "^3.1.0",
     "@react-three/drei": "^9.66.1",
     "@react-three/fiber": "^8.13.0",
@@ -24,6 +27,7 @@
     "axios": "^1.4.0",
     "babel-plugin-macros": "^3.1.0",
     "eslint-config-next": "13.3.0",
+    "fluent-ffmpeg": "^2.1.2",
     "microsoft-cognitiveservices-speech-sdk": "^1.22.0",
     "natural": "^6.2.0",
     "next": "13.3.0",
@@ -51,6 +55,7 @@
     "yup": "^1.1.1"
   },
   "devDependencies": {
+    "@types/fluent-ffmpeg": "^2.1.21",
     "@types/react-slick": "^0.23.10",
     "@typescript-eslint/eslint-plugin": "^5.59.0",
     "@typescript-eslint/parser": "^5.59.0",
