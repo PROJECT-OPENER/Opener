@@ -1,16 +1,28 @@
 'use client';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { redirect, usePathname } from 'next/navigation';
 import Image from 'next/image';
 import logo from 'public/images/logo.png';
 import ProfileImage from './ProfileImage';
 import { useSession, signOut } from 'next-auth/react';
 import { topNavNone } from '@/util/navControl';
+import useUser from '../hooks/userHook';
+import { logoutApi } from '../api/userApi';
 
 const TopNav = () => {
   const { data: session } = useSession();
-  console.log({ session });
   const pathname: string = usePathname();
+  const { user, isLoading } = useUser();
+  if (user) {
+    if (user.data.interests.length === 0 && pathname !== '/interest') {
+      redirect('/interest');
+    }
+  }
+  const handleLogout = () => {
+    signOut();
+    logoutApi();
+  };
+  if (isLoading) return <div>loading...</div>;
   for (let i = 0; i < topNavNone.length; i++) {
     if (pathname.startsWith(topNavNone[i])) return <div></div>;
   }
@@ -60,14 +72,14 @@ const TopNav = () => {
               <button
                 type="button"
                 className="border-2 p-3 bg-red-200"
-                onClick={() => signOut()}
+                onClick={handleLogout}
               >
                 로그아웃
               </button>
               <Link href={'/mypage'}>
                 <ProfileImage
                   className="h-10 w-10 lg:h-12 lg:w-12 hover:cursor-pointer shadow-custom rounded-full"
-                  profileUrl="/images/ai.png"
+                  profileUrl={user.data.profile}
                   height={500}
                   width={500}
                 />

@@ -8,6 +8,16 @@ const nextConfig = {
     config.resolve.fallback = { fs: false };
     return config;
   },
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'opener-bucket.s3.ap-northeast-2.amazonaws.com',
+        port: '',
+        pathname: '/static/**',
+      },
+    ],
+  },
   // async rewrites() {
   //   return [
   //     {
