@@ -28,7 +28,7 @@ public class ChattingServiceImpl implements ChattingService {
 	public List<InterestResponseDto> getInterests() {
 		List<InterestResponseDto> interests = interestRepository.findAll()
 			.stream()
-			.map(interest -> new InterestResponseDto(interest))
+			.map(InterestResponseDto::new)
 			.collect(
 				Collectors.toList());
 		if (interests.isEmpty()) {
