@@ -3,57 +3,35 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import YouTube, { YouTubeProps } from 'react-youtube';
-import Image from 'next/image';
 import Button from '@/app/components/Button';
 import { getSession } from 'next-auth/react';
 import { uploadChallenge } from '@/app/api/challengeApi';
-// import { createFFmpeg, fetchFile } from '@ffmpeg/ffmpeg';
-
-// const ffmpeg = createFFmpeg({ log: true });
 
 const ShootingVideo = () => {
-  const [file, setFile] = useState<File>();
   const [challengeFile, setChallengeFile] = useState<Blob>();
-  // const [thumbnail, setThumbnail] = useState<File>();
+  const thumbnail = useRef<HTMLImageElement>(null);
   const router = useRouter();
-
-  // const generateThumbnail = async (videoFile: File) => {
-  //   await ffmpeg.load();
-  //   ffmpeg.FS('writeFile', 'video.webm', await fetchFile(videoFile));
-  //   await ffmpeg.run(
-  //     '-i',
-  //     'video.webm',
-  //     '-ss',
-  //     '00:00:05',
-  //     '-vframes',
-  //     '1',
-  //     '-s',
-  //     '320x240',
-  //     'thumbnail.jpg',
-  //   );
-  //   const thumbnailData = ffmpeg.FS('readFile', 'thumbnail.jpg');
-  //   const data = new Uint8Array(thumbnailData.buffer);
-  //   const file = new File([data], 'demo.jpg', {
-  //     type: 'image/jpg',
-  //   });
-  //   return file;
-  // };
-
+  const [thumbImg, setThumbImg] = useState<string>('');
   const formData = new FormData();
+
   const uploadClick = async () => {
     const session = await getSession();
-    // if (file) { // 썸네일 생성 - ffmpeg.load(); 오류로 인해 잠시 멈춤. 다시 시도해봐야함.
-    //   const thumbnailFile = await generateThumbnail(file);
-    //   setThumbnail(thumbnailFile);
-    // }
     const nickname = session?.user.user?.data.nickname;
-    formData.append('memberChallengeFile', file || '');
-    formData.append('memberChallengeImg', file || '');
-    formData.append('nicknasme', nickname || '');
-    const res = uploadChallenge(1, formData);
-    console.log(res);
-    alert('영상 공유를 성공하였습니다.');
-    // router.push('/challenge');
+
+    if (recordingPlayer.current && thumbCanvas.current && challengeFile) {
+      const myFile = new File([challengeFile], 'demo.webm', {
+        type: 'video/webm',
+      });
+      const blob = await fetch(thumbImg).then((res) => res.blob()); // 이미지 데이터를 multipart 형식으로 변환
+      formData.append('memberChallengeImg', blob);
+      formData.append('memberChallengeFile', myFile);
+      formData.append('nicknasme', nickname || '');
+      const res = await uploadChallenge(1, formData);
+      if (res.code === 200) {
+        alert('영상 공유를 성공하였습니다.');
+        // router.push('/challenge');
+      }
+    }
   };
 
   // --------------------------------------- youtube
@@ -133,6 +111,7 @@ const ShootingVideo = () => {
   const downloadButton = useRef<HTMLAnchorElement>(null);
   const previewPlayer = useRef<HTMLVideoElement>(null);
   const recordingPlayer = useRef<HTMLVideoElement>(null);
+  const thumbCanvas = useRef<HTMLCanvasElement>(null);
 
   const videoStart = () => {
     // 컴포넌트 들어왔을 때 촬영 대기
@@ -146,7 +125,6 @@ const ShootingVideo = () => {
       })
       .then((stream: MediaStream) => {
         if (previewPlayer.current) {
-          // console.log('videoStart-previewPlayer');
           previewPlayer.current.srcObject = stream;
         }
       });
@@ -213,20 +191,29 @@ const ShootingVideo = () => {
     if (recordingPlayer.current) {
       recordingPlayer.current.src = URL.createObjectURL(recordedBlob);
       setChallengeFile(recordedBlob); // 영상 변수에 저장
-      // recordingPlayer.current.play();
+      setTimeout(() => {
+        if (thumbCanvas.current && recordingPlayer.current) {
+          thumbCanvas.current.width = recordingPlayer.current.videoWidth;
+          thumbCanvas.current.height = recordingPlayer.current.videoHeight;
+          const cavasCtx = thumbCanvas.current.getContext('2d');
+          recordingPlayer.current.currentTime = 1;
+          if (cavasCtx) {
+            cavasCtx.drawImage(
+              recordingPlayer.current,
+              10,
+              10,
+              recordingPlayer.current.videoWidth,
+              recordingPlayer.current.videoHeight,
+            );
+            const imageData = cavasCtx.canvas.toDataURL();
+            setThumbImg(imageData);
+          }
+        }
+      }, 50);
       if (downloadButton.current) {
         downloadButton.current.href = recordingPlayer.current.src;
         downloadButton.current.download = `recording_${new Date()}.webm`;
       }
-      // const link = document.createElement('a');
-      // link.href = recordingPlayer.current.src;
-      // link.download = `recording_${new Date()}.webm`;
-      // link.click();
-
-      const myFile = new File([recordedBlob], 'demo.webm', {
-        type: 'video/webm',
-      });
-      setFile(myFile);
     }
   }, [recordedChunks]);
 
@@ -258,13 +245,12 @@ const ShootingVideo = () => {
                   );
                 }}
               >
-                <Image
+                <img
                   src="/start.svg"
                   alt=".."
                   className=""
                   width={100}
                   height={100}
-                  priority
                 />
               </button>
             </div>
@@ -274,6 +260,8 @@ const ShootingVideo = () => {
           <>
             <div className={isPreview ? 'relative' : 'hidden'}>
               <video ref={recordingPlayer}></video>
+              <canvas ref={thumbCanvas} className="hidden"></canvas>
+              <img ref={thumbnail} />
               <div className="absolute bottom-0 left-0 ml-2 mb-2">
                 <YouTube
                   videoId="Wb7dDxDNvtc"
@@ -290,12 +278,6 @@ const ShootingVideo = () => {
                   className=" bg-brandP w-32 text-white rounded-xl shadow-xl py-3"
                   onClick={uploadClick}
                 />
-                {/* <a
-                  ref={downloadButton}
-                  className="bg-brandP  text-white rounded-xl shadow-xl py-2 px-10"
-                >
-                  공유하기
-                </a> */}
               </div>
             </div>
           </>
