@@ -41,9 +41,8 @@ public class ChallengeController {
      * @return
      */
     @GetMapping("/challenges/{challengeId}")
-    public ResponseEntity<BaseResponseDto<SelectOriginalResponseDto>> selectOriginalChallenge(@PathVariable Long challengeId,
-                                                                                              @RequestParam("startIndex") Integer startIndex, @RequestParam("endIndex") Integer endIndex) {
-        SelectOriginalResponseDto selectOriginalResponseDto = challengeService.selectOriginalChallenge(challengeId, startIndex, endIndex);
+    public ResponseEntity<BaseResponseDto<SelectOriginalResponseDto>> selectOriginalChallenge(@PathVariable Long challengeId, @RequestParam("startIndex") Integer startIndex, @RequestParam("endIndex") Integer endIndex) {
+        SelectOriginalResponseDto selectOriginalResponseDto = challengeService.selectOriginalChallenge(challengeId, startIndex, endIndex + 1);
         return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseDto<SelectOriginalResponseDto>(200, "챌린지 선택 조회 성공", selectOriginalResponseDto));
     }
 
@@ -64,7 +63,7 @@ public class ChallengeController {
      */
     @GetMapping("/member-challenges")
     public ResponseEntity<BaseResponseDto<MemberChallengeListResponseDto>> categoryMemberChallenge(@RequestParam("category") String category, @RequestParam("startIndex") Integer startIndex, @RequestParam("endIndex") Integer endIndex) {
-        MemberChallengeListResponseDto memberChallengeListResponseDto = challengeService.categoryMemberChallenge(category, startIndex, endIndex);
+        MemberChallengeListResponseDto memberChallengeListResponseDto = challengeService.categoryMemberChallenge(category, startIndex, endIndex + 1);
         return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseDto<MemberChallengeListResponseDto>(200, "챌린지 카테고리 조회 성공", memberChallengeListResponseDto));
     }
 
