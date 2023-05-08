@@ -1,6 +1,7 @@
 import React from 'react';
 import { FiUserPlus } from 'react-icons/fi';
-import { originalChallenge } from '@/app/types/share';
+import { originalChallenge } from '@/types/share';
+import Link from 'next/link';
 
 type Props = {
   originalChallengeResponseDto: originalChallenge;
@@ -10,11 +11,15 @@ const VoiceChallengeInfo = ({ originalChallengeResponseDto }: Props) => {
   return (
     <div className="bg-gray-100 p-10 grid grid-cols-3">
       <div className="m-5">
-        <img
-          className="h-auto max-w-full rounded-lg"
-          src={originalChallengeResponseDto.challengeImg}
-          alt=""
-        />
+        <Link
+          href={`challenge/${originalChallengeResponseDto.challengeId}/original`}
+        >
+          <img
+            className="h-48 w-32 rounded-lg bg-gray-200"
+            src={originalChallengeResponseDto.challengeImg}
+            alt="..."
+          />
+        </Link>
       </div>
       <div className="col-span-2 flex flex-col justify-center">
         <div className="my-5 text-xl font-medium">

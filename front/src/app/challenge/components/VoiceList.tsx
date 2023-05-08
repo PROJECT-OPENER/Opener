@@ -3,7 +3,7 @@
 
 import React, { useEffect, useState } from 'react';
 import VoiceCard from './VoiceCard';
-import { originalChallenge } from '@/app/types/share';
+import { originalChallenge } from '@/types/share';
 import { originalChallengeApi } from '@/app/api/challengeApi';
 
 type ChallengeList = originalChallenge[];

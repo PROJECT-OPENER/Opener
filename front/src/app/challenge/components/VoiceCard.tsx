@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import React from 'react';
 import { FiUserPlus } from 'react-icons/fi';
-import { originalChallenge } from '@/app/types/share';
+import { originalChallenge } from '@/types/share';
 
 type Props = {
   challenge: originalChallenge;
