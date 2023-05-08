@@ -9,4 +9,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface LoveRepository extends JpaRepository<Love, Long> {
     int countByMemberChallenge(MemberChallenge memberChallenge);
+
+    int countByMemberChallengeAndMember_Nickname(MemberChallenge memberChallenge, String nickname);
 }

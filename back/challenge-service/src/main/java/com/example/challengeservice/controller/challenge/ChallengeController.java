@@ -3,19 +3,18 @@ package com.example.challengeservice.controller.challenge;
 import java.util.List;
 
 import com.example.challengeservice.dto.BaseResponseDto;
-import com.example.challengeservice.dto.response.MemberChallengeListResponseDto;
-import com.example.challengeservice.dto.response.WatchOriginalChallengeResponseDto;
-import com.example.challengeservice.dto.response.SelectOriginalResponseDto;
+import com.example.challengeservice.dto.response.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.example.challengeservice.dto.BaseListResponseDto;
-import com.example.challengeservice.dto.response.OriginalChallengeResponseDto;
 import com.example.challengeservice.service.ChallengeService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @Slf4j
@@ -52,7 +51,7 @@ public class ChallengeController {
      * 신대득
      * explain : 원본 영상 보기
      */
-    @GetMapping("watch/challenges/{challengeId}")
+    @GetMapping("/watch/challenges/{challengeId}")
     public ResponseEntity<BaseResponseDto<WatchOriginalChallengeResponseDto>> watchOriginalChallenge(@PathVariable Long challengeId) {
         WatchOriginalChallengeResponseDto watchOriginalChallengeResponseDto = challengeService.watchOriginalChallenge(challengeId);
         return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseDto<WatchOriginalChallengeResponseDto>(200, "원본 챌린지 영상 보기 성공", watchOriginalChallengeResponseDto));
@@ -67,5 +66,17 @@ public class ChallengeController {
     public ResponseEntity<BaseResponseDto<MemberChallengeListResponseDto>> categoryMemberChallenge(@RequestParam("category") String category, @RequestParam("startIndex") Integer startIndex, @RequestParam("endIndex") Integer endIndex) {
         MemberChallengeListResponseDto memberChallengeListResponseDto = challengeService.categoryMemberChallenge(category, startIndex, endIndex);
         return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseDto<MemberChallengeListResponseDto>(200, "챌린지 카테고리 조회 성공", memberChallengeListResponseDto));
+    }
+
+    /**
+     * 신대득
+     * 멤버 챌린지 영상 보기
+     */
+    @GetMapping("/watch/member-challenges/{memberChallengeId}/video")
+    public ResponseEntity<BaseResponseDto<WatchMemberChallengeResponseDto>> watchMemberChallenge(HttpServletRequest request, @PathVariable Long memberChallengeId){
+        // Todo : nickname 하드 코딩 변경 => 토큰에 있는 Member로
+        String nickname= "미미1";
+        WatchMemberChallengeResponseDto watchMemberChallengeResponseDto=challengeService.watchMemberChallenge(memberChallengeId, nickname);
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseDto<WatchMemberChallengeResponseDto>(200, "멤버 챌린지 영상 보기 성공", watchMemberChallengeResponseDto));
     }
 }

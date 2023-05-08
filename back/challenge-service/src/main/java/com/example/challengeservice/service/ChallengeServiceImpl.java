@@ -91,15 +91,35 @@ public class ChallengeServiceImpl implements ChallengeService {
     /**
      * 신대득
      * explain : 원본 챌린지 영상 보기
+     *
      * @param challengeId : 원본 챌린지의 Id
      * @return
      */
     @Override
     public WatchOriginalChallengeResponseDto watchOriginalChallenge(Long challengeId) {
-        Challenge challenge=challengeRepository.findByChallengeId(challengeId)
+        Challenge challenge = challengeRepository.findByChallengeId(challengeId)
                 .orElseThrow(() -> new ApiException(ExceptionEnum.CHALLENGE_NOT_FOUND_EXCEPTION));
-        int joinCount=memberChallengeRepository.countByChallenge(challenge);
+        int joinCount = memberChallengeRepository.countByChallenge(challenge);
         return WatchOriginalChallengeResponseDto.from(challenge, joinCount);
+    }
+
+    /**
+     * 신대득
+     * explain : 멤버 챌린지 영상 보기
+     *
+     * @param memberChallengeId : 멤버 챌린지의 id
+     */
+    @Override
+    public WatchMemberChallengeResponseDto watchMemberChallenge(Long memberChallengeId, String nickname) {
+        MemberChallenge memberChallenge = memberChallengeRepository.findByMemberChallengeId(memberChallengeId)
+                .orElseThrow(() -> new ApiException(ExceptionEnum.MEMBER_CHALLENGE_NOT_FOUND_EXCEPTION));
+        Challenge challenge = challengeRepository.findByChallengeId(memberChallenge.getChallenge().getChallengeId())
+                .orElseThrow(() -> new ApiException(ExceptionEnum.CHALLENGE_NOT_FOUND_EXCEPTION));
+        int joinCount = memberChallengeRepository.countByChallenge(challenge);
+        WatchOriginalChallengeResponseDto watchOriginalChallengeResponseDto = WatchOriginalChallengeResponseDto.from(challenge, joinCount);
+        int isLove = loveRepository.countByMemberChallengeAndMember_Nickname(memberChallenge, nickname);
+        SelectMemberChallengeResponseDto selectMemberChallengeResponseDto = SelectMemberChallengeResponseDto.from(memberChallenge, isLove);
+        return WatchMemberChallengeResponseDto.from(watchOriginalChallengeResponseDto, selectMemberChallengeResponseDto);
     }
 
     @Override
@@ -175,6 +195,7 @@ public class ChallengeServiceImpl implements ChallengeService {
     /**
      * 신대득
      * explain : 멤버 챌린지 영상 삭제
+     *
      * @param memberChallengeId : 멤버 챌린지 id
      */
     @Override
