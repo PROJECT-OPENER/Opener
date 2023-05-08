@@ -26,7 +26,7 @@ export default function RootLayout({
       <body>
         <AuthContext>
           <TopNav />
-          <div className="content h-screen">{children}</div>
+          <div className="content h-full">{children}</div>
           <BottomNav />
         </AuthContext>
       </body>

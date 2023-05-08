@@ -23,7 +23,9 @@ const TopNav = () => {
     logoutApi();
   };
   if (isLoading) return <div>loading...</div>;
-  if (topNavNone.includes(pathname)) return <div></div>;
+  for (let i = 0; i < topNavNone.length; i++) {
+    if (pathname.startsWith(topNavNone[i])) return <div></div>;
+  }
   return (
     <div className="topnav">
       <Link href={'/'}>

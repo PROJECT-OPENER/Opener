@@ -1,16 +1,18 @@
 'use client';
-type listType = {
-  video_id: string;
-  thumbnail_url: string;
-  eng_sentence: string;
-  kor_sentence: string;
-  is_marked: string;
-};
-type contentType = {
-  length: number;
-  list: listType[];
-};
-const contents: contentType = {
+// type listType = {
+//   video_id: string;
+//   thumbnail_url: string;
+//   eng_sentence: string;
+//   kor_sentence: string;
+//   is_marked: string;
+// };
+// type contentType = {
+//   length: number;
+//   list: listType[];
+// };
+import { contentInterface, listInterface } from '@/types/share';
+
+const contents: contentInterface = {
   length: 2,
   list: [
     {
@@ -59,7 +61,7 @@ const ShowList = (props: { category: string }) => {
         return <div key={index}>{user[0].user.id}</div>;
       })} */}
 
-        {contents.list.map((content: listType, index) => {
+        {contents.list.map((content: listInterface, index) => {
           return (
             <Link
               href={'/shadowing/learning/' + content.video_id}

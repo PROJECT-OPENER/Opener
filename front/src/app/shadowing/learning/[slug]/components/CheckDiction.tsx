@@ -1,151 +1,7 @@
-// import axios from 'axios';
-// import React, { useState, useCallback } from 'react';
-// import * as SpeechSDK from 'microsoft-cognitiveservices-speech-sdk';
-
-// type propsType = {
-//   text: string | undefined; // 스크립트 텍스트
-// };
-// const AI_API_KEY = 'c9708472-79d0-49a8-a3e1-3aa30b6b3ed4';
-// const openApiURL = 'http://aiopen.etri.re.kr:8000/WiseASR/Pronunciation';
-
-// const CheckDiction = (props: propsType) => {
-//   const [stream, setStream] = useState<MediaStream>();
-//   const [media, setMedia] = useState<MediaRecorder>();
-//   const [isRec, setIsRec] = useState<boolean>(false);
-//   const [source, setSource] = useState<AudioNode>();
-//   const [audioUrl, setAudioUrl] = useState<any>();
-
-//   // console.log(props.text);
-//   const onRecAudio = useCallback(() => {
-//     setAudioUrl(undefined);
-//     navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
-//       const mediaRecorder = new MediaRecorder(stream);
-//       setStream(stream);
-//       setMedia(mediaRecorder);
-//       mediaRecorder.start();
-//       const audioCtx = new AudioContext();
-//       const sourceNode = audioCtx.createMediaStreamSource(stream);
-//       setSource(sourceNode);
-//       const audioArray: Blob[] = [];
-
-//       // 이벤트핸들러: 녹음 데이터 취득 처리
-//       mediaRecorder.ondataavailable = function (e) {
-//         audioArray.push(e.data); // 오디오 데이터가 취득될 때마다 배열에 push.
-//       };
-//       // 이벤트핸들러: 녹음 종료 처리
-//       mediaRecorder.onstop = function () {
-//         const audioBlob = new Blob(audioArray, { type: 'audio/wav; codecs=0' });
-//         setAudioUrl(audioBlob);
-//         // setAudioUrl(audioArray);
-//         setIsRec(false);
-//         setStream(undefined);
-//         setMedia(undefined);
-//         setSource(undefined);
-//       };
-//       setIsRec(true);
-//     });
-//   }, []);
-
-//   const offRecAudio = useCallback(() => {
-//     media?.stop();
-//     stream?.getTracks().forEach((track) => track.stop());
-//     setIsRec(false);
-//     setAudioUrl(undefined);
-//   }, [media, stream]);
-
-//   // const onSubmitAudioFile = useCallback(() => {
-//   //   if (audioUrl) {
-//   //     console.log(URL.createObjectURL(audioUrl));
-//   //     const sound = new File([audioUrl], 'soundBlob', {
-//   //       type: 'audio/wav',
-//   //     });
-//   //     console.log(sound);
-//   //   }
-//   // }, [audioUrl]);
-
-//   //-----------------------발음 분석하기-------------------------
-//   //-----------------------발음 분석하기-------------------------
-//   //-----------------------발음 분석하기-------------------------
-
-//   // This example requires environment variables named "SPEECH_KEY" and "SPEECH_REGION"
-//   const assessSpeech = () => {
-//     const SPEECH_KEY = 'bdb2ab212ea64f55981c3cec87154feb';
-//     const SPEECH_REGION = 'kr';
-//     const speechConfig = SpeechSDK.SpeechConfig.fromSubscription(
-//       SPEECH_KEY,
-//       SPEECH_REGION,
-//     );
-
-//     speechConfig.speechRecognitionLanguage = 'en-US';
-//     const audioConfig = SpeechSDK.AudioConfig.fromWavFileInput(audioUrl);
-
-//     const context = {
-//       referenceText: props.text, // 기준이 되는 대본
-//       gradingSystem: 'HundredMark',
-//       granularity: 'Phoneme',
-//       phonemeAlphabet: 'IPA',
-//       nBestPhonemeCount: 5,
-//     };
-
-//     const pronunciationAssessmentConfig =
-//       SpeechSDK.PronunciationAssessmentConfig.fromJSON(JSON.stringify(context));
-
-//     const speechRecognizer = new SpeechSDK.SpeechRecognizer(
-//       speechConfig,
-//       audioConfig,
-//     );
-
-//     pronunciationAssessmentConfig.applyTo(speechRecognizer);
-
-//     speechRecognizer.recognizeOnceAsync(
-//       (speechRecognitionResult: SpeechSDK.SpeechRecognitionResult) => {
-//         // The pronunciation assessment result as a Speech SDK object
-//         // const pronunciationAssessmentResult =
-//         //   SpeechSDK.PronunciationAssessmentResult.fromResult(
-//         //     speechRecognitionResult,
-//         //   );
-
-//         // The pronunciation assessment result as a JSON string
-//         const pronunciationAssessmentResultJson =
-//           speechRecognitionResult.properties.getProperty(
-//             SpeechSDK.PropertyId.SpeechServiceResponse_JsonResult,
-//           );
-//         console.log(
-//           'pronunciationAssessmentResultJson:',
-//           pronunciationAssessmentResultJson,
-//         );
-//       },
-//     );
-//   };
-
-//   //-----------------------발음 분석하기-------------------------
-//   //-----------------------발음 분석하기-------------------------
-//   //-----------------------발음 분석하기-------------------------
-
-//   return (
-//     <>
-//       <p>
-//         <button onClick={!isRec ? onRecAudio : offRecAudio}>
-//           {!isRec ? '[녹음 시작]' : '[녹음 중지]'}
-//         </button>
-//       </p>
-//       <p>
-//         <button onClick={assessSpeech} disabled={!audioUrl}>
-//           [결과확인]
-//         </button>
-//         {audioUrl ? (
-//           <audio autoPlay controls>
-//             <source src={URL.createObjectURL(audioUrl)} type="audio/wav" />
-//           </audio>
-//         ) : (
-//           ''
-//         )}
-//       </p>
-//     </>
-//   );
-// };
-
-import React, { useState, useRef } from 'react';
+'use client';
+import React, { useState, useRef, useEffect } from 'react';
+import { BsChevronLeft, BsMic } from 'react-icons/bs';
+import { AiOutlinePause } from 'react-icons/ai';
 import {
   SpeechConfig,
   SpeechRecognizer,
@@ -155,7 +11,18 @@ import {
 } from 'microsoft-cognitiveservices-speech-sdk';
 
 const CheckDiction = (props: any) => {
-  const [isRecording, setIsRecording] = useState(false);
+  const [assessmentResult, setAssessmentResult] = useState<any>();
+
+  const backBtn = () => {
+    props.setCheckDiction(false);
+    props.playerRef.current?.playVideo();
+    props.showCountRef.current = false;
+    props.isRepeatRef.current = false;
+    props.playerRef.current?.unMute();
+  };
+
+  const [isRecording, setIsRecording] = useState<boolean>(false);
+
   const context = {
     referenceText: props.text,
     gradingSystem: 'HundredMark',
@@ -164,7 +31,7 @@ const CheckDiction = (props: any) => {
     nBestPhonemeCount: 5,
   };
 
-  // Cognitive Services 계정 정보
+  // Cognitive Services 계정 정보 <================================ 숨겨야함
   const subscriptionKey = '73f54ad18a1942b98944cca014f59386';
   const serviceRegion = 'eastus';
 
@@ -176,9 +43,30 @@ const CheckDiction = (props: any) => {
 
   let recognizer: SpeechRecognizer | undefined;
   const recognizerRef = useRef<SpeechRecognizer | undefined>(recognizer);
-
   const start = () => {
+    // 3초 타이머
+    setAssessmentResult(undefined);
     setIsRecording(true);
+    props.setSecond(3);
+    props.playerRef.current?.mute();
+    props.playerRef.current?.seekTo(props.subRangeRef.current?.start, true);
+    props.playerRef.current?.pauseVideo();
+    props.showCountRef.current = true;
+    let second = 3;
+    const timer = setInterval(() => {
+      second -= 1;
+      props.setSecond(second);
+      if (!props.showCountRef.current) {
+        clearInterval(timer);
+      } else if (second < 1) {
+        Record();
+        props.playerRef.current?.playVideo();
+        props.showCountRef.current = false;
+        clearInterval(timer);
+      }
+    }, 1000);
+  };
+  const Record = () => {
     const config = PronunciationAssessmentConfig.fromJSON(
       JSON.stringify(context),
     );
@@ -187,39 +75,188 @@ const CheckDiction = (props: any) => {
     recognizerRef.current = recognizer;
 
     recognizer.recognizing = (s, e) => {
-      console.log(`인식된 글자 : ${e.result.text}`);
+      const list: any = [];
+      e.result.text.split(' ').map((word, index) => {
+        const info = {
+          index: index,
+          word: word,
+          isPron: true,
+          pronunciationAssessment: undefined, // 평가 전
+        };
+        list.push(info);
+      });
+      setAssessmentResult({
+        aassessment: {},
+        list: list,
+      });
+      // console.log(`인식된 글자 : ${e.result.text}`);
     };
     recognizer.recognized = (s, e) => {
       const res = e.result.properties.getProperty(
         PropertyId.SpeechServiceResponse_JsonResult,
       );
-      console.log('결과 :', res);
+      if (recognizer) {
+        result(JSON.parse(res));
+        stop();
+      }
     };
-
     recognizer.sessionStopped = () => {
       if (recognizer) {
         recognizer.close();
         recognizer = undefined;
         console.log('close');
-        setIsRecording(false);
+        // setIsRecording(false);
       }
     };
     recognizer.startContinuousRecognitionAsync();
   };
+
   const stop = () => {
     if (recognizerRef.current) {
+      console.log('stop');
+      setIsRecording(false);
       recognizerRef.current.stopContinuousRecognitionAsync();
     }
   };
 
+  useEffect(() => {
+    start();
+
+    return () => {
+      stop();
+    };
+  }, []);
+
+  const result = async (result: any) => {
+    if (props.captionArray && result.RecognitionStatus === 'Success') {
+      const res = result.NBest[0];
+      const Lexical = res.Lexical.split(' ');
+      const caption = props.captionArray;
+      // caption과 Lexical 비교 =>  최장공통부분수열 LCS(Longest Common Subsequence)
+      // 1. 2차원 배열 초기화
+      const n = caption.length;
+      const m = Lexical.length;
+      const arr = Array(n + 1)
+        .fill(0)
+        .map(() => Array(m + 1).fill(0));
+
+      // 2. 2차원 배열 순회하며 비교 후 배열 채우기
+      for (let i = 1; i <= n; i++) {
+        for (let j = 1; j <= m; j++) {
+          if (caption[i - 1].toLowerCase() === Lexical[j - 1].toLowerCase()) {
+            arr[i][j] = arr[i - 1][j - 1] + 1;
+          } else {
+            arr[i][j] = Math.max(arr[i - 1][j], arr[i][j - 1]);
+          }
+        }
+      }
+
+      // 3. 공통되는 부분 추적
+      let i = n;
+      let j = m;
+      const resCaptionIdx = []; // caption 리스트에서 Lexical의 단어와 일치하는 단어를 담을 인덱스
+      while (arr[i][j] > 0) {
+        if (arr[i][j] === arr[i][j - 1]) {
+          j -= 1;
+        } else if (arr[i][j] === arr[i - 1][j]) {
+          i -= 1;
+        } else {
+          resCaptionIdx.push(i - 1);
+          i -= 1;
+          j -= 1;
+        }
+      }
+      const recognized = []; // 단어의 발음 정보를 담는 배열
+
+      for (let i = 0; i < n; i++) {
+        const info = {
+          index: i,
+          word: caption[i],
+          isPron: false,
+          pronunciationAssessment: undefined,
+        };
+        if (resCaptionIdx.includes(i)) {
+          info.isPron = true;
+          info.pronunciationAssessment = res.Words[i]?.PronunciationAssessment;
+        }
+        recognized.push(info);
+      }
+      const r = resCaptionIdx.length;
+      const assessment = {
+        accuracy: (res.PronunciationAssessment.AccuracyScore * r) / n,
+        fluency: (res.PronunciationAssessment.FluencyScore * r) / n,
+        completeness: (res.PronunciationAssessment.CompletenessScore * r) / n,
+        pron: (res.PronunciationAssessment.PronScore * r) / n,
+      };
+
+      setAssessmentResult({
+        assessment: assessment,
+        list: recognized,
+      }); // 발음 결과
+    } else if (
+      props.captionArray &&
+      result.RecognitionStatus === 'EndOfDictation'
+    ) {
+      console.log('EndOfDictation');
+    }
+  };
+  const DetailResult = (index: number) => {
+    console.log(assessmentResult.list[index]?.pronunciationAssessment);
+  };
+
   return (
-    <div>
-      <h2>Pronunciation Assessment</h2>
-      {isRecording ? (
-        <button onClick={stop}>Recording...</button>
-      ) : (
-        <button onClick={start}>Record</button>
-      )}
+    <div className="relative flex flex-col justify-between h-full">
+      <div className="mb-4 min-h-[60px]">
+        <p className="font-bold mb-2">{props.captionArray?.join(' ')}</p>
+        <p className="font-semibold">
+          {assessmentResult?.list.map((caption: any, index: number) => {
+            return (
+              <span key={index}>
+                <span onClick={() => DetailResult(index)}>
+                  {caption.isPron ? (
+                    <>
+                      <span className="cursor-pointer hover:bg-black">
+                        {caption.word}
+                      </span>
+                    </>
+                  ) : (
+                    <>
+                      <span className="text-red-600/75 cursor-pointer hover:bg-black">
+                        {caption.word}
+                      </span>
+                    </>
+                  )}
+                </span>{' '}
+              </span>
+            );
+          })}
+        </p>
+      </div>
+      <div>
+        <p>accuracy: {assessmentResult?.assessment?.accuracy}점</p>
+        <p>fluency: {assessmentResult?.assessment?.fluency}점</p>
+        <p>completeness: {assessmentResult?.assessment?.completeness}점</p>
+        <p>pron: {assessmentResult?.assessment?.pron}점</p>
+      </div>
+      <div className="flex flex-row items-end justify-between">
+        <div className="w-full">
+          <button className="rounded-full p-2 bg-[#F0F0F0]" onClick={backBtn}>
+            <BsChevronLeft />
+          </button>
+        </div>
+        <div className="w-full flex flex-col items-center">
+          {isRecording ? (
+            <button onClick={stop} className="rounded-full bg-[#F0F0F0] p-4">
+              <AiOutlinePause size={'2rem'} />
+            </button>
+          ) : (
+            <button onClick={start} className="rounded-full bg-[#F0F0F0] p-4">
+              <BsMic size={'2rem'} />
+            </button>
+          )}
+        </div>
+        <div className="w-full" />
+      </div>
     </div>
   );
 };

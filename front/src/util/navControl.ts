@@ -11,7 +11,7 @@ export const bottomNavNone = [
 ];
 export const topNavNone = [
   '/aiChat/room',
-  '/learning',
+  '/shadowing/learning/',
   '/challenge/shooting',
   '/userChat/Result',
   '/challenge/scroll',
