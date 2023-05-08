@@ -86,6 +86,12 @@ public class ChallengeServiceImpl implements ChallengeService {
                 return o2.getLikeCount() - o1.getLikeCount();
             }
         });
+        if (memberChallengeResponseDtoList.isEmpty()) {
+            return SelectOriginalResponseDto.from(originalChallengeResponseDto, 0, null);
+        }
+        if (endIndex > memberChallengeResponseDtoList.size()) {
+            endIndex = memberChallengeResponseDtoList.size();
+        }
         return SelectOriginalResponseDto.from(originalChallengeResponseDto, memberChallengeResponseDtoList.size(), memberChallengeResponseDtoList.subList(startIndex, endIndex));
     }
 
@@ -158,6 +164,12 @@ public class ChallengeServiceImpl implements ChallengeService {
                 Collections.sort(memberChallengeResponseDtoList, dateComparator);
                 break;
         }
+        if (memberChallengeResponseDtoList.isEmpty()) {
+            return MemberChallengeListResponseDto.from(0, null);
+        }
+        if (endIndex > memberChallengeResponseDtoList.size()) {
+            endIndex = memberChallengeResponseDtoList.size();
+        }
         return MemberChallengeListResponseDto.from(memberChallengeResponseDtoList.size(), memberChallengeResponseDtoList.subList(startIndex, endIndex));
     }
 
@@ -209,12 +221,13 @@ public class ChallengeServiceImpl implements ChallengeService {
     /**
      * 신대득
      * explain : 멤버 챌린지 좋아요 등록
+     *
      * @param memberChallengeId : 좋아요를 등록할 멤버 챌린지 id
-     * @param nickname : 현재 로그인한 멤버의 닉네임
+     * @param nickname          : 현재 로그인한 멤버의 닉네임
      */
     @Override
     public void createLike(Long memberChallengeId, String nickname) {
-        Member member= memberRepository.findByNickname(nickname)
+        Member member = memberRepository.findByNickname(nickname)
                 .orElseThrow(() -> new ApiException(ExceptionEnum.WRONG_MEMBER_EXCEPTION));
         MemberChallenge memberChallenge = memberChallengeRepository.findByMemberChallengeId(memberChallengeId)
                 .orElseThrow(() -> new ApiException(ExceptionEnum.MEMBER_CHALLENGE_NOT_FOUND_EXCEPTION));
@@ -223,7 +236,7 @@ public class ChallengeServiceImpl implements ChallengeService {
 
     @Override
     public void deleteLike(Long memberChallengeId, String nickname) {
-        Member member= memberRepository.findByNickname(nickname)
+        Member member = memberRepository.findByNickname(nickname)
                 .orElseThrow(() -> new ApiException(ExceptionEnum.WRONG_MEMBER_EXCEPTION));
         MemberChallenge memberChallenge = memberChallengeRepository.findByMemberChallengeId(memberChallengeId)
                 .orElseThrow(() -> new ApiException(ExceptionEnum.MEMBER_CHALLENGE_NOT_FOUND_EXCEPTION));
