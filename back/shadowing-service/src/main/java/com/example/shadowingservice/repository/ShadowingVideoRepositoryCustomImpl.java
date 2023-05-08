@@ -14,6 +14,8 @@ import javax.transaction.Transactional;
 
 import org.springframework.data.domain.Pageable;
 
+import com.example.shadowingservice.common.exception.ApiException;
+import com.example.shadowingservice.common.exception.ExceptionEnum;
 import com.example.shadowingservice.dto.response.LoginShadowingDetailDto;
 
 import com.example.shadowingservice.dto.response.RoadMapResponseDto;
@@ -70,6 +72,10 @@ public class ShadowingVideoRepositoryCustomImpl implements ShadowingVideoReposit
 
 		int repeatCount = 0;
 		boolean isMarked = false;
+
+		if(result == null) {
+			throw new ApiException(ExceptionEnum.SHADOWING_NOT_FOUND_EXCEPTION);
+		}
 
 		if (result.get(shadowingStatus.repeatCount) == null) {
 			ShadowingVideo video = em.find(ShadowingVideo.class, videoId);

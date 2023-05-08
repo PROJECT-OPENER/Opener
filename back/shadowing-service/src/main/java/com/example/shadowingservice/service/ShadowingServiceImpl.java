@@ -108,9 +108,7 @@ public class ShadowingServiceImpl implements ShadowingService {
 	@Override
 	public LoginShadowingDetailDto getLoginShadowingDetailDto(Long videoId, Long memberId) {
 		LoginShadowingDetailDto loginShadowingDetailDto = shadowingVideoRepository
-			.getLoginShadowingDetailDto(videoId, memberId)
-			.orElseThrow(() -> new ApiException(ExceptionEnum.SHADOWING_NOT_FOUND_EXCEPTION));
-
+			.getLoginShadowingDetailDto(videoId, memberId).get();
 		return loginShadowingDetailDto;
 	}
 
@@ -132,15 +130,9 @@ public class ShadowingServiceImpl implements ShadowingService {
 			.findRecommendation(
 				pageable);
 
-
-
-		if (recommendationList.isEmpty()) {
-			throw new ApiException(ExceptionEnum.RECOMMENDATIONS_NOT_FOUND_EXCEPTION);
-		}
-
-		List<RecommendationDto> recommendationDtos = new ArrayList<>();
+		List<RecommendationDto> recommendationDtoList = new ArrayList<>();
 		for (ShadowingVideo shadowingVideo : recommendationList) {
-			recommendationDtos.add(
+			recommendationDtoList.add(
 				RecommendationDto.builder()
 					.videoId(shadowingVideo.getVideoId())
 					.thumbnailUrl(shadowingVideo.getThumbnailUrl())
@@ -149,7 +141,7 @@ public class ShadowingServiceImpl implements ShadowingService {
 					.build()
 			);
 		}
-		return recommendationDtos;
+		return recommendationDtoList;
 	}
 
 	// =========================== 관심사 id로 조회 =========================
