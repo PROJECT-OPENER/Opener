@@ -23,4 +23,8 @@ public interface ChallengeService {
             throws IOException, FirebaseAuthException;
     /** 멤버 챌린지 영상 삭제 **/
     void deleteMemberChallenge(Long memberChallengeId);
+    /** 멤버 챌린지 영상 좋아요 등록 **/
+    void createLike(Long memberChallengeId, String nickname);
+    /** 멤버 챌린지 영상 좋아요 해제 **/
+    void deleteLike(Long memberChallengeId, String nickname);
 }
