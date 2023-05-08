@@ -29,7 +29,7 @@ export const uploadChallenge = async (
     `/auth/challenges/${challengeId}/member-challenge`,
     payload,
   );
-  return response.data.data;
+  return response.data;
 };
 
 // all 페이지의 챌린지 전체 가져오기

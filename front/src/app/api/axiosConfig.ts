@@ -115,6 +115,12 @@ shadowingApi.interceptors.request.use(
   handleRequestError,
 );
 
+challengeApi.interceptors.request.use(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  (config) => setAuthTokenHeader(config as AxiosRequestConfig) as any,
+  handleRequestError,
+);
+
 shadowingApi.interceptors.response.use(
   handleResponseSuccess,
   handleResponseError,
