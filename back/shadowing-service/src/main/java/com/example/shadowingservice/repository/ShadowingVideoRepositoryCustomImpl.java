@@ -98,7 +98,7 @@ public class ShadowingVideoRepositoryCustomImpl implements ShadowingVideoReposit
 	}
 
 	@Override
-	public List<RoadMapResponseDto> getRoadMapResponseDtoList() {
+	public List<RoadMapResponseDto> getMainRoadMapResponseDtoList() {
 
 		return queryFactory.select(Projections.constructor(RoadMapResponseDto.class,
 					shadowingVideo.videoId,
@@ -106,7 +106,6 @@ public class ShadowingVideoRepositoryCustomImpl implements ShadowingVideoReposit
 					shadowingVideo.korSentence,
 					Expressions.cases()
 						.when(step.stepTheme.eq(1)).then("아이브")
-						.when(step.stepTheme.eq(2)).then("뉴진스")
 						.otherwise("Unknown"),
 					step.sentenceNo
 				)

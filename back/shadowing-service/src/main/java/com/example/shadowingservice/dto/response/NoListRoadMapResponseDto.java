@@ -1,6 +1,6 @@
 package com.example.shadowingservice.dto.response;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
+import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,9 +11,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class NoRoadMapResponseDto {
+public class NoListRoadMapResponseDto {
 
-	private int stepNo;
-	private ThemeRoadMapResponseDto themeRoadMapResponseDto;
+	private List<NoRoadMapResponseDto> noRoadMapResponseDtoList;
 
 }

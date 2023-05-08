@@ -12,7 +12,7 @@ import com.example.shadowingservice.dto.response.ShadowingCategoryDto;
 public interface ShadowingVideoRepositoryCustom {
 	Optional<LoginShadowingDetailDto> getLoginShadowingDetailDto(Long videoId, Long memberId);
 
-	List<RoadMapResponseDto> getRoadMapResponseDtoList();
+	List<RoadMapResponseDto> getMainRoadMapResponseDtoList();
 
 	List<ShadowingCategoryDto> getCategoryDotoList(List<Long> videoIdList, Pageable pageable);
 
