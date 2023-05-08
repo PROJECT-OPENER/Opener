@@ -3,6 +3,7 @@ package com.example.challengeservice.entity.challenge;
 import com.example.challengeservice.entity.BaseEntity;
 import com.example.challengeservice.entity.member.Member;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -13,6 +14,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "love")
+@Builder
 public class Love extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,4 +28,12 @@ public class Love extends BaseEntity {
     private MemberChallenge memberChallenge;
     @Column(name = "is_love")
     private Boolean isLove;
+
+    public static Love from(Member member, MemberChallenge memberChallenge) {
+        return Love.builder()
+                .member(member)
+                .memberChallenge(memberChallenge)
+                .isLove(true)
+                .build();
+    }
 }

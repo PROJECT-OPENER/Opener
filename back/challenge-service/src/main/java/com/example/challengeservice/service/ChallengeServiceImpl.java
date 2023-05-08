@@ -8,6 +8,7 @@ import com.example.challengeservice.common.exception.ApiException;
 import com.example.challengeservice.common.exception.ExceptionEnum;
 import com.example.challengeservice.dto.request.MemberChallengeRequestDto;
 import com.example.challengeservice.dto.response.*;
+import com.example.challengeservice.entity.challenge.Love;
 import com.example.challengeservice.entity.challenge.MemberChallenge;
 import com.example.challengeservice.entity.member.Member;
 import com.example.challengeservice.repository.LoveRepository;
@@ -203,5 +204,31 @@ public class ChallengeServiceImpl implements ChallengeService {
         MemberChallenge memberChallenge = memberChallengeRepository.findByMemberChallengeId(memberChallengeId)
                 .orElseThrow(() -> new ApiException(ExceptionEnum.MEMBER_CHALLENGE_NOT_FOUND_EXCEPTION));
         memberChallengeRepository.delete(memberChallenge);
+    }
+
+    /**
+     * 신대득
+     * explain : 멤버 챌린지 좋아요 등록
+     * @param memberChallengeId : 좋아요를 등록할 멤버 챌린지 id
+     * @param nickname : 현재 로그인한 멤버의 닉네임
+     */
+    @Override
+    public void createLike(Long memberChallengeId, String nickname) {
+        Member member= memberRepository.findByNickname(nickname)
+                .orElseThrow(() -> new ApiException(ExceptionEnum.WRONG_MEMBER_EXCEPTION));
+        MemberChallenge memberChallenge = memberChallengeRepository.findByMemberChallengeId(memberChallengeId)
+                .orElseThrow(() -> new ApiException(ExceptionEnum.MEMBER_CHALLENGE_NOT_FOUND_EXCEPTION));
+        loveRepository.save(Love.from(member, memberChallenge));
+    }
+
+    @Override
+    public void deleteLike(Long memberChallengeId, String nickname) {
+        Member member= memberRepository.findByNickname(nickname)
+                .orElseThrow(() -> new ApiException(ExceptionEnum.WRONG_MEMBER_EXCEPTION));
+        MemberChallenge memberChallenge = memberChallengeRepository.findByMemberChallengeId(memberChallengeId)
+                .orElseThrow(() -> new ApiException(ExceptionEnum.MEMBER_CHALLENGE_NOT_FOUND_EXCEPTION));
+        Love love = loveRepository.findByMemberChallengeAndMember(memberChallenge, member)
+                .orElseThrow(() -> new ApiException(ExceptionEnum.LOVE_NOT_FOUND_EXCEPTION));
+        loveRepository.delete(love);
     }
 }
