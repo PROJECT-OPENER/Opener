@@ -33,6 +33,6 @@ public class FireBaseService {
         Bucket bucket = StorageClient.getInstance().bucket(firebaseBucket);
         InputStream content = new ByteArrayInputStream(file.getBytes());
         Blob blob = bucket.create(nameFile.toString(), content, file.getContentType());
-        return blob.signUrl(10, TimeUnit.DAYS).toString();
+        return blob.signUrl(20, TimeUnit.DAYS).toString();
     }
 }
