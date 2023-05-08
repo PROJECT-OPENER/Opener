@@ -48,8 +48,7 @@ public class AuthChallengeController {
      * 신대득
      * explain : 멤버 챌린지 영상 좋아요 등록
      */
-    @PostMapping
-    @RequestMapping("/member-challenges/{memberChallengeId}/like")
+    @PostMapping("/member-challenges/{memberChallengeId}/like")
     public ResponseEntity<BaseResponseDto> createLike(HttpServletRequest request, @PathVariable Long memberChallengeId) {
         // Todo : 멤버 id 하드코딩．　변경　필요
         String nickname = "미미1";
@@ -61,8 +60,7 @@ public class AuthChallengeController {
      * 신대득
      * explain : 멤버 챌린지 영상 좋아요 해제
      */
-    @DeleteMapping
-    @RequestMapping("/member-challenges/{memberChallengeId}/like")
+    @DeleteMapping("/member-challenges/{memberChallengeId}/like")
     public ResponseEntity<BaseResponseDto> deleteLike(HttpServletRequest request, @PathVariable Long memberChallengeId) {
         // Todo : 멤버 id 하드코딩．　변경　필요
         String nickname = "미미1";
