@@ -3,13 +3,12 @@ package com.example.challengeservice.controller.challenge;
 import java.util.List;
 
 import com.example.challengeservice.dto.BaseResponseDto;
+import com.example.challengeservice.dto.response.MemberChallengeListResponseDto;
+import com.example.challengeservice.dto.response.WatchOriginalChallengeResponseDto;
 import com.example.challengeservice.dto.response.SelectOriginalResponseDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.example.challengeservice.dto.BaseListResponseDto;
 import com.example.challengeservice.dto.response.OriginalChallengeResponseDto;
@@ -27,7 +26,7 @@ public class ChallengeController {
 
     /**
      * 신대득
-     * expalin : 원본 영상 정보 조회
+     * explain : 원본 영상 정보 조회
      */
     @GetMapping("/challenges")
     public ResponseEntity<BaseListResponseDto<OriginalChallengeResponseDto>> getOriginalChallenges() {
@@ -43,8 +42,30 @@ public class ChallengeController {
      * @return
      */
     @GetMapping("/challenges/{challengeId}")
-    public ResponseEntity<BaseResponseDto<SelectOriginalResponseDto>> selectOriginalChallenge(@PathVariable Long challengeId) {
-        SelectOriginalResponseDto selectOriginalResponseDto = challengeService.selectOriginalChallenge(challengeId);
+    public ResponseEntity<BaseResponseDto<SelectOriginalResponseDto>> selectOriginalChallenge(@PathVariable Long challengeId,
+                                                                                              @RequestParam("startIndex") Integer startIndex, @RequestParam("endIndex") Integer endIndex) {
+        SelectOriginalResponseDto selectOriginalResponseDto = challengeService.selectOriginalChallenge(challengeId, startIndex, endIndex);
         return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseDto<SelectOriginalResponseDto>(200, "챌린지 선택 조회 성공", selectOriginalResponseDto));
+    }
+
+    /**
+     * 신대득
+     * explain : 원본 영상 보기
+     */
+    @GetMapping("watch/challenges/{challengeId}")
+    public ResponseEntity<BaseResponseDto<WatchOriginalChallengeResponseDto>> watchOriginalChallenge(@PathVariable Long challengeId) {
+        WatchOriginalChallengeResponseDto watchOriginalChallengeResponseDto = challengeService.watchOriginalChallenge(challengeId);
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseDto<WatchOriginalChallengeResponseDto>(200, "원본 챌린지 영상 보기 성공", watchOriginalChallengeResponseDto));
+    }
+
+
+    /**
+     * 신대득
+     * 멤버 챌린지 영상 목록 조회
+     */
+    @GetMapping("/member-challenges")
+    public ResponseEntity<BaseResponseDto<MemberChallengeListResponseDto>> categoryMemberChallenge(@RequestParam("category") String category, @RequestParam("startIndex") Integer startIndex, @RequestParam("endIndex") Integer endIndex) {
+        MemberChallengeListResponseDto memberChallengeListResponseDto = challengeService.categoryMemberChallenge(category, startIndex, endIndex);
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseDto<MemberChallengeListResponseDto>(200, "챌린지 카테고리 조회 성공", memberChallengeListResponseDto));
     }
 }

@@ -1,7 +1,8 @@
-import { responseInterface } from './../types/share';
+import { responseInterface } from '@/types/share';
 import axios, { AxiosRequestConfig, AxiosResponse, AxiosError } from 'axios';
+import { getSession } from 'next-auth/react';
 
-const BASE_URL = 'http://k8c104.p.ssafy.io:8000/';
+const BASE_URL = process.env.NEXT_PUBLIC_SERVER_URL;
 
 export const memberApi = axios.create({
   baseURL: BASE_URL + 'member-service',
@@ -16,13 +17,26 @@ export const challengeApi = axios.create({
   baseURL: BASE_URL + 'challenge-service',
 });
 
+export const chatApi = axios.create({
+  baseURL: BASE_URL + 'chatting-service',
+  withCredentials: true,
+  headers: {
+    'Content-Type': 'application/json',
+    Accept: 'application/json',
+  },
+});
+
 // Function to set the Authorization header if a token is available in localStorage
-const setAuthTokenHeader = (config: AxiosRequestConfig): AxiosRequestConfig => {
-  const accessToken = localStorage.getItem('accessToken');
+const setAuthTokenHeader = async (
+  config: AxiosRequestConfig,
+): Promise<AxiosRequestConfig> => {
+  const session = await getSession();
+  const accessToken = session?.user.user?.accessToken;
+
   if (accessToken) {
     config.headers = {
       ...config.headers,
-      accessToken: `Bearer ${accessToken}`,
+      Authorization: `Bearer ${accessToken}`,
     };
   }
   return config;
@@ -37,6 +51,7 @@ const handleRequestError = (error: AxiosError): Promise<AxiosError> => {
 // Function to handle successful responses
 const handleResponseSuccess = (response: AxiosResponse): AxiosResponse => {
   // You can also handle common successful response scenarios here
+  console.log(response);
   return response;
 };
 
@@ -70,6 +85,11 @@ memberApi.interceptors.request.use(
   (config) => setAuthTokenHeader(config as AxiosRequestConfig) as any,
   handleRequestError,
 );
+chatApi.interceptors.request.use(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  (config) => setAuthTokenHeader(config as AxiosRequestConfig) as any,
+  handleRequestError,
+);
 
 // Add the response interceptor for handling successful responses and errors
 memberApi.interceptors.response.use(handleResponseSuccess, handleResponseError);
@@ -77,3 +97,4 @@ challengeApi.interceptors.response.use(
   handleResponseSuccess,
   handleResponseError,
 );
+chatApi.interceptors.response.use(handleResponseSuccess, handleResponseError);

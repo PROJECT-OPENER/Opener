@@ -15,7 +15,7 @@ public class BirthValidator implements ConstraintValidator<Birth, String> {
 
 	@Override
 	public boolean isValid(String value, ConstraintValidatorContext context) {
-		if (value == null || value.trim() == "") {
+		if (value == null || value.trim().equals("")) {
 			throw new ApiException(ExceptionEnum.BIRTH_NULL_EXCEPTION);
 		}
 

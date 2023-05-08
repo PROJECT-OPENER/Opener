@@ -2,21 +2,40 @@ package com.example.memberservice.service;
 
 import static com.example.memberservice.entity.redis.RedisKey.*;
 
+import java.util.Comparator;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.example.memberservice.client.ShadowingServiceClient;
 import com.example.memberservice.common.config.security.JwtTokenProvider;
 import com.example.memberservice.common.exception.ApiException;
 import com.example.memberservice.common.exception.ExceptionEnum;
+import com.example.memberservice.common.util.AwsS3Uploader;
 import com.example.memberservice.common.util.MailUtil;
+import com.example.memberservice.dto.InterestDto;
+import com.example.memberservice.dto.MemberDto;
 import com.example.memberservice.dto.request.member.LoginRequestDto;
+import com.example.memberservice.dto.request.member.MemberInterestsRequestDto;
+import com.example.memberservice.dto.request.member.NicknameRequestDto;
+import com.example.memberservice.dto.request.member.PasswordRequestDto;
+import com.example.memberservice.dto.request.member.ProfileImgRequestDto;
 import com.example.memberservice.dto.request.member.SignUpMemberRequestDto;
 import com.example.memberservice.dto.request.member.CheckEmailCodeRequestDto;
+import com.example.memberservice.dto.response.member.LoginMemberResponseDto;
 import com.example.memberservice.dto.response.member.LoginResponseDto;
 import com.example.memberservice.entity.member.Member;
+import com.example.memberservice.entity.member.MemberInterest;
+import com.example.memberservice.entity.shadowing.Interest;
+import com.example.memberservice.messagequeue.KafkaProducer;
 import com.example.memberservice.repository.MemberInterestRepository;
 import com.example.memberservice.repository.MemberRepository;
 
@@ -33,7 +52,18 @@ public class MemberServiceImpl implements MemberService {
 	private final JavaMailSender javaMailSender;
 	private final BCryptPasswordEncoder bCryptPasswordEncoder;
 	private final JwtTokenProvider jwtTokenProvider;
+	private final ShadowingServiceClient shadowingServiceClient;
+	private final KafkaProducer kafkaProducer;
+	private final AwsS3Uploader awsS3Uploader;
 
+	@Value("${spring.img.baseurl}")
+	private String baseImgUrl;
+
+	/**
+	 * 김윤미
+	 * explain : 이메일 중복 검사
+	 * @param email : 이메일
+	 */
 	@Override
 	@Transactional
 	public void checkEmail(String email) {
@@ -42,6 +72,11 @@ public class MemberServiceImpl implements MemberService {
 		}
 	}
 
+	/**
+	 * 김윤미
+	 * explain : 닉네임 중복 검사
+	 * @param nickname : 닉네임
+	 */
 	@Override
 	@Transactional
 	public void checkNickname(String nickname) {
@@ -50,12 +85,17 @@ public class MemberServiceImpl implements MemberService {
 		}
 	}
 
+	/**
+	 * 김윤미
+	 * explain : 이메일 인증 코드 전송
+	 * @param email : 이메일
+	 */
 	@Override
 	@Transactional
 	public void sendEmailCode(String email) {
 		checkEmail(email);
 
-		String authNumber = MailUtil.makeRandomNumber(10);
+		String authNumber = MailUtil.makeRandomNumber(6);
 		redisService.setDataWithExpiration(SEND_CODE.getKey() + email, authNumber, 60 * 5L);
 		redisService.setDataWithStatus(AUTH_EMAIL.getKey() + email, false);
 
@@ -66,6 +106,11 @@ public class MemberServiceImpl implements MemberService {
 		}
 	}
 
+	/**
+	 * 김윤미
+	 * explain : 이메일 인증 코드 검증
+	 * @param checkEmailCodeRequestDto : 이메일, 인증 코드 정보
+	 */
 	@Override
 	@Transactional
 	public void checkEmailCode(CheckEmailCodeRequestDto checkEmailCodeRequestDto) {
@@ -92,6 +137,11 @@ public class MemberServiceImpl implements MemberService {
 		}
 	}
 
+	/**
+	 * 김윤미
+	 * explain : 회원가입
+	 * @param signUpMemberRequestDto : 사용자 정보
+	 */
 	@Transactional
 	@Override
 	public void signUpMember(SignUpMemberRequestDto signUpMemberRequestDto) {
@@ -112,10 +162,16 @@ public class MemberServiceImpl implements MemberService {
 		}
 
 		redisService.deleteData(AUTH_EMAIL.getKey() + email);
-
+		kafkaProducer.sendSignUpMember(signUpMemberRequestDto);
 		memberRepository.save(signUpMemberRequestDto.toEntity(encryptedPwd));
 	}
 
+	/**
+	 * 김윤미
+	 * explain : 로그인
+	 * @param loginRequestDto : 이메일, 비밀번호 정보
+	 * @return : 로그인 정보
+	 */
 	@Override
 	@Transactional
 	public LoginResponseDto login(LoginRequestDto loginRequestDto) {
@@ -141,8 +197,164 @@ public class MemberServiceImpl implements MemberService {
 		redisService.setMemberWithDuration(accessToken, member, JwtTokenProvider.ACCESS_TOKEN_VALID_TIME);
 		return LoginResponseDto.builder()
 			.accessToken(accessToken)
-			.nickname(member.getNickname())
 			.hasInterest(hasInterest)
+			.loginMemberResponseDto(getMyInfo(member))
+			.build();
+	}
+
+	/**
+	 * 김윤미
+	 * explain : 사용자 초기 관심사 등록
+	 * @param memberInterestsRequestDto : 등록하고자 하는 관심사 ID 배열 정보
+	 * @param memberDto : 현재 사용자 정보
+	 */
+	@Override
+	@Transactional
+	public void createInterests(MemberInterestsRequestDto memberInterestsRequestDto, MemberDto memberDto) {
+		Set<Long> interests = memberInterestsRequestDto.getInterests();
+
+		if (interests.size() < 2) {
+			throw new ApiException(ExceptionEnum.INSUFFICIENT_INTERESTS_EXCEPTION);
+		}
+		Member member = memberDto.toEntity();
+
+		interests.forEach((interestId) -> {
+			Interest interest = shadowingServiceClient.getInterest(interestId)
+				.orElseThrow(() -> new ApiException(ExceptionEnum.INTEREST_NOT_FOUND))
+				.getData()
+				.toEntity();
+			MemberInterest memberInterest = MemberInterest.builder().member(member).interest(interest).build();
+			memberInterestRepository.save(memberInterest);
+		});
+	}
+
+	/**
+	 * 김윤미
+	 * explain : 로그아웃 - Redis에서 사용자 정보 삭제
+	 * @param token : 사용자 토큰
+	 */
+	@Override
+	@Transactional
+	public void logout(String token) {
+		redisService.deleteData(token);
+	}
+
+	/**
+	 * 김윤미
+	 * explain : 사용자 닉네임 변경
+	 * @param memberDto : 사용자 정보
+	 * @param nicknameRequestDto : 변경 닉네임 정보
+	 */
+	@Override
+	@Transactional
+	public void updateNickname(MemberDto memberDto, NicknameRequestDto nicknameRequestDto) {
+		Member member = memberRepository.findById(memberDto.getMemberId())
+			.orElseThrow(() -> new ApiException(ExceptionEnum.MEMBER_NOT_FOUND_EXCEPTION));
+
+		String nickname = nicknameRequestDto.getNickname();
+		checkNickname(nickname);
+
+		member.updateNickname(nickname);
+	}
+
+	/**
+	 * 김윤미
+	 * explain : 사용자 비밀번호 변경
+	 * @param memberDto : 사용자 정보
+	 * @param passwordRequestDto : 변경 비밀번호 정보
+	 */
+	@Override
+	@Transactional
+	public void updatePassword(MemberDto memberDto, PasswordRequestDto passwordRequestDto) {
+		Member member = memberRepository.findById(memberDto.getMemberId())
+			.orElseThrow(() -> new ApiException(ExceptionEnum.MEMBER_NOT_FOUND_EXCEPTION));
+
+		String encryptedPwd = bCryptPasswordEncoder.encode(passwordRequestDto.getPassword());
+
+		member.updatePassword(encryptedPwd);
+	}
+
+	/***
+	 * 김윤미
+	 * explain : 사용자 관심사 변경
+	 * @param memberDto : 사용자 정보
+	 * @param memberInterestsRequestDto : 변경 관심사 정보
+	 */
+	@Override
+	@Transactional
+	public void updateMemberInterests(MemberDto memberDto, MemberInterestsRequestDto memberInterestsRequestDto) {
+		Set<Long> interests = memberInterestsRequestDto.getInterests();
+
+		if (interests.size() < 2) {
+			throw new ApiException(ExceptionEnum.INSUFFICIENT_INTERESTS_EXCEPTION);
+		}
+
+		Member member = memberRepository.findById(memberDto.getMemberId())
+			.orElseThrow(() -> new ApiException(ExceptionEnum.MEMBER_NOT_FOUND_EXCEPTION));
+
+		memberInterestRepository.deleteAllInBatch(memberInterestRepository.findAllByMember(member));
+
+		interests.forEach((interestId) -> {
+			memberInterestRepository.save(MemberInterest.builder()
+				.member(member)
+				.interest(shadowingServiceClient.getInterest(interestId)
+					.orElseThrow(() -> new ApiException(ExceptionEnum.INTEREST_NOT_FOUND))
+					.getData()
+					.toEntity())
+				.build());
+		});
+	}
+
+	/**
+	 * 김윤미
+	 * explain : 사용자 프로필 사진 변경
+	 * @param memberDto : 사용자 정보
+	 * @param profileImgRequestDto : 프로필 사진 데이터 정보
+	 */
+	@Override
+	@Transactional
+	public void updateProfileImg(MemberDto memberDto, ProfileImgRequestDto profileImgRequestDto) {
+		Member member = memberRepository.findById(memberDto.getMemberId())
+			.orElseThrow(() -> new ApiException(ExceptionEnum.MEMBER_NOT_FOUND_EXCEPTION));
+
+		MultipartFile profileImg = profileImgRequestDto.getProfileImg();
+		String profileImgUrl = profileImg == null ? null : awsS3Uploader.uploadImage(profileImg);
+		member.updateProfile(profileImgUrl);
+	}
+
+	/**
+	 * 김윤미
+	 * explain : 내 정보 조회
+	 * @param memberDto : 로그인한 사용자 정보
+	 * @return : 사용자 정보
+	 */
+	@Override
+	@Transactional
+	public LoginMemberResponseDto getMyInfo(MemberDto memberDto) {
+		return getMyInfo(memberDto.toEntity());
+	}
+
+	/**
+	 * 김윤미
+	 * explain : Entity로 이메일, 닉네임, 프로필, 관심사 정보 조회
+	 * @param member : 사용자 정보 Entity
+	 * @return : 사용자 정보
+	 */
+	@Transactional
+	public LoginMemberResponseDto getMyInfo(Member member) {
+		List<InterestDto> interests = memberInterestRepository.findAllByMember(member)
+			.stream()
+			.map(MemberInterest::getInterest).collect(Collectors.toSet())
+			.stream()
+			.map(InterestDto::new)
+			.sorted(Comparator.comparing(InterestDto::getInterestId))
+			.collect(Collectors.toList());
+
+		return LoginMemberResponseDto.builder()
+			.email(member.getEmail())
+			.nickname(member.getNickname())
+			.profile(member.getProfile() == null ? baseImgUrl : member.getProfile())
+			.interests(interests)
 			.build();
 	}
 }

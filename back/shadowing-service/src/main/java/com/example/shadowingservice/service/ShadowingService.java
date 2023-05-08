@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.data.domain.Pageable;
 
 import com.example.shadowingservice.dto.request.IndexDto;
+import com.example.shadowingservice.dto.response.InterestResponseDto;
 import com.example.shadowingservice.dto.response.LoginShadowingDetailDto;
 import com.example.shadowingservice.dto.response.RecommendationDto;
 import com.example.shadowingservice.dto.response.RoadMapResponseDto;
@@ -27,4 +28,6 @@ public interface ShadowingService {
 	/** 비로그인 메인 페이지 추천 문장 **/
 	List<RecommendationDto> getRecommendationList(Pageable pageable);
 
+	/** 관심사 조회 **/
+	InterestResponseDto getInterest(Long interestId);
 }
