@@ -46,8 +46,7 @@ public class ShadowingServiceImpl implements ShadowingService {
 
 		System.out.println(hashMap.get(1));
 
-		List<NoRoadMapResponseDto> noRoadMapResponseDtoList = new ArrayList<>();
-		List<ThemeRoadMapResponseDto> themeRoadMapResponseDtoList = new ArrayList<>();
+
 
 		// stepNo List 생성 ->
 		List<Integer> stepNoList = stepRepository.findDistinctStepNo();
@@ -58,7 +57,15 @@ public class ShadowingServiceImpl implements ShadowingService {
 		// jpa in을 통해서 stepNoList의 길이만큼 반복하고 stepTheme List를 생성 
 		// stepNo와 stepThemeList로 조회 그 후 값을 themeRoadMapResponseDtoList에 추가
 		// sentenceNo로 정렬
+		for(int stepNo = 0; stepNo < stepNoList.size(); stepNo++) {
+			List<NoRoadMapResponseDto> noRoadMapResponseDtoList = new ArrayList<>();
 
+			for(int stepTheme = 0; stepTheme < stepThemeList.size(); stepTheme++) {
+				List<ThemeRoadMapResponseDto> themeRoadMapResponseDtoList = new ArrayList<>();
+
+
+			}
+		}
 
 		// stepNo에 맞춰서 getMainRoadMapList에
 

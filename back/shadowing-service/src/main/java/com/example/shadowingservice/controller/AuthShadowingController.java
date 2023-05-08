@@ -30,6 +30,9 @@ public class AuthShadowingController {
 	@GetMapping("/videos/{video-id}")
 	public ResponseEntity<BaseResponseDto<Object>> getShadowingDetail(@PathVariable("video-id") Long videoId) {
 		Long memberId = 2L;
+		System.out.println("=================================");
+		System.out.println("videoId : " + videoId);
+		System.out.println("=================================");
 		LoginShadowingDetailDto loginShadowingDetailDto = shadowingService.getLoginShadowingDetailDto(videoId, memberId);
 		return ResponseEntity.status(HttpStatus.OK)
 			.body(new BaseResponseDto<>(200, "영상 조회 완료", loginShadowingDetailDto));

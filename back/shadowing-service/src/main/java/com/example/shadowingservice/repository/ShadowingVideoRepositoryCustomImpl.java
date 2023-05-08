@@ -47,7 +47,9 @@ public class ShadowingVideoRepositoryCustomImpl implements ShadowingVideoReposit
 	public Optional<LoginShadowingDetailDto> getLoginShadowingDetailDto(Long videoId, Long memberId) {
 
 		Tuple result = queryFactory
-			.select(shadowingVideo.startTime,
+			.select(
+				shadowingVideo.videoUrl,
+				shadowingVideo.startTime,
 				shadowingVideo.endTime,
 				shadowingVideo.engCaption,
 				shadowingVideo.korCaption,
@@ -63,6 +65,7 @@ public class ShadowingVideoRepositoryCustomImpl implements ShadowingVideoReposit
 			.on(bookmark.memberId
 				.eq(memberId).and(shadowingVideo.videoId
 					.eq(bookmark.shadowingVideo.videoId)))
+			.where(shadowingVideo.videoId.eq(videoId))
 			.fetchFirst();
 
 		int repeatCount = 0;
