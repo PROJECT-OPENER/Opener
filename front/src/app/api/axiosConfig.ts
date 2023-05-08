@@ -12,12 +12,22 @@ export const memberApi = axios.create({
     Accept: 'application/json',
   },
 });
-
+// 쉐도잉 API
 export const shadowingApi = axios.create({
   baseURL: BASE_URL + 'shadowing-service',
   withCredentials: true,
   headers: {
     'Content-Type': 'application/json',
+    Accept: 'application/json',
+  },
+});
+// 챌린지 API
+export const challengeApi = axios.create({
+  baseURL: BASE_URL + 'challenge-service',
+  withCredentials: true,
+  headers: {
+    // 'Content-Type': 'application/json',
+    'Content-Type': 'multipart/form-data',
     Accept: 'application/json',
   },
 });
@@ -106,6 +116,10 @@ shadowingApi.interceptors.request.use(
 );
 
 shadowingApi.interceptors.response.use(
+  handleResponseSuccess,
+  handleResponseError,
+);
+challengeApi.interceptors.response.use(
   handleResponseSuccess,
   handleResponseError,
 );

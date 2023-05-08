@@ -41,7 +41,6 @@ const handler = NextAuth({
         // console.log('res : ', res.headers.get('nickname'));
         // const user = await decodeURI(res.headers.get('nickname') as string);
         const user = await res.json();
-
         // console.log('user : ', { user });
         // 에러 핸들링 : 커스텀 에러 핸들리을 위해 에러코드를 searchParams로 넘긴다.
         // 에러코드는 member-service의 ErrorCode를 참고한다.
