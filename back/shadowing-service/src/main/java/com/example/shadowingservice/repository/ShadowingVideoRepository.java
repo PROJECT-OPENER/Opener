@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import com.example.shadowingservice.dto.response.ShadowingCategoryDto;
 import com.example.shadowingservice.entity.shadowing.ShadowingVideo;
 
 public interface ShadowingVideoRepository extends JpaRepository<ShadowingVideo, Long>,
@@ -16,6 +17,7 @@ public interface ShadowingVideoRepository extends JpaRepository<ShadowingVideo, 
 	@Query("select s from ShadowingVideo s")
 	List<ShadowingVideo> findRecommendation(Pageable pageable);
 
-	List<ShadowingVideo> findByVideoIdIn(List<Long> memberIdList, Pageable pagable);
+	@Query("select s.videoId, s.thumbnailUrl, s.engSentence, s.korSentence from ShadowingVideo s" )
+	List<ShadowingCategoryDto> findByVideoIdIn(List<Long> videoIdList);
 
 }

@@ -36,9 +36,7 @@ public class ShadowingVideo extends BaseEntity {
 	private String videoUrl;
 	private LocalTime startTime;
 	private LocalTime endTime;
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "step_id", nullable = false)
-	private Step Step;
+	private Long stepId;
 	private String engSentence;
 	private String korSentence;
 	private String engCaption;

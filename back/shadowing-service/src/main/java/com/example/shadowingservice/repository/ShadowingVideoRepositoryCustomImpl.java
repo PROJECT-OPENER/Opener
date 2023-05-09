@@ -1,25 +1,34 @@
 package com.example.shadowingservice.repository;
 
-
 import static com.example.shadowingservice.entity.shadowing.QBookmark.*;
 import static com.example.shadowingservice.entity.shadowing.QShadowingStatus.*;
 import static com.example.shadowingservice.entity.shadowing.QShadowingVideo.*;
 import static com.example.shadowingservice.entity.shadowing.QStep.*;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 
+import org.springframework.data.domain.Pageable;
+
+import com.example.shadowingservice.common.exception.ApiException;
+import com.example.shadowingservice.common.exception.ExceptionEnum;
 import com.example.shadowingservice.dto.response.LoginShadowingDetailDto;
 
 import com.example.shadowingservice.dto.response.RoadMapResponseDto;
+import com.example.shadowingservice.dto.response.ShadowingCategoryDto;
 import com.example.shadowingservice.entity.shadowing.ShadowingStatus;
 import com.example.shadowingservice.entity.shadowing.ShadowingVideo;
 import com.querydsl.core.Tuple;
+import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
@@ -32,9 +41,9 @@ public class ShadowingVideoRepositoryCustomImpl implements ShadowingVideoReposit
 	private final EntityManager em;
 
 	/**
-	 * 해당 유저의 학습 데이터와 북마크 데이터가 있는지 확인하고
-	 * 학습 데이터가 없으면 생성, 북마크가 없으면 isMarked에 false처리
-	 *
+	 * 이우승
+	 * explain : 로그인 쉐도잉 영상 조회
+	 * 사용자의 학습데이터가 없다면 자동으로 테이블에 등록
 	 * @param videoId
 	 * @param memberId
 	 * @return
@@ -44,7 +53,9 @@ public class ShadowingVideoRepositoryCustomImpl implements ShadowingVideoReposit
 	public Optional<LoginShadowingDetailDto> getLoginShadowingDetailDto(Long videoId, Long memberId) {
 
 		Tuple result = queryFactory
-			.select(shadowingVideo.startTime,
+			.select(
+				shadowingVideo.videoUrl,
+				shadowingVideo.startTime,
 				shadowingVideo.endTime,
 				shadowingVideo.engCaption,
 				shadowingVideo.korCaption,
@@ -60,10 +71,15 @@ public class ShadowingVideoRepositoryCustomImpl implements ShadowingVideoReposit
 			.on(bookmark.memberId
 				.eq(memberId).and(shadowingVideo.videoId
 					.eq(bookmark.shadowingVideo.videoId)))
+			.where(shadowingVideo.videoId.eq(videoId))
 			.fetchFirst();
 
 		int repeatCount = 0;
 		boolean isMarked = false;
+
+		if (result == null) {
+			throw new ApiException(ExceptionEnum.SHADOWING_NOT_FOUND_EXCEPTION);
+		}
 
 		if (result.get(shadowingStatus.repeatCount) == null) {
 			ShadowingVideo video = em.find(ShadowingVideo.class, videoId);
@@ -94,28 +110,88 @@ public class ShadowingVideoRepositoryCustomImpl implements ShadowingVideoReposit
 		));
 	}
 
+	/**
+	 * 이우승
+	 * explain : 비로그인 쉐도잉 로드맵 전체 조회
+	 *CaseBuilder를 통해서 테이블에 저장되어있는 정수값을 문자열로 변경 후 반환
+	 * @param stepIdList
+	 * @return
+	 */
 	@Override
-	public List<RoadMapResponseDto> getRoadMapResponseDtoList() {
+	public List<RoadMapResponseDto> getThemeRoadMapResponseDtoList(List<Long> stepIdList) {
 
-		return queryFactory
-			.select(Projections.constructor(RoadMapResponseDto.class,
+		Expression<String> idString = new CaseBuilder()
+			.when(step.stepTheme.eq(1)).then("아이브")
+			.when(step.stepTheme.eq(2)).then("뉴진스")
+			.when(step.stepTheme.eq(3)).then("엔믹스")
+			.when(step.stepTheme.eq(4)).then("블랙핑크")
+			.otherwise("");
+
+		return queryFactory.select(Projections.constructor(RoadMapResponseDto.class,
+					shadowingVideo.videoId,
+					shadowingVideo.engSentence,
+					shadowingVideo.korSentence,
+					idString,
+					step.sentenceNo
+				)
+			)
+			.from(shadowingVideo)
+			.join(step)
+			.on(shadowingVideo.stepId.eq(step.stepId))
+			.where(shadowingVideo.stepId.in(stepIdList))
+			.fetch();
+
+	}
+
+	/**
+	 * 이우승
+	 * explain : 비로그인 메인 페이지 로드맵
+	 * @return
+	 */
+	@Override
+	public List<RoadMapResponseDto> getMainRoadMapResponseDtoList() {
+
+		return queryFactory.select(Projections.constructor(RoadMapResponseDto.class,
 					shadowingVideo.videoId,
 					shadowingVideo.engSentence,
 					shadowingVideo.korSentence,
 					Expressions.cases()
 						.when(step.stepTheme.eq(1)).then("아이브")
-						.when(step.stepTheme.eq(2)).then("뉴진스")
 						.otherwise("Unknown"),
 					step.sentenceNo
 				)
 			)
 			.from(shadowingVideo)
 			.leftJoin(step)
-			.on(shadowingVideo.Step.stepId.eq(step.stepId))
+			.on(shadowingVideo.stepId.eq(step.stepId))
 			.where(step.stepNo.eq(1).and(step.stepTheme.eq(1)))
 			.fetch();
 	}
 
+	/**
+	 * 이우승
+	 * explain : 비로그인 카테고리 별 쉐도잉 영상 목록 조회
+	 * @param videoIdList
+	 * @param pageable
+	 * @return
+	 */
+	@Override
+	public List<ShadowingCategoryDto> getCategoryDotoList(List<Long> videoIdList, Pageable pageable) {
+		BooleanExpression inVideoIdList = shadowingVideo.videoId.in(videoIdList);
 
+		return queryFactory.select(Projections.constructor(ShadowingCategoryDto.class,
+				shadowingVideo.videoId,
+				shadowingVideo.thumbnailUrl,
+				shadowingVideo.engSentence,
+				shadowingVideo.korSentence)
+			)
+			.from(shadowingVideo)
+			.where(inVideoIdList)
+			.offset(pageable.getOffset())
+			.limit(pageable.getPageSize())
+			.orderBy(shadowingVideo.videoId.asc())
+			.fetch();
+
+	}
 
 }

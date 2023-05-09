@@ -1,27 +1,31 @@
 package com.example.shadowingservice.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.example.shadowingservice.common.StepMap;
 import com.example.shadowingservice.common.exception.ApiException;
 import com.example.shadowingservice.common.exception.ExceptionEnum;
 import com.example.shadowingservice.dto.response.InterestResponseDto;
 import com.example.shadowingservice.dto.response.LoginShadowingDetailDto;
+import com.example.shadowingservice.dto.response.NoRoadMapResponseDto;
 import com.example.shadowingservice.dto.response.RecommendationDto;
 import com.example.shadowingservice.dto.response.RoadMapResponseDto;
 import com.example.shadowingservice.dto.response.ShadowingCategoryDto;
 import com.example.shadowingservice.dto.response.ShadowingDetailDto;
+import com.example.shadowingservice.dto.response.ThemeRoadMapResponseDto;
 import com.example.shadowingservice.entity.shadowing.Interest;
 import com.example.shadowingservice.entity.shadowing.ShadowingVideo;
-import com.example.shadowingservice.entity.shadowing.ShadowingVideoInterest;
-import com.example.shadowingservice.repository.BookmarkRepository;
 import com.example.shadowingservice.repository.InterestRepository;
 import com.example.shadowingservice.repository.ShadowingVideoInterestRepository;
 import com.example.shadowingservice.repository.ShadowingVideoRepository;
+import com.example.shadowingservice.repository.StepRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -30,33 +34,97 @@ import lombok.RequiredArgsConstructor;
 public class ShadowingServiceImpl implements ShadowingService {
 	private final ShadowingVideoRepository shadowingVideoRepository;
 	private final InterestRepository interestRepository;
-
 	private final ShadowingVideoInterestRepository shadowingVideoInterestRepository;
-	private final BookmarkRepository bookmarkRepository;
+	private final StepRepository stepRepository;
 
-	// ============================ 쉐도잉 카테고리 ====================================
-
+	/**
+	 * 이우승
+	 * explain : 비로그인 쉐도잉 로드맵 전체 목록 조회
+	 * @return
+	 */
 	@Override
-	public List<ShadowingCategoryDto> getShadowingCategoryList(String category, Pageable pageable) {
-		System.out.println("===============================");
-		System.out.println("service 시작");
-		Optional<Interest> interest = interestRepository.findByInterest(category);
-		System.out.println(interest.get().getInterestId());
-		List<ShadowingVideoInterest> videoIdList = shadowingVideoInterestRepository.findByInterest_InterestId(
-			interest.get().getInterestId());
-		System.out.println(videoIdList.get(0).getShadowingVideo().getVideoId());
-		// List<ShadowingVideo> shadowingCategoryDtoPage = shadowingVideoRepository.findByVideoIdIn(videoIdList, pageable);
-		// System.out.println(shadowingCategoryDtoPage.get(0).getVideoId());
-		System.out.println("===============================");
-		// return (List<ShadowingCategoryDto>)shadowingCategoryDtoPage;
-		return null;
+	public List<NoRoadMapResponseDto> getRoadMapList() {
+
+		StepMap stepMap = StepMap.getInstance();
+		HashMap<Integer, String> hashMap = stepMap.getHashMap();
+		List<Integer> stepNoList = stepRepository.findDistinctStepNo();
+
+		if (stepNoList == null || stepNoList.isEmpty()) {
+			throw new ApiException(ExceptionEnum.ROADMAPS_NOT_FOUND_EXCEPTION);
+		}
+
+		List<NoRoadMapResponseDto> noRoadMapResponseDtoList = stepNoList.stream().map(stepNo -> {
+			List<Integer> stepThemeList = stepRepository.findDistinctStepTheme(stepNo);
+
+			if (stepThemeList == null || stepThemeList.isEmpty()) {
+				throw new ApiException(ExceptionEnum.ROADMAPS_NOT_FOUND_EXCEPTION);
+			}
+
+			List<ThemeRoadMapResponseDto> themeRoadMapResponseDtoList = stepThemeList.stream().map(stepTheme -> {
+				List<Long> stepIdList = stepRepository.findStepIdList(stepNo, stepTheme);
+
+				if (stepIdList == null || stepIdList.isEmpty()) {
+					throw new ApiException(ExceptionEnum.ROADMAPS_NOT_FOUND_EXCEPTION);
+				}
+
+				List<RoadMapResponseDto> shadowingVideoList =
+					shadowingVideoRepository.getThemeRoadMapResponseDtoList(stepIdList);
+
+				return ThemeRoadMapResponseDto.builder()
+					.stepTheme(hashMap.get(stepTheme))
+					.roadMapResponseDtoList(shadowingVideoList)
+					.build();
+			}).collect(Collectors.toList());
+
+			return NoRoadMapResponseDto.builder()
+				.stepNo(stepNo)
+				.themeRoadMapResponseDtoList(themeRoadMapResponseDtoList)
+				.build();
+		}).collect(Collectors.toList());
+
+		if (noRoadMapResponseDtoList.isEmpty()) {
+			throw new ApiException(ExceptionEnum.ROADMAPS_NOT_FOUND_EXCEPTION);
+		}
+
+		return noRoadMapResponseDtoList;
+
 	}
 
-	// ======================== 쉐도잉 영상 조회 ====================================
+	/**
+	 * 이우승
+	 * explain : 비로그인 카테고리 별 쉐도잉 영상 목록 조회
+	 * @param category
+	 * @param pageable
+	 * @return
+	 */
+	@Override
+	public List<ShadowingCategoryDto> getShadowingCategoryList(String category, Pageable pageable) {
+		Optional<Interest> interest = interestRepository.findByInterest(category);
+		List<Long> videoIdList = shadowingVideoInterestRepository.findAllVideoId(interest.get().getInterestId());
+		List<ShadowingCategoryDto> shadowingVideoList = shadowingVideoRepository.getCategoryDotoList(videoIdList,
+			pageable);
+		return shadowingVideoList;
+	}
 
+	/**
+	 * 이우승
+	 * explain : 카테고리 별 쉐도잉 영상 목록 개수 조회
+	 * @param interestId
+	 * @return
+	 */
+	@Override
+	public int getShadowingCategoryListCount(Long interestId) {
+		return shadowingVideoInterestRepository.countVideoIdsByInterestId(interestId);
+	}
+
+	/**
+	 * 이우승
+	 * explain : 비로그인 쉐도잉 영상 조회
+	 * @param videoId
+	 * @return
+	 */
 	@Override
 	public ShadowingDetailDto getShadowingDetailDto(Long videoId) {
-		// ModelMapper mapper = new ModelMapper();
 		ShadowingVideo shadowingVideo = shadowingVideoRepository.findByVideoId(videoId)
 			.orElseThrow(() -> new ApiException(ExceptionEnum.SHADOWING_NOT_FOUND_EXCEPTION));
 
@@ -69,40 +137,48 @@ public class ShadowingServiceImpl implements ShadowingService {
 			.build();
 	}
 
+	/**
+	 * 이우승
+	 * explain : 로그인 쉐도잉 영상 조회
+	 * @param videoId
+	 * @param memberId
+	 * @return
+	 */
 	@Override
 	public LoginShadowingDetailDto getLoginShadowingDetailDto(Long videoId, Long memberId) {
 		LoginShadowingDetailDto loginShadowingDetailDto = shadowingVideoRepository
-			.getLoginShadowingDetailDto(videoId, memberId)
-			.orElseThrow(() -> new ApiException(ExceptionEnum.SHADOWING_NOT_FOUND_EXCEPTION));
-
+			.getLoginShadowingDetailDto(videoId, memberId).get();
 		return loginShadowingDetailDto;
 	}
 
-	// ======================== 메인 페이지 추천 로드맵 ===========================
-
+	/**
+	 * 이우승
+	 * explain : 비로그인 메인 페이지 로드맵
+	 * @return
+	 */
 	@Override
-	public List<RoadMapResponseDto> getRoadMapList() {
+	public List<RoadMapResponseDto> getMainRoadMapList() {
 		List<RoadMapResponseDto> roadMapResponseDtoList =
-			shadowingVideoRepository.getRoadMapResponseDtoList();
+			shadowingVideoRepository.getMainRoadMapResponseDtoList();
 
 		return roadMapResponseDtoList;
 	}
 
-	// =========================== 메인 페이지 추천 문장 ===========================
-
+	/**
+	 * 이우승
+	 * explain : 비로그인 메인 페이지 추천 문장
+	 * @param pageable
+	 * @return
+	 */
 	@Override
 	public List<RecommendationDto> getRecommendationList(Pageable pageable) {
 		List<ShadowingVideo> recommendationList = shadowingVideoRepository
 			.findRecommendation(
 				pageable);
-		if (recommendationList.isEmpty()) {
-			throw new ApiException(ExceptionEnum.RECOMMENDATIONS_NOT_FOUND_EXCEPTION);
-		}
 
-		List<RecommendationDto> recommendationDtos = new ArrayList<>();
+		List<RecommendationDto> recommendationDtoList = new ArrayList<>();
 		for (ShadowingVideo shadowingVideo : recommendationList) {
-
-			recommendationDtos.add(
+			recommendationDtoList.add(
 				RecommendationDto.builder()
 					.videoId(shadowingVideo.getVideoId())
 					.thumbnailUrl(shadowingVideo.getThumbnailUrl())
@@ -111,23 +187,44 @@ public class ShadowingServiceImpl implements ShadowingService {
 					.build()
 			);
 		}
-		return recommendationDtos;
+		return recommendationDtoList;
 	}
 
-	// =========================== 관심사 조회 =========================
+	/**
+	 * 이우승
+	 * explain : 관심사Id 조회
+	 * @param interestId
+	 * @return
+	 */
 	@Override
 	public InterestResponseDto getInterest(Long interestId) {
 		Interest interest = interestRepository.findByInterestId(interestId)
 			.orElseThrow(() -> new ApiException(ExceptionEnum.CATEGORY_NOT_FOUND_EXCEPTION));
 
-		InterestResponseDto interestResponseDto = new InterestResponseDto(
-			interest.getInterestId(),
-			interest.getInterest()
-		);
 		return InterestResponseDto.builder()
-			.interestId(interestResponseDto.getInterestId())
-			.interest(interestResponseDto.getInterest())
+			.interestId(interest.getInterestId())
+			.interest(interest.getInterest())
 			.build();
+	}
+
+	/**
+	 * 이우승
+	 * explain : 관심사 이름으로 조회
+	 * @param interestName
+	 * @return
+	 */
+	@Override
+	public InterestResponseDto getInterestByName(String interestName) {
+
+		Interest interest = interestRepository.findByInterest(interestName)
+			.orElseThrow(() -> new ApiException(ExceptionEnum.CATEGORY_NOT_FOUND_EXCEPTION));
+
+		InterestResponseDto interestResponseDto = InterestResponseDto.builder()
+			.interestId(interest.getInterestId())
+			.interest(interest.getInterest())
+			.build();
+
+		return interestResponseDto;
 	}
 
 }
