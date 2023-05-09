@@ -16,6 +16,12 @@ const nextConfig = {
         port: '',
         pathname: '/static/**',
       },
+      {
+        protocol: 'https',
+        hostname: 's3.amazonaws.com',
+        port: '',
+        pathname: '/static/**',
+      },
     ],
   },
   // async rewrites() {

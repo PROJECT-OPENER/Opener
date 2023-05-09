@@ -12,7 +12,7 @@ import { logoutApi } from '../api/userApi';
 const TopNav = () => {
   const { data: session } = useSession();
   const pathname: string = usePathname();
-  const { user, isLoading } = useUser();
+  const { user, isLoading, error } = useUser();
   if (user) {
     if (user.data.interests.length === 0 && pathname !== '/interest') {
       redirect('/interest');
@@ -22,6 +22,10 @@ const TopNav = () => {
     signOut();
     logoutApi();
   };
+  if (error) {
+    console.log('error');
+    handleLogout();
+  }
   if (isLoading) return <div>loading...</div>;
   for (let i = 0; i < topNavNone.length; i++) {
     if (pathname.startsWith(topNavNone[i])) return <div></div>;
@@ -79,7 +83,7 @@ const TopNav = () => {
               <Link href={'/mypage'}>
                 <ProfileImage
                   className="h-10 w-10 lg:h-12 lg:w-12 hover:cursor-pointer shadow-custom rounded-full"
-                  profileUrl={user.data.profile}
+                  profileUrl={user?.data.profileUrl || null}
                   height={500}
                   width={500}
                 />

@@ -5,9 +5,10 @@ import useSWR from 'swr';
 import { getInterestListApi } from '../api/chatApi';
 import { interestInterface } from '@/types/share';
 import { interestRegisterApi } from '../api/userApi';
-import { redirect } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 
 const Interests = () => {
+  const router = useRouter();
   const { data, isLoading } = useSWR('get/interest', getInterestListApi, {
     focusThrottleInterval: 5000,
   });
@@ -25,8 +26,9 @@ const Interests = () => {
   const handleRegister = async () => {
     if (activeIndex.length < 2) return alert('2개 이상 선택해주세요.');
     try {
-      await interestRegisterApi(activeIndex);
-      await redirect('/');
+      interestRegisterApi(activeIndex);
+      router.push('/');
+      alert('관심사 등록이 완료되었습니다.');
     } catch (err) {
       alert(err);
     }

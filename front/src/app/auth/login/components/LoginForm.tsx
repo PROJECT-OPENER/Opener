@@ -7,7 +7,6 @@ import { userLoginInterface } from '@/types/share';
 import Button from '@/app/components/Button';
 import Link from 'next/link';
 import { AiOutlineLock, AiOutlineMail } from 'react-icons/ai';
-import { loginApi } from '@/app/api/userApi';
 import { signIn } from 'next-auth/react';
 import { useSearchParams } from 'next/navigation';
 // import { useRouter } from 'next/router';

@@ -1,21 +1,48 @@
 'use client';
 import { useSession } from 'next-auth/react';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Client } from '@stomp/stompjs';
-import Loading from '@/app/components/Loading';
-
-interface Message {
-  nickname: string;
-  content: string;
-}
+import UserChatNav from './UserChatNav';
+import UserChatSendVoice from './UserChatSendVoice';
+import { useRecoilState } from 'recoil';
+import UserChatMessageList from './UserChatMessageList';
+import {
+  userChatIsChatState,
+  userChatIsRecordingState,
+  userChatMessageListState,
+  userChatMessageState,
+} from '../../store';
+import UserChatSendText from './UserChatSendText';
+import { BsKeyboard } from 'react-icons/bs';
 
 const ChatRoom = () => {
   const { data: session } = useSession();
   const nickname = session?.user.user?.data.nickname;
   const token = session?.user.user?.accessToken as string;
+  // socket
   const [stompClient, setStompClient] = useState<Client | null>(null);
-  const [message, setMessage] = useState('');
-  const [receivedMessages, setReceivedMessages] = useState<Message[]>([]);
+  // recoil
+  const [message, setMessage] = useRecoilState(userChatMessageState);
+  const [messageList, setMessageList] = useRecoilState(
+    userChatMessageListState,
+  );
+  const [isRecording, setIsRecording] = useRecoilState(
+    userChatIsRecordingState,
+  );
+  const [isChat, setisChat] = useRecoilState(userChatIsChatState);
+  // ref
+  const chatWindowRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    // 스크롤이 최하단으로 자동으로 이동되도록 chatWindowRef의 scrollTop 속성을 최대값으로 설정합니다.
+    if (chatWindowRef.current) {
+      chatWindowRef.current.scrollTop = chatWindowRef.current.scrollHeight;
+    }
+  }, [messageList]);
+  useEffect(() => {
+    console.log('message', message.length);
+  }, [message]);
+
+  // 소켓
   useEffect(() => {
     const socket = new WebSocket(
       'ws://localhost:8000/chatting-service/user-chat',
@@ -33,8 +60,13 @@ const ChatRoom = () => {
         });
         client.subscribe('/sub/user-chat', (message) => {
           console.log('Received message', message);
-          const content = JSON.parse(message.body);
-          setReceivedMessages((prevMessages) => [...prevMessages, content]);
+          try {
+            const content = JSON.parse(message.body);
+            setMessageList((messageList) => [...messageList, content]);
+          } catch (e) {
+            console.error('Failed to parse message body:', message.body);
+            // console.error(e);
+          }
         });
       },
       onStompError: (error) => {
@@ -53,8 +85,7 @@ const ChatRoom = () => {
     };
   }, [token]);
 
-  const handleSendMessage = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  const handleSendMessage = () => {
     if (stompClient && stompClient.connected) {
       const messageData = {
         nickname: nickname,
@@ -67,49 +98,50 @@ const ChatRoom = () => {
           Authorization: `Bearer ${token}`,
         },
       });
-      setMessage('');
+      // setMessage('');
     }
+    setMessage('');
+    setIsRecording(false);
   };
-
+  const handleKeyboard = () => {
+    setisChat(true);
+  };
   return (
-    <div>
-      <h1 className="text-xl border-2 text-center p-2 m-3 border-purple-300 font-bold">
-        Stomp
-      </h1>
-      <div>
-        <Loading />
-        <div className="border-2">
-          {receivedMessages.map((message, index) => (
-            <div
-              key={index}
-              className={`${
-                message.nickname === nickname ? 'justify-end flex' : 'flex'
-              }
-              `}
-            >
-              {message.nickname !== nickname && (
-                <div className="other-chat">
-                  <strong>{message.nickname}:</strong> {message.content}
-                </div>
-              )}
-              {message.nickname === nickname && (
-                <div className="my-chat">
-                  <strong>{message.nickname}:</strong> {message.content}
-                </div>
-              )}
+    <div className="h-screen border-2 flex flex-col">
+      <div className="flex-none">
+        <UserChatNav />
+      </div>
+      <div
+        ref={chatWindowRef}
+        className="flex-auto h-0 overflow-y-auto bg-blue-200"
+      >
+        <div className="min-h-full">
+          <UserChatMessageList />
+        </div>
+      </div>
+      <div className="flex-none h-fit flex flex-col bg-blue-200">
+        {/* 녹음 시 텍스트 보여주기 */}
+        {!isChat && isRecording && (
+          <div className="relative mx-5">
+            <div className="bg-white rounded-xl text-xl py-3 pl-5 pr-10 min-h-[3.25rem]">
+              {message.length > 1 ? message : 'Listening...'}
             </div>
-          ))}
-          <form onSubmit={handleSendMessage} className="flex m-3">
-            <input
-              type="text"
-              value={message}
-              className="w-full border-2 p-2 border-red-200"
-              onChange={(event) => setMessage(event.target.value)}
-            />
-            <button type="submit" className="border-2 border-orange-400">
-              Send Message
+            <button
+              type="button"
+              className="absolute right-0 top-0 bottom-0 text-3xl pr-3"
+              onClick={handleKeyboard}
+            >
+              <BsKeyboard className="fill-black" />
             </button>
-          </form>
+          </div>
+        )}
+        <div className="mx-5 mb-5 bg-brandP rounded-xl">
+          {/* 녹음 */}
+          {!isChat && (
+            <UserChatSendVoice handleSendMessage={handleSendMessage} />
+          )}
+          {/* 키보드 */}
+          {isChat && <UserChatSendText handleSendMessage={handleSendMessage} />}
         </div>
       </div>
     </div>
