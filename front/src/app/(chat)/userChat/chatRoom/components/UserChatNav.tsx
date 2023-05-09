@@ -11,7 +11,7 @@ const UserChatNav = () => {
   return (
     <div className={isTip ? 'h-[120px] shadow-xl' : 'h-[60px] shadow-xl'}>
       <div className="flex justify-between items-center h-[60px] mx-5 text-2xl">
-        <Link href="./aiChat">종료</Link>
+        <Link href="./chat">종료</Link>
         <div>user</div>
         <Button type="button" className="" text="TIP" onClick={handleTip} />
       </div>

@@ -4,14 +4,14 @@ export const bottomNavBackward = [
   '/challenge/shooting',
 ];
 export const bottomNavNone = [
-  '/aiChat/room',
+  '/aiChat/chatRoom',
   '/login',
   '/userChat/Result',
   '/challenge/scroll',
   '/userChat/chatRoom',
 ];
 export const topNavNone = [
-  '/aiChat/room',
+  '/aiChat/chatRoom',
   '/shadowing/learning/',
   '/challenge/shooting',
   '/userChat/Result',

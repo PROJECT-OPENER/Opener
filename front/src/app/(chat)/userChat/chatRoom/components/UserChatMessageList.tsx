@@ -2,14 +2,12 @@
 import { userChatMessageListState } from '../../store';
 import { useSession } from 'next-auth/react';
 import React from 'react';
-import { useRecoilState } from 'recoil';
+import { useRecoilValue } from 'recoil';
 
 const UserChatMessageList = () => {
   const { data: session } = useSession();
   const nickname = session?.user.user?.data.nickname;
-  const [messageList, setMessageList] = useRecoilState(
-    userChatMessageListState,
-  );
+  const messageList = useRecoilValue(userChatMessageListState);
   return (
     <div>
       {messageList.map((message, index) => (

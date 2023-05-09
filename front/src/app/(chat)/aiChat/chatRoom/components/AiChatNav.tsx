@@ -1,9 +1,8 @@
-'use client';
+import Button from '@/app/components/Button';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import React, { useState } from 'react';
-import AiChatSlider from './AiChatSlider';
-import Button from '@/app/components/Button';
+import AiChatNavSlider from './AiChatNavSlider';
 
 const AiChatNav = () => {
   const searchParams = useSearchParams();
@@ -24,7 +23,7 @@ const AiChatNav = () => {
           <div className="text-2xl font-bold text-white flex items-center">
             {subject}
           </div>
-          <AiChatSlider />
+          <AiChatNavSlider />
           <Button
             text="x"
             className="text-white text-xl"

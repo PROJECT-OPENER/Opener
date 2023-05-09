@@ -7,9 +7,9 @@ import {
 } from 'microsoft-cognitiveservices-speech-sdk';
 import { useRecoilState } from 'recoil';
 import {
-  userChatIsChatState,
-  userChatIsRecordingState,
-  userChatMessageState,
+  aiChatIsChatState,
+  aiChatIsRecordingState,
+  aiChatMessageState,
 } from '../../store';
 import {
   BsArrowCounterclockwise,
@@ -24,17 +24,24 @@ const serviceRegion = 'eastus';
 type Props = {
   handleSendMessage: () => void;
 };
-
-const UserChatSendVoice = ({ handleSendMessage }: Props) => {
+const AiChatSendVoice = ({ handleSendMessage }: Props) => {
   // recoil
-  const [isRecording, setIsRecording] = useRecoilState(
-    userChatIsRecordingState,
-  );
-  const [message, setMessage] = useRecoilState(userChatMessageState);
-  const [isChat, setisChat] = useRecoilState(userChatIsChatState);
+  const [message, setMessage] = useRecoilState(aiChatMessageState);
+  const [isRecording, setIsRecording] = useRecoilState(aiChatIsRecordingState);
+  const [isChat, setisChat] = useRecoilState(aiChatIsChatState);
   // state
   const [text, setText] = useState([message]);
 
+  // azure
+  const speechConfig = SpeechConfig.fromSubscription(
+    subscriptionKey,
+    serviceRegion,
+  );
+  const audioConfig = AudioConfig.fromDefaultMicrophoneInput();
+  let recognizer: SpeechRecognizer | undefined;
+  const recognizerRef = useRef<SpeechRecognizer | undefined>(recognizer);
+
+  // useEffect
   useEffect(() => {
     setMessage(text.join(' '));
   }, [text]);
@@ -50,13 +57,7 @@ const UserChatSendVoice = ({ handleSendMessage }: Props) => {
     }
   }, [isChat]);
 
-  const speechConfig = SpeechConfig.fromSubscription(
-    subscriptionKey,
-    serviceRegion,
-  );
-  const audioConfig = AudioConfig.fromDefaultMicrophoneInput();
-  let recognizer: SpeechRecognizer | undefined;
-  const recognizerRef = useRef<SpeechRecognizer | undefined>(recognizer);
+  // function
   const start = () => {
     setIsRecording(true);
     Record();
@@ -107,7 +108,6 @@ const UserChatSendVoice = ({ handleSendMessage }: Props) => {
       stop();
     };
   }, []);
-
   return (
     <div className="grid grid-cols-3 shadow-custom">
       <div className="flex flex-col justify-end p-5">
@@ -142,4 +142,4 @@ const UserChatSendVoice = ({ handleSendMessage }: Props) => {
   );
 };
 
-export default UserChatSendVoice;
+export default AiChatSendVoice;

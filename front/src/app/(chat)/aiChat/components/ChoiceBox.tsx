@@ -1,6 +1,5 @@
 'use client';
 import React, { useCallback, useEffect, useState } from 'react';
-import { interest } from '@/util/Interest';
 import Button from '@/app/components/Button';
 import { useRouter, useSearchParams } from 'next/navigation';
 import useSWR from 'swr';
@@ -36,7 +35,7 @@ const ChoiceBox = () => {
       alert('주제를 선택해주세요.');
     } else {
       router.push(
-        '/aiChat/room' + '?' + createQueryString('sub', `${selected}`),
+        '/aiChat/chatRoom' + '?' + createQueryString('sub', `${selected}`),
       );
     }
   };

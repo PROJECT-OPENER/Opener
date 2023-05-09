@@ -28,7 +28,7 @@ const TipMock = [
   },
 ];
 
-const AiChatSlider = () => {
+const AiChatNavSlider = () => {
   const settings = {
     // dots: true,
     infinite: true,
@@ -53,4 +53,4 @@ const AiChatSlider = () => {
   );
 };
 
-export default AiChatSlider;
+export default AiChatNavSlider;
