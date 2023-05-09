@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -83,7 +84,7 @@ public class MyPageController {
 	 * @param profileImgRequestDto
 	 * @return
 	 */
-	@PatchMapping("/image")
+	@PostMapping("/image")
 	public ResponseEntity<BaseResponseDto> updateProfileImg(HttpServletRequest request,
 		@ModelAttribute ProfileImgRequestDto profileImgRequestDto) {
 		MemberDto memberDto = MemberUtil.getMember(request.getHeader("member"));
