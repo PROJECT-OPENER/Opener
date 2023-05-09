@@ -318,7 +318,6 @@ public class MemberServiceImpl implements MemberService {
 			.orElseThrow(() -> new ApiException(ExceptionEnum.MEMBER_NOT_FOUND_EXCEPTION));
 
 		MultipartFile profileImg = profileImgRequestDto.getProfileImg();
-		log.info("수연언니가 보낸 이미지..오나용? {}", profileImgRequestDto.getProfileImg());
 		String profileImgUrl = profileImg == null ? null : awsS3Uploader.uploadImage(profileImg);
 		member.updateProfile(profileImgUrl);
 	}
