@@ -13,11 +13,8 @@ import com.example.shadowingservice.dto.response.RoadMapResponseDto;
 import com.example.shadowingservice.dto.response.ShadowingCategoryDto;
 import com.example.shadowingservice.dto.response.ShadowingDetailDto;
 
-/**
- * [우승 ❤ 😁 💋] 쉐도잉 서비스 인터페이스
- */
 public interface ShadowingService {
-	/** 비로그인 로드맵 목록 조회 **/
+	/** 비로그인 쉐도잉 로드맵 전체 목록 조회 **/
 	List<NoRoadMapResponseDto> getRoadMapList();
 
 	/** 비로그인 카테고리 별 쉐도잉 영상 목록 조회 **/

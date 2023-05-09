@@ -41,9 +41,9 @@ public class ShadowingVideoRepositoryCustomImpl implements ShadowingVideoReposit
 	private final EntityManager em;
 
 	/**
-	 * [우승 ❤ 😁 💋] 해당 유저의 학습 데이터와 북마크 데이터가 있는지 확인하고
-	 * 학습 데이터가 없으면 생성, 북마크가 없으면 isMarked에 false처리
-	 *
+	 * 이우승
+	 * explain : 로그인 쉐도잉 영상 조회
+	 * 사용자의 학습데이터가 없다면 자동으로 테이블에 등록
 	 * @param videoId
 	 * @param memberId
 	 * @return
@@ -77,7 +77,7 @@ public class ShadowingVideoRepositoryCustomImpl implements ShadowingVideoReposit
 		int repeatCount = 0;
 		boolean isMarked = false;
 
-		if(result == null) {
+		if (result == null) {
 			throw new ApiException(ExceptionEnum.SHADOWING_NOT_FOUND_EXCEPTION);
 		}
 
@@ -110,6 +110,13 @@ public class ShadowingVideoRepositoryCustomImpl implements ShadowingVideoReposit
 		));
 	}
 
+	/**
+	 * 이우승
+	 * explain : 비로그인 쉐도잉 로드맵 전체 조회
+	 *CaseBuilder를 통해서 테이블에 저장되어있는 정수값을 문자열로 변경 후 반환
+	 * @param stepIdList
+	 * @return
+	 */
 	@Override
 	public List<RoadMapResponseDto> getThemeRoadMapResponseDtoList(List<Long> stepIdList) {
 
@@ -118,14 +125,14 @@ public class ShadowingVideoRepositoryCustomImpl implements ShadowingVideoReposit
 			.when(step.stepTheme.eq(2)).then("뉴진스")
 			.when(step.stepTheme.eq(3)).then("엔믹스")
 			.when(step.stepTheme.eq(4)).then("블랙핑크")
-			.otherwise("누구세요?");
+			.otherwise("");
 
 		return queryFactory.select(Projections.constructor(RoadMapResponseDto.class,
-				shadowingVideo.videoId,
-				shadowingVideo.engSentence,
-				shadowingVideo.korSentence,
-				idString,
-				step.sentenceNo
+					shadowingVideo.videoId,
+					shadowingVideo.engSentence,
+					shadowingVideo.korSentence,
+					idString,
+					step.sentenceNo
 				)
 			)
 			.from(shadowingVideo)
@@ -136,6 +143,11 @@ public class ShadowingVideoRepositoryCustomImpl implements ShadowingVideoReposit
 
 	}
 
+	/**
+	 * 이우승
+	 * explain : 비로그인 메인 페이지 로드맵
+	 * @return
+	 */
 	@Override
 	public List<RoadMapResponseDto> getMainRoadMapResponseDtoList() {
 
@@ -156,8 +168,13 @@ public class ShadowingVideoRepositoryCustomImpl implements ShadowingVideoReposit
 			.fetch();
 	}
 
-
-
+	/**
+	 * 이우승
+	 * explain : 비로그인 카테고리 별 쉐도잉 영상 목록 조회
+	 * @param videoIdList
+	 * @param pageable
+	 * @return
+	 */
 	@Override
 	public List<ShadowingCategoryDto> getCategoryDotoList(List<Long> videoIdList, Pageable pageable) {
 		BooleanExpression inVideoIdList = shadowingVideo.videoId.in(videoIdList);

@@ -11,13 +11,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.shadowingservice.common.exception.ApiException;
 import com.example.shadowingservice.dto.BaseListResponseDto;
 import com.example.shadowingservice.dto.BaseResponseDto;
 import com.example.shadowingservice.dto.request.IndexDto;
 import com.example.shadowingservice.dto.response.InterestResponseDto;
-import com.example.shadowingservice.dto.response.LoginShadowingDetailDto;
-import com.example.shadowingservice.dto.response.NoListRoadMapResponseDto;
 import com.example.shadowingservice.dto.response.NoMainRoadMapResponseDto;
 import com.example.shadowingservice.dto.response.NoRoadMapResponseDto;
 import com.example.shadowingservice.dto.response.RecommendationDto;
@@ -42,6 +39,13 @@ public class ShadowingController {
 		System.out.println("asdfsdafsdf");
 		return "asadfsadfsdafasdf";
 	}
+
+	/**
+	 * 이우승
+	 * explain : 비로그인 쉐도잉 로드맵 전체 목록 조회
+	 * @return
+	 */
+
 	@GetMapping("/roadmap")
 	public ResponseEntity<BaseResponseDto<List<NoRoadMapResponseDto>>> getRoadmapList() {
 		List<NoRoadMapResponseDto> noListRoadMapResponseDto = shadowingService.getRoadMapList();
@@ -61,15 +65,12 @@ public class ShadowingController {
 	public ResponseEntity<BaseResponseDto<Object>> getCategoryList(@RequestParam("category") String category,
 		@RequestParam("startIndex") int startIndex,
 		@RequestParam("endIndex") int endIndex) {
-		
+
 		IndexDto indexDto = new IndexDto(startIndex, endIndex);
 		Long interestId = shadowingService.getInterestByName(category).getInterestId();
-		// categroy가 ALL이면 전체 리스트 조회
 
 		List<ShadowingCategoryDto> shadowingCategoryDtoList = shadowingService.getShadowingCategoryList(category,
 			indexDto.toPageable());
-		// 전체 길이를 줘야함 
-		// 카운트해서 줘야함
 
 		int length = shadowingService.getShadowingCategoryListCount(interestId);
 
