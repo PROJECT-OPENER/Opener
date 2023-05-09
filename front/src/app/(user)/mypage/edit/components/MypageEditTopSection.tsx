@@ -30,30 +30,32 @@ const MypageEditTopSection = () => {
   if (isLoading) return <div>loading...</div>;
   return (
     <>
-      <div className="h-[200px] flex px-10 py-12 m-3 rounded-3xl">
-        <div className="mr-10 max-w-[100px] relative">
-          <ProfileImage
-            className="w-full h-full relative  brightness-75"
-            width={500}
-            height={500}
-            profileUrl={user.data.profile}
-            onClick={() => setPhoto(!photo)}
-          />
-          <div className="bg-gray-300 p-1 text-2xl rounded-full absolute -bottom-2 left-8">
-            <AiOutlineSetting
-              className=" fill-white"
+      {user && (
+        <div className="h-[200px] flex px-10 py-12 m-3 rounded-3xl">
+          <div className="mr-10 max-w-[100px] relative">
+            <ProfileImage
+              className="w-full h-full relative brightness-75"
+              width={500}
+              height={500}
+              profileUrl={user.data.profile}
               onClick={() => setPhoto(!photo)}
             />
+            <div className="bg-gray-300 p-1 text-2xl rounded-full absolute -bottom-2 left-8">
+              <AiOutlineSetting
+                className=" fill-white"
+                onClick={() => setPhoto(!photo)}
+              />
+            </div>
+          </div>
+          <div className="w-full relative">
+            <div className="text-xl">
+              <span className="font-bold">{user.data.nickname}</span>님
+            </div>
+            <div>{user.data.email}</div>
+            <div className="flex justify-between absolute bottom-0 left-0 right-0 items-end"></div>
           </div>
         </div>
-        <div className="w-full relative">
-          <div className="text-xl">
-            <span className="font-bold">{user.data.nickname}</span>님
-          </div>
-          <div>{user.data.email}</div>
-          <div className="flex justify-between absolute bottom-0 left-0 right-0 items-end"></div>
-        </div>
-      </div>
+      )}
       {photo && (
         <div className="mx-20 my-3 relative rounded-2xl  drop-shadow-md bg-white">
           <label className="block">

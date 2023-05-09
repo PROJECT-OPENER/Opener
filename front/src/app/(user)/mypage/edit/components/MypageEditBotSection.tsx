@@ -1,14 +1,17 @@
 'use client';
-
 import Button from '@/app/components/Button';
 import InterestsEdit from './InterestsEdit';
-import { useState } from 'react';
+import { useState, useReducer } from 'react';
 import { updateNicknameApi, updatePasswordApi } from '@/app/api/userApi';
-import { useReducer } from 'react';
-import useUser from '@/app/hooks/userHook';
-import { interestInterface } from '@/types/share';
 
-const reducer = (state: any, action: any) => {
+interface State {
+  nickname: string;
+  password: string;
+  newPassword1: string;
+  newPassword2: string;
+}
+
+const reducer = (state: State, action: any) => {
   return {
     ...state,
     [action.name]: action.value,
@@ -16,8 +19,6 @@ const reducer = (state: any, action: any) => {
 };
 
 const MypageEditBotSection = () => {
-  const { user, isLoading } = useUser();
-
   const [interestEdit, setInterestEdit] = useState<boolean>(false);
   const [state, dispatch] = useReducer(reducer, {
     nickname: '',
@@ -71,7 +72,6 @@ const MypageEditBotSection = () => {
       </div>
       <div className="my-16">
         <h1 className=" text-xl font-bold mx-20 my-3">비밀번호 수정</h1>
-
         <div className="relative rounded-2xl  drop-shadow-md mx-20 py-1">
           <input
             type="password"
@@ -103,14 +103,6 @@ const MypageEditBotSection = () => {
           <div className="space-x-2 text-xs py-3">
             {!interestEdit && (
               <>
-                {/* {user?.data?.interests.map((item: interestInterface) => (
-                  <span
-                    key={item.interestId}
-                    className="bg-gray-200 p-1 rounded-xl"
-                  >
-                    {item.interest}
-                  </span>
-                ))} */}
                 <Button
                   type="submit"
                   text="수정"
@@ -120,16 +112,18 @@ const MypageEditBotSection = () => {
               </>
             )}
             {interestEdit && (
-              <Button
-                type="submit"
-                text="접기"
-                className="modification-submit -top-10"
-                onClick={() => {
-                  setInterestEdit(false);
-                }}
-              />
+              <>
+                <Button
+                  type="submit"
+                  text="접기"
+                  className="modification-submit -top-10"
+                  onClick={() => {
+                    setInterestEdit(false);
+                  }}
+                />
+                <InterestsEdit></InterestsEdit>
+              </>
             )}
-            {interestEdit && <InterestsEdit></InterestsEdit>}
           </div>
         </div>
       </div>
