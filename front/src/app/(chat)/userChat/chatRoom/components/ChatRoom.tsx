@@ -13,11 +13,7 @@ import {
   userChatMessageState,
 } from '../../store';
 import UserChatSendText from './UserChatSendText';
-
-interface Message {
-  nickname: string;
-  content: string;
-}
+import { BsKeyboard } from 'react-icons/bs';
 
 const ChatRoom = () => {
   const { data: session } = useSession();
@@ -42,6 +38,10 @@ const ChatRoom = () => {
       chatWindowRef.current.scrollTop = chatWindowRef.current.scrollHeight;
     }
   }, [messageList]);
+  useEffect(() => {
+    console.log('message', message.length);
+  }, [message]);
+
   // 소켓
   useEffect(() => {
     const socket = new WebSocket(
@@ -60,8 +60,13 @@ const ChatRoom = () => {
         });
         client.subscribe('/sub/user-chat', (message) => {
           console.log('Received message', message);
-          const content = JSON.parse(message.body);
-          setMessageList((messageList) => [...messageList, content]);
+          try {
+            const content = JSON.parse(message.body);
+            setMessageList((messageList) => [...messageList, content]);
+          } catch (e) {
+            console.error('Failed to parse message body:', message.body);
+            // console.error(e);
+          }
         });
       },
       onStompError: (error) => {
@@ -98,10 +103,9 @@ const ChatRoom = () => {
     setMessage('');
     setIsRecording(false);
   };
-  const handleInputChage = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setMessage(event.target.value);
+  const handleKeyboard = () => {
+    setisChat(true);
   };
-
   return (
     <div className="h-screen border-2 flex flex-col">
       <div className="flex-none">
@@ -118,8 +122,17 @@ const ChatRoom = () => {
       <div className="flex-none h-fit flex flex-col bg-blue-200">
         {/* 녹음 시 텍스트 보여주기 */}
         {!isChat && isRecording && (
-          <div className="bg-white rounded-xl mx-5 text-xl py-3 px-5 min-h-[3.25rem]">
-            {message.length > 1 ? message : 'Listening...'}
+          <div className="relative mx-5">
+            <div className="bg-white rounded-xl text-xl py-3 pl-5 pr-10 min-h-[3.25rem]">
+              {message.length > 1 ? message : 'Listening...'}
+            </div>
+            <button
+              type="button"
+              className="absolute right-0 top-0 bottom-0 text-3xl pr-3"
+              onClick={handleKeyboard}
+            >
+              <BsKeyboard className="fill-black" />
+            </button>
           </div>
         )}
         <div className="mx-5 mb-5 bg-brandP rounded-xl">
@@ -128,7 +141,7 @@ const ChatRoom = () => {
             <UserChatSendVoice handleSendMessage={handleSendMessage} />
           )}
           {/* 키보드 */}
-          {isChat && <UserChatSendText />}
+          {isChat && <UserChatSendText handleSendMessage={handleSendMessage} />}
         </div>
       </div>
     </div>

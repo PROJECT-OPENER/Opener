@@ -1,4 +1,3 @@
-import { interest } from '@/util/Interest';
 // 유저 관련 타입
 export interface User {
   email?: string | null | undefined;

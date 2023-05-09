@@ -41,6 +41,14 @@ const UserChatSendVoice = ({ handleSendMessage }: Props) => {
   useEffect(() => {
     setText([message]);
   }, [message]);
+  useEffect(() => {
+    if (!isChat && message.length > 1) {
+      start();
+    }
+    if (isChat) {
+      stop();
+    }
+  }, [isChat]);
 
   const speechConfig = SpeechConfig.fromSubscription(
     subscriptionKey,
@@ -57,12 +65,11 @@ const UserChatSendVoice = ({ handleSendMessage }: Props) => {
     recognizer = new SpeechRecognizer(speechConfig, audioConfig);
     recognizerRef.current = recognizer;
     recognizer.recognizing = (s, e) => {
-      console.log(`인식된 글자 : ${e.result.text}`);
-      console.log(text);
+      // console.log(`인식된 글자 : ${e.result.text}`);
     };
     recognizer.recognized = (s, e) => {
       setText((prevText) => [...prevText, e.result.text]);
-      console.log('recognized : ', e.result.text);
+      // console.log('recognized : ', e.result.text);
     };
     recognizer.sessionStopped = () => {
       if (recognizer) {
@@ -85,8 +92,14 @@ const UserChatSendVoice = ({ handleSendMessage }: Props) => {
     handleSendMessage();
     stop();
   };
+  const stopAndResetMessage = () => {
+    stop();
+    setMessage('');
+    setText([]);
+  };
   const handleKeyboard = () => {
     setisChat(!isChat);
+    stop();
   };
   // 나갈 때 마이크 끄기
   useEffect(() => {
@@ -104,7 +117,11 @@ const UserChatSendVoice = ({ handleSendMessage }: Props) => {
           </button>
         )}
         {isRecording && (
-          <button type="button" className="text-3xl" onClick={stop}>
+          <button
+            type="button"
+            className="text-3xl"
+            onClick={stopAndResetMessage}
+          >
             <BsArrowCounterclockwise className="fill-white" />
           </button>
         )}

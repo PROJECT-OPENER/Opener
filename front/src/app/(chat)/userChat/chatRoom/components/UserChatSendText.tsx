@@ -2,11 +2,16 @@
 import React, { useRef } from 'react';
 import { BsArrowUp, BsMic } from 'react-icons/bs';
 import { useRecoilState } from 'recoil';
-import { userChatMessageState } from '../../store';
+import { userChatIsChatState, userChatMessageState } from '../../store';
 
-const UserChatSendText = () => {
+type Props = {
+  handleSendMessage: () => void;
+};
+
+const UserChatSendText = ({ handleSendMessage }: Props) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [message, setMessage] = useRecoilState(userChatMessageState);
+  const [isChat, setisChat] = useRecoilState(userChatIsChatState);
   const handleKeyboardChange = (event: {
     target: { value: React.SetStateAction<string> };
   }) => {
@@ -22,12 +27,21 @@ const UserChatSendText = () => {
       }
     }
   };
+  const handleMicChange = () => {
+    setisChat(!isChat);
+  };
+  const handleKeyDown = (event: { key: string }) => {
+    if (event.key === 'Enter') {
+      handleSendMessage();
+    }
+  };
+
   return (
     <div className="flex items-center min-h-[50px] mx-5 relative">
       <button
         type="button"
         className={`bg-brandY text-white font-bold py-2 px-2 rounded-full mr-3 absolute bottom-[0.65rem] shadow-custom`}
-        // onClick={handleMicChange}
+        onClick={handleMicChange}
       >
         <BsMic className="fill-white" />
       </button>
@@ -36,15 +50,15 @@ const UserChatSendText = () => {
           ref={textareaRef}
           placeholder="메시지를 입력하세요."
           className="mr-2 pl-4 px-10 pr-12 py-2 rounded-lg border-2 text-sm border-gray-400 focus:outline-none focus:border-brandY w-full max-w-[100%] overflow-hidden resize-none min-h-[40px] shadow-custom"
-          // value={message}
+          value={message}
           rows={1}
           onChange={handleKeyboardChange}
-          // onKeyDown={handleKeyDown}
+          onKeyDown={handleKeyDown}
         />
         <button
           type="button"
           className={` bg-brandP hover:bg-brandG text-white font-bold py-2 px-2 rounded-full absolute right-1 bottom-[0.65rem] flex items-center`}
-          // onClick={sendMessage}
+          onClick={handleSendMessage}
         >
           <BsArrowUp className="fill-white font-bold" />
         </button>

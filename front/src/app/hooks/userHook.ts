@@ -4,7 +4,7 @@ import { useSession } from 'next-auth/react';
 
 const useUser = () => {
   const { data: session } = useSession();
-  const { data, isLoading } = useSWR(
+  const { data, isLoading, error } = useSWR(
     session ? '/auth/members/myinfo' : null,
     myPageApi,
   );
@@ -12,6 +12,7 @@ const useUser = () => {
   return {
     user: data,
     isLoading,
+    error,
   };
 };
 
