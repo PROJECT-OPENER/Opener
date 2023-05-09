@@ -25,4 +25,3 @@ public abstract class BaseEntity {
 	protected LocalDateTime lastModifiedDate;
 }
 
-
