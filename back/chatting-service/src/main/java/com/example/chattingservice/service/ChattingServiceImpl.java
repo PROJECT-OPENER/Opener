@@ -2,6 +2,7 @@ package com.example.chattingservice.service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -11,7 +12,6 @@ import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -110,6 +110,7 @@ public class ChattingServiceImpl implements ChattingService {
 			WaitingRoom waitingRoom = objectMapper.convertValue(roomObject, WaitingRoom.class);
 			waitingRooms.add(waitingRoom);
 		}
+		waitingRooms.sort(Comparator.comparing(WaitingRoom::getCreatedAt));
 		WaitingRoom room = waitingRooms.get(0);
 		Member opposite = memberRepository.findMemberByNickname(room.getCreatedBy())
 			.orElseThrow(() -> new ApiException(ExceptionEnum.MEMBER_NOT_FOUND_EXCEPTION));
