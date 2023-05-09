@@ -1,19 +1,61 @@
 'use client';
-
 import Button from '@/app/components/Button';
 import InterestsEdit from './InterestsEdit';
-import { useState } from 'react';
+import { useState, useReducer } from 'react';
+import { updateNicknameApi, updatePasswordApi } from '@/app/api/userApi';
 
-const dummy = ['여행', '일상'];
+interface State {
+  nickname: string;
+  password: string;
+  newPassword1: string;
+  newPassword2: string;
+}
+
+const reducer = (state: State, action: any) => {
+  return {
+    ...state,
+    [action.name]: action.value,
+  };
+};
 
 const MypageEditBotSection = () => {
   const [interestEdit, setInterestEdit] = useState<boolean>(false);
+  const [state, dispatch] = useReducer(reducer, {
+    nickname: '',
+    password: '',
+    newPassword1: '',
+    newPassword2: '',
+  });
+
+  const { nickname, newPassword1, newPassword2 } = state;
+
+  const onChange = (e: { target: any }) => {
+    dispatch(e.target);
+  };
+
+  const changeNickname = async (newNickname: string) => {
+    const response = await updateNicknameApi(newNickname);
+    console.log(response);
+  };
+
+  const changePassword = async () => {
+    if (newPassword1 !== newPassword2) {
+      alert('비밀번호가 동일하지 않습니다.');
+    } else {
+      const response = await updatePasswordApi(newPassword1);
+      console.log(response);
+    }
+  };
+
   return (
     <div className="my-10">
       <div className="">
         <h1 className=" text-xl font-bold mx-20 my-3">닉네임 수정</h1>
         <div className="relative bg-white rounded-2xl drop-shadow-md mx-20 py-1">
           <input
+            name="nickname"
+            value={nickname}
+            onChange={onChange}
             type="text"
             className="p-3 w-full border-slate-100 focus:outline-none focus:border-[1px] focus:border-brandP pl-12 rounded-2xl"
             placeholder="닉네임"
@@ -22,26 +64,28 @@ const MypageEditBotSection = () => {
             type="submit"
             text="수정"
             className="modification-submit top-3"
+            onClick={() => {
+              changeNickname(nickname);
+            }}
           />
         </div>
       </div>
       <div className="my-16">
         <h1 className=" text-xl font-bold mx-20 my-3">비밀번호 수정</h1>
-        <div className="relative bg-white rounded-2xl  drop-shadow-md mx-20 py-1">
-          <input
-            type="text"
-            className="p-3 w-full border-slate-100 focus:outline-none focus:border-[1px] focus:border-brandP pl-12 rounded-2xl"
-            placeholder="기존 비밀번호"
-          />
-        </div>
         <div className="relative rounded-2xl  drop-shadow-md mx-20 py-1">
           <input
-            type="text"
+            type="password"
+            name="newPassword1"
+            value={newPassword1}
+            onChange={onChange}
             className="p-3 w-full border-slate-100 focus:outline-none focus:border-[1px] focus:border-brandP pl-12 rounded-t-2xl"
             placeholder="새 비밀번호"
           />
           <input
-            type="text"
+            type="password"
+            name="newPassword2"
+            value={newPassword2}
+            onChange={onChange}
             className="p-3 w-full border-slate-100 focus:outline-none focus:border-[1px] focus:border-brandP pl-12 rounded-b-2xl"
             placeholder="새 비밀번호 확인"
           />
@@ -49,28 +93,37 @@ const MypageEditBotSection = () => {
             type="submit"
             text="비밀번호 변경"
             className="validator-submit"
+            onClick={() => changePassword()}
           />
         </div>
       </div>
       <div className="my-16">
         <h1 className=" text-xl font-bold mx-20 my-3">나의 관심사 수정</h1>
-
         <div className="relative rounded-2xl drop-shadow-md mx-20">
           <div className="space-x-2 text-xs py-3">
-            {dummy.map((item, idx) => (
-              <span key={idx} className="bg-gray-200 p-1">
-                {item}
-              </span>
-            ))}
             {!interestEdit && (
-              <Button
-                type="submit"
-                text="수정"
-                onClick={() => setInterestEdit(!interestEdit)}
-                className="modification-submit top-0"
-              />
+              <>
+                <Button
+                  type="submit"
+                  text="수정"
+                  onClick={() => setInterestEdit(!interestEdit)}
+                  className="modification-submit -top-10"
+                />
+              </>
             )}
-            {interestEdit && <InterestsEdit></InterestsEdit>}
+            {interestEdit && (
+              <>
+                <Button
+                  type="submit"
+                  text="접기"
+                  className="modification-submit -top-10"
+                  onClick={() => {
+                    setInterestEdit(false);
+                  }}
+                />
+                <InterestsEdit></InterestsEdit>
+              </>
+            )}
           </div>
         </div>
       </div>

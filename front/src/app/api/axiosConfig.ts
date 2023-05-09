@@ -12,6 +12,16 @@ export const memberApi = axios.create({
     Accept: 'application/json',
   },
 });
+
+export const memberFileApi = axios.create({
+  baseURL: BASE_URL + 'member-service',
+  withCredentials: true,
+  headers: {
+    'Content-Type': 'multipart/form-data',
+    Accept: 'application/json',
+  },
+});
+
 // 쉐도잉 API
 export const shadowingApi = axios.create({
   baseURL: BASE_URL + 'shadowing-service',
@@ -121,6 +131,12 @@ challengeApi.interceptors.request.use(
   handleRequestError,
 );
 
+memberFileApi.interceptors.request.use(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  (config) => setAuthTokenHeader(config as AxiosRequestConfig) as any,
+  handleRequestError,
+);
+
 shadowingApi.interceptors.response.use(
   handleResponseSuccess,
   handleResponseError,
@@ -130,3 +146,8 @@ challengeApi.interceptors.response.use(
   handleResponseError,
 );
 chatApi.interceptors.response.use(handleResponseSuccess, handleResponseError);
+
+memberFileApi.interceptors.response.use(
+  handleResponseSuccess,
+  handleResponseError,
+);
