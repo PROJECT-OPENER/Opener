@@ -316,7 +316,7 @@ public class MemberServiceImpl implements MemberService {
 	public void updateProfileImg(MemberDto memberDto, ProfileImgRequestDto profileImgRequestDto) {
 		Member member = memberRepository.findById(memberDto.getMemberId())
 			.orElseThrow(() -> new ApiException(ExceptionEnum.MEMBER_NOT_FOUND_EXCEPTION));
-
+		log.info("옴??? "+ profileImgRequestDto.getProfileImg());
 		MultipartFile profileImg = profileImgRequestDto.getProfileImg();
 		String profileImgUrl = profileImg == null ? null : awsS3Uploader.uploadImage(profileImg);
 		member.updateProfile(profileImgUrl);
