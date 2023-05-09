@@ -1,10 +1,17 @@
 'use client';
 
-import { interest } from '@/util/Interest';
 import { useState } from 'react';
 import Button from '@/app/components/Button';
+import useSWR from 'swr';
+import { getInterestListApi } from '@/app/api/chatApi';
+import { interestInterface } from '@/types/share';
+import { interestUpdateApi } from '@/app/api/userApi';
 
 const InterestsEdit = () => {
+  const { data, isLoading } = useSWR('get/interest', getInterestListApi, {
+    focusThrottleInterval: 5000,
+  });
+
   const [activeIndex, setActiveIndex] = useState<number[]>([]);
 
   const handleClick = (i: number) => {
@@ -15,32 +22,41 @@ const InterestsEdit = () => {
     }
   };
 
-  const handleRegister = () => {
-    if (activeIndex.length < 2) {
-      alert('관심사는 최소 2개 이상 선택해야 합니다.');
-    } else {
-      alert(activeIndex);
+  const handleRegister = async () => {
+    if (activeIndex.length < 2) return alert('2개 이상 선택해주세요.');
+    try {
+      await interestUpdateApi(activeIndex);
+      alert('관심사 수정이 완료되었습니다.');
+      setActiveIndex([]);
+    } catch (err) {
+      alert(err);
     }
   };
 
+  if (isLoading) return <div>로딩중...</div>;
+
   return (
-    <>
-      <div className="w-full grid sm:grid-cols-3 grid-cols-2 mt-10">
-        {interest.map((v, i) => {
+    <div className="w-full mx-auto">
+      <div className="grid grid-cols-2">
+        {data?.data.map((item: interestInterface) => {
           return (
             <div
-              key={i}
-              className={`m-5 h-[150px] w-[150px] rounded-xl flex justify-center items-center shadow-xl ${
-                activeIndex.includes(i) ? 'bg-brandP text-white' : 'bg-white'
+              key={item.interestId}
+              className={`m-5 h-[150px] w-[150px] rounded-xl flex justify-center items-center shadow-xl mx-auto hover:cursor-pointer ${
+                activeIndex.includes(item.interestId)
+                  ? 'bg-brandP text-white'
+                  : 'bg-white'
               }`}
-              onClick={() => handleClick(i)}
+              onClick={() => handleClick(item.interestId)}
             >
               <span
                 className={`${
-                  activeIndex.includes(i) ? 'bg-brandP text-white' : 'bg-white'
+                  activeIndex.includes(item.interestId)
+                    ? 'bg-brandP text-white'
+                    : 'bg-white'
                 }`}
               >
-                + {v}
+                + {item.interest}
               </span>
             </div>
           );
@@ -48,11 +64,12 @@ const InterestsEdit = () => {
       </div>
       <Button
         type="button"
-        text="관심사 변경 완료"
+        text="관심사 등록"
         className="validator-submit"
         onClick={handleRegister}
       />
-    </>
+    </div>
   );
 };
+
 export default InterestsEdit;

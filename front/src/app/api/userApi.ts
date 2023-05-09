@@ -3,7 +3,7 @@ import {
   userLoginInterface,
   userRegisterInterface,
 } from '@/types/share';
-import { memberApi } from './axiosConfig';
+import { memberApi, memberFileApi } from './axiosConfig';
 
 // 이메일 중복 확인
 export const emailDuplicateCheckApi = async (email: string) => {
@@ -68,5 +68,36 @@ export const logoutApi = async () => {
 // 마이페이지 겟미
 export const myPageApi = async () => {
   const response = await memberApi.get(`/auth/members/myinfo`);
+  return response.data;
+};
+
+// 닉네임 수정
+export const updateNicknameApi = async (payload: string) => {
+  const response = await memberApi.patch(`/auth/members/mypage/nickname`, {
+    nickname: payload,
+  });
+  return response.data;
+};
+
+// 비밀번호
+export const updatePasswordApi = async (newPassword: string) => {
+  const response = await memberApi.patch(`/auth/members/mypage/password`, {
+    password: newPassword,
+  });
+  return response.data;
+};
+
+export const interestUpdateApi = async (payload: number[]) => {
+  const response = await memberApi.patch(`/auth/members/mypage/interests`, {
+    data: payload,
+  });
+  return response.data;
+};
+
+export const imageUpdateApi = async (payload: FormData) => {
+  const response = await memberFileApi.post(
+    `/auth/members/mypage/image`,
+    payload,
+  );
   return response.data;
 };
