@@ -69,7 +69,7 @@ const setAuthTokenHeader = async (
 
 // Function to handle request errors
 const handleRequestError = (error: AxiosError): Promise<AxiosError> => {
-  console.log(error);
+  console.log('dwqdqwqwdwqdwqd', error);
   return Promise.reject(error);
 };
 
@@ -82,7 +82,7 @@ const handleResponseSuccess = (response: AxiosResponse): AxiosResponse => {
 
 // Function to handle response errors
 const handleResponseError = (error: AxiosError): Promise<AxiosError> => {
-  console.log(error);
+  console.log('dwqdqwqwdwqdwqd', error);
   // Handle Network Error
   if (!error.response) {
     const errMsg = 'Network Error';

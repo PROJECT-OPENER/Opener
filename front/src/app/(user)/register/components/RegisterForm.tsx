@@ -215,6 +215,7 @@ const RegisterForm = () => {
             placeholder="이메일"
             maxLength={30}
             onFocus={() => setIsEmailActive(true)}
+            autoComplete="off"
             {...register('email')}
           />
           <AiOutlineMail
@@ -264,6 +265,7 @@ const RegisterForm = () => {
             value={eamilAuthCode}
             disabled={!isSendEmail}
             onFocus={() => setIsEmailAuthActive(true)}
+            autoComplete="off"
           />
           {isSendEmail && !isAuthEmail && (
             <button
@@ -300,6 +302,7 @@ const RegisterForm = () => {
             placeholder="비밀번호"
             {...register('password')}
             onFocus={() => setIsPasswordActive(true)}
+            autoComplete="off"
           />
           <AiOutlineLock
             className={`${
@@ -317,6 +320,7 @@ const RegisterForm = () => {
             className="validator-input rounded-b"
             placeholder="비밀번호 확인"
             {...register('confirmPassword')}
+            autoComplete="off"
             onFocus={() => setIsPasswordConfirmActive(true)}
           />
           <AiOutlineCheck
@@ -338,6 +342,7 @@ const RegisterForm = () => {
             type="text"
             className="validator-input rounded-t"
             placeholder="닉네임"
+            autoComplete="off"
             {...register('nickname')}
             onFocus={() => setIsNicknameActive(true)}
           />

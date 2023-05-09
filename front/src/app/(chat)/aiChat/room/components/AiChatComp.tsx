@@ -88,7 +88,7 @@ const AiChatComp = () => {
     <div className="h-full">
       <div
         ref={chatWindowRef}
-        className="min-h-[80vh] max-h-[80vh] overflow-y-scroll"
+        className="min-h-[70vh] max-h-[70vh] overflow-y-scroll"
       >
         {/* 채팅 */}
         {messages.map((message, index) => (

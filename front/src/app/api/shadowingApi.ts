@@ -15,7 +15,7 @@ export const getRoadMapApi = async () => {
 };
 
 export const getMainRoadMapApi = async () => {
-  console.log('getMainRoadMapApi');
+  // console.log('getMainRoadMapApi');
   const session = await getSession();
   const accessToken = session?.user?.user?.accessToken;
   const url = accessToken ? '/auth/main-roadmap' : '/main-roadmap';
@@ -23,7 +23,7 @@ export const getMainRoadMapApi = async () => {
     const res = await shadowingApi.get(url);
     return res.data.data;
   } catch (err) {
-    console.log(err);
+    // console.log(err);
   }
 };
 // "data": [
