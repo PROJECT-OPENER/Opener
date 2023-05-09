@@ -16,4 +16,6 @@ public interface ShadowingVideoRepositoryCustom {
 
 	List<ShadowingCategoryDto> getCategoryDotoList(List<Long> videoIdList, Pageable pageable);
 
+	List<RoadMapResponseDto> getThemeRoadMapResponseDtoList(List<Long> stepIdList);
+
 }

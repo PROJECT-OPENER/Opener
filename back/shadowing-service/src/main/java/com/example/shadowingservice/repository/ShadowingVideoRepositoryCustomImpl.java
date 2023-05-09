@@ -6,7 +6,9 @@ import static com.example.shadowingservice.entity.shadowing.QShadowingVideo.*;
 import static com.example.shadowingservice.entity.shadowing.QStep.*;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.persistence.EntityManager;
@@ -23,8 +25,10 @@ import com.example.shadowingservice.dto.response.ShadowingCategoryDto;
 import com.example.shadowingservice.entity.shadowing.ShadowingStatus;
 import com.example.shadowingservice.entity.shadowing.ShadowingVideo;
 import com.querydsl.core.Tuple;
+import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
@@ -37,7 +41,7 @@ public class ShadowingVideoRepositoryCustomImpl implements ShadowingVideoReposit
 	private final EntityManager em;
 
 	/**
-	 * 해당 유저의 학습 데이터와 북마크 데이터가 있는지 확인하고
+	 * [우승 ❤ 😁 💋] 해당 유저의 학습 데이터와 북마크 데이터가 있는지 확인하고
 	 * 학습 데이터가 없으면 생성, 북마크가 없으면 isMarked에 false처리
 	 *
 	 * @param videoId
@@ -107,6 +111,32 @@ public class ShadowingVideoRepositoryCustomImpl implements ShadowingVideoReposit
 	}
 
 	@Override
+	public List<RoadMapResponseDto> getThemeRoadMapResponseDtoList(List<Long> stepIdList) {
+
+		Expression<String> idString = new CaseBuilder()
+			.when(step.stepTheme.eq(1)).then("아이브")
+			.when(step.stepTheme.eq(2)).then("뉴진스")
+			.when(step.stepTheme.eq(3)).then("엔믹스")
+			.when(step.stepTheme.eq(4)).then("블랙핑크")
+			.otherwise("누구세요?");
+
+		return queryFactory.select(Projections.constructor(RoadMapResponseDto.class,
+				shadowingVideo.videoId,
+				shadowingVideo.engSentence,
+				shadowingVideo.korSentence,
+				idString,
+				step.sentenceNo
+				)
+			)
+			.from(shadowingVideo)
+			.join(step)
+			.on(shadowingVideo.stepId.eq(step.stepId))
+			.where(shadowingVideo.stepId.in(stepIdList))
+			.fetch();
+
+	}
+
+	@Override
 	public List<RoadMapResponseDto> getMainRoadMapResponseDtoList() {
 
 		return queryFactory.select(Projections.constructor(RoadMapResponseDto.class,
@@ -121,15 +151,13 @@ public class ShadowingVideoRepositoryCustomImpl implements ShadowingVideoReposit
 			)
 			.from(shadowingVideo)
 			.leftJoin(step)
-			.on(shadowingVideo.Step.stepId.eq(step.stepId))
+			.on(shadowingVideo.stepId.eq(step.stepId))
 			.where(step.stepNo.eq(1).and(step.stepTheme.eq(1)))
 			.fetch();
 	}
 
-	// private Long videoId;
-	// private String thumbnailUrl;
-	// private String engSentence;
-	// private String korSentence;
+
+
 	@Override
 	public List<ShadowingCategoryDto> getCategoryDotoList(List<Long> videoIdList, Pageable pageable) {
 		BooleanExpression inVideoIdList = shadowingVideo.videoId.in(videoIdList);

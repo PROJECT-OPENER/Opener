@@ -13,7 +13,6 @@ import com.example.shadowingservice.common.exception.ApiException;
 import com.example.shadowingservice.common.exception.ExceptionEnum;
 import com.example.shadowingservice.dto.response.InterestResponseDto;
 import com.example.shadowingservice.dto.response.LoginShadowingDetailDto;
-import com.example.shadowingservice.dto.response.NoListRoadMapResponseDto;
 import com.example.shadowingservice.dto.response.NoRoadMapResponseDto;
 import com.example.shadowingservice.dto.response.RecommendationDto;
 import com.example.shadowingservice.dto.response.RoadMapResponseDto;
@@ -29,6 +28,9 @@ import com.example.shadowingservice.repository.StepRepository;
 
 import lombok.RequiredArgsConstructor;
 
+/**
+ * [우승 ❤ 😁 💋] 쉐도잉 서비스 인터페이스 구현 👀
+ */
 @Service
 @RequiredArgsConstructor
 public class ShadowingServiceImpl implements ShadowingService {
@@ -37,39 +39,45 @@ public class ShadowingServiceImpl implements ShadowingService {
 	private final ShadowingVideoInterestRepository shadowingVideoInterestRepository;
 	private final StepRepository stepRepository;
 
-
 	@Override
-	public NoListRoadMapResponseDto getRoadMapList() {
+	public List<NoRoadMapResponseDto> getRoadMapList() {
 
 		StepMap stepMap = StepMap.getInstance();
 		HashMap<Integer, String> hashMap = stepMap.getHashMap();
-
-		System.out.println(hashMap.get(1));
-
-
-
-		// stepNo List 생성 ->
 		List<Integer> stepNoList = stepRepository.findDistinctStepNo();
+		List<NoRoadMapResponseDto> noRoadMapResponseDtoList = new ArrayList<>();
 
-		// stepTheme List 생성
-		List<Integer> stepThemeList = stepRepository.findDistinctStepTheme(stepNoList.get(0));
+		for (int stepNo = 0; stepNo < stepNoList.size(); stepNo++) {
+			List<Integer> stepThemeList = stepRepository.findDistinctStepTheme(stepNoList.get(stepNo));
+			List<ThemeRoadMapResponseDto> themeRoadMapResponseDtoList = new ArrayList<>();
+			for (int stepTheme = 0; stepTheme < stepThemeList.size(); stepTheme++) {
 
-		// jpa in을 통해서 stepNoList의 길이만큼 반복하고 stepTheme List를 생성 
-		// stepNo와 stepThemeList로 조회 그 후 값을 themeRoadMapResponseDtoList에 추가
-		// sentenceNo로 정렬
-		for(int stepNo = 0; stepNo < stepNoList.size(); stepNo++) {
-			List<NoRoadMapResponseDto> noRoadMapResponseDtoList = new ArrayList<>();
+				List<Long> stepIdList = stepRepository
+					.findStepIdList(stepNoList.get(stepNo), stepThemeList.get(stepTheme));
 
-			for(int stepTheme = 0; stepTheme < stepThemeList.size(); stepTheme++) {
-				List<ThemeRoadMapResponseDto> themeRoadMapResponseDtoList = new ArrayList<>();
+				List<RoadMapResponseDto> shadowingVideoList =
+					shadowingVideoRepository.getThemeRoadMapResponseDtoList(stepIdList);
+				ThemeRoadMapResponseDto themeRoadMapResponseDto = ThemeRoadMapResponseDto.builder()
+					.stepTheme(hashMap.get(stepThemeList.get(stepTheme)))
+					.roadMapResponseDtoList(shadowingVideoList)
+					.build();
 
+				themeRoadMapResponseDtoList.add(themeRoadMapResponseDto);
 
 			}
+
+			NoRoadMapResponseDto noRoadMapResponseDto = NoRoadMapResponseDto.builder()
+				.stepNo(stepNoList.get(stepNo))
+				.themeRoadMapResponseDtoList(themeRoadMapResponseDtoList)
+				.build();
+
+			noRoadMapResponseDtoList.add(noRoadMapResponseDto);
+
 		}
-
-		// stepNo에 맞춰서 getMainRoadMapList에
-
-		return null;
+		if(noRoadMapResponseDtoList.isEmpty()) {
+			throw new ApiException(ExceptionEnum.ROADMAPS_NOT_FOUND_EXCEPTION);
+		}
+		return noRoadMapResponseDtoList;
 	}
 
 	// ============================ 쉐도잉 카테고리 ====================================
@@ -155,6 +163,7 @@ public class ShadowingServiceImpl implements ShadowingService {
 			.interest(interest.getInterest())
 			.build();
 	}
+
 	// ================= 관심사 이름으로 조회
 	@Override
 	public InterestResponseDto getInterestByName(String interestName) {
@@ -166,7 +175,6 @@ public class ShadowingServiceImpl implements ShadowingService {
 			.interestId(interest.getInterestId())
 			.interest(interest.getInterest())
 			.build();
-
 
 		return interestResponseDto;
 	}

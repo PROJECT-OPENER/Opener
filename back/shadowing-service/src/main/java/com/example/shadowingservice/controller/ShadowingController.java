@@ -18,6 +18,7 @@ import com.example.shadowingservice.dto.request.IndexDto;
 import com.example.shadowingservice.dto.response.InterestResponseDto;
 import com.example.shadowingservice.dto.response.LoginShadowingDetailDto;
 import com.example.shadowingservice.dto.response.NoListRoadMapResponseDto;
+import com.example.shadowingservice.dto.response.NoMainRoadMapResponseDto;
 import com.example.shadowingservice.dto.response.NoRoadMapResponseDto;
 import com.example.shadowingservice.dto.response.RecommendationDto;
 import com.example.shadowingservice.dto.response.RoadMapResponseDto;
@@ -41,21 +42,9 @@ public class ShadowingController {
 		System.out.println("asdfsdafsdf");
 		return "asadfsadfsdafasdf";
 	}
-
-	// public ResponseEntity<BaseResponseDto<NoRoadMapResponseDto>> getMainRoadMapList() {
-	// 	List<RoadMapResponseDto> roadMapResponseDtoList = shadowingService.getMainRoadMapList();
-	// 	ThemeRoadMapResponseDto themeRoadMapResponseDto = new ThemeRoadMapResponseDto
-	// 		(roadMapResponseDtoList.get(0).getStepTheme(), roadMapResponseDtoList);
-	// 	NoRoadMapResponseDto noRoadMapResponseDto = new NoRoadMapResponseDto(1, themeRoadMapResponseDto);
-	// 	return ResponseEntity.status(HttpStatus.OK)
-	// 		.body(new BaseResponseDto<>
-	// 			(200, "비로그인 로드맵 리스트 불러오기 완료", noRoadMapResponseDto));
-	// }
 	@GetMapping("/roadmap")
-	public ResponseEntity<BaseResponseDto<NoListRoadMapResponseDto>> getRoadmapList() {
-
-		NoListRoadMapResponseDto noListRoadMapResponseDto = shadowingService.getRoadMapList();
-
+	public ResponseEntity<BaseResponseDto<List<NoRoadMapResponseDto>>> getRoadmapList() {
+		List<NoRoadMapResponseDto> noListRoadMapResponseDto = shadowingService.getRoadMapList();
 		return ResponseEntity.status(HttpStatus.OK)
 			.body(new BaseResponseDto<>(200, "로드맵 목록 조회 완료", noListRoadMapResponseDto));
 	}
@@ -111,14 +100,14 @@ public class ShadowingController {
 	 * @return
 	 */
 	@GetMapping("/main-roadmap")
-	public ResponseEntity<BaseResponseDto<NoRoadMapResponseDto>> getMainRoadMapList() {
+	public ResponseEntity<BaseResponseDto<NoMainRoadMapResponseDto>> getMainRoadMapList() {
 		List<RoadMapResponseDto> roadMapResponseDtoList = shadowingService.getMainRoadMapList();
 		ThemeRoadMapResponseDto themeRoadMapResponseDto = new ThemeRoadMapResponseDto
 			(roadMapResponseDtoList.get(0).getStepTheme(), roadMapResponseDtoList);
-		NoRoadMapResponseDto noRoadMapResponseDto = new NoRoadMapResponseDto(1, themeRoadMapResponseDto);
+		NoMainRoadMapResponseDto noMainRoadMapResponseDto = new NoMainRoadMapResponseDto(1, themeRoadMapResponseDto);
 		return ResponseEntity.status(HttpStatus.OK)
 			.body(new BaseResponseDto<>
-				(200, "비로그인 로드맵 리스트 불러오기 완료", noRoadMapResponseDto));
+				(200, "비로그인 로드맵 리스트 불러오기 완료", noMainRoadMapResponseDto));
 	}
 
 	/**

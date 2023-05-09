@@ -7,16 +7,18 @@ import org.springframework.data.domain.Pageable;
 
 import com.example.shadowingservice.dto.response.InterestResponseDto;
 import com.example.shadowingservice.dto.response.LoginShadowingDetailDto;
-import com.example.shadowingservice.dto.response.NoListRoadMapResponseDto;
+import com.example.shadowingservice.dto.response.NoRoadMapResponseDto;
 import com.example.shadowingservice.dto.response.RecommendationDto;
 import com.example.shadowingservice.dto.response.RoadMapResponseDto;
 import com.example.shadowingservice.dto.response.ShadowingCategoryDto;
 import com.example.shadowingservice.dto.response.ShadowingDetailDto;
-import com.example.shadowingservice.entity.shadowing.Interest;
 
+/**
+ * [우승 ❤ 😁 💋] 쉐도잉 서비스 인터페이스
+ */
 public interface ShadowingService {
 	/** 비로그인 로드맵 목록 조회 **/
-	NoListRoadMapResponseDto getRoadMapList();
+	List<NoRoadMapResponseDto> getRoadMapList();
 
 	/** 비로그인 카테고리 별 쉐도잉 영상 목록 조회 **/
 	List<ShadowingCategoryDto> getShadowingCategoryList(String category, Pageable pageable);

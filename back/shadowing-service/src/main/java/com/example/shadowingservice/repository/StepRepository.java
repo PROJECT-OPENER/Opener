@@ -15,5 +15,7 @@ public interface StepRepository extends JpaRepository<Step, Long> {
 
 	@Query("SELECT DISTINCT s.stepTheme FROM Step s WHERE s.stepNo = :stepNo")
 	List<Integer> findDistinctStepTheme(@Param("stepNo") int stepNo);
+	@Query("SELECT s.stepId FROM Step s WHERE s.stepNo = :stepNo AND s.stepTheme = :stepTheme")
+	List<Long> findStepIdList(@Param("stepNo") int stepNo, @Param("stepTheme") int stepTheme);
 
 }
