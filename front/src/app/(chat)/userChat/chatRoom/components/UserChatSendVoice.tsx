@@ -7,9 +7,11 @@ import {
 } from 'microsoft-cognitiveservices-speech-sdk';
 import { useRecoilState } from 'recoil';
 import {
+  userChatFirstState,
   userChatIsChatState,
   userChatIsRecordingState,
   userChatMessageState,
+  userChatTurnState,
 } from '../../store';
 import {
   BsArrowCounterclockwise,
@@ -32,6 +34,8 @@ const UserChatSendVoice = ({ handleSendMessage }: Props) => {
   );
   const [message, setMessage] = useRecoilState(userChatMessageState);
   const [isChat, setisChat] = useRecoilState(userChatIsChatState);
+  const [isFirst, setIsFirst] = useRecoilState(userChatFirstState);
+  const [turn, setTurn] = useRecoilState(userChatTurnState);
   // state
   const [text, setText] = useState([message]);
 
@@ -137,7 +141,11 @@ const UserChatSendVoice = ({ handleSendMessage }: Props) => {
           {isRecording ? <BsArrowUp /> : <BsMic />}
         </button>
       </div>
-      <div></div>
+      <div className="text-end relative">
+        <span className="bg-white py-2 px-3 absolute bottom-3 right-3 rounded-full">
+          15
+        </span>
+      </div>
     </div>
   );
 };

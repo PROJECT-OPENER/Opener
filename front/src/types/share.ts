@@ -145,3 +145,11 @@ export interface originalVideo {
   challengeUrl: string;
   joinCount: number;
 }
+
+// 채팅
+export interface Message {
+  nickname: string;
+  message: string;
+  roomId: string;
+  turn: number;
+}

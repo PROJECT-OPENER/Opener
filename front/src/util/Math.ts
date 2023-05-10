@@ -17,3 +17,9 @@ export const handleDate = (date: string) => {
   const formattedDate = `${year}-${month}-${day}`;
   return formattedDate;
 };
+
+export const handleTurn = (isFirst: boolean, turn: number) => {
+  if (isFirst) {
+    return turn === 1 ? 'first' : 'second';
+  }
+};
