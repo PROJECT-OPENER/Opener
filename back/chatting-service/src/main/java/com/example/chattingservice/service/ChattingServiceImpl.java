@@ -76,7 +76,7 @@ public class ChattingServiceImpl implements ChattingService {
 	}
 
 	@Override
-	public void createWaiting(String token) {
+	public synchronized void createWaiting(String token) {
 		token = token.replace("Bearer ", "");
 		Object memberObj = redisService.getMember(token);
 		if (memberObj == null) {
