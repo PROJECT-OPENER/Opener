@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import com.example.chattingservice.common.exception.ExceptionEnum;
 import com.example.chattingservice.entity.chat.WaitingRoom;
@@ -76,12 +77,15 @@ public class RedisService {
 	/**
 	 * 김윤미
 	 * explain : 대기방 생성 - 대기열에 추가
+	 * 신대득
+	 * explain : 대기방에 duration 추가
 	 * @param key
 	 * @param chatRoom
 	 * @param score
 	 */
 	public void addWaitingRoom(String key, WaitingRoom chatRoom, int score) {
 		redisTemplate.opsForZSet().add(key, chatRoom, score);
+		redisTemplate.expire(key+":"+chatRoom, 5L , TimeUnit.SECONDS);
 	}
 
 	/**

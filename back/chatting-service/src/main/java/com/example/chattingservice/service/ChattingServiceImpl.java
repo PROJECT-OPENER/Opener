@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,15 +46,14 @@ public class ChattingServiceImpl implements ChattingService {
 	private final RedisService redisService;
 	private final ObjectMapper objectMapper;
 
+	private final RedisTemplate redisTemplate;
+
 	@Value("${spring.img.baseurl}")
 	private String baseImgUrl;
-
-	private ConcurrentHashMap<String, String> waitingRoomMap; //유저가 기다리고 있는 방 번호
 
 	@PostConstruct
 	public void init() {
 		redisService.deleteRooms(WAITING.getKey());
-		this.waitingRoomMap = new ConcurrentHashMap<>();
 	}
 
 	/**
@@ -90,14 +90,15 @@ public class ChattingServiceImpl implements ChattingService {
 		int scoreLimit = getScoreLimit(score);
 		boolean existRoom = redisService.existRooms(WAITING.getKey(), score - scoreLimit,
 			score + scoreLimit);
+		WaitingRoom chatRoom = WaitingRoom.builder()
+			.roomId(UUID.randomUUID().toString())
+			.createdBy(member.getNickname()).createdAt(LocalDateTime.now()).build();
 		if (!existRoom) {
-			WaitingRoom chatRoom = WaitingRoom.builder()
-				.roomId(UUID.randomUUID().toString())
-				.createdBy(member.getNickname()).createdAt(LocalDateTime.now()).build();
 			redisService.addWaitingRoom(WAITING.getKey(), chatRoom, score);
-			waitingRoomMap.put(member.getNickname(), chatRoom.getRoomId());
 		} else {
-			createRoom(member, score, scoreLimit);
+			if (!redisService.existRoom(WAITING.getKey(), chatRoom)) {
+				createRoom(member, score, scoreLimit);
+			}
 		}
 	}
 
@@ -136,7 +137,6 @@ public class ChattingServiceImpl implements ChattingService {
 		sendChatRoomToUser(opposite.getNickname(), chatRoom);
 		log.info("{}'s ROOM: {}", opposite.getNickname(), chatRoom);
 		redisService.deleteRoom(WAITING.getKey(), room);
-		waitingRoomMap.remove(room.getCreatedBy());
 	}
 
 	public String getStartNickname(String myNickname, String opNickname) {

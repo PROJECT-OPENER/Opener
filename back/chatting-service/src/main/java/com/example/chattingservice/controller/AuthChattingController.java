@@ -31,4 +31,10 @@ public class AuthChattingController {
 		messagingTemplate.convertAndSend("/sub/user-chat/rooms" + roomId,
 			sendMessageRequestDto);
 	}
+
+	@MessageMapping("/user-chat/ping")
+	public void refreshWaiting(@Header("Authorization") String token, @Payload String nickname){
+
+	}
+
 }
