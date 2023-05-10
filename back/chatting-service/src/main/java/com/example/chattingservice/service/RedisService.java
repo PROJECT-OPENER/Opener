@@ -83,5 +83,14 @@ public class RedisService {
 	public void addWaitingRoom(String key, WaitingRoom chatRoom, int score) {
 		redisTemplate.opsForZSet().add(key, chatRoom, score);
 	}
+
+	/**
+	 * 김윤미
+	 * explain : 대기방 전체 삭제
+	 * @param key
+	 */
+	public void deleteRooms(String key) {
+		redisTemplate.opsForZSet().removeRange(key, 0, -1);
+	}
 }
 

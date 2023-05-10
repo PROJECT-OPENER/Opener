@@ -30,9 +30,11 @@ import com.example.chattingservice.repository.KeywordRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import static com.example.chattingservice.entity.redis.RedisKey.*;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ChattingServiceImpl implements ChattingService {
@@ -50,6 +52,7 @@ public class ChattingServiceImpl implements ChattingService {
 
 	@PostConstruct
 	public void init() {
+		redisService.deleteRooms(WAITING.getKey());
 		this.waitingRoomMap = new ConcurrentHashMap<>();
 	}
 
@@ -128,10 +131,10 @@ public class ChattingServiceImpl implements ChattingService {
 
 		chatRoom.setOtherInfo(opposite.getNickname(), getProfileImg(opposite.getProfile()));
 		sendChatRoomToUser(member.getNickname(), chatRoom);
-
+		log.info("{}'s ROOM: {}", member.getNickname(), chatRoom);
 		chatRoom.setOtherInfo(member.getNickname(), getProfileImg(member.getProfile()));
 		sendChatRoomToUser(opposite.getNickname(), chatRoom);
-
+		log.info("{}'s ROOM: {}", opposite.getNickname(), chatRoom);
 		redisService.deleteRoom(WAITING.getKey(), room);
 		waitingRoomMap.remove(room.getCreatedBy());
 	}
@@ -146,6 +149,6 @@ public class ChattingServiceImpl implements ChattingService {
 	}
 
 	public void sendChatRoomToUser(String senderNickname, ChatRoomResponseDto chatRoom) {
-		messagingTemplate.convertAndSend("/sub/user-chat" + senderNickname, chatRoom);
+		messagingTemplate.convertAndSend("/sub/user-chat/" + senderNickname, chatRoom);
 	}
 }
