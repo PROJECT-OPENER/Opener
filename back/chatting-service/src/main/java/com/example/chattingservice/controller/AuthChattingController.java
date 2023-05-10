@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 
 import org.springframework.messaging.handler.annotation.*;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -26,8 +27,8 @@ public class AuthChattingController {
 	 * @param sendMessageRequestDto
 	 */
 	@MessageMapping("/user-chat/rooms/{room-id}")
-	public void sendMessage(SendMessageRequestDto sendMessageRequestDto) {
-		messagingTemplate.convertAndSend("/sub/user-chat/rooms" + sendMessageRequestDto.getRoomId(),
+	public void sendMessage(@Header("Authorization") String token, @PathVariable String roomId, @Payload SendMessageRequestDto sendMessageRequestDto) {
+		messagingTemplate.convertAndSend("/sub/user-chat/rooms" + roomId,
 			sendMessageRequestDto);
 	}
 }
