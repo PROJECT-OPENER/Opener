@@ -25,6 +25,11 @@ public class AuthShadowingController {
 
 	private final ShadowingService shadowingService;
 
+	/**
+	 * 이우승
+	 * explain : 로그인 쉐도잉 로드맵 전체 목록 조회
+	 * @return
+	 */
 	@GetMapping("/roadmap")
 	public ResponseEntity<BaseResponseDto<List<AuthNoRoadMapResponseDto>>> getAuthRoadMapList() {
 		Long memberId = 2L;
