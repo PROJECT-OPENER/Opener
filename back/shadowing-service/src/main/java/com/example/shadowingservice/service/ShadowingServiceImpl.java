@@ -12,6 +12,9 @@ import org.springframework.stereotype.Service;
 import com.example.shadowingservice.common.StepMap;
 import com.example.shadowingservice.common.exception.ApiException;
 import com.example.shadowingservice.common.exception.ExceptionEnum;
+import com.example.shadowingservice.dto.response.AuthNoRoadMapResponseDto;
+import com.example.shadowingservice.dto.response.AuthRoadMapResponseDto;
+import com.example.shadowingservice.dto.response.AuthThemeRoadMapResponseDto;
 import com.example.shadowingservice.dto.response.InterestResponseDto;
 import com.example.shadowingservice.dto.response.LoginShadowingDetailDto;
 import com.example.shadowingservice.dto.response.NoRoadMapResponseDto;
@@ -37,6 +40,8 @@ public class ShadowingServiceImpl implements ShadowingService {
 	private final ShadowingVideoInterestRepository shadowingVideoInterestRepository;
 	private final StepRepository stepRepository;
 
+	StepMap stepMap = StepMap.getInstance();
+
 	/**
 	 * 이우승
 	 * explain : 비로그인 쉐도잉 로드맵 전체 목록 조회
@@ -45,7 +50,6 @@ public class ShadowingServiceImpl implements ShadowingService {
 	@Override
 	public List<NoRoadMapResponseDto> getRoadMapList() {
 
-		StepMap stepMap = StepMap.getInstance();
 		HashMap<Integer, String> hashMap = stepMap.getHashMap();
 		List<Integer> stepNoList = stepRepository.findDistinctStepNo();
 
@@ -88,6 +92,58 @@ public class ShadowingServiceImpl implements ShadowingService {
 
 		return noRoadMapResponseDtoList;
 
+	}
+
+	/**
+	 * 이우승
+	 * explain : 로그인 쉐도잉 로드맵 전체 목록 조회
+	 * @param memberId
+	 * @return
+	 */
+	@Override
+	public List<AuthNoRoadMapResponseDto> getAuthRoadMapList(Long memberId) {
+		StepMap stepMap = StepMap.getInstance();
+		HashMap<Integer, String> hashMap = stepMap.getHashMap();
+		List<Integer> stepNoList = stepRepository.findDistinctStepNo();
+
+		List<AuthNoRoadMapResponseDto> authNoRoadMapResponseDtoList = stepNoList.stream()
+			.map(stepNo -> {
+				List<AuthThemeRoadMapResponseDto> authThemeRoadMapResponseDtoList =
+					stepRepository.findDistinctStepTheme(
+						stepNo)
+					.stream()
+					.map(stepTheme -> {
+						List<Long> stepIdList = stepRepository.findStepIdList(stepNo, stepTheme);
+						List<AuthRoadMapResponseDto> shadowingVideoList =
+							shadowingVideoRepository.getAuthThemeRoadMapResponseDtoList(
+							memberId, stepIdList);
+
+						if (shadowingVideoList.isEmpty()) {
+							throw new ApiException(ExceptionEnum.AUTH_ROADMAPS_NOT_FOUND_EXCEPTION);
+						}
+
+						return AuthThemeRoadMapResponseDto.builder()
+							.stepTheme(hashMap.get(stepTheme))
+							.authRoadMapResponseDtoList(shadowingVideoList)
+							.build();
+					})
+					.collect(Collectors.toList());
+
+				if (authThemeRoadMapResponseDtoList.isEmpty()) {
+					throw new ApiException(ExceptionEnum.AUTH_ROADMAPS_NOT_FOUND_EXCEPTION);
+				}
+
+				return AuthNoRoadMapResponseDto.builder()
+					.stepNo(stepNo)
+					.authThemeRoadMapResponseDtoList(authThemeRoadMapResponseDtoList)
+					.build();
+			})
+			.collect(Collectors.toList());
+
+		if (authNoRoadMapResponseDtoList.isEmpty()) {
+			throw new ApiException(ExceptionEnum.AUTH_ROADMAPS_NOT_FOUND_EXCEPTION);
+		}
+		return authNoRoadMapResponseDtoList;
 	}
 
 	/**
