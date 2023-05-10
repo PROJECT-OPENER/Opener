@@ -153,3 +153,15 @@ export interface Message {
   roomId: string;
   turn: number;
 }
+
+export interface curMemberChallenge {
+  like: boolean;
+  memberChallengeId: number;
+  memberChallengeNickname: string;
+  memberChallengeUrl: string;
+}
+
+export interface challengeDetail {
+  curMemberChallenge: curMemberChallenge;
+  watchOriginalChallengeResponseDto: originalVideo;
+}

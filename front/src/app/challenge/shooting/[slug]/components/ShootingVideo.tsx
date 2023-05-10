@@ -200,8 +200,8 @@ const ShootingVideo = () => {
           if (cavasCtx) {
             cavasCtx.drawImage(
               recordingPlayer.current,
-              10,
-              10,
+              0,
+              0,
               recordingPlayer.current.videoWidth,
               recordingPlayer.current.videoHeight,
             );

@@ -16,12 +16,12 @@ const ChallengeInfo = ({ voiceId }: Props) => {
     const getData = async () => {
       const response = await memberChallengeOriginalApi(voiceId, {
         startIndex: 0,
-        endIndex: 1,
+        endIndex: 10,
       });
-      // console.log('안됨?', response);
+      console.log('안됨?', response);
       setMemberChallengeList({
         original: response.original,
-        memberChallengeResponseDtoList: response.memberChallengeResponseDtoList,
+        memberChallengeResponseDtoList: response.memberChallengeList,
         totalLength: response.totalLength,
       });
     };
@@ -44,6 +44,7 @@ const ChallengeInfo = ({ voiceId }: Props) => {
           memberChallengeList?.memberChallengeResponseDtoList || []
         }
         totalLength={memberChallengeList?.totalLength || 0}
+        originalId={originalChallenge.challengeId}
       ></VoiceChallengeCard>
     </div>
   );
