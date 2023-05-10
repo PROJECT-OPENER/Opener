@@ -10,7 +10,7 @@ const ChallengeCard = () => {
   const [category, setCategory] = useState<string>('LIKE');
   useEffect(() => {
     const getData = async () => {
-      const response = await allChallengeApi(category, 0, 1);
+      const response = await allChallengeApi(category, 0, 10);
       setMemberChallengeList({
         memberChallengeList: response.memberChallengeList,
         totalLength: response.totalLength,

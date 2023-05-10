@@ -49,3 +49,11 @@ export const originalVideoApi = async (challengeId: number) => {
   const response = await challengeApi.get(`/watch/challenges/${challengeId}`);
   return response.data.data;
 };
+
+// 챌린지 1개 가져오기
+export const challengeDetailApi = async (memberChallengeId: number) => {
+  const response = await challengeApi.get(
+    `/watch/member-challenges/${memberChallengeId}/video`,
+  );
+  return response.data.data;
+};
