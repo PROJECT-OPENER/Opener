@@ -27,7 +27,7 @@ public class AuthChattingController {
 	 */
 	@MessageMapping("/user-chat/rooms/{room-id}")
 	public void sendMessage(SendMessageRequestDto sendMessageRequestDto) {
-		messagingTemplate.convertAndSend("/sub/user-chat/" + sendMessageRequestDto.getRoomId(),
+		messagingTemplate.convertAndSend("/sub/user-chat/rooms" + sendMessageRequestDto.getRoomId(),
 			sendMessageRequestDto);
 	}
 }
