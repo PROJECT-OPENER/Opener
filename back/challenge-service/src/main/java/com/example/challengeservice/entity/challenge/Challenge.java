@@ -7,6 +7,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import com.example.challengeservice.dto.request.OriginalChallengeRequestDto;
 import com.example.challengeservice.entity.BaseEntity;
 
 import lombok.AllArgsConstructor;
@@ -37,4 +38,16 @@ public class Challenge extends BaseEntity {
 	private String korCaption;
 	@Column(name="caption_time", length = 1000)
 	private String captionTime;
+
+	public static Challenge from(OriginalChallengeRequestDto originalChallengeRequestDto, String fileUrl, String imgUrl){
+		return Challenge
+			.builder()
+			.title(originalChallengeRequestDto.getTitle())
+			.challengeUrl(fileUrl)
+			.challengeImg(imgUrl)
+			.engCaption(originalChallengeRequestDto.getEngCaption())
+			.korCaption(originalChallengeRequestDto.getKorCaption())
+			.captionTime(originalChallengeRequestDto.getCaptionTime())
+			.build();
+	}
 }

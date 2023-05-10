@@ -1,8 +1,10 @@
 package com.example.challengeservice.controller.challenge;
 
+import java.io.IOException;
 import java.util.List;
 
 import com.example.challengeservice.dto.BaseResponseDto;
+import com.example.challengeservice.dto.request.OriginalChallengeRequestDto;
 import com.example.challengeservice.dto.response.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.example.challengeservice.dto.BaseListResponseDto;
 import com.example.challengeservice.service.ChallengeService;
+import com.google.firebase.auth.FirebaseAuthException;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +25,18 @@ import javax.servlet.http.HttpServletRequest;
 @RequestMapping("")
 public class ChallengeController {
     private final ChallengeService challengeService;
+
+    /**
+     * 신대득
+     * explain : 챌린지 영상 등록 (관리자용 API)
+     */
+    @PostMapping("/challenges")
+    public ResponseEntity<BaseResponseDto> createOriginalChallenge(
+        OriginalChallengeRequestDto originalChallengeRequestDto)
+        throws IOException, FirebaseAuthException {
+        challengeService.createOriginalChallenge(originalChallengeRequestDto);
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseDto<>(200, "원본 챌린지 등록 완료"));
+    }
 
     /**
      * 신대득
