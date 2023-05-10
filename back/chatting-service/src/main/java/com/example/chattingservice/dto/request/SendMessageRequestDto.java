@@ -13,5 +13,5 @@ public class SendMessageRequestDto {
 	private int turn;
 	private String nickname;
 	private String message;
-	private Long roomId;
+	private String roomId;
 }
