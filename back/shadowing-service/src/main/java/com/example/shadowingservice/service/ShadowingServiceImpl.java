@@ -25,8 +25,10 @@ import com.example.shadowingservice.dto.response.ShadowingCategoryDto;
 import com.example.shadowingservice.dto.response.ShadowingDetailDto;
 import com.example.shadowingservice.dto.response.ThemeRoadMapResponseDto;
 import com.example.shadowingservice.entity.shadowing.Interest;
+import com.example.shadowingservice.entity.shadowing.ShadowingStatus;
 import com.example.shadowingservice.entity.shadowing.ShadowingVideo;
 import com.example.shadowingservice.repository.InterestRepository;
+import com.example.shadowingservice.repository.ShadowingStatusRepository;
 import com.example.shadowingservice.repository.ShadowingVideoInterestRepository;
 import com.example.shadowingservice.repository.ShadowingVideoRepository;
 import com.example.shadowingservice.repository.StepRepository;
@@ -37,6 +39,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ShadowingServiceImpl implements ShadowingService {
 	private final ShadowingVideoRepository shadowingVideoRepository;
+	private final ShadowingStatusRepository shadowingStatusRepository;
 	private final InterestRepository interestRepository;
 	private final ShadowingVideoInterestRepository shadowingVideoInterestRepository;
 	private final StepRepository stepRepository;
@@ -110,24 +113,24 @@ public class ShadowingServiceImpl implements ShadowingService {
 			.map(stepNo -> {
 				List<AuthThemeRoadMapResponseDto> authThemeRoadMapResponseDtoList =
 					stepRepository.findDistinctStepTheme(
-						stepNo)
-					.stream()
-					.map(stepTheme -> {
-						List<Long> stepIdList = stepRepository.findStepIdList(stepNo, stepTheme);
-						List<AuthRoadMapResponseDto> shadowingVideoList =
-							shadowingVideoRepository.getAuthThemeRoadMapResponseDtoList(
-							memberId, stepIdList);
+							stepNo)
+						.stream()
+						.map(stepTheme -> {
+							List<Long> stepIdList = stepRepository.findStepIdList(stepNo, stepTheme);
+							List<AuthRoadMapResponseDto> shadowingVideoList =
+								shadowingVideoRepository.getAuthThemeRoadMapResponseDtoList(
+									memberId, stepIdList);
 
-						if (shadowingVideoList.isEmpty()) {
-							throw new ApiException(ExceptionEnum.AUTH_ROADMAPS_NOT_FOUND_EXCEPTION);
-						}
+							if (shadowingVideoList.isEmpty()) {
+								throw new ApiException(ExceptionEnum.AUTH_ROADMAPS_NOT_FOUND_EXCEPTION);
+							}
 
-						return AuthThemeRoadMapResponseDto.builder()
-							.stepTheme(hashMap.get(stepTheme))
-							.authRoadMapResponseDtoList(shadowingVideoList)
-							.build();
-					})
-					.collect(Collectors.toList());
+							return AuthThemeRoadMapResponseDto.builder()
+								.stepTheme(hashMap.get(stepTheme))
+								.authRoadMapResponseDtoList(shadowingVideoList)
+								.build();
+						})
+						.collect(Collectors.toList());
 
 				if (authThemeRoadMapResponseDtoList.isEmpty()) {
 					throw new ApiException(ExceptionEnum.AUTH_ROADMAPS_NOT_FOUND_EXCEPTION);
@@ -184,13 +187,34 @@ public class ShadowingServiceImpl implements ShadowingService {
 
 	/**
 	 * 이우승
-	 * explain : 카테고리 별 쉐도잉 영상 목록 개수 조회
+	 * explain : 비로그인 카테고리 별 쉐도잉 영상 목록 개수 조회
 	 * @param interestId
 	 * @return
 	 */
 	@Override
 	public int getShadowingCategoryListCount(Long interestId) {
 		return shadowingVideoInterestRepository.countVideoIdsByInterestId(interestId);
+	}
+
+	/**
+	 * 이우승
+	 * explain : 쉐도잉 학습 반복횟수
+	 * @param memberId
+	 */
+	@Override
+	public void updateRepeatCount(Long videoId, Long memberId) {
+		ShadowingStatus shadowingStatus = shadowingStatusRepository
+			.findByShadowingVideo_VideoIdAndMemberId(videoId, memberId)
+			.orElseThrow(() -> new ApiException(ExceptionEnum.REPEATCOUNT_NOT_FOUND_EXCEPTION));
+
+		int count = shadowingStatus.getRepeatCount();
+
+		if (count + 1 >= 21) {
+			shadowingStatus.setRepeatCount(1);
+		} else {
+			shadowingStatus.setRepeatCount(count + 1);
+		}
+		shadowingStatusRepository.save(shadowingStatus);
 	}
 
 	/**

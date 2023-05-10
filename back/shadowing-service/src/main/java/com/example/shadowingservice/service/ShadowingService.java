@@ -28,8 +28,11 @@ public interface ShadowingService {
 	/** 로그인 카테고리 별 쉐도잉 영상 목록 개수 조회 **/
 	List<AuthShadowingCategoryDto> getAuthShadowingCategoryList(Long memberId, String category, Pageable pageable);
 
-	/** 카테고리 별 쉐도잉 영상 목록 개수 조회 **/
+	/** 비로그인 카테고리 별 쉐도잉 영상 목록 개수 조회 **/
 	int getShadowingCategoryListCount(Long interestId);
+
+	/** 쉐도잉 학습 반복횟수 **/
+	void updateRepeatCount(Long videoId, Long memberId);
 
 	/** 비로그인 쉐도잉 영상 조회 **/
 	ShadowingDetailDto getShadowingDetailDto(Long videoId);
