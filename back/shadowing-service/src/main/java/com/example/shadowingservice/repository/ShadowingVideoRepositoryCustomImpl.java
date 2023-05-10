@@ -19,6 +19,7 @@ import org.springframework.data.domain.Pageable;
 import com.example.shadowingservice.common.exception.ApiException;
 import com.example.shadowingservice.common.exception.ExceptionEnum;
 import com.example.shadowingservice.dto.response.AuthRoadMapResponseDto;
+import com.example.shadowingservice.dto.response.AuthShadowingCategoryDto;
 import com.example.shadowingservice.dto.response.LoginShadowingDetailDto;
 
 import com.example.shadowingservice.dto.response.RoadMapResponseDto;
@@ -27,6 +28,7 @@ import com.example.shadowingservice.entity.shadowing.ShadowingStatus;
 import com.example.shadowingservice.entity.shadowing.ShadowingVideo;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Expression;
+import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.CaseBuilder;
@@ -173,7 +175,8 @@ public class ShadowingVideoRepositoryCustomImpl implements ShadowingVideoReposit
 			.join(step)
 			.on(shadowingVideo.stepId.eq(step.stepId))
 			.leftJoin(shadowingStatus)
-			.on(shadowingStatus.memberId.eq(memberId).and(shadowingStatus.shadowingVideo.videoId.eq(shadowingVideo.videoId)))
+			.on(shadowingStatus.memberId.eq(memberId)
+				.and(shadowingStatus.shadowingVideo.videoId.eq(shadowingVideo.videoId)))
 			.where(shadowingVideo.stepId.in(stepIdList))
 			.fetch();
 	}
@@ -221,6 +224,48 @@ public class ShadowingVideoRepositoryCustomImpl implements ShadowingVideoReposit
 				shadowingVideo.korSentence)
 			)
 			.from(shadowingVideo)
+			.where(inVideoIdList)
+			.offset(pageable.getOffset())
+			.limit(pageable.getPageSize())
+			.orderBy(shadowingVideo.videoId.asc())
+			.fetch();
+
+	}
+
+	/**
+	 * 이우승
+	 * explain : 로그인 카테고리 별 쉐도잉 영상 목록 조회
+	 * @param memberId
+	 * @param videoIdList
+	 * @param pageable
+	 * @return
+	 */
+
+	@Override
+	public List<AuthShadowingCategoryDto> getAuthCategoryDtoList(Long memberId, List<Long> videoIdList,
+		Pageable pageable) {
+
+		BooleanExpression inVideoIdList = shadowingVideo.videoId.in(videoIdList);
+
+		Expression<Boolean> isMarkedExpression = Expressions.asBoolean(
+			new CaseBuilder()
+				.when(bookmark.memberId.isNotNull())
+				.then((Predicate)bookmark.isMarked)
+				.otherwise(false)
+		);
+
+		return queryFactory.select(Projections.constructor(AuthShadowingCategoryDto.class,
+					shadowingVideo.videoId,
+					shadowingVideo.thumbnailUrl,
+					shadowingVideo.engSentence,
+					shadowingVideo.korSentence,
+					isMarkedExpression
+				)
+			)
+			.from(shadowingVideo)
+			.leftJoin(bookmark)
+
+			.on(bookmark.shadowingVideo.videoId.eq(shadowingVideo.videoId).and(bookmark.memberId.eq(memberId)))
 			.where(inVideoIdList)
 			.offset(pageable.getOffset())
 			.limit(pageable.getPageSize())

@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.data.domain.Pageable;
 
 import com.example.shadowingservice.dto.response.AuthRoadMapResponseDto;
+import com.example.shadowingservice.dto.response.AuthShadowingCategoryDto;
 import com.example.shadowingservice.dto.response.LoginShadowingDetailDto;
 import com.example.shadowingservice.dto.response.RoadMapResponseDto;
 import com.example.shadowingservice.dto.response.ShadowingCategoryDto;
@@ -16,6 +17,8 @@ public interface ShadowingVideoRepositoryCustom {
 	List<RoadMapResponseDto> getMainRoadMapResponseDtoList();
 
 	List<ShadowingCategoryDto> getCategoryDotoList(List<Long> videoIdList, Pageable pageable);
+
+	List<AuthShadowingCategoryDto> getAuthCategoryDtoList(Long memberId, List<Long> videoIdList, Pageable pageable);
 
 	List<RoadMapResponseDto> getThemeRoadMapResponseDtoList(List<Long> stepIdList);
 

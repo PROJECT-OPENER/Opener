@@ -7,13 +7,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.shadowingservice.dto.BaseResponseDto;
+import com.example.shadowingservice.dto.request.IndexDto;
+import com.example.shadowingservice.dto.response.AuthShadowingCategoryDto;
+import com.example.shadowingservice.dto.response.AuthShadowingCategoryResponseDto;
 import com.example.shadowingservice.dto.response.AuthNoRoadMapResponseDto;
 import com.example.shadowingservice.dto.response.LoginShadowingDetailDto;
-import com.example.shadowingservice.dto.response.NoRoadMapResponseDto;
-import com.example.shadowingservice.dto.response.ShadowingDetailDto;
 import com.example.shadowingservice.service.ShadowingService;
 
 import lombok.RequiredArgsConstructor;
@@ -52,6 +54,30 @@ public class AuthShadowingController {
 			memberId);
 		return ResponseEntity.status(HttpStatus.OK)
 			.body(new BaseResponseDto<>(200, "영상 조회 완료", loginShadowingDetailDto));
+	}
+
+	@GetMapping("/shadowings")
+	public ResponseEntity<BaseResponseDto<Object>> getCategoryList(@RequestParam("category") String category,
+		@RequestParam("startIndex") int startIndex,
+		@RequestParam("endIndex") int endIndex) {
+
+		IndexDto indexDto = new IndexDto(startIndex, endIndex);
+		Long interestId = shadowingService.getInterestByName(category).getInterestId();
+		Long memberId = 2L;
+
+		List<AuthShadowingCategoryDto> shadowingCategoryDtoList = shadowingService.getAuthShadowingCategoryList(
+			memberId, category,
+			indexDto.toPageable());
+
+		int length = shadowingService.getShadowingCategoryListCount(interestId);
+
+		return ResponseEntity.status(HttpStatus.OK)
+			.body(new BaseResponseDto<>(200, "영상 조회 완료", AuthShadowingCategoryResponseDto
+				.builder()
+				.length(length)
+				.authShadowingCategoryDtoList(shadowingCategoryDtoList)
+				.build()));
+
 	}
 
 }
