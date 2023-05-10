@@ -15,6 +15,7 @@ import com.example.shadowingservice.common.exception.ExceptionEnum;
 import com.example.shadowingservice.dto.response.AuthNoRoadMapResponseDto;
 import com.example.shadowingservice.dto.response.AuthRoadMapResponseDto;
 import com.example.shadowingservice.dto.response.AuthThemeRoadMapResponseDto;
+import com.example.shadowingservice.dto.response.AuthShadowingCategoryDto;
 import com.example.shadowingservice.dto.response.InterestResponseDto;
 import com.example.shadowingservice.dto.response.LoginShadowingDetailDto;
 import com.example.shadowingservice.dto.response.NoRoadMapResponseDto;
@@ -40,8 +41,6 @@ public class ShadowingServiceImpl implements ShadowingService {
 	private final ShadowingVideoInterestRepository shadowingVideoInterestRepository;
 	private final StepRepository stepRepository;
 
-	StepMap stepMap = StepMap.getInstance();
-
 	/**
 	 * 이우승
 	 * explain : 비로그인 쉐도잉 로드맵 전체 목록 조회
@@ -50,6 +49,7 @@ public class ShadowingServiceImpl implements ShadowingService {
 	@Override
 	public List<NoRoadMapResponseDto> getRoadMapList() {
 
+		StepMap stepMap = StepMap.getInstance();
 		HashMap<Integer, String> hashMap = stepMap.getHashMap();
 		List<Integer> stepNoList = stepRepository.findDistinctStepNo();
 
@@ -159,6 +159,26 @@ public class ShadowingServiceImpl implements ShadowingService {
 		List<Long> videoIdList = shadowingVideoInterestRepository.findAllVideoId(interest.get().getInterestId());
 		List<ShadowingCategoryDto> shadowingVideoList = shadowingVideoRepository.getCategoryDotoList(videoIdList,
 			pageable);
+		return shadowingVideoList;
+	}
+
+	/**
+	 * 이우승
+	 * explain : 로그인 카테고리 별 쉐도잉 영상 목록 조회
+	 * @param memberId
+	 * @param category
+	 * @param pageable
+	 * @return
+	 */
+	@Override
+	public List<AuthShadowingCategoryDto> getAuthShadowingCategoryList(Long memberId, String category,
+		Pageable pageable) {
+
+		Optional<Interest> interest = interestRepository.findByInterest(category);
+		List<Long> videoIdList = shadowingVideoInterestRepository.findAllVideoId(interest.get().getInterestId());
+		List<AuthShadowingCategoryDto> shadowingVideoList =
+			shadowingVideoRepository.getAuthCategoryDtoList(memberId, videoIdList, pageable);
+
 		return shadowingVideoList;
 	}
 
