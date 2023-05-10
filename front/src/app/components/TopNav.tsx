@@ -83,7 +83,7 @@ const TopNav = () => {
               <Link href={'/mypage'}>
                 <ProfileImage
                   className="h-10 w-10 lg:h-12 lg:w-12 hover:cursor-pointer shadow-custom rounded-full"
-                  profileUrl={user?.data.profileUrl || null}
+                  profileUrl={user?.data.profile || null}
                   height={500}
                   width={500}
                 />

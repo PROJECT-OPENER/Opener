@@ -1,15 +1,10 @@
-import Loading from '@/app/components/Loading';
-import Link from 'next/link';
 import React from 'react';
+import WaitRoom from './components/WaitRoom';
 
 const page = () => {
   return (
     <div>
-      <Loading />
-      <Link href={'./userChat/Result'}>Result</Link>
-      <br />
-      <br />
-      <Link href={'./userChat/chatRoom'}>Chattest</Link>
+      <WaitRoom />
     </div>
   );
 };
