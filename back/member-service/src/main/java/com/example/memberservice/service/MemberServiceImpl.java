@@ -160,10 +160,10 @@ public class MemberServiceImpl implements MemberService {
 				throw new ApiException(ExceptionEnum.NOT_AUTHENTICATED_EMAIL_EXCEPTION);
 			}
 		}
-
+		Member member = signUpMemberRequestDto.toEntity(encryptedPwd);
 		redisService.deleteData(AUTH_EMAIL.getKey() + email);
-		kafkaProducer.sendSignUpMember(signUpMemberRequestDto);
-		memberRepository.save(signUpMemberRequestDto.toEntity(encryptedPwd));
+		// kafkaProducer.sendSignUpMember(member);
+		memberRepository.save(member);
 	}
 
 	/**
