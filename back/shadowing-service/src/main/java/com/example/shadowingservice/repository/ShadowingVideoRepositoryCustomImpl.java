@@ -18,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 
 import com.example.shadowingservice.common.exception.ApiException;
 import com.example.shadowingservice.common.exception.ExceptionEnum;
+import com.example.shadowingservice.dto.response.AuthRoadMapResponseDto;
 import com.example.shadowingservice.dto.response.LoginShadowingDetailDto;
 
 import com.example.shadowingservice.dto.response.RoadMapResponseDto;
@@ -141,6 +142,40 @@ public class ShadowingVideoRepositoryCustomImpl implements ShadowingVideoReposit
 			.where(shadowingVideo.stepId.in(stepIdList))
 			.fetch();
 
+	}
+
+	/**
+	 * 이우승
+	 * explain : 로그인 쉐도잉 로드맵 전체 목록 조회
+	 * @param memberId
+	 * @param stepIdList
+	 * @return
+	 */
+	@Override
+	public List<AuthRoadMapResponseDto> getAuthThemeRoadMapResponseDtoList(Long memberId, List<Long> stepIdList) {
+		Expression<String> idString = new CaseBuilder()
+			.when(step.stepTheme.eq(1)).then("아이브")
+			.when(step.stepTheme.eq(2)).then("뉴진스")
+			.when(step.stepTheme.eq(3)).then("엔믹스")
+			.when(step.stepTheme.eq(4)).then("블랙핑크")
+			.otherwise("");
+
+		return queryFactory.select(Projections.constructor(AuthRoadMapResponseDto.class,
+					shadowingVideo.videoId,
+					shadowingVideo.engSentence,
+					shadowingVideo.korSentence,
+					idString,
+					step.sentenceNo,
+					shadowingStatus.statusDate
+				)
+			)
+			.from(shadowingVideo)
+			.join(step)
+			.on(shadowingVideo.stepId.eq(step.stepId))
+			.leftJoin(shadowingStatus)
+			.on(shadowingStatus.memberId.eq(memberId).and(shadowingStatus.shadowingVideo.videoId.eq(shadowingVideo.videoId)))
+			.where(shadowingVideo.stepId.in(stepIdList))
+			.fetch();
 	}
 
 	/**
