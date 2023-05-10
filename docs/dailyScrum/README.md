@@ -435,3 +435,31 @@
     - 로그인 시 뱃지 작업
     - 채팅 sub으로 채팅방 주기
     - 쉐도잉 로드맵 전체 조회
+
+## 2023-05-10
+
+### 1. Yesterday
+
+- 프론트
+    - 채팅 stt 개선
+    - 유저 정보 수정 API 전체 연결 완료
+- 백엔드
+    - docker-compose를 통해 kafka connect 연결 시도
+    - kafka connect 컨테이너로 실행
+    - connector에 mysql을 등록해야한다
+    - 대기방 입장 로직 구현 (pub)
+    - 채팅방 매칭 시 sub 구현
+
+### 2. Today Todo
+
+- 프론트
+    - 유저 채팅 소켓 연결
+    - 유저 채팅 턴, 시간제한 적용
+    - 무한스크롤 페이지 전체 useSWRInfinite 적용
+    - 챌린지 API 전체 연결
+- 백엔드
+    - 쉐도잉 서비스 로그인 목록 조회 API 개발
+    - 채팅 서비스 대화 API 개발
+    - kafka connect를 통해 mysql 연결 시도
+    - 뱃지 api
+    - 채팅방 생성 소켓 통신 검증
