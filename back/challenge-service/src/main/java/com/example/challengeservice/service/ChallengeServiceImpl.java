@@ -274,6 +274,10 @@ public class ChallengeServiceImpl implements ChallengeService {
 			.orElseThrow(() -> new ApiException(ExceptionEnum.WRONG_MEMBER_EXCEPTION));
 		MemberChallenge memberChallenge = memberChallengeRepository.findByMemberChallengeId(memberChallengeId)
 			.orElseThrow(() -> new ApiException(ExceptionEnum.MEMBER_CHALLENGE_NOT_FOUND_EXCEPTION));
+		int count = loveRepository.countByMemberChallengeAndMember(memberChallenge, member);
+		if(count>0){
+			new ApiException(ExceptionEnum.LOVE_EXIST_EXCEPTION);
+		}
 		loveRepository.save(Love.from(member, memberChallenge));
 	}
 
