@@ -4,9 +4,11 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -99,12 +101,46 @@ public class AuthShadowingController {
 	 */
 	@PatchMapping("/videos/{video-id}")
 	public ResponseEntity<BaseResponseDto<Object>> updateRepeatCount(@PathVariable("video-id") Long videoId) {
-		System.out.println("================ updateRepeatCount============================");
+
 		Long memberId = 2L;
 		shadowingService.updateRepeatCount(videoId, memberId);
 
 		return ResponseEntity.status(HttpStatus.OK)
 			.body(new BaseResponseDto<>(200, "반복 횟수 수정 완료", null));
+	}
+
+	/**
+	 * 이우승
+	 * explain : 북마크 등록
+	 * @param videoId
+	 * @return
+	 */
+	@PostMapping("/videos/{video-id}/bookmark")
+	public ResponseEntity<BaseResponseDto<Object>> createBookmark(@PathVariable("video-id") Long videoId) {
+
+		Long memberId = 2L;
+
+		shadowingService.createBookmark(memberId, videoId);
+
+		return ResponseEntity.status(HttpStatus.OK)
+			.body(new BaseResponseDto<>(200, "북마크 등록 완료", null));
+	}
+
+	/**
+	 * 이우승
+	 * explain : 북마크 삭제
+	 * @param videoId
+	 * @return
+	 */
+	@DeleteMapping("/videos/{video-id}/bookmark")
+	public ResponseEntity<BaseResponseDto<Object>> deleteBookmark(@PathVariable("video-id") Long videoId) {
+
+		Long memberId = 2L;
+
+		shadowingService.deleteBookmark(memberId, videoId);
+
+		return ResponseEntity.status(HttpStatus.OK)
+			.body(new BaseResponseDto<>(200, "북마크 삭제 완료", null));
 	}
 
 }

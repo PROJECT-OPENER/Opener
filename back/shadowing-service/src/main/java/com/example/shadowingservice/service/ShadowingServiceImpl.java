@@ -24,9 +24,11 @@ import com.example.shadowingservice.dto.response.RoadMapResponseDto;
 import com.example.shadowingservice.dto.response.ShadowingCategoryDto;
 import com.example.shadowingservice.dto.response.ShadowingDetailDto;
 import com.example.shadowingservice.dto.response.ThemeRoadMapResponseDto;
+import com.example.shadowingservice.entity.shadowing.Bookmark;
 import com.example.shadowingservice.entity.shadowing.Interest;
 import com.example.shadowingservice.entity.shadowing.ShadowingStatus;
 import com.example.shadowingservice.entity.shadowing.ShadowingVideo;
+import com.example.shadowingservice.repository.BookmarkRepository;
 import com.example.shadowingservice.repository.InterestRepository;
 import com.example.shadowingservice.repository.ShadowingStatusRepository;
 import com.example.shadowingservice.repository.ShadowingVideoInterestRepository;
@@ -43,6 +45,8 @@ public class ShadowingServiceImpl implements ShadowingService {
 	private final InterestRepository interestRepository;
 	private final ShadowingVideoInterestRepository shadowingVideoInterestRepository;
 	private final StepRepository stepRepository;
+
+	private final BookmarkRepository bookmarkRepository;
 
 	/**
 	 * 이우승
@@ -325,6 +329,43 @@ public class ShadowingServiceImpl implements ShadowingService {
 			.build();
 
 		return interestResponseDto;
+	}
+
+	/**
+	 * 이우승
+	 * explain : 북마크 등록
+	 * @param memberId
+	 * @param videoId
+	 */
+
+	@Override
+	public void createBookmark(Long memberId, Long videoId) {
+
+		ShadowingVideo shadowingVideo = shadowingVideoRepository.findByVideoId(videoId)
+			.orElseThrow(() -> new ApiException(ExceptionEnum.SHADOWING_NOT_FOUND_EXCEPTION));
+
+		Bookmark bookmark = Bookmark.builder()
+			.memberId(memberId)
+			.shadowingVideo(shadowingVideo)
+			.build();
+
+		bookmarkRepository.save(bookmark);
+	}
+
+	/**
+	 * 이우승
+	 * explain : 북마크 삭제
+	 * @param memberId
+	 * @param videoId
+	 */
+	@Override
+	public void deleteBookmark(Long memberId, Long videoId) {
+
+		Bookmark bookmark = bookmarkRepository.findByMemberIdAndShadowingVideo_VideoId(memberId, videoId)
+			.orElseThrow(() -> new ApiException(ExceptionEnum.ROOKMARK_NOT_FOUND_EXCEPTION));
+
+		bookmarkRepository.delete(bookmark);
+
 	}
 
 }

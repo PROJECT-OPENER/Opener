@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
@@ -63,7 +64,7 @@ public class ShadowingVideoRepositoryCustomImpl implements ShadowingVideoReposit
 				shadowingVideo.engCaption,
 				shadowingVideo.korCaption,
 				shadowingStatus.repeatCount,
-				bookmark.isMarked
+				bookmark.memberId
 			)
 			.from(shadowingVideo)
 			.leftJoin(shadowingStatus)
@@ -98,19 +99,20 @@ public class ShadowingVideoRepositoryCustomImpl implements ShadowingVideoReposit
 			repeatCount = result.get(shadowingStatus.repeatCount);
 		}
 
-		if (result.get(bookmark.isMarked) != null) {
+		if (result.get(bookmark.memberId) != null) {
 			isMarked = true;
 		}
 
-		return Optional.of(new LoginShadowingDetailDto(
-			result.get(shadowingVideo.videoUrl),
-			result.get(shadowingVideo.startTime),
-			result.get(shadowingVideo.endTime),
-			result.get(shadowingVideo.engCaption),
-			result.get(shadowingVideo.korCaption),
-			repeatCount,
-			isMarked
-		));
+		return Optional.of(LoginShadowingDetailDto.builder()
+			.videoUrl(result.get(shadowingVideo.videoUrl))
+			.start(result.get(shadowingVideo.startTime))
+			.end(result.get(shadowingVideo.endTime))
+			.engCaption(result.get(shadowingVideo.engCaption))
+			.korCaption(result.get(shadowingVideo.korCaption))
+			.repeat(repeatCount)
+			.isMarked(isMarked)
+			.build()
+		);
 	}
 
 	/**
@@ -247,31 +249,30 @@ public class ShadowingVideoRepositoryCustomImpl implements ShadowingVideoReposit
 
 		BooleanExpression inVideoIdList = shadowingVideo.videoId.in(videoIdList);
 
-		Expression<Boolean> isMarkedExpression = Expressions.asBoolean(
-			new CaseBuilder()
-				.when(bookmark.memberId.isNotNull())
-				.then((Predicate)bookmark.isMarked)
-				.otherwise(false)
-		);
-
-		return queryFactory.select(Projections.constructor(AuthShadowingCategoryDto.class,
-					shadowingVideo.videoId,
-					shadowingVideo.thumbnailUrl,
-					shadowingVideo.engSentence,
-					shadowingVideo.korSentence,
-					isMarkedExpression
-				)
+		return queryFactory
+			.select(
+				shadowingVideo.videoId,
+				shadowingVideo.thumbnailUrl,
+				shadowingVideo.engSentence,
+				shadowingVideo.korSentence,
+				bookmark.memberId
 			)
 			.from(shadowingVideo)
 			.leftJoin(bookmark)
-
 			.on(bookmark.shadowingVideo.videoId.eq(shadowingVideo.videoId).and(bookmark.memberId.eq(memberId)))
 			.where(inVideoIdList)
 			.offset(pageable.getOffset())
 			.limit(pageable.getPageSize())
 			.orderBy(shadowingVideo.videoId.asc())
-			.fetch();
-
+			.fetch()
+			.stream()
+			.map(tuple -> new AuthShadowingCategoryDto(
+				tuple.get(shadowingVideo.videoId),
+				tuple.get(shadowingVideo.thumbnailUrl),
+				tuple.get(shadowingVideo.engSentence),
+				tuple.get(shadowingVideo.korSentence),
+				tuple.get(bookmark.memberId) != null
+			))
+			.collect(Collectors.toList());
 	}
-
 }

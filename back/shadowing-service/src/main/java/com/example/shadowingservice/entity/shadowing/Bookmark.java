@@ -37,6 +37,5 @@ public class Bookmark extends BaseEntity {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "video_id", nullable = false)
 	private ShadowingVideo shadowingVideo;
-	private Boolean isMarked;
 
 }
