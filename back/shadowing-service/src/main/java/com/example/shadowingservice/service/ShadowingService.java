@@ -52,4 +52,10 @@ public interface ShadowingService {
 	/** 관심사 이름으로 조회 **/
 	InterestResponseDto getInterestByName(String interestName);
 
+	/** 북마크 등록 **/
+	void createBookmark(Long memberId, Long videoId);
+
+	/** 북마크 삭제 **/
+	void deleteBookmark(Long memberId, Long videoId);
+
 }

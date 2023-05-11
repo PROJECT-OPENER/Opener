@@ -16,7 +16,7 @@ public class LoginShadowingDetailDto {
 	private LocalTime start;
 	private LocalTime end;
 	private String engCaption;
-	private String KorCaption;
+	private String korCaption;
 	private int repeat;
 	private boolean isMarked;
 

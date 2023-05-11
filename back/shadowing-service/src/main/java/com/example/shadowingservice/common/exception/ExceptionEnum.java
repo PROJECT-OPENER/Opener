@@ -19,6 +19,7 @@ public enum ExceptionEnum {
 	SHADOWINGS_NOT_FOUND_EXCEPTION(HttpStatus.BAD_REQUEST, -201, "쉐도잉 목록을 조회할 수 없습니다."),
 	CATEGORY_NOT_FOUND_EXCEPTION(HttpStatus.BAD_REQUEST, -202, "카테고리를 조회할 수 없습니다."),
 	REPEATCOUNT_NOT_FOUND_EXCEPTION(HttpStatus.BAD_REQUEST, -202, "반복횟수를 조회할 수 없습니다."),
+	ROOKMARK_NOT_FOUND_EXCEPTION(HttpStatus.BAD_REQUEST, -202, "북마크를 조회할 수 없습니다."),
 	OUT_OF_INDEX_EXCEPTION(HttpStatus.BAD_REQUEST, -203, "인덱스 범위를 벗어났습니다."),
 	VIDEOID_NOT_MATCH_EXCEPTION(HttpStatus.BAD_REQUEST, -204, "videoId가 일치하지 않습니다.");
 	private final HttpStatus status;
