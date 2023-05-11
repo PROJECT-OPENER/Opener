@@ -46,7 +46,7 @@ public class AuthChallengeController {
 	 * 신대득
 	 * explain : 회원 챌린지 선택 삭제
 	 */
-	@DeleteMapping("/member-challenges/{member-challenge-id}")
+	@DeleteMapping("/member-challenges/{memberChallengeId}")
 	public ResponseEntity<BaseResponseDto> deleteMemberChallenge(@PathVariable Long memberChallengeId) {
 		challengeService.deleteMemberChallenge(memberChallengeId);
 		return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseDto<>(200, "나의 영상 삭제 완료"));
