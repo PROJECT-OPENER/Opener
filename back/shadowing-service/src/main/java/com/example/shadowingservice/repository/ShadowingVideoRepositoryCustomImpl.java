@@ -219,8 +219,8 @@ public class ShadowingVideoRepositoryCustomImpl implements ShadowingVideoReposit
 	 */
 	@Override
 	public List<AuthRoadMapResponseDto> getAuthMainRoadMapResponseDtoList
-		(Long memberId, List<Long> videoList, int stepNo, int stepTheme) {
-		
+	(Long memberId, List<Long> videoList, int stepNo, int stepTheme) {
+
 		return queryFactory.select(Projections.constructor(AuthRoadMapResponseDto.class,
 					shadowingVideo.videoId,
 					shadowingVideo.engSentence,
@@ -233,17 +233,18 @@ public class ShadowingVideoRepositoryCustomImpl implements ShadowingVideoReposit
 						.otherwise("Unknown"),
 					step.sentenceNo,
 					shadowingStatus.statusDate
-
 				)
 			)
 			.from(shadowingVideo)
 			.leftJoin(step)
 			.on(shadowingVideo.stepId.eq(step.stepId))
 			.leftJoin(shadowingStatus)
-			.on(shadowingStatus.memberId.eq(memberId).and(shadowingStatus.shadowingVideo.videoId.in(videoList)))
+			.on(shadowingStatus.shadowingVideo.videoId.eq(shadowingVideo.videoId)
+				.and(shadowingStatus.memberId.eq(memberId).and(shadowingStatus.shadowingVideo.videoId.in(videoList))))
 			.where(step.stepNo.eq(stepNo).and(step.stepTheme.eq(stepTheme)))
+			.groupBy(shadowingVideo.videoId, shadowingVideo.engSentence, shadowingVideo.korSentence,
+				step.stepTheme, step.sentenceNo, shadowingStatus.statusDate)
 			.fetch();
-
 	}
 
 	/**
