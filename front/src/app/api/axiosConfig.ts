@@ -141,10 +141,12 @@ shadowingApi.interceptors.response.use(
   handleResponseSuccess,
   handleResponseError,
 );
+
 challengeApi.interceptors.response.use(
   handleResponseSuccess,
   handleResponseError,
 );
+
 chatApi.interceptors.response.use(handleResponseSuccess, handleResponseError);
 
 memberFileApi.interceptors.response.use(

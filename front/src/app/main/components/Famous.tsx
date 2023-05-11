@@ -48,7 +48,7 @@ const contents = {
 };
 
 const Famous = () => {
-  const option = {
+  const options = {
     wheelSpeed: 2,
     handlers: ['touch', 'click-rail', 'drag-thumb', 'keyboard', 'wheel'],
     wheelPropagation: true,
@@ -77,7 +77,7 @@ const Famous = () => {
       {/* 모바일 용 */}
       <div className="lg:hidden">
         <h1 className="text-lg mb-3">인기 챌린지</h1>
-        <PerfectScrollbar option={option} className="w-full h-full py-4">
+        <PerfectScrollbar options={options} className="w-full h-full py-4">
           <div className="flex flex-row relative h-full w-full">
             {contents.memberChallengeList.map((content, index) => {
               return (

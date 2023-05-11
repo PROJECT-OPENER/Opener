@@ -1,27 +1,19 @@
-// type sentenceType = {
-//   data: {
-//     video_id: string;
-//     eng_sentence: string;
-//     kor_sentence: string;
-//     sentence_no: string;
-//     status_date: string;
-//   };
-// };
 import { sentenceInterface } from '@/types/share';
 import Link from 'next/link';
 import { RiCheckFill } from 'react-icons/ri';
 const Sentence = ({ data }: { data: sentenceInterface }) => {
   const videoInfo = data;
+
   return (
     <Link
-      href={'/shadowing/learning/' + videoInfo.video_id}
+      href={'/shadowing/learning/' + videoInfo.videoId}
       className="flex flex-row justify-between items-center w-full rounded-3xl shadow-md mb-4 py-6 px-8 bg-white hover:bg-[#F6F6F6] active:bg-[#F2F2F2]"
     >
       <div>
-        <p className="text-xl font-medium mb-2">{videoInfo.eng_sentence}</p>
-        <p className="text-sm">{videoInfo.kor_sentence}</p>
+        <p className="text-xl font-medium mb-2">{videoInfo.engSentence}</p>
+        <p className="text-sm">{videoInfo.korSentence}</p>
       </div>
-      {videoInfo.status_date === '' || !videoInfo.status_date ? (
+      {videoInfo.statusDate === '' || !videoInfo.statusDate ? (
         <div className="w-[30px] h-[30px] rounded-full bg-[#F1F1F1]" />
       ) : (
         <div className="w-[30px] h-[30px] rounded-full flex justify-center items-center bg-[#FFD600]">

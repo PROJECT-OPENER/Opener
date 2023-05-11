@@ -41,14 +41,14 @@ const Categories = () => {
     wheelPropagation: true,
     minScrollbarLength: 2,
   };
-  const [selected, setSelected] = useState<string>('전체');
+  const [selected, setSelected] = useState<string>('아이브');
   const categories = [
     '전체',
     '추천',
     'sns',
-    '여행',
-    '여행2',
-    '여행3',
+    'bookmark',
+    '아이브',
+    '뉴진스',
     '여행4',
     '여행5',
     '여행6',

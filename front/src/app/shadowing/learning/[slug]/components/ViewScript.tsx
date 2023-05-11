@@ -14,14 +14,9 @@ import {
   BsChevronLeft,
   BsChevronRight,
 } from 'react-icons/bs';
+import { TfiAngleLeft } from 'react-icons/tfi';
 import { scriptInterface } from '@/types/share';
-
-const start = '00:00:01.000';
-const end = '00:00:09.000';
-// const engSubtitles =
-//   "WEBVTT\n\n00:00:01.000 --> 00:00:03.000\n- hello.\n\n00:00:03.000 --> 00:00:06.000\n- I'm daniel. \n- Nice to meet you.\n\n00:00:06.000 --> 00:00:09.000\n- HHHH.";
-// const korSubtitles =
-//   'WEBVTT\n\n00:00:01.000 --> 00:00:03.000\n- 안녕.\n\n00:00:03.000 --> 00:00:06.000\n- 나는 다니엘이야. \n- 만나서 반가워.\n\n00:00:06.000 --> 00:00:09.000\n- 흐흐흐흐.';
+import Link from 'next/link';
 
 type videoInfoType =
   | {
@@ -30,6 +25,8 @@ type videoInfoType =
       engCaption: scriptInterface[];
       korCaption: scriptInterface[];
       videoUrl: string;
+      marked: boolean | undefined;
+      repeat: number | undefined;
     }
   | undefined;
 
@@ -41,31 +38,26 @@ const ViewScript = ({ params }: { params: { slug: string } }) => {
   const [count, setCount] = useState<number>(1);
   const showCountRef = useRef<boolean>(false);
   const [speed, setSpeed] = useState<number>(1);
-  const [isMarked, setIsMarked] = useState<boolean>(false);
-  const [isRepeat, setIsRepeat] = useState<boolean>(false);
-  const isRepeatRef = useRef<boolean>(false);
+  const [isMarked, setIsMarked] = useState<boolean>(false); // 북마크 여부를 담는 state
+  const [isRepeat, setIsRepeat] = useState<boolean>(false); // 구간반복 상태 변경 시 css 변경을 위한 state
+  const isRepeatRef = useRef<boolean>(false); // 구간반복 여부를 담는 참조값
   const tokenizer = new WordTokenizer(); // 단어 형태소 분석
-  const subRangeRef = useRef<{ start: number; end: number }>();
-  const [second, setSecond] = useState<number>();
-  const [videoUrl, setVideoUrl] = useState<string>();
-  const [videoInfo, setVideoInfo] = useState<videoInfoType>();
+  const subRangeRef = useRef<{ start: number; end: number }>(); // 현재 자막이 나오는 구간(시간)을 담는 참조값
+  const [second, setSecond] = useState<number>(); // 발음체크 시 카운트를 담을 state
+  const [videoInfo, setVideoInfo] = useState<videoInfoType>(); // 가져온 영상 정보를 담는 state
 
   useEffect(() => {
     const getVideo = async (videoId: string) => {
       const data = await getVideoApi(videoId);
-      console.log(data);
-      // end:"00:01:00"
-      // engCaption:"WEBVTT\n\n00:01.000 --> 00:04.000\n- Never drink liquid nitrogen.\n\n00:05.000 --> 00:09.000\n- It will perforate your stomach.\n- You could die."
-      // korCaption:"WEBVTT\n\n00:01.000 --> 00:04.000\n- 절대 액화 질소를 마시지 마세요.\n\n00:05.000 --> 00:09.000\n- 그것은 당신의 배를 뚫을 것입니다.\n- 죽을 수도 있어요."
-      // start:"00:00:55"
-      // videoUrl:"F0B7HDiY-10"
-      setVideoUrl(data.videoUrl);
+      // console.log(data);
       setVideoInfo({
         start: convertTime(data.start),
         end: convertTime(data.end),
         engCaption: convert(data.engCaption),
         korCaption: convert(data.korCaption),
         videoUrl: data.videoUrl,
+        marked: data?.marked,
+        repeat: data?.repeat,
       });
     };
     const convert = (cap: string) => {
@@ -225,7 +217,7 @@ const ViewScript = ({ params }: { params: { slug: string } }) => {
   }, []);
 
   return (
-    <div className="relative flex flex-col justify-center items-center">
+    <div className="relative flex flex-col justify-center items-center lg:absolute lg:top-0 lg:left-0 w-full h-full">
       <div className={styles.videoContainer}>
         {showCountRef.current ? (
           <div className="absolute top-0 left-0 w-full h-full flex flex-col justify-center items-center z-10 bg-[#00000083]">
@@ -252,7 +244,7 @@ const ViewScript = ({ params }: { params: { slug: string } }) => {
               setCount(count + 1);
             }
           }}
-          videoId={videoUrl}
+          videoId={videoInfo?.videoUrl}
           opts={{
             height: '390',
             width: '640',
@@ -269,7 +261,7 @@ const ViewScript = ({ params }: { params: { slug: string } }) => {
           }}
         />
       </div>
-      <div className="w-full py-5 px-8">
+      <div className="w-[85%] py-5 px-8 max-w-[1024px]">
         <div className="relative w-full rounded-lg bg-white shadow-custom py-6 px-8 flex flex-col lg:flex-row justify-between">
           <div className="w-full flex flex-col justify-between h-full">
             {checkDiction ? (
@@ -395,6 +387,12 @@ const ViewScript = ({ params }: { params: { slug: string } }) => {
           ''
         )}
       </div>
+      <Link
+        href={'/shadowing'}
+        className="hidden lg:block fixed left-4 bottom-5 bg-[#fff] hover:bg-brandY p-3 rounded-full shadow-custom"
+      >
+        <TfiAngleLeft size="1.8rem" />
+      </Link>
     </div>
   );
 };
