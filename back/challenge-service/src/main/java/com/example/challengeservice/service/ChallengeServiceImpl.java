@@ -3,6 +3,7 @@ package com.example.challengeservice.service;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import com.example.challengeservice.common.exception.ApiException;
 import com.example.challengeservice.common.exception.ExceptionEnum;
@@ -45,8 +46,8 @@ public class ChallengeServiceImpl implements ChallengeService {
 		IOException,
 		FirebaseAuthException {
 		// Todo : 하드코딩 바꿔야할 부분
-		Member member = memberRepository.findByMemberId(1L)
-			.orElseThrow(() -> new ApiException(ExceptionEnum.WRONG_MEMBER_EXCEPTION));
+		// Member member = memberRepository.findByMemberId(1L)
+		// 	.orElseThrow(() -> new ApiException(ExceptionEnum.WRONG_MEMBER_EXCEPTION));
 		int myCount = (int)challengeRepository.count() + 1;
 		String fileName = originalChallengeRequestDto.getTitle() + "_" + myCount;
 
@@ -224,7 +225,7 @@ public class ChallengeServiceImpl implements ChallengeService {
 		Challenge challenge = challengeRepository.findByChallengeId(challengeId)
 			.orElseThrow(() -> new ApiException(ExceptionEnum.CHALLENGE_NOT_FOUND_EXCEPTION));
 		// Todo : 하드코딩 바꿔야할 부분
-		Member member = memberRepository.findByMemberId(1L)
+		Member member = memberRepository.findByNickname("2번")
 			.orElseThrow(() -> new ApiException(ExceptionEnum.WRONG_MEMBER_EXCEPTION));
 		int myCount =
 			memberChallengeRepository.countByChallenge_ChallengeIdAndMember_MemberId(challengeId, member.getMemberId())
@@ -286,5 +287,21 @@ public class ChallengeServiceImpl implements ChallengeService {
 		Love love = loveRepository.findByMemberChallengeAndMember(memberChallenge, member)
 			.orElseThrow(() -> new ApiException(ExceptionEnum.LOVE_NOT_FOUND_EXCEPTION));
 		loveRepository.delete(love);
+	}
+
+	@Override
+	public List<MemberChallengeResponseDto> getMyChallenges(String nickname) {
+		Member member = memberRepository.findByNickname(nickname)
+			.orElseThrow(() -> new ApiException(ExceptionEnum.WRONG_MEMBER_EXCEPTION));
+		List<MemberChallenge> memberChallenges = memberChallengeRepository.findAllByMember_MemberId(
+			member.getMemberId());
+
+		List<MemberChallengeResponseDto> memberChallengeResponseDtoList = memberChallenges.stream()
+			.map(memberChallenge -> {
+				int likeCount = loveRepository.countByMemberChallenge(memberChallenge);
+				return MemberChallengeResponseDto.from(memberChallenge, likeCount);
+			}).sorted(Comparator.comparing(MemberChallengeResponseDto::getMemberChallengeDate).reversed())
+			.collect(Collectors.toList());
+		return memberChallengeResponseDtoList;
 	}
 }

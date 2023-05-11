@@ -30,4 +30,5 @@ public interface ChallengeService {
     void createLike(Long memberChallengeId, String nickname);
     /** 멤버 챌린지 영상 좋아요 해제 **/
     void deleteLike(Long memberChallengeId, String nickname);
+    List<MemberChallengeResponseDto> getMyChallenges(String nickname);
 }
