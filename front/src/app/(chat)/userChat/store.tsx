@@ -14,6 +14,7 @@ export const userChatMessageState = atom({
 export const userChatMessageListState = atom<Message[]>({
   key: 'userChatMessageListState',
   default: [],
+  effects_UNSTABLE: [persistAtom],
 });
 
 export const userChatIsRecordingState = atom({
@@ -34,12 +35,38 @@ export const userChatRoomIdState = atom({
 
 export const userChatFirstState = atom({
   key: 'userChatFirstState',
-  default: true,
+  default: false,
   effects_UNSTABLE: [persistAtom],
 });
 
 export const userChatTurnState = atom({
   key: 'userChatTurnState',
   default: 1,
+  effects_UNSTABLE: [persistAtom],
+});
+
+// isFist가 true => 홀 수 턴에 채팅할 사람
+// isFist가 false => 짝 수 턴에 채팅할 사람
+
+export const userChatTimerState = atom({
+  key: 'userChatTimerState',
+  default: 2, // 시작 값
+  effects_UNSTABLE: [persistAtom],
+});
+
+export const userChatTimeState = atom({
+  key: 'userChatTimeState',
+  default: 2,
+});
+
+export const userChatMyNicknameState = atom({
+  key: 'userChatMyNicknameState',
+  default: '',
+  effects_UNSTABLE: [persistAtom],
+});
+
+export const userChatGameState = atom({
+  key: 'userChatGameState',
+  default: true,
   effects_UNSTABLE: [persistAtom],
 });

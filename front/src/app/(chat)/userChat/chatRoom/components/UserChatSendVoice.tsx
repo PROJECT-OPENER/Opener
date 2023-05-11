@@ -5,13 +5,12 @@ import {
   SpeechRecognizer,
   AudioConfig,
 } from 'microsoft-cognitiveservices-speech-sdk';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import {
-  userChatFirstState,
   userChatIsChatState,
   userChatIsRecordingState,
   userChatMessageState,
-  userChatTurnState,
+  userChatTimerState,
 } from '../../store';
 import {
   BsArrowCounterclockwise,
@@ -34,8 +33,7 @@ const UserChatSendVoice = ({ handleSendMessage }: Props) => {
   );
   const [message, setMessage] = useRecoilState(userChatMessageState);
   const [isChat, setisChat] = useRecoilState(userChatIsChatState);
-  const [isFirst, setIsFirst] = useRecoilState(userChatFirstState);
-  const [turn, setTurn] = useRecoilState(userChatTurnState);
+  const timer = useRecoilValue(userChatTimerState);
   // state
   const [text, setText] = useState([message]);
 
@@ -142,8 +140,8 @@ const UserChatSendVoice = ({ handleSendMessage }: Props) => {
         </button>
       </div>
       <div className="text-end relative">
-        <span className="bg-white py-2 px-3 absolute bottom-3 right-3 rounded-full">
-          15
+        <span className="bg-white h-9 w-9 absolute bottom-3 right-3 rounded-full flex items-center justify-center">
+          {timer}
         </span>
       </div>
     </div>

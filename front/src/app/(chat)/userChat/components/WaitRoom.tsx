@@ -1,11 +1,17 @@
 'use client';
 import { Client } from '@stomp/stompjs';
 import { useSession } from 'next-auth/react';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useSetRecoilState } from 'recoil';
-import { userChatRoomIdState } from '../store';
+import {
+  userChatGameState,
+  userChatMessageListState,
+  userChatMyNicknameState,
+  userChatRoomIdState,
+  userChatTimerState,
+  userChatTurnState,
+} from '../store';
 import { useRouter } from 'next/navigation';
-import useUser from '@/app/hooks/userHook';
 import Loading from '@/app/components/Loading';
 import InfoSlider from './InfoSlider';
 
@@ -15,17 +21,24 @@ const WaitRoom = () => {
   const nickname =
     session && session.user.user && session.user.user.data.nickname;
   const token = session?.user.user?.accessToken as string;
-  const { user, isLoading, error } = useUser();
-  console.log(user);
-  // socket
-  const [stompClient, setStompClient] = useState<Client | null>(null);
+  // recoil
+  const setUserChatNickname = useSetRecoilState(userChatMyNicknameState);
+  const setUserChatMessageListState = useSetRecoilState(
+    userChatMessageListState,
+  );
+  const setUserChatTimerState = useSetRecoilState(userChatTimerState);
+  const setUserChatTurnState = useSetRecoilState(userChatTurnState);
   const setUserChatRoom = useSetRecoilState(userChatRoomIdState);
-  const [pingIntervalId, setPingIntervalId] = useState<NodeJS.Timer>();
-  // 소켓
+  const setUserChatGameState = useSetRecoilState(userChatGameState);
+  // socket
+  const pingIntervalIdRef = useRef<NodeJS.Timer | null>(null);
   useEffect(() => {
-    const socket = new WebSocket(
-      'ws://k8c104.p.ssafy.io:8000/chatting-service/user-chat',
-    );
+    // recoil 초기화
+    setUserChatMessageListState([]);
+    setUserChatTimerState(10);
+    setUserChatTurnState(1);
+    setUserChatGameState(true);
+    const socket = new WebSocket(`${process.env.NEXT_PUBLIC_SOCKET_URL}`);
     const client = new Client({
       webSocketFactory: () => socket,
       onConnect: () => {
@@ -37,6 +50,7 @@ const WaitRoom = () => {
             Authorization: `Bearer ${token}`,
           },
         });
+
         const intervalId = setInterval(() => {
           const messageData = {
             nickname: nickname,
@@ -44,14 +58,15 @@ const WaitRoom = () => {
           console.log('interval');
           // 1초마다 메시지를 보냅니다.
           client.publish({
-            destination: '/pub/user-chat/ping',
+            destination: '/pub/user-chat/',
             body: JSON.stringify(messageData), // 메시지 내용은 임의로 설정합니다.
             headers: {
               Authorization: `Bearer ${token}`,
             },
           });
         }, 1000);
-        setPingIntervalId(intervalId);
+        pingIntervalIdRef.current = intervalId;
+        // setPingIntervalId(intervalId);
         client.subscribe(`/sub/user-chat/${nickname}`, (message) => {
           console.log('Received room message', message);
           // console.log('Received room message', JSON.parse(message.body));
@@ -77,10 +92,13 @@ const WaitRoom = () => {
     });
 
     client.activate();
-    setStompClient(client);
+    // setStompClient(client);
+    setUserChatNickname(nickname as string);
 
     return () => {
-      clearInterval(pingIntervalId);
+      if (pingIntervalIdRef.current) {
+        clearInterval(pingIntervalIdRef.current);
+      }
       client.deactivate();
     };
   }, []);
