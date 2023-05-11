@@ -384,6 +384,13 @@ public class ShadowingServiceImpl implements ShadowingService {
 		ShadowingVideo shadowingVideo = shadowingVideoRepository.findByVideoId(videoId)
 			.orElseThrow(() -> new ApiException(ExceptionEnum.SHADOWING_NOT_FOUND_EXCEPTION));
 
+		Optional<Bookmark> existingBookmark =
+			bookmarkRepository.findByMemberIdAndShadowingVideo_VideoId(memberId, videoId);
+
+		if (existingBookmark.isPresent()) {
+			throw new ApiException(ExceptionEnum.BOOKMARK_ALREADY_EXIST);
+		}
+
 		Bookmark bookmark = Bookmark.builder()
 			.memberId(memberId)
 			.shadowingVideo(shadowingVideo)
