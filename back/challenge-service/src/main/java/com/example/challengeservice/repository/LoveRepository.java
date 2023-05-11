@@ -16,4 +16,5 @@ public interface LoveRepository extends JpaRepository<Love, Long> {
     int countByMemberChallengeAndMember_Nickname(MemberChallenge memberChallenge, String nickname);
 
     Optional<Love> findByMemberChallengeAndMember(MemberChallenge memberChallenge, Member member);
+    int countByMemberChallengeAndMember(MemberChallenge memberChallenge, Member member);
 }
