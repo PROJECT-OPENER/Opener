@@ -1,30 +1,18 @@
-// type sentenceType = {
-//   video_id: string;
-//   eng_sentence: string;
-//   kor_sentence: string;
-//   step_theme: string;
-//   sentence_no: string;
-//   status_date: string;
-// };
-
-// type themeType = {
-//   data: {
-//     step_theme: string;
-//     list: sentenceType[];
-//   };
-// };
 import { themeInterface } from '@/types/share';
 import Sentence from './Sentence';
 import { BiLockAlt } from 'react-icons/bi';
 
 const Theme = ({ data }: { data: themeInterface }) => {
+  const themeList = data.roadMapResponseDtoList;
   let isLocked = true;
-  for (let i = 0; i < data.list.length; i++) {
-    if (data.list[i].status_date !== '' || data.list[i].status_date) {
+
+  for (let i = 0; i < themeList.length; i++) {
+    if (themeList[i].statusDate !== '' || themeList[i].statusDate) {
       isLocked = false;
       break;
     }
   }
+
   return (
     <div className="flex flex-row">
       <div className="w-[50px] flex flex-col items-center">
@@ -39,8 +27,8 @@ const Theme = ({ data }: { data: themeInterface }) => {
         <div className="h-[calc(100%-50px)] w-[3px] bg-[#F0F0F0] rounded"></div>
       </div>
       <div className="w-[calc(100%-60px)]">
-        <p className="text-lg mb-5 mt-[12px] pl-2">{data.step_theme}</p>
-        {data.list.map((sentence, index) => {
+        <p className="text-lg mb-5 mt-[12px] pl-2">{data.stepTheme}</p>
+        {themeList.map((sentence, index) => {
           return <Sentence data={sentence} key={index} />;
         })}
       </div>
