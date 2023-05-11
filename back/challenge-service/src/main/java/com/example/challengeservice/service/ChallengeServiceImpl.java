@@ -230,7 +230,7 @@ public class ChallengeServiceImpl implements ChallengeService {
 		int myCount =
 			memberChallengeRepository.countByChallenge_ChallengeIdAndMember_MemberId(challengeId, member.getMemberId())
 				+ 1;
-		String fileName = challenge.getTitle() + "_" + memberChallengeRequestDto.getNickName() + myCount;
+		String fileName = challenge.getTitle() + "_" + memberChallengeRequestDto.getNickName() + LocalDateTime.now();
 		//        if (memberChallengeRepository.findByChallenge_ChallengeIdAndMember_MemberId(challengeId, member.getMemberId()).isPresent()) {
 		//            throw new ApiException(ExceptionEnum.MEMBER_CHALLENGE_EXIST_EXCEPTION);
 		//        }
@@ -245,7 +245,6 @@ public class ChallengeServiceImpl implements ChallengeService {
 		String imgUrl = fireBaseService.uploadFiles(memberChallengeRequestDto.getMemberChallengeImg(),
 			fileName + "_img");
 		MemberChallenge memberChallenge = MemberChallenge.from(challenge, member, imgUrl, fileUrl);
-		memberChallenge.setBaseDateInfo(LocalDateTime.now(), LocalDateTime.now());
 		memberChallengeRepository.save(memberChallenge);
 	}
 

@@ -42,16 +42,11 @@ public class MemberChallenge extends BaseEntity {
     private String memberChallengeUrl;
 
     public static MemberChallenge from(Challenge challenge, Member member, String memberChallengeImg, String memberChallengeUrl) {
-        return builder()
+        return MemberChallenge.builder()
                 .challenge(challenge)
                 .member(member)
                 .memberChallengeImg(memberChallengeImg)
                 .memberChallengeUrl(memberChallengeUrl)
                 .build();
-    }
-
-    public void setBaseDateInfo(LocalDateTime createDate, LocalDateTime lastModifiedDate) {
-        this.createDate = createDate;
-        this.lastModifiedDate = lastModifiedDate;
     }
 }
