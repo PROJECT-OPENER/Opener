@@ -284,20 +284,18 @@ public class ShadowingServiceImpl implements ShadowingService {
 		HashMap<Integer, String> hashMap = stepMap.getHashMap();
 
 		List<Long> stepIdList = stepRepository.findStepIdList(stepNo, stepTheme);
-		// stepIdList가 비어 있는 경우 ApiException 예외 처리
 		if (stepIdList.isEmpty()) {
 			throw new ApiException(ExceptionEnum.STEP_ID_LIST_NOT_FOUND_EXCEPTION);
 		}
 
 		List<Long> videoIdList = shadowingVideoRepository.findByStepIdIn(stepIdList);
-		// videoIdList가 비어 있는 경우 ApiException 예외 처리
 		if (videoIdList.isEmpty()) {
 			throw new ApiException(ExceptionEnum.VIDEO_ID_LIST_NOT_FOUND_EXCEPTION);
 		}
 
 		List<AuthRoadMapResponseDto> authRoadMapResponseDtoList =
 			shadowingVideoRepository.getAuthMainRoadMapResponseDtoList(memberId, videoIdList, stepNo, stepTheme);
-		// authRoadMapResponseDtoList가 비어 있는 경우 ApiException 예외 처리
+
 		if (authRoadMapResponseDtoList.isEmpty()) {
 			throw new ApiException(ExceptionEnum.AUTH_MAIN_ROADMAPS_NOT_FOUND_EXCEPTION);
 		}
@@ -309,7 +307,6 @@ public class ShadowingServiceImpl implements ShadowingService {
 
 		return authMainThemeRoadMapResponseDto;
 	}
-
 
 	/**
 	 * 이우승
