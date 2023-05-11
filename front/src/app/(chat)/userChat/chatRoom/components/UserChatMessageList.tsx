@@ -11,7 +11,7 @@ const UserChatMessageList = () => {
   const messageList = useRecoilValue(userChatMessageListState);
   const userChatRoom = useRecoilValue(userChatRoomIdState);
   return (
-    <div>
+    <div className="overflow-clip">
       {messageList.map((message, index) => (
         <div
           key={index}
@@ -21,21 +21,33 @@ const UserChatMessageList = () => {
       `}
         >
           {message.nickname !== nickname && (
-            <div className="flex mt-2">
+            <div className="flex mt-2 relative">
               <ProfileImage
                 className="h-12 w-12 mx-2 hover:cursor-pointer min-w-[48px]"
                 profileUrl={userChatRoom.otherImgUrl}
                 height={500}
                 width={500}
               />
-              <div className="">
+              <div className="max-w-[70vw]">
                 <div>{message.nickname}</div>
-                <div className="other-chat">{message.message}</div>
+                <div className="other-chat overflow-hidden break-words">
+                  {message.message}
+                </div>
+              </div>
+              <div className="absolute bottom-0 right-0 text-slate-600">
+                {message.turn - 1}/10
               </div>
             </div>
           )}
           {message.nickname === nickname && (
-            <div className="my-chat">{message.message}</div>
+            <div className="max-w-[70vw] relative">
+              <div className="absolute bottom-0 left-[3.5rem] text-slate-600">
+                {message.turn - 1}/10
+              </div>
+              <div className="my-chat break-words overflow-hidden">
+                {message.message}
+              </div>
+            </div>
           )}
         </div>
       ))}

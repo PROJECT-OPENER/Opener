@@ -19,7 +19,12 @@ export const handleDate = (date: string) => {
 };
 
 export const handleTurn = (isFirst: boolean, turn: number) => {
-  if (isFirst) {
-    return turn === 1 ? 'first' : 'second';
-  }
+  // 선공 + 홀수 턴
+  if (turn % 2 !== 0 && isFirst) return true;
+  // 성공  + 짝수 턴
+  if (turn % 2 === 0 && isFirst) return false;
+  // 후공 + 홀수 턴
+  if (turn % 2 !== 0 && !isFirst) return false;
+  // 후공 + 짝수 턴
+  if (turn % 2 === 0 && !isFirst) return true;
 };

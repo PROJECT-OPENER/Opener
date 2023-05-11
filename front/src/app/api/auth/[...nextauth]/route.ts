@@ -1,6 +1,8 @@
 import CredentialsProvider from 'next-auth/providers/credentials';
 import NextAuth from 'next-auth';
 
+const BASE_URL = process.env.NEXT_PUBLIC_SERVER_URL;
+
 const handler = NextAuth({
   providers: [
     // ...add more providers here
@@ -24,20 +26,17 @@ const handler = NextAuth({
       async authorize(credentials, req) {
         console.log(credentials);
         const { email, password } = credentials as any;
-        const res = await fetch(
-          'http://k8c104.p.ssafy.io:8000/member-service/members/login',
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              email,
-              password,
-            }),
+        const res = await fetch(`${BASE_URL}member-service/members/login`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
           },
-        );
-        // console.log('res : ', res);
+          body: JSON.stringify({
+            email,
+            password,
+          }),
+        });
+        console.log('res : ', res);
         // console.log('res : ', res.headers.get('nickname'));
         // const user = await decodeURI(res.headers.get('nickname') as string);
         const user = await res.json();

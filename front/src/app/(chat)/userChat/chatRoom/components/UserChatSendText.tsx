@@ -1,8 +1,13 @@
 'use client';
-import React, { useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { BsArrowUp, BsMic } from 'react-icons/bs';
-import { useRecoilState } from 'recoil';
-import { userChatIsChatState, userChatMessageState } from '../../store';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import {
+  userChatGameState,
+  userChatIsChatState,
+  userChatMessageState,
+  userChatTimerState,
+} from '../../store';
 
 type Props = {
   handleSendMessage: () => void;
@@ -10,8 +15,17 @@ type Props = {
 
 const UserChatSendText = ({ handleSendMessage }: Props) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  // recoil
   const [message, setMessage] = useRecoilState(userChatMessageState);
   const [isChat, setisChat] = useRecoilState(userChatIsChatState);
+  const timer = useRecoilValue(userChatTimerState);
+  const gameState = useRecoilValue(userChatGameState);
+
+  useEffect(() => {
+    console.log('message', gameState);
+  }, [gameState]);
+
+  // functions
   const handleKeyboardChange = (event: {
     target: { value: React.SetStateAction<string> };
   }) => {
@@ -40,12 +54,15 @@ const UserChatSendText = ({ handleSendMessage }: Props) => {
     <div className="flex items-center min-h-[50px] mx-5 relative">
       <button
         type="button"
-        className={`bg-brandY text-white font-bold py-2 px-2 rounded-full mr-3 absolute bottom-[0.65rem] shadow-custom`}
+        className={`bg-brandY text-white font-bold rounded-full mr-3 absolute bottom-[0.65rem] shadow-custom w-8 h-8 flex justify-center items-center`}
         onClick={handleMicChange}
       >
         <BsMic className="fill-white" />
       </button>
-      <div className="relative w-full ml-12 mt-2">
+      <span className="bg-white absolute bottom-[0.65rem] left-10 w-8 h-8 rounded-full flex justify-center items-center">
+        {timer}
+      </span>
+      <div className="relative w-full ml-20 mt-2">
         <textarea
           ref={textareaRef}
           placeholder="메시지를 입력하세요."
