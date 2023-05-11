@@ -52,12 +52,14 @@ export interface responseInterface {
 // 로드맵 관련 타입
 export interface stepInterface {
   stepNo: string;
-  themeRoadMapResponseDtoList: themeInterface[];
+  themeRoadMapResponseDtoList: themeInterface[] | undefined;
+  authThemeRoadMapResponseDtoList: themeInterface[] | undefined;
 }
 
 export interface themeInterface {
   stepTheme: string;
-  roadMapResponseDtoList: sentenceInterface[];
+  roadMapResponseDtoList: sentenceInterface[] | undefined;
+  authRoadMapResponseDtoList: sentenceInterface[] | undefined;
 }
 
 export interface sentenceInterface {
