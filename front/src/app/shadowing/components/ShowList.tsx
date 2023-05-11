@@ -57,7 +57,7 @@ const ShowList = (props: { category: string }) => {
                   <p className="text-lg font-medium">{content.engSentence}</p>
                   <p className="text-xs">{content.korSentence}</p>
                 </div>
-                {content.isMarked === 'true' ? (
+                {content.marked ? (
                   <BsBookmarkPlusFill color="#7D17FF" size="1.5rem" />
                 ) : (
                   <BsBookmarkPlus color="#D9D9D9" size="1.5rem" />
