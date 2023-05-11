@@ -3,11 +3,23 @@ import Sentence from './Sentence';
 import { BiLockAlt } from 'react-icons/bi';
 
 const Theme = ({ data }: { data: themeInterface }) => {
-  const themeList = data.roadMapResponseDtoList;
+  const themeList = data.roadMapResponseDtoList
+    ? data.roadMapResponseDtoList
+    : data.authRoadMapResponseDtoList;
+  console.log(themeList);
   let isLocked = true;
 
-  for (let i = 0; i < themeList.length; i++) {
-    if (themeList[i].statusDate !== '' || themeList[i].statusDate) {
+  const blankSentence = {
+    videoId: '',
+    engSentence: '',
+    korSentence: '',
+    stepTheme: '',
+    sentenceNo: '',
+    statusDate: undefined,
+  };
+
+  for (let i = 0; i < themeList!.length; i++) {
+    if (themeList![i].statusDate !== null) {
       isLocked = false;
       break;
     }
@@ -28,8 +40,16 @@ const Theme = ({ data }: { data: themeInterface }) => {
       </div>
       <div className="w-[calc(100%-60px)]">
         <p className="text-lg mb-5 mt-[12px] pl-2">{data.stepTheme}</p>
-        {themeList.map((sentence, index) => {
-          return <Sentence data={sentence} key={index} />;
+        {themeList!.map((sentence, index) => {
+          return !isLocked ? (
+            <Sentence data={sentence} isLocked={false} key={index} />
+          ) : (
+            <Sentence
+              data={blankSentence}
+              isLocked={true}
+              key={index}
+            ></Sentence>
+          );
         })}
       </div>
     </div>

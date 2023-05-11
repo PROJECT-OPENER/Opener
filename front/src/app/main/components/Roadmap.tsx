@@ -12,19 +12,15 @@ const Roadmap = () => {
   const [data, setData] = useState<dataInterface[]>();
   const getRoadmap = async () => {
     const res = await getMainRoadMapApi();
-    console.log(res.themeRoadMapResponseDto.roadMapResponseDtoList);
-    setData(res.themeRoadMapResponseDto.roadMapResponseDtoList);
+    console.log(res);
+    const roadmap = res.themeRoadMapResponseDto
+      ? res.themeRoadMapResponseDto.roadMapResponseDtoList
+      : res.authRoadMapResponseDtoList;
+    setData(roadmap);
   };
-  // stepNo
-  // :
-  // 1
-  // themeRoadMapResponseDto
-  // :
-  // {stepTheme: '아이브', roadMapResponseDtoList: Array(3)}
-  // [[Prototype]]
-  // :
-  // Object
+
   useEffect(() => {
+    console.log('roadmap 요청');
     getRoadmap();
   }, []);
 

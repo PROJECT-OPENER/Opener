@@ -1,10 +1,16 @@
 import { sentenceInterface } from '@/types/share';
 import Link from 'next/link';
 import { RiCheckFill } from 'react-icons/ri';
-const Sentence = ({ data }: { data: sentenceInterface }) => {
+const Sentence = ({
+  data,
+  isLocked,
+}: {
+  data: sentenceInterface;
+  isLocked: boolean;
+}) => {
   const videoInfo = data;
 
-  return (
+  return !isLocked ? (
     <Link
       href={'/shadowing/learning/' + videoInfo.videoId}
       className="flex flex-row justify-between items-center w-full rounded-3xl shadow-md mb-4 py-6 px-8 bg-white hover:bg-[#F6F6F6] active:bg-[#F2F2F2]"
@@ -21,6 +27,10 @@ const Sentence = ({ data }: { data: sentenceInterface }) => {
         </div>
       )}
     </Link>
+  ) : (
+    <div className="flex flex-row justify-between items-center w-full rounded-3xl shadow-md mb-4 py-6 px-8 bg-[#ffffff]">
+      <p className="text-xl font-medium mb-2 text-[#979797]">Locked</p>
+    </div>
   );
 };
 

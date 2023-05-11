@@ -5,7 +5,11 @@ import { useRef, useState, useEffect } from 'react';
 import { WordTokenizer } from 'natural';
 import styles from './ViewScript.module.css';
 import YouTube, { YouTubePlayer } from 'react-youtube';
-import { getVideoApi } from '@/app/api/shadowingApi';
+import {
+  getVideoApi,
+  setCountVideoApi,
+  setBookmarkApi,
+} from '@/app/api/shadowingApi';
 import {
   BsMic,
   BsBookmarkPlus,
@@ -17,6 +21,8 @@ import {
 import { TfiAngleLeft } from 'react-icons/tfi';
 import { scriptInterface } from '@/types/share';
 import Link from 'next/link';
+
+// import { oauthSignIn } from '@/app/api/shadowingApi';
 
 type videoInfoType =
   | {
@@ -31,6 +37,7 @@ type videoInfoType =
   | undefined;
 
 const ViewScript = ({ params }: { params: { slug: string } }) => {
+  const videoId = params.slug;
   const playerRef = useRef<YouTubePlayer>(null);
   const [checkDiction, setCheckDiction] = useState<boolean>(false);
   const [searchWord, setSearchWord] = useState<string>('');
@@ -59,6 +66,7 @@ const ViewScript = ({ params }: { params: { slug: string } }) => {
         marked: data?.marked,
         repeat: data?.repeat,
       });
+      setCount(data.repeat ? data.repeat + 1 : 1);
     };
     const convert = (cap: string) => {
       const resArray: scriptInterface[] = [];
@@ -80,7 +88,7 @@ const ViewScript = ({ params }: { params: { slug: string } }) => {
       }
       return [...resArray];
     };
-    getVideo(params.slug);
+    getVideo(videoId);
   }, []);
 
   const searchDict = (word: string): void => {
@@ -88,12 +96,22 @@ const ViewScript = ({ params }: { params: { slug: string } }) => {
   };
 
   const bookMark = () => {
+    if (isMarked) {
+      setBookmarkApi(videoId, false);
+    } else {
+      setBookmarkApi(videoId, true);
+    }
     setIsMarked(!isMarked);
   };
 
   const repeat = () => {
     isRepeatRef.current = !isRepeatRef.current;
     setIsRepeat(!isRepeat);
+  };
+
+  const addCount = () => {
+    setCount(count + 1);
+    setCountVideoApi(videoId);
   };
 
   const convertTime = (timeString: string): number => {
@@ -167,7 +185,7 @@ const ViewScript = ({ params }: { params: { slug: string } }) => {
 
   const raf = useRef<any>();
   const tracePlayer = () => {
-    // console.log('tracePlayer');
+    console.log('tracePlayer');
     if (playerRef.current?.getPlayerState() === 1) {
       const current = playerRef.current.getCurrentTime();
       if (!isRepeatRef.current) {
@@ -210,6 +228,7 @@ const ViewScript = ({ params }: { params: { slug: string } }) => {
   };
 
   useEffect(() => {
+    // oauthSignIn(); // 현재 사용 불가능
     return () => {
       console.log('clear');
       cancelAnimationFrame(raf.current); // requestAnimationFrame(tracePlayer) 후 clear <= 메모리 누수 방지
@@ -241,7 +260,7 @@ const ViewScript = ({ params }: { params: { slug: string } }) => {
             } else {
               playerRef.current.seekTo(videoInfo?.start, true);
               playerRef.current.playVideo();
-              setCount(count + 1);
+              addCount();
             }
           }}
           videoId={videoInfo?.videoUrl}
