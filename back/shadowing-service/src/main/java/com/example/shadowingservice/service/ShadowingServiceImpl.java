@@ -352,6 +352,12 @@ public class ShadowingServiceImpl implements ShadowingService {
 		bookmarkRepository.save(bookmark);
 	}
 
+	/**
+	 * 이우승
+	 * explain : 북마크 삭제
+	 * @param memberId
+	 * @param videoId
+	 */
 	@Override
 	public void deleteBookmark(Long memberId, Long videoId) {
 

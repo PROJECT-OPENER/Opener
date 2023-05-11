@@ -126,6 +126,12 @@ public class AuthShadowingController {
 			.body(new BaseResponseDto<>(200, "북마크 등록 완료", null));
 	}
 
+	/**
+	 * 이우승
+	 * explain : 북마크 삭제
+	 * @param videoId
+	 * @return
+	 */
 	@DeleteMapping("/videos/{video-id}/bookmark")
 	public ResponseEntity<BaseResponseDto<Object>> deleteBookmark(@PathVariable("video-id") Long videoId) {
 
