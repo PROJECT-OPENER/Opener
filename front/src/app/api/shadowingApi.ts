@@ -26,19 +26,6 @@ export const getMainRoadMapApi = async () => {
     // console.log(err);
   }
 };
-// "data": [
-//   {
-//     "video_id" : ,
-//     "eng_sentence": ,
-//     "kor_sentence": ,
-//   },
-//   {
-//     "video_id" : ,
-//     "eng_sentence": ,
-//     "kor_sentence": ,
-//   },
-//   ...
-// ]
 
 export const getVideoApi = async (videoId: string) => {
   console.log('getVideoApi');
@@ -51,4 +38,18 @@ export const getVideoApi = async (videoId: string) => {
   } catch (err) {
     console.log(err);
   }
+};
+
+export const getShadowingListApi = async (url: string) => {
+  return await shadowingApi
+    .get(url)
+    .then((res) => res.data.data.shadowingCategoryDtoList)
+    .catch((err) => console.log(err));
+};
+
+export const getRecommendListApi = async () => {
+  return await shadowingApi
+    .get('/main-recommendation')
+    .then((res) => res.data)
+    .catch((err) => err);
 };

@@ -1,55 +1,39 @@
 'use client';
-// type listType = {
-//   video_id: string;
-//   thumbnail_url: string;
-//   eng_sentence: string;
-//   kor_sentence: string;
-//   is_marked: string;
-// };
-// type contentType = {
-//   length: number;
-//   list: listType[];
-// };
-import { contentInterface, listInterface } from '@/types/share';
 
-const contents: contentInterface = {
-  length: 2,
-  list: [
-    {
-      video_id: '1',
-      thumbnail_url: '/',
-      eng_sentence: 'How are you?',
-      kor_sentence: '어떻게 지내?',
-      is_marked: 'false',
-    },
-    {
-      video_id: '2',
-      thumbnail_url: '/',
-      eng_sentence: 'How are you?',
-      kor_sentence: '어떻게 지내?',
-      is_marked: 'false',
-    },
-  ],
-};
-//----------------------------------------------------------------''
 import Link from 'next/link';
 import styles from './categories.module.css';
 import Image from 'next/image';
 import { BsBookmarkPlus, BsBookmarkPlusFill } from 'react-icons/bs';
-import defaultImage from '@/../public/images/default.png';
 import useSWRInfinite from 'swr/infinite';
+import { getShadowingListApi } from '@/app/api/shadowingApi';
+import { useEffect, useState } from 'react';
+// import defaultImage from '@/../public/images/default.png';
 
 const ShowList = (props: { category: string }) => {
   const category = props.category;
-  // const length = props.content.length;
-  // const contents = props.content.list;
 
-  const fetcher = (url: string) => fetch(url).then((r) => r.json());
-  const getKey = (pageIndex: number, previousPageData: string[]) => {
-    return `https://api.github.com/repos/reactjs/react-a11y/issues?per_page=1&page=${pageIndex}`; // SWR 키
+  const getKey = (pageIndex: number) => {
+    const startIndex = pageIndex * 10;
+    const endIndex = pageIndex * 10 + 9;
+    return `/shadowings?category=${category}&startIndex=${startIndex}&endIndex=${endIndex}`; // SWR 키
   };
 
-  const { data, size, setSize } = useSWRInfinite(getKey, fetcher);
+  const { data, size, setSize } = useSWRInfinite(getKey, getShadowingListApi);
+  const [contents, setContents] = useState<any>([]);
+  console.log('재 랜더링');
+  useEffect(() => {
+    if (data) {
+      const arr = [];
+      for (let i = 0; i < data?.length; i++) {
+        for (let j = 0; j < data[i]?.length; j++) {
+          if (data[i][j]) {
+            arr.push(data[i][j]);
+          }
+        }
+      }
+      setContents(arr);
+    }
+  }, [data]);
   if (!data) {
     return <p>loading...</p>;
   } else {
@@ -57,27 +41,23 @@ const ShowList = (props: { category: string }) => {
       <div className={styles.content}>
         <p>카테고리 : {category}</p>
 
-        {/* {data.map((user, index) => {
-        return <div key={index}>{user[0].user.id}</div>;
-      })} */}
-
-        {contents.list.map((content: listInterface, index) => {
+        {contents.map((content: any, index: number) => {
           return (
             <Link
-              href={'/shadowing/learning/' + content.video_id}
+              href={'/shadowing/learning/' + content.videoId}
               key={index}
               className={styles.contentItem}
             >
               <div className={styles.ItemImage}>
-                <Image src={content.thumbnail_url} fill alt="" />
-                <Image src={defaultImage.src} fill alt="" />
+                <Image src={content.thumbnailUrl} fill alt="" />
+                {/* <Image src={defaultImage.src} fill alt="" /> */}
               </div>
               <div className="px-5 flex flex-row w-full justify-between items-center">
                 <div className="">
-                  <p className="text-lg font-medium">{content.eng_sentence}</p>
-                  <p className="text-xs">{content.kor_sentence}</p>
+                  <p className="text-lg font-medium">{content.engSentence}</p>
+                  <p className="text-xs">{content.korSentence}</p>
                 </div>
-                {content.is_marked === 'true' ? (
+                {content.isMarked === 'true' ? (
                   <BsBookmarkPlusFill color="#7D17FF" size="1.5rem" />
                 ) : (
                   <BsBookmarkPlus color="#D9D9D9" size="1.5rem" />
