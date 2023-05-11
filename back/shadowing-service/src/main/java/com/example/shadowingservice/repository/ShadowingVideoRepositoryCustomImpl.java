@@ -210,6 +210,44 @@ public class ShadowingVideoRepositoryCustomImpl implements ShadowingVideoReposit
 
 	/**
 	 * 이우승
+	 * explain : 로그인 메인 로드맵 목록 조회
+	 * @param memberId
+	 * @param videoList
+	 * @param stepNo
+	 * @param stepTheme
+	 * @return
+	 */
+	@Override
+	public List<AuthRoadMapResponseDto> getAuthMainRoadMapResponseDtoList
+		(Long memberId, List<Long> videoList, int stepNo, int stepTheme) {
+		
+		return queryFactory.select(Projections.constructor(AuthRoadMapResponseDto.class,
+					shadowingVideo.videoId,
+					shadowingVideo.engSentence,
+					shadowingVideo.korSentence,
+					Expressions.cases()
+						.when(step.stepTheme.eq(1)).then("아이브")
+						.when(step.stepTheme.eq(2)).then("뉴진스")
+						.when(step.stepTheme.eq(3)).then("엔믹스")
+						.when(step.stepTheme.eq(4)).then("블랙핑크")
+						.otherwise("Unknown"),
+					step.sentenceNo,
+					shadowingStatus.statusDate
+
+				)
+			)
+			.from(shadowingVideo)
+			.leftJoin(step)
+			.on(shadowingVideo.stepId.eq(step.stepId))
+			.leftJoin(shadowingStatus)
+			.on(shadowingStatus.memberId.eq(memberId).and(shadowingStatus.shadowingVideo.videoId.in(videoList)))
+			.where(step.stepNo.eq(stepNo).and(step.stepTheme.eq(stepTheme)))
+			.fetch();
+
+	}
+
+	/**
+	 * 이우승
 	 * explain : 비로그인 카테고리 별 쉐도잉 영상 목록 조회
 	 * @param videoIdList
 	 * @param pageable

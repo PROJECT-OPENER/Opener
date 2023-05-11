@@ -9,8 +9,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,6 +19,7 @@ import com.example.shadowingservice.dto.response.AuthShadowingCategoryDto;
 import com.example.shadowingservice.dto.response.AuthShadowingCategoryResponseDto;
 import com.example.shadowingservice.dto.response.AuthNoRoadMapResponseDto;
 import com.example.shadowingservice.dto.response.LoginShadowingDetailDto;
+import com.example.shadowingservice.dto.response.AuthMainThemeRoadMapResponseDto;
 import com.example.shadowingservice.service.ShadowingService;
 
 import lombok.RequiredArgsConstructor;
@@ -38,7 +37,7 @@ public class AuthShadowingController {
 	 * @return
 	 */
 	@GetMapping("/roadmap")
-	public ResponseEntity<BaseResponseDto<List<AuthNoRoadMapResponseDto>>> getAuthRoadMapList() {
+	public ResponseEntity<BaseResponseDto<List<AuthNoRoadMapResponseDto>>> getAuthMainRoadMapList() {
 		Long memberId = 2L;
 		List<AuthNoRoadMapResponseDto> authNoRoadMapResponseDtoList = shadowingService.getAuthRoadMapList(memberId);
 		return ResponseEntity.status(HttpStatus.OK)
@@ -141,6 +140,34 @@ public class AuthShadowingController {
 
 		return ResponseEntity.status(HttpStatus.OK)
 			.body(new BaseResponseDto<>(200, "북마크 삭제 완료", null));
+	}
+
+	/**
+	 * 이우승
+	 * explain : 로그인 메인 페이지 로드맵
+	 * @return
+	 */
+	@GetMapping("/main-roadmap")
+	public ResponseEntity<BaseResponseDto<AuthMainThemeRoadMapResponseDto>> getAuthMainRoadMap() {
+		/*List<RoadMapResponseDto> roadMapResponseDtoList = shadowingService.getMainRoadMapList();
+		ThemeRoadMapResponseDto themeRoadMapResponseDto = new ThemeRoadMapResponseDto
+			(roadMapResponseDtoList.get(0).getStepTheme(), roadMapResponseDtoList);
+		NoMainRoadMapResponseDto noMainRoadMapResponseDto = new NoMainRoadMapResponseDto(1, themeRoadMapResponseDto);
+		return ResponseEntity.status(HttpStatus.OK)
+			.body(new BaseResponseDto<>
+				(200, "비로그인 로드맵 리스트 불러오기 완료", noMainRoadMapResponseDto));*/
+		System.out.println("===============================");
+		System.out.println("들어온거니?");
+		System.out.println("===============================");
+		int stepNo = 1;
+		int stepTheme = 1;
+		Long memberId = 2L;
+
+		AuthMainThemeRoadMapResponseDto authMainThemeRoadMapResponseDto =
+			shadowingService.getAuthMainRoadMapList(memberId, stepNo, stepTheme);
+
+		return ResponseEntity.status(HttpStatus.OK)
+			.body(new BaseResponseDto<>(200, "로그인 메인 로드맵 목록 조회 완료", authMainThemeRoadMapResponseDto));
 	}
 
 }

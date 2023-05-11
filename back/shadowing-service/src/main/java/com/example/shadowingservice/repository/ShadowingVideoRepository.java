@@ -14,6 +14,9 @@ public interface ShadowingVideoRepository extends JpaRepository<ShadowingVideo, 
 	ShadowingVideoRepositoryCustom {
 	Optional<ShadowingVideo> findByVideoId(Long videoId);
 
+	@Query("select s.videoId from ShadowingVideo s")
+	List<Long> findByStepIdIn(List<Long> stepIdList);
+
 	@Query("select s from ShadowingVideo s")
 	List<ShadowingVideo> findRecommendation(Pageable pageable);
 

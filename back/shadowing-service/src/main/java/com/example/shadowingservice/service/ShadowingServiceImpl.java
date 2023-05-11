@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import com.example.shadowingservice.common.StepMap;
 import com.example.shadowingservice.common.exception.ApiException;
 import com.example.shadowingservice.common.exception.ExceptionEnum;
+import com.example.shadowingservice.dto.response.AuthMainThemeRoadMapResponseDto;
 import com.example.shadowingservice.dto.response.AuthNoRoadMapResponseDto;
 import com.example.shadowingservice.dto.response.AuthRoadMapResponseDto;
 import com.example.shadowingservice.dto.response.AuthThemeRoadMapResponseDto;
@@ -126,7 +127,7 @@ public class ShadowingServiceImpl implements ShadowingService {
 									memberId, stepIdList);
 
 							if (shadowingVideoList.isEmpty()) {
-								throw new ApiException(ExceptionEnum.AUTH_ROADMAPS_NOT_FOUND_EXCEPTION);
+								throw new ApiException(ExceptionEnum.VIDEO_ID_LIST_NOT_FOUND_EXCEPTION);
 							}
 
 							return AuthThemeRoadMapResponseDto.builder()
@@ -267,6 +268,48 @@ public class ShadowingServiceImpl implements ShadowingService {
 
 		return roadMapResponseDtoList;
 	}
+
+	/**
+	 * 이우승
+	 * explain : 로그인 메인 페이지 로드맵
+	 * @param memberId
+	 * @param stepNo
+	 * @param stepTheme
+	 * @return
+	 */
+	@Override
+	public AuthMainThemeRoadMapResponseDto getAuthMainRoadMapList(Long memberId, int stepNo, int stepTheme) {
+
+		StepMap stepMap = StepMap.getInstance();
+		HashMap<Integer, String> hashMap = stepMap.getHashMap();
+
+		List<Long> stepIdList = stepRepository.findStepIdList(stepNo, stepTheme);
+		// stepIdList가 비어 있는 경우 ApiException 예외 처리
+		if (stepIdList.isEmpty()) {
+			throw new ApiException(ExceptionEnum.STEP_ID_LIST_NOT_FOUND_EXCEPTION);
+		}
+
+		List<Long> videoIdList = shadowingVideoRepository.findByStepIdIn(stepIdList);
+		// videoIdList가 비어 있는 경우 ApiException 예외 처리
+		if (videoIdList.isEmpty()) {
+			throw new ApiException(ExceptionEnum.VIDEO_ID_LIST_NOT_FOUND_EXCEPTION);
+		}
+
+		List<AuthRoadMapResponseDto> authRoadMapResponseDtoList =
+			shadowingVideoRepository.getAuthMainRoadMapResponseDtoList(memberId, videoIdList, stepNo, stepTheme);
+		// authRoadMapResponseDtoList가 비어 있는 경우 ApiException 예외 처리
+		if (authRoadMapResponseDtoList.isEmpty()) {
+			throw new ApiException(ExceptionEnum.AUTH_MAIN_ROADMAPS_NOT_FOUND_EXCEPTION);
+		}
+
+		AuthMainThemeRoadMapResponseDto authMainThemeRoadMapResponseDto = AuthMainThemeRoadMapResponseDto.builder()
+			.stepTheme(hashMap.get(stepTheme))
+			.authRoadMapResponseDtoList(authRoadMapResponseDtoList)
+			.build();
+
+		return authMainThemeRoadMapResponseDto;
+	}
+
 
 	/**
 	 * 이우승

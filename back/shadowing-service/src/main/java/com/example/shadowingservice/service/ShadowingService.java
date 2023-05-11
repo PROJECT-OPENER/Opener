@@ -5,7 +5,9 @@ import java.util.Optional;
 
 import org.springframework.data.domain.Pageable;
 
+import com.example.shadowingservice.dto.response.AuthMainThemeRoadMapResponseDto;
 import com.example.shadowingservice.dto.response.AuthNoRoadMapResponseDto;
+import com.example.shadowingservice.dto.response.AuthRoadMapResponseDto;
 import com.example.shadowingservice.dto.response.AuthShadowingCategoryDto;
 import com.example.shadowingservice.dto.response.InterestResponseDto;
 import com.example.shadowingservice.dto.response.LoginShadowingDetailDto;
@@ -42,6 +44,9 @@ public interface ShadowingService {
 
 	/** 비로그인 메인 페이지 로드맵 **/
 	List<RoadMapResponseDto> getMainRoadMapList();
+
+	/** 로그인 메인 페이지 로드맵 **/
+	AuthMainThemeRoadMapResponseDto getAuthMainRoadMapList(Long memberId, int stepNo, int stepTheme);
 
 	/** 비로그인 메인 페이지 추천 문장 **/
 	List<RecommendationDto> getRecommendationList(Pageable pageable);
