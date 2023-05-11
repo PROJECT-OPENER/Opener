@@ -51,22 +51,22 @@ export interface responseInterface {
 
 // 로드맵 관련 타입
 export interface stepInterface {
-  step_no: string;
-  list: themeInterface[];
+  stepNo: string;
+  themeRoadMapResponseDtoList: themeInterface[];
 }
 
 export interface themeInterface {
-  step_theme: string;
-  list: sentenceInterface[];
+  stepTheme: string;
+  roadMapResponseDtoList: sentenceInterface[];
 }
 
 export interface sentenceInterface {
-  video_id: string;
-  eng_sentence: string;
-  kor_sentence: string;
-  step_theme: string;
-  sentence_no: string;
-  status_date: string;
+  videoId: string;
+  engSentence: string;
+  korSentence: string;
+  stepTheme: string;
+  sentenceNo: string;
+  statusDate: string | undefined;
 }
 
 // end of 로드맵 관련 타입
@@ -80,15 +80,15 @@ export interface scriptInterface {
 
 export interface contentInterface {
   length: number;
-  list: listInterface[];
+  shadowingCategoryDtoList: listInterface[];
 }
 
 export interface listInterface {
-  video_id: string;
-  thumbnail_url: string;
-  eng_sentence: string;
-  kor_sentence: string;
-  is_marked: string;
+  videoId: string;
+  thumbnailUrl: string;
+  engSentence: string;
+  korSentence: string;
+  isMarked: string;
 }
 
 // end of 쉐도잉 관련 타입

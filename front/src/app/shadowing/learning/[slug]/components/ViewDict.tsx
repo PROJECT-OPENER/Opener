@@ -3,7 +3,7 @@ type viewDictType = {
 };
 const ViewDict = (props: viewDictType) => {
   return (
-    <div>
+    <div className="lg:overflow-y-scroll lg:max-h-[150px]">
       <p className="mb-5">
         <span className="text-lg font-semibold text-[#0B8AFF]">
           {props.word}

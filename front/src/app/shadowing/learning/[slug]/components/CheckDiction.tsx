@@ -15,10 +15,9 @@ const CheckDiction = (props: any) => {
 
   const backBtn = () => {
     props.setCheckDiction(false);
-    props.playerRef.current?.playVideo();
     props.showCountRef.current = false;
     props.isRepeatRef.current = false;
-    props.playerRef.current?.unMute();
+    props.playerRef.current?.playVideo().unMute();
   };
 
   const [isRecording, setIsRecording] = useState<boolean>(false);
@@ -32,28 +31,30 @@ const CheckDiction = (props: any) => {
   };
 
   // Cognitive Services 계정 정보 <================================ 숨겨야함
-  const subscriptionKey = '73f54ad18a1942b98944cca014f59386';
+  const subscriptionKey = process.env.NEXT_PUBLIC_AZURE_API;
   const serviceRegion = 'eastus';
 
   const speechConfig = SpeechConfig.fromSubscription(
-    subscriptionKey,
-    serviceRegion,
+    subscriptionKey!,
+    serviceRegion!,
   );
   const audioConfig = AudioConfig.fromDefaultMicrophoneInput();
 
   let recognizer: SpeechRecognizer | undefined;
   const recognizerRef = useRef<SpeechRecognizer | undefined>(recognizer);
+  let timer: any;
   const start = () => {
     // 3초 타이머
     setAssessmentResult(undefined);
     setIsRecording(true);
     props.setSecond(3);
-    props.playerRef.current?.mute();
-    props.playerRef.current?.seekTo(props.subRangeRef.current?.start, true);
-    props.playerRef.current?.pauseVideo();
+    props.playerRef.current
+      ?.mute()
+      .seekTo(props.subRangeRef.current?.start, true)
+      .pauseVideo();
     props.showCountRef.current = true;
     let second = 3;
-    const timer = setInterval(() => {
+    timer = setInterval(() => {
       second -= 1;
       props.setSecond(second);
       if (!props.showCountRef.current) {
@@ -154,7 +155,7 @@ const CheckDiction = (props: any) => {
       // 3. 공통되는 부분 추적
       let i = n;
       let j = m;
-      const resCaptionIdx = []; // caption 리스트에서 Lexical의 단어와 일치하는 단어를 담을 인덱스
+      const resCaptionIdx: number[] = []; // caption 리스트에서 Lexical의 단어와 일치하는 단어를 담을 인덱스
       while (arr[i][j] > 0) {
         if (arr[i][j] === arr[i][j - 1]) {
           j -= 1;
@@ -167,7 +168,6 @@ const CheckDiction = (props: any) => {
         }
       }
       const recognized = []; // 단어의 발음 정보를 담는 배열
-
       for (let i = 0; i < n; i++) {
         const info = {
           index: i,
@@ -176,8 +176,9 @@ const CheckDiction = (props: any) => {
           pronunciationAssessment: undefined,
         };
         if (resCaptionIdx.includes(i)) {
+          const word = res.Words.splice(0, 1)[0];
           info.isPron = true;
-          info.pronunciationAssessment = res.Words[i]?.PronunciationAssessment;
+          info.pronunciationAssessment = word.PronunciationAssessment;
         }
         recognized.push(info);
       }
@@ -201,6 +202,7 @@ const CheckDiction = (props: any) => {
     }
   };
   const DetailResult = (index: number) => {
+    console.log(assessmentResult);
     console.log(assessmentResult.list[index]?.pronunciationAssessment);
   };
 
