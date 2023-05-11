@@ -16,6 +16,8 @@ public interface ShadowingVideoRepositoryCustom {
 
 	List<RoadMapResponseDto> getMainRoadMapResponseDtoList();
 
+	List<AuthRoadMapResponseDto> getAuthMainRoadMapResponseDtoList(Long memberId, List<Long> videoList, int stepNo, int stepTheme);
+
 	List<ShadowingCategoryDto> getCategoryDotoList(List<Long> videoIdList, Pageable pageable);
 
 	List<AuthShadowingCategoryDto> getAuthCategoryDtoList(Long memberId, List<Long> videoIdList, Pageable pageable);
