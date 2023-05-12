@@ -17,6 +17,7 @@ import com.example.shadowingservice.dto.response.AuthNoRoadMapResponseDto;
 import com.example.shadowingservice.dto.response.AuthRoadMapResponseDto;
 import com.example.shadowingservice.dto.response.AuthThemeRoadMapResponseDto;
 import com.example.shadowingservice.dto.response.AuthShadowingCategoryDto;
+import com.example.shadowingservice.dto.response.DictionaryResponseDto;
 import com.example.shadowingservice.dto.response.InterestResponseDto;
 import com.example.shadowingservice.dto.response.LoginShadowingDetailDto;
 import com.example.shadowingservice.dto.response.NoRoadMapResponseDto;
@@ -26,10 +27,12 @@ import com.example.shadowingservice.dto.response.ShadowingCategoryDto;
 import com.example.shadowingservice.dto.response.ShadowingDetailDto;
 import com.example.shadowingservice.dto.response.ThemeRoadMapResponseDto;
 import com.example.shadowingservice.entity.shadowing.Bookmark;
+import com.example.shadowingservice.entity.shadowing.Dictionary;
 import com.example.shadowingservice.entity.shadowing.Interest;
 import com.example.shadowingservice.entity.shadowing.ShadowingStatus;
 import com.example.shadowingservice.entity.shadowing.ShadowingVideo;
 import com.example.shadowingservice.repository.BookmarkRepository;
+import com.example.shadowingservice.repository.DictionaryRepository;
 import com.example.shadowingservice.repository.InterestRepository;
 import com.example.shadowingservice.repository.ShadowingStatusRepository;
 import com.example.shadowingservice.repository.ShadowingVideoInterestRepository;
@@ -46,8 +49,8 @@ public class ShadowingServiceImpl implements ShadowingService {
 	private final InterestRepository interestRepository;
 	private final ShadowingVideoInterestRepository shadowingVideoInterestRepository;
 	private final StepRepository stepRepository;
-
 	private final BookmarkRepository bookmarkRepository;
+	private final DictionaryRepository dictionaryRepository;
 
 	/**
 	 * 이우승
@@ -413,6 +416,26 @@ public class ShadowingServiceImpl implements ShadowingService {
 
 		bookmarkRepository.delete(bookmark);
 
+	}
+
+	/**
+	 * 이우승
+	 * explain : 단어 조회
+	 * @param word
+	 * @return
+	 */
+	@Override
+	public DictionaryResponseDto getWord(String word) {
+
+		Dictionary dictionary = dictionaryRepository.findByWord(word)
+			.orElseThrow(() -> new ApiException(ExceptionEnum.DICTIONARY_NOT_FOUND_EXIST));
+
+		return DictionaryResponseDto.builder()
+			.word(dictionary.getWord())
+			.meaning(dictionary.getMeaning())
+			.wordType(dictionary.getWordType())
+			.level(dictionary.getLevel())
+			.build();
 	}
 
 }

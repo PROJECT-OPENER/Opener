@@ -26,6 +26,7 @@ public enum ExceptionEnum {
 	STEP_ID_LIST_NOT_FOUND_EXCEPTION(HttpStatus.BAD_REQUEST, -202, "스텝 아이디 조회에 실패했습니다."),
 	VIDEO_ID_LIST_NOT_FOUND_EXCEPTION(HttpStatus.BAD_REQUEST, -202, "비디오 아이디 조회에 실패했습니다."),
 	BOOKMARK_ALREADY_EXIST(HttpStatus.BAD_REQUEST, -202, "북마크가 이미 존재합니다."),
+	DICTIONARY_NOT_FOUND_EXIST(HttpStatus.BAD_REQUEST, -202, "존재하지 않는 단어입니다."),
 	OUT_OF_INDEX_EXCEPTION(HttpStatus.BAD_REQUEST, -203, "인덱스 범위를 벗어났습니다."),
 	VIDEOID_NOT_MATCH_EXCEPTION(HttpStatus.BAD_REQUEST, -204, "videoId가 일치하지 않습니다.");
 	private final HttpStatus status;

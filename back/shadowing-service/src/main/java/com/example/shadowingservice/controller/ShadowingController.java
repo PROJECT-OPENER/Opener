@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.shadowingservice.dto.BaseListResponseDto;
 import com.example.shadowingservice.dto.BaseResponseDto;
 import com.example.shadowingservice.dto.request.IndexDto;
+import com.example.shadowingservice.dto.response.DictionaryResponseDto;
 import com.example.shadowingservice.dto.response.InterestResponseDto;
 import com.example.shadowingservice.dto.response.NoMainRoadMapResponseDto;
 import com.example.shadowingservice.dto.response.NoRoadMapResponseDto;
@@ -140,6 +141,21 @@ public class ShadowingController {
 
 		return ResponseEntity.status(HttpStatus.OK)
 			.body(new BaseResponseDto<>(200, "관심사 조회 성공", interestResponseDto));
+	}
+
+	/**
+	 * 이우승
+	 * explain : 단어 조회
+	 * @param word
+	 * @return
+	 */
+	@GetMapping("/dictionary/{word}")
+	public ResponseEntity<BaseResponseDto<DictionaryResponseDto>> getWord(@PathVariable("word") String word) {
+
+		DictionaryResponseDto dictionaryResponseDto = shadowingService.getWord(word);
+
+		return ResponseEntity.status(HttpStatus.OK)
+			.body(new BaseResponseDto<>(200, "단어 조회 성공", dictionaryResponseDto));
 	}
 
 }

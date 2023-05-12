@@ -9,6 +9,7 @@ import com.example.shadowingservice.dto.response.AuthMainThemeRoadMapResponseDto
 import com.example.shadowingservice.dto.response.AuthNoRoadMapResponseDto;
 import com.example.shadowingservice.dto.response.AuthRoadMapResponseDto;
 import com.example.shadowingservice.dto.response.AuthShadowingCategoryDto;
+import com.example.shadowingservice.dto.response.DictionaryResponseDto;
 import com.example.shadowingservice.dto.response.InterestResponseDto;
 import com.example.shadowingservice.dto.response.LoginShadowingDetailDto;
 import com.example.shadowingservice.dto.response.NoRoadMapResponseDto;
@@ -62,5 +63,8 @@ public interface ShadowingService {
 
 	/** 북마크 삭제 **/
 	void deleteBookmark(Long memberId, Long videoId);
+
+	/** 단어 조회 **/
+	DictionaryResponseDto getWord(String word);
 
 }
