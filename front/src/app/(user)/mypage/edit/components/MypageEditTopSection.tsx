@@ -7,7 +7,7 @@ import { imageUpdateApi } from '@/app/api/userApi';
 import Button from '@/app/components/Button';
 
 const MypageEditTopSection = () => {
-  const { user, isLoading } = useUser();
+  const { user, isLoading, mutate } = useUser();
   const [photo, setPhoto] = useState<boolean>(false);
   const [file, setFile] = useState<File>();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -21,6 +21,7 @@ const MypageEditTopSection = () => {
       if (response.code === 200) {
         alert('프로필 사진이 변경되었습니다.');
         setPhoto(false);
+        mutate({ ...user });
       } else {
         alert('프로필 사진 변경이 실패하였습니다.');
       }

@@ -1,18 +1,32 @@
 import React from 'react';
 import ChallengeList from './components/ChallengeList';
+import ChallengeCategoryList from './components/ChallengeCategoryList';
 type Props = {
   params: {
-    slug: number[];
+    slug: string[];
   };
 };
 
 const Page = ({ params }: Props) => {
+  const [param, startIdx] = params.slug;
   return (
     <div>
-      <ChallengeList
-        originalId={params.slug[0]}
-        startIdx={params.slug[1]}
-      ></ChallengeList>
+      {param.length < 4 && (
+        <div>
+          <ChallengeList
+            originalId={param}
+            startIdx={parseInt(startIdx)}
+          ></ChallengeList>
+        </div>
+      )}
+      {param.length >= 4 && (
+        <div>
+          <ChallengeCategoryList
+            category={param}
+            startIdx={parseInt(startIdx)}
+          ></ChallengeCategoryList>
+        </div>
+      )}
     </div>
   );
 };

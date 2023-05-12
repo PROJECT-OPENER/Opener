@@ -7,13 +7,17 @@ import Button from '@/app/components/Button';
 import { getSession } from 'next-auth/react';
 import { uploadChallenge } from '@/app/api/challengeApi';
 
-const ShootingVideo = () => {
+type Props = {
+  originalId: number;
+};
+
+const ShootingVideo = ({ originalId }: Props) => {
   const [challengeFile, setChallengeFile] = useState<Blob>();
   const thumbnail = useRef<HTMLImageElement>(null);
   const router = useRouter();
   const [thumbImg, setThumbImg] = useState<string>('');
   const formData = new FormData();
-
+  const [loadingDone, setLoadingDone] = useState<boolean>(false);
   const uploadClick = async () => {
     const session = await getSession();
     const nickname = session?.user.user?.data.nickname;
@@ -26,10 +30,10 @@ const ShootingVideo = () => {
       formData.append('memberChallengeImg', blob);
       formData.append('memberChallengeFile', myFile);
       formData.append('nicknasme', nickname || '');
-      const res = await uploadChallenge(1, formData);
+      const res = await uploadChallenge(originalId, formData);
       if (res.code === 200) {
         alert('영상 공유를 성공하였습니다.');
-        // router.push('/challenge');
+        router.push('/challenge');
       }
     }
   };
@@ -126,6 +130,7 @@ const ShootingVideo = () => {
       .then((stream: MediaStream) => {
         if (previewPlayer.current) {
           previewPlayer.current.srcObject = stream;
+          setLoadingDone(true);
         }
       });
   };
@@ -236,7 +241,7 @@ const ShootingVideo = () => {
                 />
               </div>
             </div>
-            <div className="absolute bottom-0">
+            <div className={loadingDone ? 'absolute bottom-0' : 'hidden'}>
               <button
                 className={isRec ? 'hidden' : ''}
                 onClick={() => {
