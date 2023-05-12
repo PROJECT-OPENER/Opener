@@ -50,13 +50,13 @@ export const userChatTurnState = atom({
 
 export const userChatTimerState = atom({
   key: 'userChatTimerState',
-  default: 2, // 시작 값
+  default: 15, // 시작 값
   effects_UNSTABLE: [persistAtom],
 });
 
 export const userChatTimeState = atom({
   key: 'userChatTimeState',
-  default: 2,
+  default: 15,
 });
 
 export const userChatMyNicknameState = atom({
@@ -68,5 +68,23 @@ export const userChatMyNicknameState = atom({
 export const userChatGameState = atom({
   key: 'userChatGameState',
   default: true,
+  effects_UNSTABLE: [persistAtom],
+});
+
+export const userChatFilteredState = atom({
+  key: 'userChatFilteredState',
+  default: [],
+  effects_UNSTABLE: [persistAtom],
+});
+
+export const userChatTargetWordState = atom({
+  key: 'userChatTargetWordState',
+  default: false,
+  effects_UNSTABLE: [persistAtom],
+});
+
+export const userChatResultState = atom({
+  key: 'userChatResultState',
+  default: [],
   effects_UNSTABLE: [persistAtom],
 });

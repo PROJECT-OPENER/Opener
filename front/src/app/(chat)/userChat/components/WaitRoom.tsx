@@ -2,22 +2,27 @@
 import { Client } from '@stomp/stompjs';
 import { useSession } from 'next-auth/react';
 import React, { useEffect, useRef } from 'react';
-import { useSetRecoilState } from 'recoil';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
 import {
+  userChatFirstState,
   userChatGameState,
   userChatMessageListState,
   userChatMyNicknameState,
   userChatRoomIdState,
+  userChatTargetWordState,
+  userChatTimeState,
   userChatTimerState,
   userChatTurnState,
 } from '../store';
 import { useRouter } from 'next/navigation';
 import Loading from '@/app/components/Loading';
 import InfoSlider from './InfoSlider';
+import useUser from '@/app/hooks/userHook';
 
 const WaitRoom = () => {
   const router = useRouter();
   const { data: session } = useSession();
+  const { user } = useUser();
   const nickname =
     session && session.user.user && session.user.user.data.nickname;
   const token = session?.user.user?.accessToken as string;
@@ -30,14 +35,20 @@ const WaitRoom = () => {
   const setUserChatTurnState = useSetRecoilState(userChatTurnState);
   const setUserChatRoom = useSetRecoilState(userChatRoomIdState);
   const setUserChatGameState = useSetRecoilState(userChatGameState);
+  const setUserChatFirstState = useSetRecoilState(userChatFirstState);
+  const userChatTime = useRecoilValue(userChatTimeState);
+  const setUserChatTargetWordState = useSetRecoilState(userChatTargetWordState);
   // socket
   const pingIntervalIdRef = useRef<NodeJS.Timer | null>(null);
   useEffect(() => {
     // recoil 초기화
+    console.log('userChatFirstState', user);
     setUserChatMessageListState([]);
-    setUserChatTimerState(10);
+    setUserChatTimerState(userChatTime);
     setUserChatTurnState(1);
     setUserChatGameState(true);
+    setUserChatFirstState(false);
+    setUserChatTargetWordState(false);
     const socket = new WebSocket(`${process.env.NEXT_PUBLIC_SOCKET_URL}`);
     const client = new Client({
       webSocketFactory: () => socket,
@@ -110,8 +121,8 @@ const WaitRoom = () => {
         <Loading />
       </div>
       <div className="flex flex-col items-center mx-5 my-5 bg-white rounded-3xl p-5">
-        <h1 className="h1 text-3xl font-bold">TRES</h1>
-        <h2 className="">Ten Round English Showdown</h2>
+        <h1 className="h1 text-3xl font-bold">TREB</h1>
+        <h2 className="">Ten Round English Battle</h2>
       </div>
       <InfoSlider />
     </div>

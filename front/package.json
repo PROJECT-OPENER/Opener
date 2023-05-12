@@ -32,7 +32,7 @@
     "eslint-config-next": "13.3.0",
     "fluent-ffmpeg": "^2.1.2",
     "microsoft-cognitiveservices-speech-sdk": "^1.22.0",
-    "natural": "^6.2.0",
+    "natural": "^6.3.0",
     "next": "13.3.0",
     "next-auth": "^4.22.1",
     "openai": "^3.2.1",
