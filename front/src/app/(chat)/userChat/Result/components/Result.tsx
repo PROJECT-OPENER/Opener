@@ -1,10 +1,19 @@
 'use client';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import ResultTrophy from './ResultTrophy';
 import ResultScore from './ResultScore';
 import { TfiAngleLeft } from 'react-icons/tfi';
 import AnalyzeResult from './AnalyzeResult';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import {
+  userChatFilteredState,
+  userChatMessageListState,
+  userChatResultState,
+} from '../../store';
+import { openAiUserChatApi } from '@/app/api/openAi';
+import useSWR from 'swr';
+import { convertToJSON } from '@/util/Math';
 
 const data = {
   result: [
@@ -48,8 +57,33 @@ const data = {
 
 const Result = () => {
   const [showAnalysis, setShowAnalysis] = useState(false);
+  const filteredMessageList = useRecoilValue(userChatFilteredState);
+  const messageList = useRecoilValue(userChatMessageListState);
+  const [text, setText] = useRecoilState(userChatResultState); // [{nickname: '닉네임', message: '메세지'}
+
+  const { data: result, isLoading } = useSWR('/api/result', () =>
+    openAiUserChatApi(filteredMessageList),
+  );
+  useEffect(() => {
+    console.log('result', typeof result?.data.choices[0].text);
+    if (result !== undefined) {
+      setText(convertToJSON(result?.data.choices[0].text) as any);
+    }
+    console.log('text', text);
+    console.log('messageList', messageList);
+  }, [result]);
+  // useEffect(() => {
+  //   const getResults = async () => {
+  //     const res = await openAiUserChatApi(filteredMessageList);
+  //     setText(res.data.choices[0].text);
+  //     console.log('res', res);
+  //   };
+  //   getResults();
+  // }, []);
   return (
     <div>
+      {isLoading && <div>로딩중</div>}
+      {/* {result && <div className="bg-red-200">{text}</div>} */}
       {!showAnalysis && (
         <div>
           <ResultTrophy
@@ -78,7 +112,7 @@ const Result = () => {
               분석 결과 보기
             </button>
             <Link
-              href={'/'}
+              href={'/chat'}
               className="bg-white py-3 rounded-2xl text-center font-xl font-bold shadow-custom block"
             >
               나가기

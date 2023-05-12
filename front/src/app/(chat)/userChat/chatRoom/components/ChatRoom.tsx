@@ -4,11 +4,12 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Client } from '@stomp/stompjs';
 import UserChatNav from './UserChatNav';
 import UserChatSendVoice from './UserChatSendVoice';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import UserChatMessageList from './UserChatMessageList';
 import {
   userChatFirstState,
   userChatGameState,
+  userChatFilteredState,
   userChatIsChatState,
   userChatIsRecordingState,
   userChatMessageListState,
@@ -18,6 +19,7 @@ import {
   userChatTimeState,
   userChatTimerState,
   userChatTurnState,
+  userChatTargetWordState,
 } from '../../store';
 import UserChatSendText from './UserChatSendText';
 import { BsKeyboard } from 'react-icons/bs';
@@ -48,12 +50,19 @@ const ChatRoom = () => {
   const userChatTime = useRecoilValue(userChatTimeState); // 타이머 시간 설정
   const delay = 1000; // 1초
   const [isRunning, setIsRunning] = useState(false); // 타이머 실행 여부
+  const setFiltered = useSetRecoilState(userChatFilteredState); // 문법 검사 결과
+  const setUserChatTargetWordState = useSetRecoilState(userChatTargetWordState); // 문법 검사 결과
   // ref
   const chatWindowRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (turn === 11) {
       setGameState(false);
+      const filteredMessages = messageList.map(({ nickname, message }) => ({
+        nickname,
+        message,
+      }));
+      setFiltered(filteredMessages);
     }
   }, [turn]);
 
@@ -80,11 +89,11 @@ const ChatRoom = () => {
     if (chatWindowRef.current) {
       chatWindowRef.current.scrollTop = chatWindowRef.current.scrollHeight;
     }
+    console.log('messageList', messageList);
   }, [messageList]);
   useEffect(() => {
     // console.log('message', message.length);
-    console.log(userChatRoom.startNickname);
-    console.log(nickname, 'qwd');
+    // console.log(userChatRoom.startNickname);
     if (timer !== userChatTime) {
       setIsRunning(true);
     }
@@ -112,10 +121,10 @@ const ChatRoom = () => {
         client.subscribe(
           `/sub/user-chat/rooms/${userChatRoom.roomId}`,
           (message) => {
-            console.log('Received message', message);
+            // console.log('Received message', message);
             try {
               const content = JSON.parse(message.body);
-              console.log('subscribe : ', content);
+              // console.log('subscribe : ', content);
               setMessageList((messageList) => [...messageList, content]);
               if (content.nickname !== nickname) {
                 setIsRunning(true);
@@ -147,9 +156,9 @@ const ChatRoom = () => {
 
   const handleSendMessage = () => {
     console.log('handleSendMessage');
-    console.log('message', message);
-    // if (stompClient && stompClient.connected) {
-
+    if (message.includes(userChatRoom.keyword)) {
+      setUserChatTargetWordState(true);
+    }
     const messageData = {
       nickname: nickname,
       message: timer === 0 ? 'pass' : message,
@@ -222,15 +231,15 @@ const ChatRoom = () => {
         )}
         {gameState && !handleTurn(isFirst, turn) && (
           <div className="mx-5 mb-5 bg-brandP rounded-xl">
-            <div className="bg-emerald-200 p-5 text-center text-xl">
-              상대 턴
+            <div className="p-5 text-center text-xl text-white animate-pulse">
+              상대방의 턴입니다.
             </div>
           </div>
         )}
         {!gameState && (
           <div className="mx-5 mb-5 bg-brandP rounded-xl">
-            <div className="bg-emerald-200 p-5 text-center text-xl">
-              게임종료
+            <div className="p-5 text-center text-xl text-white">
+              <span className="">게임종료</span>
             </div>
           </div>
         )}

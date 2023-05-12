@@ -1,5 +1,11 @@
 'use client';
 import React from 'react';
+import { useRecoilValue } from 'recoil';
+import {
+  userChatMyNicknameState,
+  userChatResultState,
+  userChatTargetWordState,
+} from '../../store';
 
 interface ResultScoreProps {
   myNickname: string;
@@ -22,6 +28,10 @@ const ResultScore = ({
   otherNickname,
   otherWordUsed,
 }: ResultScoreProps) => {
+  const userChatNickname = useRecoilValue(userChatMyNicknameState);
+  const userChatTarget = useRecoilValue(userChatTargetWordState);
+  const result = useRecoilValue(userChatResultState);
+  console.log('result', typeof result);
   return (
     <div className="bg-white grid grid-cols-8 mx-5 p-5 rounded-3xl space-x-10">
       <div className="col-span-2 text-center font-bold flex flex-col justify-end">
@@ -31,7 +41,34 @@ const ResultScore = ({
           <div>문맥성</div>
         </div>
       </div>
-      <div className="col-span-3 bg-green-100 rounded-2xl space-y-3 text-center font-bold flex flex-col justify-end">
+      {result &&
+        result.map((item: any, index: number) => (
+          <div
+            key={index}
+            className="col-span-3 bg-green-100 rounded-2xl space-y-3 text-center font-bold flex flex-col justify-end"
+          >
+            {item.nickname === userChatNickname ? (
+              <>
+                <div className="p-2 bg-white rounded-xl m-2">
+                  {userChatNickname}
+                </div>
+                <div>{userChatTarget ? '성공' : '실패'}</div>
+                <div>{item.grammer}</div>
+                <div>{item.context}</div>
+              </>
+            ) : (
+              <>
+                <div className="p-2 bg-white rounded-xl m-2">
+                  {item.nickname}
+                </div>
+                <div>몰?루</div>
+                <div>{item.grammer}</div>
+                <div>{item.context}</div>
+              </>
+            )}
+          </div>
+        ))}
+      {/* <div className="col-span-3 bg-green-100 rounded-2xl space-y-3 text-center font-bold flex flex-col justify-end">
         <div className="p-2 bg-white rounded-xl m-2">{myNickname}</div>
         <div>{myWordUsed ? '성공' : '실패'}</div>
         <div>{myGrammarScore}</div>
@@ -42,7 +79,7 @@ const ResultScore = ({
         <div>{otherWordUsed ? '성공' : '실패'}</div>
         <div>{otherGrammarScore}</div>
         <div>{otherContextScore}</div>
-      </div>
+      </div> */}
     </div>
   );
 };
