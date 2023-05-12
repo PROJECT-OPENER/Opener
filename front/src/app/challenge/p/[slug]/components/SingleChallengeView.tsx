@@ -1,12 +1,13 @@
 'use client';
 
 type Props = {
-  challengeList: memberChallenge;
+  challengeId: number;
 };
 
 import React, { useRef, useEffect, useState } from 'react';
 import YouTube, { YouTubeProps } from 'react-youtube';
 import { memberChallenge, challengeDetail } from '@/types/share';
+import { useRouter } from 'next/navigation';
 import {
   likeCreateApi,
   likeDeleteApi,
@@ -17,17 +18,18 @@ import { AiFillHeart } from 'react-icons/ai';
 import { RiShareForwardFill, RiDeleteBin5Fill } from 'react-icons/ri';
 import useSWR from 'swr';
 
-const ChallengeDetail = ({ challengeList }: Props) => {
+const SingleChallengeView = ({ challengeId }: Props) => {
   const BASE_URL = process.env.NEXT_PUBLIC_SERVER_URL;
   const fetcher = async (url: string) => {
     const response = await fetch(url);
     return response.json();
   };
+  const router = useRouter();
 
   const { user } = useUser();
 
   const { data, isLoading, error } = useSWR(
-    `${BASE_URL}challenge-service/watch/member-challenges/${challengeList.memberChallengeId}/video`,
+    `${BASE_URL}challenge-service/watch/member-challenges/${challengeId}/video`,
     fetcher,
   );
   const challengeInfo: challengeDetail = data?.data;
@@ -36,7 +38,6 @@ const ChallengeDetail = ({ challengeList }: Props) => {
   const memberPlayerRef = useRef<HTMLVideoElement>(null);
   const [isView, setIsView] = useState<boolean>(false);
   const [isLike, setIsLike] = useState<boolean>(false);
-  const [likeCnt, setLikeCnt] = useState<number>(0);
   const [isDelete, setIsDelete] = useState<boolean>(false);
 
   const options = {
@@ -73,41 +74,38 @@ const ChallengeDetail = ({ challengeList }: Props) => {
 
   const likeClick = async (method: string) => {
     if (method == 'post') {
-      const response = await likeCreateApi(challengeList.memberChallengeId);
+      const response = await likeCreateApi(challengeId);
       console.log('response', response);
       setIsLike(true);
-      setLikeCnt(likeCnt + 1);
     } else {
-      const response = await likeDeleteApi(challengeList.memberChallengeId);
+      const response = await likeDeleteApi(challengeId);
       console.log('response', response);
       setIsLike(false);
-      setLikeCnt(likeCnt - 1);
     }
   };
 
   const deleteChallenge = async () => {
-    const response = await deleteMemberChallenge(
-      challengeList.memberChallengeId,
-    );
+    const response = await deleteMemberChallenge(challengeId);
     if (response.code === 200) {
       alert('영상이 삭제되었습니다.');
       setIsDelete(true);
+      router.push('/challenge');
     } else {
       console.log(response);
     }
+  };
+
+  const shareClick = () => {
+    window.navigator.clipboard.writeText(
+      `http://localhost:3000/challenge/p/${challengeId}`,
+    );
+    alert('클립보드에 복사를 완료했습니다.');
   };
   const youtubePlayStart = async () => {
     if (youtubePlayRef.current) {
       const player = await youtubePlayRef.current.internalPlayer;
       player.playVideo();
     }
-  };
-
-  const shareClick = () => {
-    window.navigator.clipboard.writeText(
-      `http://localhost:3000/challenge/p/${challengeList.memberChallengeId}`,
-    );
-    alert('클립보드에 복사를 완료했습니다.');
   };
   useEffect(() => {
     // 촬영 영상 실행 준비되면 유튜브 플레이
@@ -119,7 +117,6 @@ const ChallengeDetail = ({ challengeList }: Props) => {
   useEffect(() => {
     if (data) {
       setIsLike(challengeInfo?.curMemberChallenge.like);
-      setLikeCnt(challengeList.likeCount);
     }
   }, [data]);
 
@@ -214,17 +211,6 @@ const ChallengeDetail = ({ challengeList }: Props) => {
                           />
                         )}
                       </div>
-                      <div className="flex justify-center">
-                        <p
-                          className="text-lg font-black text-white"
-                          style={{
-                            filter:
-                              'drop-shadow(3px 3px 5px rgba(0, 0, 0, 0.3))',
-                          }}
-                        >
-                          {likeCnt}
-                        </p>
-                      </div>
                     </div>
                     <div className="grid-rows-2 m-3">
                       <div className="flex justify-center">
@@ -281,13 +267,6 @@ const ChallengeDetail = ({ challengeList }: Props) => {
                 </>
               )}
             </div>
-            <div className={isView ? 'hidden' : 'relative rounded-xl'}>
-              <img
-                src={challengeList.memberChallengeImg}
-                alt=""
-                className="h-[810px] overflow-hidden relative"
-              />
-            </div>
           </div>
         </div>
       )}
@@ -295,4 +274,4 @@ const ChallengeDetail = ({ challengeList }: Props) => {
   );
 };
 
-export default ChallengeDetail;
+export default SingleChallengeView;

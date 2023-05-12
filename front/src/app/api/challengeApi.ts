@@ -50,10 +50,34 @@ export const originalVideoApi = async (challengeId: number) => {
   return response.data.data;
 };
 
-// 챌린지 1개 가져오기
-export const challengeDetailApi = async (memberChallengeId: number) => {
-  const response = await challengeApi.get(
-    `/watch/member-challenges/${memberChallengeId}/video`,
+// 챌린지 1개 가져오기 - 현재 swr로 컴포넌트에서 불러서 쓰고 있음.
+// export const challengeDetailApi = async (memberChallengeId: number) => {
+//   const response = await challengeApi.get(
+//     `/watch/member-challenges/${memberChallengeId}/video`,
+//   );
+//   return response.data.data;
+// };
+
+// 좋아요 등록
+export const likeCreateApi = async (memberChallengeId: number) => {
+  const response = await challengeApi.post(
+    `/auth/member-challenges/${memberChallengeId}/like`,
   );
   return response.data.data;
+};
+
+// 좋아요 취소
+export const likeDeleteApi = async (memberChallengeId: number) => {
+  const response = await challengeApi.delete(
+    `/auth/member-challenges/${memberChallengeId}/like`,
+  );
+  return response.data.data;
+};
+
+// 자신의 영상 삭제
+export const deleteMemberChallenge = async (memberChallengeId: number) => {
+  const response = await challengeApi.delete(
+    `/auth/member-challenges/${memberChallengeId}`,
+  );
+  return response.data;
 };

@@ -6,22 +6,21 @@ import ChallengeDetail from './ChallengeDetail';
 import { memberChallenge } from '@/types/share';
 
 interface scrollChallengeList {
-  original: number;
+  // original: number;
   totalLength: number;
   memberChallengeList: memberChallenge[];
 }
 
 interface dataList {
   data: scrollChallengeList;
-  status: number;
 }
 
 type Props = {
-  originalId: string;
+  category: string;
   startIdx: number;
 };
 
-const ChallengeList = ({ originalId, startIdx }: Props) => {
+const ChallengeCategoryList = ({ category, startIdx }: Props) => {
   const BASE_URL = process.env.NEXT_PUBLIC_SERVER_URL;
 
   const fetcher = async (url: string) => {
@@ -31,34 +30,23 @@ const ChallengeList = ({ originalId, startIdx }: Props) => {
 
   const { data, error, size, setSize, isLoading } = useSWRInfinite<dataList>(
     (index) =>
-      `${BASE_URL}challenge-service/challenges/${originalId}?startIndex=${startIdx}&endIndex=${
+      `${BASE_URL}challenge-service/member-challenges?category=${category}&startIndex=${startIdx}&endIndex=${
         startIdx > index + 3 ? startIdx + 3 : index + 3
       }`,
     fetcher,
   );
 
   const challenges = data ? data.flat() : [];
-
+  const endIndex = challenges[0]?.data.totalLength - 1;
   const challengeList: memberChallenge[] =
     challenges[challenges.length - 1]?.data.memberChallengeList;
-
-  const endIndex = challenges[0]?.data.totalLength - 1;
-
-  const isLoadingInitialData = !data && !error;
-
-  const isLoadingMore =
-    isLoadingInitialData ||
-    (size > 0 && data && typeof data[size - 1] === 'undefined');
-
   const isEnd = challengeList?.length > endIndex;
-  const isEmpty = challengeList?.length === 0;
 
   const [observer, setObserver] = useState<IntersectionObserver | null>(null);
 
   const listEndRef = useRef<HTMLParagraphElement>(null);
 
   useEffect(() => {
-    console.log(challengeList?.length, endIndex);
     if (observer && isEnd) {
       console.log('불러오기 끝');
       observer.unobserve;
@@ -76,8 +64,7 @@ const ChallengeList = ({ originalId, startIdx }: Props) => {
     if (!observer) {
       const newObserver = new IntersectionObserver((entries, observer) => {
         entries.forEach((entry) => {
-          if (entry.intersectionRatio > 0.2 && !isEnd) {
-            console.log(isEnd);
+          if (entry.intersectionRatio > 0.2) {
             setSize((prev) => prev + 1);
           }
         });
@@ -91,12 +78,6 @@ const ChallengeList = ({ originalId, startIdx }: Props) => {
 
   return (
     <>
-      {isEmpty ? <p>조회된 챌린지가 없습니다.</p> : null}
-      {isLoading && (
-        <div className="h-screen w-screen">
-          <h1>로딩중</h1>
-        </div>
-      )}
       {challengeList && (
         <div>
           {challengeList.map((chal) => (
@@ -108,7 +89,7 @@ const ChallengeList = ({ originalId, startIdx }: Props) => {
       )}
       <p
         className={
-          challenges[0]?.data?.totalLength - 1 <= challengeList?.length
+          challenges[0]?.data.totalLength <= challengeList?.length
             ? 'hidden'
             : 'list-end'
         }
@@ -118,4 +99,4 @@ const ChallengeList = ({ originalId, startIdx }: Props) => {
   );
 };
 
-export default ChallengeList;
+export default ChallengeCategoryList;

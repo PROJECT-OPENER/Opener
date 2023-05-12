@@ -1,74 +1,64 @@
 'use client';
+import React, { useState, useEffect } from 'react';
 import 'react-perfect-scrollbar/dist/css/styles.css';
 import PerfectScrollbar from 'react-perfect-scrollbar';
-
-const contents = {
-  memberChallengeList: [
-    {
-      memberChallengeId: '', // 멤버챌린지 id
-      memberChallengeImg: '', // 멤버챌린지 썸네일
-      likeCount: 5, // int
-    },
-    {
-      memberChallengeId: '', // 멤버챌린지 id
-      memberChallengeImg: '', // 멤버챌린지 썸네일
-      likeCount: 5, // int
-    },
-    {
-      memberChallengeId: '', // 멤버챌린지 id
-      memberChallengeImg: '', // 멤버챌린지 썸네일
-      likeCount: 5, // int
-    },
-    {
-      memberChallengeId: '', // 멤버챌린지 id
-      memberChallengeImg: '', // 멤버챌린지 썸네일
-      likeCount: 5, // int
-    },
-    {
-      memberChallengeId: '', // 멤버챌린지 id
-      memberChallengeImg: '', // 멤버챌린지 썸네일
-      likeCount: 5, // int
-    },
-    {
-      memberChallengeId: '', // 멤버챌린지 id
-      memberChallengeImg: '', // 멤버챌린지 썸네일
-      likeCount: 5, // int
-    },
-    {
-      memberChallengeId: '', // 멤버챌린지 id
-      memberChallengeImg: '', // 멤버챌린지 썸네일
-      likeCount: 5, // int
-    },
-    {
-      memberChallengeId: '', // 멤버챌린지 id
-      memberChallengeImg: '', // 멤버챌린지 썸네일
-      likeCount: 5, // int
-    },
-  ],
-};
+import { allChallengeApi } from '@/app/api/challengeApi';
+import { memberChallenge } from '@/types/share';
+import Link from 'next/link';
+import { AiFillHeart } from 'react-icons/ai';
 
 const Famous = () => {
+  const [contents, setContents] = useState<memberChallenge[]>([]);
   const options = {
     wheelSpeed: 2,
     handlers: ['touch', 'click-rail', 'drag-thumb', 'keyboard', 'wheel'],
     wheelPropagation: true,
     minScrollbarLength: 2,
   };
+
+  useEffect(() => {
+    const getContent = async () => {
+      const response = await allChallengeApi('LIKE', 0, 5);
+      console.log('000', response.memberChallengeList);
+      setContents(response.memberChallengeList);
+    };
+    getContent();
+  }, []);
+
   return (
     <div className="pb-4 overflow-hidden my-3">
       {/* 데스크탑 용 */}
       <div className="hidden lg:block">
         <div className="flex flex-row justify-between mb-3">
           <h1 className="text-lg">인기 챌린지</h1>
-          <button>더 보기</button>
+          <Link href={`/challenge/all`}>더 보기</Link>
         </div>
         <div className="hidden lg:flex flex-row justify-between w-full h-full">
-          {contents.memberChallengeList.slice(0, 6).map((content, index) => {
+          {contents?.map((content, index) => {
             return (
-              <div
+              <Link
                 key={index}
-                className="shadow-custom w-[155px] h-[225.5px] rounded-xl bg-brandP"
-              ></div>
+                href={`/challenge/scroll/LIKE/${index}`}
+                className="relative block rounded-lg w-full h-full "
+              >
+                <div className="shadow-custom w-[155px] h-[225.5px] rounded-xl bg-brandP relative">
+                  <img
+                    src={content.memberChallengeImg}
+                    alt=""
+                    className="rounded-xl relative"
+                  />
+                  <div className="absolute inset-x-0 bottom-0 left-0 h-8 ml-2 flex text-white">
+                    <AiFillHeart
+                      size={'2rem'}
+                      className="fill-white mr-2"
+                      style={{
+                        filter: 'drop-shadow(3px 3px 5px rgba(0, 0, 0, 0.3))',
+                      }}
+                    />
+                    <p>{content.likeCount}</p>
+                  </div>
+                </div>
+              </Link>
             );
           })}
         </div>
@@ -79,17 +69,35 @@ const Famous = () => {
         <h1 className="text-lg mb-3">인기 챌린지</h1>
         <PerfectScrollbar options={options} className="w-full h-full py-4">
           <div className="flex flex-row relative h-full w-full">
-            {contents.memberChallengeList.map((content, index) => {
+            {contents.map((content, index) => {
               return (
-                <div key={index}>
-                  <div className="shadow-custom mr-2 w-[110px] sm:w-[137.5px] h-[160px] sm:h-[200px] rounded-xl bg-brandP"></div>
-                </div>
+                <Link key={index} href={`/challenge/scroll/LIKE/${index}`}>
+                  <div className="relative shadow-custom mr-2 w-[110px] sm:w-[137.5px] h-[160px] sm:h-[200px] rounded-xl bg-brandP">
+                    <img
+                      src={content.memberChallengeImg}
+                      alt=""
+                      className="rounded-xl relative"
+                    />
+                    <div className="absolute inset-x-0 bottom-0 left-0 h-8 ml-2 flex text-white">
+                      <AiFillHeart
+                        size={'2rem'}
+                        className="fill-white mr-2"
+                        style={{
+                          filter: 'drop-shadow(3px 3px 5px rgba(0, 0, 0, 0.3))',
+                        }}
+                      />
+                      <p>{content.likeCount}</p>
+                    </div>
+                  </div>
+                </Link>
               );
             })}
             <div>
-              <button className="shadow-custom mr-2 w-[110px] h-[160px] sm:h-[200px] rounded-xl bg-[#fff] hover:text-white active:text-white hover:bg-brandP active:bg-[#620fcf]">
-                더 보기
-              </button>
+              <Link href={`/challenge/all`}>
+                <button className="shadow-custom mr-2 w-[110px] h-[160px] sm:h-[200px] rounded-xl bg-[#fff] hover:text-white active:text-white hover:bg-brandP active:bg-[#620fcf]">
+                  더 보기
+                </button>
+              </Link>
             </div>
           </div>
         </PerfectScrollbar>

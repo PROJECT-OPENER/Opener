@@ -1,14 +1,15 @@
 import React from 'react';
-import ShootingVideo from './components/ShootingVideo';
+import SingleChallengeView from './components/SingleChallengeView';
 type Props = {
   params: {
     slug: number;
   };
 };
+
 const page = ({ params }: Props) => {
   return (
     <div className="">
-      <ShootingVideo originalId={params.slug}></ShootingVideo>
+      <SingleChallengeView challengeId={params.slug}></SingleChallengeView>
     </div>
   );
 };
