@@ -153,6 +153,10 @@ public class ShadowingController {
 	public ResponseEntity<BaseResponseDto<DictionaryResponseDto>> getWord(@PathVariable("word") String word) {
 
 		DictionaryResponseDto dictionaryResponseDto = shadowingService.getWord(word);
+		if (dictionaryResponseDto.getWord() == null) {
+			return ResponseEntity.status(HttpStatus.OK)
+				.body(new BaseResponseDto<>(200, "존재하지 않는 단어입니다.", null));
+		}
 
 		return ResponseEntity.status(HttpStatus.OK)
 			.body(new BaseResponseDto<>(200, "단어 조회 성공", dictionaryResponseDto));

@@ -428,7 +428,7 @@ public class ShadowingServiceImpl implements ShadowingService {
 	public DictionaryResponseDto getWord(String word) {
 
 		Dictionary dictionary = dictionaryRepository.findByWord(word)
-			.orElseThrow(() -> new ApiException(ExceptionEnum.DICTIONARY_NOT_FOUND_EXIST));
+			.orElse(new Dictionary());
 
 		return DictionaryResponseDto.builder()
 			.word(dictionary.getWord())
