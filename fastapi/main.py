@@ -68,4 +68,4 @@ app.add_middleware(
 
 @app.get("/caption/{video_id}")
 def read_item(video_id: str):
-    return get_caption('SW14tOda_kI')
+    return get_caption(video_id)
