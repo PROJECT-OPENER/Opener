@@ -30,9 +30,11 @@ import com.example.memberservice.dto.request.member.SignUpMemberRequestDto;
 import com.example.memberservice.dto.request.member.CheckEmailCodeRequestDto;
 import com.example.memberservice.dto.response.member.LoginMemberResponseDto;
 import com.example.memberservice.dto.response.member.LoginResponseDto;
+import com.example.memberservice.entity.member.Badge;
 import com.example.memberservice.entity.member.Member;
 import com.example.memberservice.entity.member.MemberInterest;
 import com.example.memberservice.entity.shadowing.Interest;
+import com.example.memberservice.repository.BadgeRepository;
 import com.example.memberservice.repository.InterestRepository;
 import com.example.memberservice.repository.MemberInterestRepository;
 import com.example.memberservice.repository.MemberRepository;
@@ -47,6 +49,7 @@ public class MemberServiceImpl implements MemberService {
 	private final InterestRepository interestRepository;
 	private final MemberInterestRepository memberInterestRepository;
 	private final MemberRepository memberRepository;
+	private final BadgeRepository badgeRepository;
 	private final RedisService redisService;
 	private final JavaMailSender javaMailSender;
 	private final BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -160,6 +163,15 @@ public class MemberServiceImpl implements MemberService {
 		Member member = signUpMemberRequestDto.toEntity(encryptedPwd);
 		redisService.deleteData(AUTH_EMAIL.getKey() + email);
 		memberRepository.save(member);
+
+		Badge badge = Badge.builder()
+			.member(member)
+			.attendanceCount(0)
+			.challengeCount(0)
+			.shadowingCount(0)
+			.gameCount(0)
+			.build();
+		badgeRepository.save(badge);
 	}
 
 	/**
@@ -180,6 +192,17 @@ public class MemberServiceImpl implements MemberService {
 
 		Member member = memberRepository.findByEmail(email)
 			.orElseThrow(() -> new ApiException(ExceptionEnum.MEMBER_NOT_FOUND_EXCEPTION));
+
+		Badge badge = badgeRepository.findByMember_MemberId(member.getMemberId()).orElseGet(() -> {
+			Badge newBadge = Badge.builder()
+				.member(member)
+				.attendanceCount(0)
+				.shadowingCount(0)
+				.challengeCount(0)
+				.gameCount(0)
+				.build();
+			return badgeRepository.save(newBadge);
+		});
 
 		String password = loginRequestDto.getPassword();
 		if (!bCryptPasswordEncoder.matches(password, member.getPassword())) {
