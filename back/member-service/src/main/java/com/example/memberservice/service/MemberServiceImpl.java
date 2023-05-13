@@ -194,7 +194,7 @@ public class MemberServiceImpl implements MemberService {
 		boolean hasInterest = memberInterests >= 2 ? true : false;
 
 		String accessToken = jwtTokenProvider.createToken(email);
-		redisService.setMemberWithDuration(accessToken, member, JwtTokenProvider.ACCESS_TOKEN_VALID_TIME);
+		redisService.setMemberWithDuration(accessToken, member.getMemberId(), JwtTokenProvider.ACCESS_TOKEN_VALID_TIME);
 		return LoginResponseDto.builder()
 			.accessToken(accessToken)
 			.hasInterest(hasInterest)
