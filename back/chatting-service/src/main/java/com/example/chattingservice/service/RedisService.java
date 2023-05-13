@@ -8,7 +8,6 @@ import lombok.RequiredArgsConstructor;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import com.example.chattingservice.common.exception.ExceptionEnum;
 import com.example.chattingservice.entity.chat.WaitingRoom;
 
 @Service
@@ -23,8 +22,8 @@ public class RedisService {
 	 * @param key
 	 * @return
 	 */
-	public Object getMember(String key) {
-		return redisTemplate.opsForValue().get(key);
+	public String getMemberId(String key) {
+		return redisTemplate.opsForValue().get(key).toString();
 	}
 
 	/**
@@ -85,7 +84,7 @@ public class RedisService {
 	 */
 	public void addWaitingRoom(String key, WaitingRoom chatRoom, int score) {
 		redisTemplate.opsForZSet().add(key, chatRoom, score);
-		redisTemplate.expire(key+":"+chatRoom, 5L , TimeUnit.SECONDS);
+		redisTemplate.expire(key + ":" + chatRoom, 5L, TimeUnit.SECONDS);
 	}
 
 	/**

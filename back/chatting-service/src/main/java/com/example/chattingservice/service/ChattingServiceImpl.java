@@ -6,7 +6,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
@@ -17,7 +16,6 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.example.chattingservice.common.MemberDto;
 import com.example.chattingservice.common.exception.ApiException;
 import com.example.chattingservice.common.exception.ExceptionEnum;
 import com.example.chattingservice.dto.response.ChatRoomResponseDto;
@@ -78,12 +76,11 @@ public class ChattingServiceImpl implements ChattingService {
 	@Override
 	public synchronized void createWaiting(String token) {
 		token = token.replace("Bearer ", "");
-		Object memberObj = redisService.getMember(token);
-		if (memberObj == null) {
+		Long memberId = Long.valueOf(redisService.getMemberId(token));
+		if (memberId == null) {
 			new ApiException(ExceptionEnum.MEMBER_NOT_FOUND_EXCEPTION);
 		}
-		MemberDto memberDto = objectMapper.convertValue(memberObj, MemberDto.class);
-		Member member = memberRepository.findById(memberDto.getMemberId())
+		Member member = memberRepository.findById(memberId)
 			.orElseThrow(() -> new ApiException(ExceptionEnum.MEMBER_NOT_FOUND_EXCEPTION));
 
 		int score = member.getScore();
