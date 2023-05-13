@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.example.memberservice.client.ShadowingServiceClient;
 import com.example.memberservice.common.config.security.JwtTokenProvider;
 import com.example.memberservice.common.exception.ApiException;
 import com.example.memberservice.common.exception.ExceptionEnum;
@@ -34,7 +33,7 @@ import com.example.memberservice.dto.response.member.LoginResponseDto;
 import com.example.memberservice.entity.member.Member;
 import com.example.memberservice.entity.member.MemberInterest;
 import com.example.memberservice.entity.shadowing.Interest;
-import com.example.memberservice.messagequeue.KafkaProducer;
+import com.example.memberservice.repository.InterestRepository;
 import com.example.memberservice.repository.MemberInterestRepository;
 import com.example.memberservice.repository.MemberRepository;
 
@@ -45,14 +44,13 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {
+	private final InterestRepository interestRepository;
 	private final MemberInterestRepository memberInterestRepository;
 	private final MemberRepository memberRepository;
 	private final RedisService redisService;
 	private final JavaMailSender javaMailSender;
 	private final BCryptPasswordEncoder bCryptPasswordEncoder;
 	private final JwtTokenProvider jwtTokenProvider;
-	private final ShadowingServiceClient shadowingServiceClient;
-	private final KafkaProducer kafkaProducer;
 	private final AwsS3Uploader awsS3Uploader;
 
 	@Value("${spring.img.baseurl}")
@@ -161,7 +159,6 @@ public class MemberServiceImpl implements MemberService {
 		}
 		Member member = signUpMemberRequestDto.toEntity(encryptedPwd);
 		redisService.deleteData(AUTH_EMAIL.getKey() + email);
-		// kafkaProducer.sendSignUpMember(member);
 		memberRepository.save(member);
 	}
 
@@ -219,10 +216,8 @@ public class MemberServiceImpl implements MemberService {
 			.orElseThrow(() -> new ApiException(ExceptionEnum.MEMBER_NOT_FOUND_EXCEPTION));
 
 		interests.forEach((interestId) -> {
-			Interest interest = shadowingServiceClient.getInterest(interestId)
-				.orElseThrow(() -> new ApiException(ExceptionEnum.INTEREST_NOT_FOUND))
-				.getData()
-				.toEntity();
+			Interest interest = interestRepository.findById(interestId)
+				.orElseThrow(() -> new ApiException(ExceptionEnum.INTEREST_NOT_FOUND));
 			MemberInterest memberInterest = MemberInterest.builder().member(member).interest(interest).build();
 			memberInterestRepository.save(memberInterest);
 		});
@@ -297,10 +292,8 @@ public class MemberServiceImpl implements MemberService {
 		interests.forEach((interestId) -> {
 			memberInterestRepository.save(MemberInterest.builder()
 				.member(member)
-				.interest(shadowingServiceClient.getInterest(interestId)
-					.orElseThrow(() -> new ApiException(ExceptionEnum.INTEREST_NOT_FOUND))
-					.getData()
-					.toEntity())
+				.interest(interestRepository.findById(interestId)
+					.orElseThrow(() -> new ApiException(ExceptionEnum.INTEREST_NOT_FOUND)))
 				.build());
 		});
 	}
