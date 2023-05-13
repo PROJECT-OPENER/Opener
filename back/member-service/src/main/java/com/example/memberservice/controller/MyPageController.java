@@ -6,6 +6,7 @@ import javax.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,6 +19,8 @@ import com.example.memberservice.dto.request.member.MemberInterestsRequestDto;
 import com.example.memberservice.dto.request.member.NicknameRequestDto;
 import com.example.memberservice.dto.request.member.PasswordRequestDto;
 import com.example.memberservice.dto.request.member.ProfileImgRequestDto;
+import com.example.memberservice.dto.response.member.BadgeResponseDto;
+import com.example.memberservice.dto.response.member.LoginMemberResponseDto;
 import com.example.memberservice.service.MemberServiceImpl;
 
 import lombok.RequiredArgsConstructor;
@@ -88,5 +91,13 @@ public class MyPageController {
 		Long memberId = Long.valueOf(request.getHeader("memberId"));
 		memberService.updateProfileImg(memberId, profileImgRequestDto);
 		return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseDto<>(200, "프로필 사진 변경에 성공했습니다."));
+	}
+
+	@GetMapping("/badge")
+	public ResponseEntity<BaseResponseDto<BadgeResponseDto>> getBadge(HttpServletRequest request) {
+		Long memberId = Long.valueOf(request.getHeader("memberId"));
+		return ResponseEntity.status(HttpStatus.OK)
+			.body(new BaseResponseDto<BadgeResponseDto>(200, "내 뱃지 조회에 성공했습니다.",
+				memberService.getBadge(memberId)));
 	}
 }

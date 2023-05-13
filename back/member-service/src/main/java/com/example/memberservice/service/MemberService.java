@@ -7,6 +7,7 @@ import com.example.memberservice.dto.request.member.PasswordRequestDto;
 import com.example.memberservice.dto.request.member.ProfileImgRequestDto;
 import com.example.memberservice.dto.request.member.SignUpMemberRequestDto;
 import com.example.memberservice.dto.request.member.CheckEmailCodeRequestDto;
+import com.example.memberservice.dto.response.member.BadgeResponseDto;
 import com.example.memberservice.dto.response.member.LoginMemberResponseDto;
 import com.example.memberservice.dto.response.member.LoginResponseDto;
 
@@ -49,4 +50,7 @@ public interface MemberService {
 
 	/** 내 정보 조회 **/
 	LoginMemberResponseDto getMyInfo(Long memberId);
+
+	/** 내 뱃지 조회 **/
+	BadgeResponseDto getBadge(Long memberId);
 }
