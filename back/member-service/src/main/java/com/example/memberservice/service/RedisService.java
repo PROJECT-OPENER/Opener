@@ -8,9 +8,6 @@ import org.springframework.data.redis.core.RedisTemplate;
 
 import java.time.Duration;
 
-import com.example.memberservice.dto.response.member.MemberResponseDto;
-import com.example.memberservice.entity.member.Member;
-
 @Service
 @RequiredArgsConstructor
 public class RedisService {
@@ -82,13 +79,12 @@ public class RedisService {
 	 * 김윤미
 	 * explain : 사용자 객체를 저장 (유효기간 설정)
 	 * @param key : key
-	 * @param member : 사용자 정보
+	 * @param memberId : 사용자 아이디
 	 * @param time : duration
 	 */
-	public void setMemberWithDuration(String key, Member member, Long time) {
-		MemberResponseDto setMemberDto = new MemberResponseDto(member);
+	public void setMemberWithDuration(String key, Long memberId, Long time) {
 		Duration expireDuration = Duration.ofSeconds(time);
-		redisTemplate.opsForValue().set(key, setMemberDto, expireDuration);
+		redisTemplate.opsForValue().set(key, memberId.toString(), expireDuration);
 	}
 }
 
