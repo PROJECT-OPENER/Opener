@@ -21,6 +21,7 @@ import com.example.memberservice.common.exception.ApiException;
 import com.example.memberservice.common.exception.ExceptionEnum;
 import com.example.memberservice.common.util.AwsS3Uploader;
 import com.example.memberservice.common.util.MailUtil;
+import com.example.memberservice.dto.BadgeDto;
 import com.example.memberservice.dto.InterestDto;
 import com.example.memberservice.dto.request.member.LoginRequestDto;
 import com.example.memberservice.dto.request.member.MemberInterestsRequestDto;
@@ -29,6 +30,7 @@ import com.example.memberservice.dto.request.member.PasswordRequestDto;
 import com.example.memberservice.dto.request.member.ProfileImgRequestDto;
 import com.example.memberservice.dto.request.member.SignUpMemberRequestDto;
 import com.example.memberservice.dto.request.member.CheckEmailCodeRequestDto;
+import com.example.memberservice.dto.response.member.BadgeResponseDto;
 import com.example.memberservice.dto.response.member.LoginMemberResponseDto;
 import com.example.memberservice.dto.response.member.LoginResponseDto;
 import com.example.memberservice.entity.member.Badge;
@@ -381,5 +383,31 @@ public class MemberServiceImpl implements MemberService {
 			.profile(member.getProfile() == null ? baseImgUrl : member.getProfile())
 			.interests(interests)
 			.build();
+	}
+
+	/**
+	 * 김윤미
+	 * explain : 내 뱃지 현황 조회
+	 * @param memberId : 사용자 아이디
+	 * @return
+	 */
+	@Override
+	@Transactional
+	public BadgeResponseDto getBadge(Long memberId) {
+		Badge badge = badgeRepository.findByMember_MemberId(memberId).orElse(Badge.builder()
+			.attendanceCount(0)
+			.shadowingCount(0)
+			.challengeCount(0)
+			.gameCount(0)
+			.build());
+
+		BadgeResponseDto badgeResponseDto = BadgeResponseDto.builder()
+			.attendanceBadge(new BadgeDto(badge.getAttendanceCount()))
+			.shadowingBadge(new BadgeDto(badge.getShadowingCount()))
+			.challengeBadge(new BadgeDto(badge.getChallengeCount()))
+			.gameBadge(new BadgeDto(badge.getGameCount()))
+			.build();
+
+		return badgeResponseDto;
 	}
 }
