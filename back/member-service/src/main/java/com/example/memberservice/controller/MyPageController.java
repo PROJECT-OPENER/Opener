@@ -13,9 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.memberservice.common.util.MemberUtil;
 import com.example.memberservice.dto.BaseResponseDto;
-import com.example.memberservice.dto.MemberDto;
 import com.example.memberservice.dto.request.member.MemberInterestsRequestDto;
 import com.example.memberservice.dto.request.member.NicknameRequestDto;
 import com.example.memberservice.dto.request.member.PasswordRequestDto;
@@ -42,8 +40,8 @@ public class MyPageController {
 	@PatchMapping("/nickname")
 	public ResponseEntity<BaseResponseDto> updateNickname(HttpServletRequest request,
 		@Valid @RequestBody NicknameRequestDto nicknameRequestDto) {
-		MemberDto memberDto = MemberUtil.getMember(request.getHeader("member"));
-		memberService.updateNickname(memberDto, nicknameRequestDto);
+		Long memberId = Long.valueOf(request.getHeader("memberId"));
+		memberService.updateNickname(memberId, nicknameRequestDto);
 		return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseDto<>(200, "닉네임 변경에 성공했습니다."));
 	}
 
@@ -57,8 +55,8 @@ public class MyPageController {
 	@PatchMapping("/password")
 	public ResponseEntity<BaseResponseDto> updatePassword(HttpServletRequest request,
 		@Valid @RequestBody PasswordRequestDto passwordRequestDto) {
-		MemberDto memberDto = MemberUtil.getMember(request.getHeader("member"));
-		memberService.updatePassword(memberDto, passwordRequestDto);
+		Long memberId = Long.valueOf(request.getHeader("memberId"));
+		memberService.updatePassword(memberId, passwordRequestDto);
 		return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseDto<>(200, "비밀번호 변경에 성공했습니다."));
 	}
 
@@ -72,8 +70,8 @@ public class MyPageController {
 	@PatchMapping("/interests")
 	public ResponseEntity<BaseResponseDto> updateInterests(HttpServletRequest request,
 		@RequestBody MemberInterestsRequestDto memberInterestsRequestDto) {
-		MemberDto memberDto = MemberUtil.getMember(request.getHeader("member"));
-		memberService.updateMemberInterests(memberDto, memberInterestsRequestDto);
+		Long memberId = Long.valueOf(request.getHeader("memberId"));
+		memberService.updateMemberInterests(memberId, memberInterestsRequestDto);
 		return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseDto<>(200, "관심사 변경에 성공했습니다."));
 	}
 
@@ -87,8 +85,8 @@ public class MyPageController {
 	@PostMapping("/image")
 	public ResponseEntity<BaseResponseDto> updateProfileImg(HttpServletRequest request,
 		@ModelAttribute ProfileImgRequestDto profileImgRequestDto) {
-		MemberDto memberDto = MemberUtil.getMember(request.getHeader("member"));
-		memberService.updateProfileImg(memberDto, profileImgRequestDto);
+		Long memberId = Long.valueOf(request.getHeader("memberId"));
+		memberService.updateProfileImg(memberId, profileImgRequestDto);
 		return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseDto<>(200, "프로필 사진 변경에 성공했습니다."));
 	}
 }
