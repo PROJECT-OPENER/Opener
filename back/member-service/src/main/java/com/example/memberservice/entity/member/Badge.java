@@ -45,4 +45,20 @@ public class Badge extends BaseEntity {
 
 	@Column(name = "game_count", nullable = false)
 	private int gameCount;
+
+	public void updateAttendanceCount() {
+		this.attendanceCount += 1;
+	}
+
+	public void updateShadowingCount() {
+		this.shadowingCount += 1;
+	}
+
+	public void updateChallengeCount() {
+		this.challengeCount += 1;
+	}
+
+	public void updateGameCount() {
+		this.gameCount += 1;
+	}
 }
