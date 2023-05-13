@@ -2,6 +2,7 @@ package com.example.memberservice.service;
 
 import static com.example.memberservice.entity.redis.RedisKey.*;
 
+import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
@@ -211,6 +212,12 @@ public class MemberServiceImpl implements MemberService {
 
 		int memberInterests = memberInterestRepository.countDistinctInterestIdsByMember(member);
 		boolean hasInterest = memberInterests >= 2 ? true : false;
+
+		LocalDate loginDate = member.getLoginDate();
+		if (loginDate == null || LocalDate.now().isAfter(loginDate)) {
+			member.updateLoginDate(LocalDate.now());
+			badge.updateAttendanceCount();
+		}
 
 		String accessToken = jwtTokenProvider.createToken(email);
 		redisService.setMemberWithDuration(accessToken, member.getMemberId(), JwtTokenProvider.ACCESS_TOKEN_VALID_TIME);

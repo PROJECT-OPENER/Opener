@@ -73,4 +73,8 @@ public class Member extends BaseEntity {
 	public void updateProfile(String profile) {
 		this.profile = profile;
 	}
+
+	public void updateLoginDate(LocalDate loginDate) {
+		this.loginDate = loginDate;
+	}
 }
