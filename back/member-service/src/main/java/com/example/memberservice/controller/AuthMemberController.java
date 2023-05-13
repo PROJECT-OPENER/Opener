@@ -11,9 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.memberservice.common.util.MemberUtil;
 import com.example.memberservice.dto.BaseResponseDto;
-import com.example.memberservice.dto.MemberDto;
 import com.example.memberservice.dto.request.member.MemberInterestsRequestDto;
 import com.example.memberservice.dto.response.member.LoginMemberResponseDto;
 import com.example.memberservice.service.MemberServiceImpl;
@@ -37,8 +35,8 @@ public class AuthMemberController {
 	@PostMapping("/interests")
 	public ResponseEntity<BaseResponseDto> createMemberInterests(
 		@RequestBody MemberInterestsRequestDto memberInterestsRequestDto, HttpServletRequest request) {
-		MemberDto memberDto = MemberUtil.getMember(request.getHeader("member"));
-		memberService.createInterests(memberInterestsRequestDto, memberDto);
+		Long memberId = Long.valueOf(request.getHeader("memberId"));
+		memberService.createInterests(memberInterestsRequestDto, memberId);
 		return ResponseEntity.status(HttpStatus.OK)
 			.body(new BaseResponseDto<>(200, "관심사 등록에 성공했습니다."));
 	}
@@ -69,9 +67,9 @@ public class AuthMemberController {
 	 */
 	@GetMapping("/myinfo")
 	public ResponseEntity<BaseResponseDto<LoginMemberResponseDto>> getMyInfo(HttpServletRequest request) {
-		MemberDto memberDto = MemberUtil.getMember(request.getHeader("member"));
+		Long memberId = Long.valueOf(request.getHeader("memberId"));
 		return ResponseEntity.status(HttpStatus.OK)
 			.body(new BaseResponseDto<LoginMemberResponseDto>(200, "내 정보 조회에 성공했습니다.",
-				memberService.getMyInfo(memberDto)));
+				memberService.getMyInfo(memberId)));
 	}
 }

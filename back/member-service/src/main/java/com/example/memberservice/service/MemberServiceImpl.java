@@ -22,7 +22,6 @@ import com.example.memberservice.common.exception.ExceptionEnum;
 import com.example.memberservice.common.util.AwsS3Uploader;
 import com.example.memberservice.common.util.MailUtil;
 import com.example.memberservice.dto.InterestDto;
-import com.example.memberservice.dto.MemberDto;
 import com.example.memberservice.dto.request.member.LoginRequestDto;
 import com.example.memberservice.dto.request.member.MemberInterestsRequestDto;
 import com.example.memberservice.dto.request.member.NicknameRequestDto;
@@ -206,17 +205,18 @@ public class MemberServiceImpl implements MemberService {
 	 * 김윤미
 	 * explain : 사용자 초기 관심사 등록
 	 * @param memberInterestsRequestDto : 등록하고자 하는 관심사 ID 배열 정보
-	 * @param memberDto : 현재 사용자 정보
+	 * @param memberId : 현재 사용자 아이디
 	 */
 	@Override
 	@Transactional
-	public void createInterests(MemberInterestsRequestDto memberInterestsRequestDto, MemberDto memberDto) {
+	public void createInterests(MemberInterestsRequestDto memberInterestsRequestDto, Long memberId) {
 		Set<Long> interests = memberInterestsRequestDto.getInterests();
 
 		if (interests.size() < 2) {
 			throw new ApiException(ExceptionEnum.INSUFFICIENT_INTERESTS_EXCEPTION);
 		}
-		Member member = memberDto.toEntity();
+		Member member = memberRepository.findById(memberId)
+			.orElseThrow(() -> new ApiException(ExceptionEnum.MEMBER_NOT_FOUND_EXCEPTION));
 
 		interests.forEach((interestId) -> {
 			Interest interest = shadowingServiceClient.getInterest(interestId)
@@ -242,13 +242,13 @@ public class MemberServiceImpl implements MemberService {
 	/**
 	 * 김윤미
 	 * explain : 사용자 닉네임 변경
-	 * @param memberDto : 사용자 정보
+	 * @param memberId : 사용자 아이디
 	 * @param nicknameRequestDto : 변경 닉네임 정보
 	 */
 	@Override
 	@Transactional
-	public void updateNickname(MemberDto memberDto, NicknameRequestDto nicknameRequestDto) {
-		Member member = memberRepository.findById(memberDto.getMemberId())
+	public void updateNickname(Long memberId, NicknameRequestDto nicknameRequestDto) {
+		Member member = memberRepository.findById(memberId)
 			.orElseThrow(() -> new ApiException(ExceptionEnum.MEMBER_NOT_FOUND_EXCEPTION));
 
 		String nickname = nicknameRequestDto.getNickname();
@@ -260,13 +260,13 @@ public class MemberServiceImpl implements MemberService {
 	/**
 	 * 김윤미
 	 * explain : 사용자 비밀번호 변경
-	 * @param memberDto : 사용자 정보
+	 * @param memberId : 사용자 아이디
 	 * @param passwordRequestDto : 변경 비밀번호 정보
 	 */
 	@Override
 	@Transactional
-	public void updatePassword(MemberDto memberDto, PasswordRequestDto passwordRequestDto) {
-		Member member = memberRepository.findById(memberDto.getMemberId())
+	public void updatePassword(Long memberId, PasswordRequestDto passwordRequestDto) {
+		Member member = memberRepository.findById(memberId)
 			.orElseThrow(() -> new ApiException(ExceptionEnum.MEMBER_NOT_FOUND_EXCEPTION));
 
 		String encryptedPwd = bCryptPasswordEncoder.encode(passwordRequestDto.getPassword());
@@ -277,19 +277,19 @@ public class MemberServiceImpl implements MemberService {
 	/***
 	 * 김윤미
 	 * explain : 사용자 관심사 변경
-	 * @param memberDto : 사용자 정보
+	 * @param memberId : 사용자 아이디
 	 * @param memberInterestsRequestDto : 변경 관심사 정보
 	 */
 	@Override
 	@Transactional
-	public void updateMemberInterests(MemberDto memberDto, MemberInterestsRequestDto memberInterestsRequestDto) {
+	public void updateMemberInterests(Long memberId, MemberInterestsRequestDto memberInterestsRequestDto) {
 		Set<Long> interests = memberInterestsRequestDto.getInterests();
 
 		if (interests.size() < 2) {
 			throw new ApiException(ExceptionEnum.INSUFFICIENT_INTERESTS_EXCEPTION);
 		}
 
-		Member member = memberRepository.findById(memberDto.getMemberId())
+		Member member = memberRepository.findById(memberId)
 			.orElseThrow(() -> new ApiException(ExceptionEnum.MEMBER_NOT_FOUND_EXCEPTION));
 
 		memberInterestRepository.deleteAllInBatch(memberInterestRepository.findAllByMember(member));
@@ -308,13 +308,13 @@ public class MemberServiceImpl implements MemberService {
 	/**
 	 * 김윤미
 	 * explain : 사용자 프로필 사진 변경
-	 * @param memberDto : 사용자 정보
+	 * @param memberId : 사용자 아이디
 	 * @param profileImgRequestDto : 프로필 사진 데이터 정보
 	 */
 	@Override
 	@Transactional
-	public void updateProfileImg(MemberDto memberDto, ProfileImgRequestDto profileImgRequestDto) {
-		Member member = memberRepository.findById(memberDto.getMemberId())
+	public void updateProfileImg(Long memberId, ProfileImgRequestDto profileImgRequestDto) {
+		Member member = memberRepository.findById(memberId)
 			.orElseThrow(() -> new ApiException(ExceptionEnum.MEMBER_NOT_FOUND_EXCEPTION));
 
 		MultipartFile profileImg = profileImgRequestDto.getProfileImg();
@@ -325,13 +325,13 @@ public class MemberServiceImpl implements MemberService {
 	/**
 	 * 김윤미
 	 * explain : 내 정보 조회
-	 * @param memberDto : 로그인한 사용자 정보
+	 * @param memberId : 로그인한 사용자 아이디
 	 * @return : 사용자 정보
 	 */
 	@Override
 	@Transactional
-	public LoginMemberResponseDto getMyInfo(MemberDto memberDto) {
-		Member member = memberRepository.findById(memberDto.getMemberId())
+	public LoginMemberResponseDto getMyInfo(Long memberId) {
+		Member member = memberRepository.findById(memberId)
 			.orElseThrow(() -> new ApiException(ExceptionEnum.MEMBER_NOT_FOUND_EXCEPTION));
 		return getMyInfo(member);
 	}

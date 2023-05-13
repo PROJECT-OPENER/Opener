@@ -1,6 +1,5 @@
 package com.example.memberservice.service;
 
-import com.example.memberservice.dto.MemberDto;
 import com.example.memberservice.dto.request.member.LoginRequestDto;
 import com.example.memberservice.dto.request.member.MemberInterestsRequestDto;
 import com.example.memberservice.dto.request.member.NicknameRequestDto;
@@ -31,23 +30,23 @@ public interface MemberService {
 	LoginResponseDto login(LoginRequestDto loginRequestDto);
 
 	/** 사용자 최초 관심사 등록 **/
-	void createInterests(MemberInterestsRequestDto memberInterestsRequestDto, MemberDto member);
+	void createInterests(MemberInterestsRequestDto memberInterestsRequestDto, Long memberId);
 
 	/** 로그아웃 **/
 	void logout(String token);
 
 	/** 닉네임 변경 **/
-	void updateNickname(MemberDto memberDto, NicknameRequestDto nicknameRequestDto);
+	void updateNickname(Long memberId, NicknameRequestDto nicknameRequestDto);
 
 	/** 비밀번호 변경 **/
-	void updatePassword(MemberDto memberDto, PasswordRequestDto passwordRequestDto);
+	void updatePassword(Long memberId, PasswordRequestDto passwordRequestDto);
 
 	/** 관심사 변경 **/
-	void updateMemberInterests(MemberDto memberDto, MemberInterestsRequestDto memberInterestsRequestDto);
+	void updateMemberInterests(Long memberId, MemberInterestsRequestDto memberInterestsRequestDto);
 
 	/** 프로필 사진 변경 **/
-	void updateProfileImg(MemberDto memberDto, ProfileImgRequestDto profileImgRequestDto);
+	void updateProfileImg(Long memberId, ProfileImgRequestDto profileImgRequestDto);
 
 	/** 내 정보 조회 **/
-	LoginMemberResponseDto getMyInfo(MemberDto memberDto);
+	LoginMemberResponseDto getMyInfo(Long memberId);
 }
