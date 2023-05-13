@@ -11,7 +11,7 @@ public class RedisService {
 
 	private final RedisTemplate redisTemplate;
 
-	public Object getMember(String key) {
-		return redisTemplate.opsForValue().get(key);
+	public String getMemberId(String key) {
+		return redisTemplate.opsForValue().get(key).toString();
 	}
 }

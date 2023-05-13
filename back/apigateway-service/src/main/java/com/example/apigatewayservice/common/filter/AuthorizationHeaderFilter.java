@@ -61,20 +61,12 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
 			}
 
 			jwt = jwt.trim();
-			Object member = redisService.getMember(jwt);
-			if(member == null) {
+			String memberId = redisService.getMemberId(jwt);
+			if (memberId == null) {
 				return onError(exchange, "사용자 정보가 없습니다.", HttpStatus.NOT_FOUND);
 			}
-			MemberDto memberDto = mapper.convertValue(member, MemberDto.class);
-			try {
-				memberDto.setNickname(URLEncoder.encode(memberDto.getNickname(), "UTF-8"));
-				String memberStr = mapper.writeValueAsString(memberDto);
-				exchange.getRequest().mutate()
-					.headers(httpHeaders -> httpHeaders.add("member", memberStr)).build();
-			} catch (Exception e) {
-				e.printStackTrace();
-				throw new RuntimeException();
-			}
+			exchange.getRequest().mutate()
+				.headers(httpHeaders -> httpHeaders.add("memberId", memberId)).build();
 
 			return chain.filter(exchange);
 		});
