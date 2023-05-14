@@ -18,7 +18,7 @@ public interface ChallengeService {
     /** 원본 챌린지 영상 보기 **/
     WatchOriginalChallengeResponseDto watchOriginalChallenge(Long challengeId);
     /** 멤버 챌린지 영상 보기 **/
-    WatchMemberChallengeResponseDto watchMemberChallenge(Long memberChallengeId, Long memberId);
+    WatchMemberChallengeResponseDto watchMemberChallenge(Long memberChallengeId, String memberId);
     /** 카테고리로 멤버 챌린지 영상 조회 **/
     MemberChallengeListResponseDto categoryMemberChallenge(String category, Integer startIndex, Integer endIndex);
     /** 멤버 챌린지 영상 등록 **/

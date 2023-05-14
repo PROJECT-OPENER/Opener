@@ -103,7 +103,7 @@ public class ChallengeController {
 	@GetMapping("/watch/member-challenges/{memberChallengeId}/video")
 	public ResponseEntity<BaseResponseDto<WatchMemberChallengeResponseDto>> watchMemberChallenge(
 		HttpServletRequest request, @PathVariable Long memberChallengeId) {
-		Long memberId = Long.parseLong(request.getHeader("memberId"));
+		String memberId = request.getHeader("memberId");
 		WatchMemberChallengeResponseDto watchMemberChallengeResponseDto = challengeService.watchMemberChallenge(
 			memberChallengeId, memberId);
 		return ResponseEntity.status(HttpStatus.OK)
