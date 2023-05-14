@@ -1,5 +1,6 @@
 package com.example.chattingservice.controller;
 
+import com.example.chattingservice.dto.request.FinishGameRequestDto;
 import com.example.chattingservice.dto.request.SendMessageRequestDto;
 import com.example.chattingservice.service.ChattingServiceImpl;
 
@@ -27,14 +28,15 @@ public class AuthChattingController {
 	 * @param sendMessageRequestDto
 	 */
 	@MessageMapping("/user-chat/rooms/{room-id}")
-	public void sendMessage(@Header("Authorization") String token, @PathVariable String roomId, @Payload SendMessageRequestDto sendMessageRequestDto) {
+	public void sendMessage(@Header("Authorization") String token, @PathVariable String roomId,
+		@Payload SendMessageRequestDto sendMessageRequestDto) {
 		messagingTemplate.convertAndSend("/sub/user-chat/rooms" + roomId,
 			sendMessageRequestDto);
 	}
 
-	@MessageMapping("/user-chat/ping")
-	public void refreshWaiting(@Header("Authorization") String token, @Payload String nickname){
-
+	@MessageMapping("/user-chat/rooms/result/{room-id}")
+	public void finishGame(@Header("Authorization") String token, @Payload FinishGameRequestDto finishGameRequestDto, @PathVariable(value = "room-id") String roomId) {
+		chattingService.finishGame(token, finishGameRequestDto, roomId);
 	}
 
 }
