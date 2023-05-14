@@ -173,7 +173,9 @@ const ViewScript = ({ params }: { params: { slug: string } }) => {
             };
             setCaption({
               ...caption,
-              eng: tokenizer.tokenize(videoInfo?.engCaption[i].text),
+              eng: tokenizer.tokenize(
+                videoInfo?.engCaption[i].text,
+              ) as string[],
               kor: videoInfo.korCaption[i].text,
             });
           }
