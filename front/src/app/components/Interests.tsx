@@ -13,7 +13,7 @@ const Interests = () => {
   const { user } = useUser();
   useEffect(() => {
     if (user) {
-      if (user.data.interests.length > 0) redirect('/chat');
+      if (user.data.interests.length > 0) redirect('/');
     }
   }, [user]);
   const { data, isLoading } = useSWR('get/interest', getInterestListApi, {
@@ -35,7 +35,7 @@ const Interests = () => {
     try {
       interestRegisterApi(activeIndex);
       alert('관심사 등록이 완료되었습니다.');
-      router.push('/chat');
+      router.push('/');
     } catch (err) {
       alert(err);
     }
