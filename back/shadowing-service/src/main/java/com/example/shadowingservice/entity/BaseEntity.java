@@ -22,5 +22,6 @@ public abstract class BaseEntity {
 	protected LocalDateTime createDate;
 
 	@LastModifiedDate
+	@Column(nullable = false)
 	protected LocalDateTime lastModifiedDate;
 }
