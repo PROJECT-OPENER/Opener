@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.example.chattingservice.dto.request.FinishGameRequestDto;
 import com.example.chattingservice.dto.response.InterestResponseDto;
+import com.example.chattingservice.dto.response.TipResponseDto;
 
 public interface ChattingService {
 	/** 전체 관심사 조회 **/
@@ -14,4 +15,7 @@ public interface ChattingService {
 
 	/** 게임 종료 **/
 	void finishGame(String token, FinishGameRequestDto finishGameRequestDto, String roomId);
+
+	/** Tip 문장 조회 **/
+	List<TipResponseDto> getTips(Long interestId);
 }
