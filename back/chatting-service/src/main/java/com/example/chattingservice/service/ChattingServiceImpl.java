@@ -212,12 +212,12 @@ public class ChattingServiceImpl implements ChattingService {
 		Member other = memberRepository.findMemberByNickname(finishGameRequestDto.getOtherNickname())
 			.orElseThrow(() -> new ApiException(ExceptionEnum.MEMBER_NOT_FOUND_EXCEPTION));
 
-		int myChangeScore = finishGameRequestDto.getScoreRequestDto().getMyGrammarScore() + getScoreToInt(
-			finishGameRequestDto.getScoreRequestDto().getMyContextScore()) + isWordUsed(
-			finishGameRequestDto.getScoreRequestDto().isMyWordUsed());
-		int otherChangeScore = finishGameRequestDto.getScoreRequestDto().getOtherGrammarScore() + getScoreToInt(
-			finishGameRequestDto.getScoreRequestDto().getOtherContextScore()) + isWordUsed(
-			finishGameRequestDto.getScoreRequestDto().isOtherWordUsed());
+		int myChangeScore = finishGameRequestDto.getScore().getMyGrammarScore() + getScoreToInt(
+			finishGameRequestDto.getScore().getMyContextScore()) + isWordUsed(
+			finishGameRequestDto.getScore().isMyWordUsed());
+		int otherChangeScore = finishGameRequestDto.getScore().getOtherGrammarScore() + getScoreToInt(
+			finishGameRequestDto.getScore().getOtherContextScore()) + isWordUsed(
+			finishGameRequestDto.getScore().isOtherWordUsed());
 
 		String winner = getWinner(member.getNickname(), other.getNickname(), myChangeScore, otherChangeScore);
 		int myEloScore = member.getScore();
@@ -229,13 +229,13 @@ public class ChattingServiceImpl implements ChattingService {
 		}
 
 		ScoreResponseDto myScoreResponseDto = createScoreResponseDto(member, myEloScore,
-			getScoreToInt(finishGameRequestDto.getScoreRequestDto().getMyContextScore()),
-			finishGameRequestDto.getScoreRequestDto().getMyGrammarScore(),
-			finishGameRequestDto.getScoreRequestDto().isMyWordUsed());
+			getScoreToInt(finishGameRequestDto.getScore().getMyContextScore()),
+			finishGameRequestDto.getScore().getMyGrammarScore(),
+			finishGameRequestDto.getScore().isMyWordUsed());
 		ScoreResponseDto otherScoreResponseDto = createScoreResponseDto(other, otherEloScore,
-			getScoreToInt(finishGameRequestDto.getScoreRequestDto().getOtherContextScore()),
-			finishGameRequestDto.getScoreRequestDto().getOtherGrammarScore(),
-			finishGameRequestDto.getScoreRequestDto().isOtherWordUsed());
+			getScoreToInt(finishGameRequestDto.getScore().getOtherContextScore()),
+			finishGameRequestDto.getScore().getOtherGrammarScore(), finishGameRequestDto.getScore()
+				.isOtherWordUsed());
 
 		FinishGameResponseDto finishGameResponseDto = createFinishGameResponseDto(finishGameRequestDto.getMessageList(),
 			myScoreResponseDto, otherScoreResponseDto, winner, other.getNickname());
