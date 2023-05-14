@@ -71,9 +71,7 @@ public class ChattingServiceImpl implements ChattingService {
 		List<Interest> interests = interestRepository.findAll();
 		if (interests.isEmpty())
 			throw new ApiException(ExceptionEnum.INTERESTS_NOT_FOUND_EXCEPTION);
-		return interests.stream()
-			.map(InterestResponseDto::new)
-			.collect(Collectors.toList());
+		return interests.stream().map(InterestResponseDto::new).collect(Collectors.toList());
 	}
 
 	/**
@@ -96,9 +94,7 @@ public class ChattingServiceImpl implements ChattingService {
 		if (!existRoom) {
 			redisService.addWaitingRoom(WAITING.getKey(), chatRoom, score);
 		} else {
-			if (!redisService.existRoom(WAITING.getKey(), chatRoom)) {
-				createRoom(member, score, scoreLimit);
-			}
+			createRoom(member, score, scoreLimit);
 		}
 	}
 
@@ -127,28 +123,32 @@ public class ChattingServiceImpl implements ChattingService {
 			waitingRooms.add(waitingRoom);
 		}
 		waitingRooms.sort(Comparator.comparing(WaitingRoom::getCreatedAt));
-		WaitingRoom room = waitingRooms.get(0);
-		Member opposite = memberRepository.findMemberByNickname(room.getCreatedBy())
-			.orElseThrow(() -> new ApiException(ExceptionEnum.MEMBER_NOT_FOUND_EXCEPTION));
+		for (WaitingRoom waitingRoom : waitingRooms) {
+			Member opposite = memberRepository.findMemberByNickname(waitingRoom.getCreatedBy())
+				.orElseThrow(() -> new ApiException(ExceptionEnum.MEMBER_NOT_FOUND_EXCEPTION));
+			if (opposite.getMemberId() == member.getMemberId()) {
+				continue;
+			}
+			Keyword keyword = keywordRepository.findKeyword();
 
-		Keyword keyword = keywordRepository.findKeyword();
+			String startNickname = getStartNickname(member.getNickname(), opposite.getNickname());
+			ChatRoomResponseDto chatRoom = ChatRoomResponseDto.builder()
+				.roomId(waitingRoom.getRoomId())
+				.startNickname(startNickname)
+				.keyword(keyword.getKeyword())
+				.exampleEng(keyword.getExampleEng())
+				.exampleKor(keyword.getExampleKor())
+				.build();
 
-		String startNickname = getStartNickname(member.getNickname(), opposite.getNickname());
-		ChatRoomResponseDto chatRoom = ChatRoomResponseDto.builder()
-			.roomId(room.getRoomId())
-			.startNickname(startNickname)
-			.keyword(keyword.getKeyword())
-			.exampleEng(keyword.getExampleEng())
-			.exampleKor(keyword.getExampleKor())
-			.build();
-
-		chatRoom.setOtherInfo(opposite.getNickname(), getProfileImg(opposite.getProfile()));
-		sendChatRoomToUser(member.getNickname(), chatRoom);
-		log.info("{}'s ROOM: {}", member.getNickname(), chatRoom);
-		chatRoom.setOtherInfo(member.getNickname(), getProfileImg(member.getProfile()));
-		sendChatRoomToUser(opposite.getNickname(), chatRoom);
-		log.info("{}'s ROOM: {}", opposite.getNickname(), chatRoom);
-		redisService.deleteRoom(WAITING.getKey(), room);
+			chatRoom.setOtherInfo(opposite.getNickname(), getProfileImg(opposite.getProfile()));
+			sendChatRoomToUser(member.getNickname(), chatRoom);
+			log.info("{}'s ROOM: {}", member.getNickname(), chatRoom);
+			chatRoom.setOtherInfo(member.getNickname(), getProfileImg(member.getProfile()));
+			sendChatRoomToUser(opposite.getNickname(), chatRoom);
+			log.info("{}'s ROOM: {}", opposite.getNickname(), chatRoom);
+			redisService.deleteRoom(WAITING.getKey(), waitingRoom);
+			return;
+		}
 	}
 
 	/**
@@ -234,8 +234,8 @@ public class ChattingServiceImpl implements ChattingService {
 			finishGameRequestDto.getScoreRequestDto().isMyWordUsed());
 		ScoreResponseDto otherScoreResponseDto = createScoreResponseDto(other, otherEloScore,
 			getScoreToInt(finishGameRequestDto.getScoreRequestDto().getOtherContextScore()),
-			finishGameRequestDto.getScoreRequestDto().getOtherGrammarScore(), finishGameRequestDto.getScoreRequestDto()
-				.isOtherWordUsed());
+			finishGameRequestDto.getScoreRequestDto().getOtherGrammarScore(),
+			finishGameRequestDto.getScoreRequestDto().isOtherWordUsed());
 
 		FinishGameResponseDto finishGameResponseDto = createFinishGameResponseDto(finishGameRequestDto.getMessageList(),
 			myScoreResponseDto, otherScoreResponseDto, winner, other.getNickname());
@@ -340,8 +340,7 @@ public class ChattingServiceImpl implements ChattingService {
 	 * @param otherNickname : 상대 닉네임
 	 * @return : 게임 결과 DTO
 	 */
-	private FinishGameResponseDto createFinishGameResponseDto(
-		List<SendMessageRequestDto> messages,
+	private FinishGameResponseDto createFinishGameResponseDto(List<SendMessageRequestDto> messages,
 		ScoreResponseDto myScoreResponseDto, ScoreResponseDto otherScoreResponseDto, String winner,
 		String otherNickname) {
 		return FinishGameResponseDto.builder()
@@ -368,7 +367,6 @@ public class ChattingServiceImpl implements ChattingService {
 	 * @return
 	 */
 	private List<ResultResponseDto> getResults(List<SendMessageRequestDto> messages) {
-		return messages.stream().map(ResultResponseDto::new)
-			.collect(Collectors.toList());
+		return messages.stream().map(ResultResponseDto::new).collect(Collectors.toList());
 	}
 }
