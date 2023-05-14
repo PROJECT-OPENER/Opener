@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class FinishGameRequestDto {
 	private List<SendMessageRequestDto> messageList;
-	private ScoreRequestDto scoreRequestDto;
+	private ScoreRequestDto score;
 	private String otherNickname;
 
 }
