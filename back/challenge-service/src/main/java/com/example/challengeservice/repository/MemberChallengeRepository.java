@@ -12,14 +12,16 @@ import com.example.challengeservice.entity.challenge.MemberChallenge;
 
 @Repository
 public interface MemberChallengeRepository extends JpaRepository<MemberChallenge, Long> {
-    int countByChallenge(Challenge challenge);
+	int countByChallenge(Challenge challenge);
 
-    int countByChallenge_ChallengeIdAndMember_MemberId(Long challengeId, Long memberId);
+	int countByChallenge_ChallengeIdAndMember_MemberId(Long challengeId, Long memberId);
 
-    @Query("select mc from MemberChallenge mc where mc.challenge.challengeId=:challengeId")
-    List<MemberChallenge> findAllByChallengeId(Long challengeId);
+	@Query("select mc from MemberChallenge mc where mc.challenge.challengeId=:challengeId")
+	List<MemberChallenge> findAllByChallengeId(Long challengeId);
 
-    Optional<MemberChallenge> findByChallenge_ChallengeIdAndMember_MemberId(Long challengeId, Long memberId);
-    Optional<MemberChallenge> findByMemberChallengeId(Long memberChallengeId);
-    List<MemberChallenge> findAllByMember_MemberId(Long memberId);
+	Optional<MemberChallenge> findByChallenge_ChallengeIdAndMember_MemberId(Long challengeId, Long memberId);
+
+	Optional<MemberChallenge> findByMemberChallengeId(Long memberChallengeId);
+
+	List<MemberChallenge> findAllByMember_MemberId(Long memberId);
 }

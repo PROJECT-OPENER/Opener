@@ -103,10 +103,9 @@ public class ChallengeController {
 	@GetMapping("/watch/member-challenges/{memberChallengeId}/video")
 	public ResponseEntity<BaseResponseDto<WatchMemberChallengeResponseDto>> watchMemberChallenge(
 		HttpServletRequest request, @PathVariable Long memberChallengeId) {
-		// Todo : nickname 하드 코딩 변경 => 토큰에 있는 Member로
-		String nickname = "2번";
+		Long memberId = Long.parseLong(request.getHeader("memberId"));
 		WatchMemberChallengeResponseDto watchMemberChallengeResponseDto = challengeService.watchMemberChallenge(
-			memberChallengeId, nickname);
+			memberChallengeId, memberId);
 		return ResponseEntity.status(HttpStatus.OK)
 			.body(new BaseResponseDto<WatchMemberChallengeResponseDto>(200, "멤버 챌린지 영상 보기 성공",
 				watchMemberChallengeResponseDto));

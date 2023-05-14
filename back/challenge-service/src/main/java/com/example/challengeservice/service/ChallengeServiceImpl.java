@@ -150,7 +150,7 @@ public class ChallengeServiceImpl implements ChallengeService {
 	 * @param memberChallengeId : 멤버 챌린지의 id
 	 */
 	@Override
-	public WatchMemberChallengeResponseDto watchMemberChallenge(Long memberChallengeId, String nickname) {
+	public WatchMemberChallengeResponseDto watchMemberChallenge(Long memberChallengeId, Long memberId) {
 		MemberChallenge memberChallenge = memberChallengeRepository.findByMemberChallengeId(memberChallengeId)
 			.orElseThrow(() -> new ApiException(ExceptionEnum.MEMBER_CHALLENGE_NOT_FOUND_EXCEPTION));
 		Challenge challenge = challengeRepository.findByChallengeId(memberChallenge.getChallenge().getChallengeId())
@@ -158,7 +158,7 @@ public class ChallengeServiceImpl implements ChallengeService {
 		int joinCount = memberChallengeRepository.countByChallenge(challenge);
 		WatchOriginalChallengeResponseDto watchOriginalChallengeResponseDto = WatchOriginalChallengeResponseDto.from(
 			challenge, joinCount);
-		int isLove = loveRepository.countByMemberChallengeAndMember_Nickname(memberChallenge, nickname);
+		int isLove = loveRepository.countByMemberChallengeAndMember_MemberId(memberChallenge, memberId);
 		SelectMemberChallengeResponseDto selectMemberChallengeResponseDto = SelectMemberChallengeResponseDto.from(
 			memberChallenge, isLove);
 		return WatchMemberChallengeResponseDto.from(watchOriginalChallengeResponseDto,
@@ -219,21 +219,22 @@ public class ChallengeServiceImpl implements ChallengeService {
 	 * @param challengeId : 원본 챌린지 Id
 	 */
 	@Override
-	public void createMemberChallenge(Long challengeId, MemberChallengeRequestDto memberChallengeRequestDto) throws
+	public void createMemberChallenge(Long challengeId, MemberChallengeRequestDto memberChallengeRequestDto,
+		Long memberId) throws
 		IOException,
 		FirebaseAuthException {
 		Challenge challenge = challengeRepository.findByChallengeId(challengeId)
 			.orElseThrow(() -> new ApiException(ExceptionEnum.CHALLENGE_NOT_FOUND_EXCEPTION));
-		// Todo : 하드코딩 바꿔야할 부분
-		Member member = memberRepository.findByNickname("2번")
+		Member member = memberRepository.findByMemberId(memberId)
 			.orElseThrow(() -> new ApiException(ExceptionEnum.WRONG_MEMBER_EXCEPTION));
 		int myCount =
 			memberChallengeRepository.countByChallenge_ChallengeIdAndMember_MemberId(challengeId, member.getMemberId())
 				+ 1;
 		String fileName = challenge.getTitle() + "_" + memberChallengeRequestDto.getNickName() + LocalDateTime.now();
-		//        if (memberChallengeRepository.findByChallenge_ChallengeIdAndMember_MemberId(challengeId, member.getMemberId()).isPresent()) {
-		//            throw new ApiException(ExceptionEnum.MEMBER_CHALLENGE_EXIST_EXCEPTION);
-		//        }
+		if (memberChallengeRepository.findByChallenge_ChallengeIdAndMember_MemberId(challengeId, member.getMemberId())
+			.isPresent()) {
+			throw new ApiException(ExceptionEnum.MEMBER_CHALLENGE_EXIST_EXCEPTION);
+		}
 		if (memberChallengeRequestDto.getMemberChallengeFile().isEmpty()) {
 			throw new ApiException(ExceptionEnum.FILE_NOT_FOUND_EXCEPTION);
 		}
@@ -266,24 +267,24 @@ public class ChallengeServiceImpl implements ChallengeService {
 	 * explain : 멤버 챌린지 좋아요 등록
 	 *
 	 * @param memberChallengeId : 좋아요를 등록할 멤버 챌린지 id
-	 * @param nickname          : 현재 로그인한 멤버의 닉네임
+	 * @param memberId          : 현재 로그인한 멤버의 id
 	 */
 	@Override
-	public void createLike(Long memberChallengeId, String nickname) {
-		Member member = memberRepository.findByNickname(nickname)
+	public void createLike(Long memberChallengeId, Long memberId) {
+		Member member = memberRepository.findByMemberId(memberId)
 			.orElseThrow(() -> new ApiException(ExceptionEnum.WRONG_MEMBER_EXCEPTION));
 		MemberChallenge memberChallenge = memberChallengeRepository.findByMemberChallengeId(memberChallengeId)
 			.orElseThrow(() -> new ApiException(ExceptionEnum.MEMBER_CHALLENGE_NOT_FOUND_EXCEPTION));
 		int count = loveRepository.countByMemberChallengeAndMember(memberChallenge, member);
-		if(count>0){
+		if (count > 0) {
 			throw new ApiException(ExceptionEnum.LOVE_EXIST_EXCEPTION);
 		}
 		loveRepository.save(Love.from(member, memberChallenge));
 	}
 
 	@Override
-	public void deleteLike(Long memberChallengeId, String nickname) {
-		Member member = memberRepository.findByNickname(nickname)
+	public void deleteLike(Long memberChallengeId, Long memberId) {
+		Member member = memberRepository.findByMemberId(memberId)
 			.orElseThrow(() -> new ApiException(ExceptionEnum.WRONG_MEMBER_EXCEPTION));
 		MemberChallenge memberChallenge = memberChallengeRepository.findByMemberChallengeId(memberChallengeId)
 			.orElseThrow(() -> new ApiException(ExceptionEnum.MEMBER_CHALLENGE_NOT_FOUND_EXCEPTION));

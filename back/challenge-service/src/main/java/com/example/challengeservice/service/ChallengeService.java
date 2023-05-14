@@ -18,17 +18,18 @@ public interface ChallengeService {
     /** 원본 챌린지 영상 보기 **/
     WatchOriginalChallengeResponseDto watchOriginalChallenge(Long challengeId);
     /** 멤버 챌린지 영상 보기 **/
-    WatchMemberChallengeResponseDto watchMemberChallenge(Long memberChallengeId, String nickname);
+    WatchMemberChallengeResponseDto watchMemberChallenge(Long memberChallengeId, Long memberId);
     /** 카테고리로 멤버 챌린지 영상 조회 **/
     MemberChallengeListResponseDto categoryMemberChallenge(String category, Integer startIndex, Integer endIndex);
     /** 멤버 챌린지 영상 등록 **/
-    void createMemberChallenge(Long challengeId, MemberChallengeRequestDto memberChallengeRequestDto)
+    void createMemberChallenge(Long challengeId, MemberChallengeRequestDto memberChallengeRequestDto, Long memberId)
             throws IOException, FirebaseAuthException;
     /** 멤버 챌린지 영상 삭제 **/
     void deleteMemberChallenge(Long memberChallengeId);
     /** 멤버 챌린지 영상 좋아요 등록 **/
-    void createLike(Long memberChallengeId, String nickname);
+    void createLike(Long memberChallengeId, Long memberId);
     /** 멤버 챌린지 영상 좋아요 해제 **/
-    void deleteLike(Long memberChallengeId, String nickname);
+    void deleteLike(Long memberChallengeId, Long memberId);
+    /** 내가 참여중인 멤버 챌린지 조회 **/
     List<MemberChallengeResponseDto> getMyChallenges(String nickname);
 }
