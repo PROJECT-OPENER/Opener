@@ -29,3 +29,8 @@ export const aiChatIsChatState = atom({
   key: 'aiChatIsChatState',
   default: false,
 });
+
+export const aiChatSub = atom({
+  key: 'aiChatSub',
+  default: '',
+});

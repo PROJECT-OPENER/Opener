@@ -11,6 +11,7 @@ const AiChatMessageList = () => {
 
   useEffect(() => {
     const voice = window.speechSynthesis.getVoices();
+    console.log(voice);
     setSynth(voice);
   }, []);
 
@@ -35,7 +36,7 @@ const AiChatMessageList = () => {
     speech.lang = 'en-US';
     speech.rate = 0.8;
     speech.voice = synth[4];
-    // console.log(speech);
+    console.log(speech);
     window.speechSynthesis.speak(speech);
   };
   return (

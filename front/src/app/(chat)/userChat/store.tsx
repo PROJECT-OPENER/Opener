@@ -50,13 +50,13 @@ export const userChatTurnState = atom({
 
 export const userChatTimerState = atom({
   key: 'userChatTimerState',
-  default: 15, // 시작 값
+  default: 60, // 시작 값
   effects_UNSTABLE: [persistAtom],
 });
 
 export const userChatTimeState = atom({
   key: 'userChatTimeState',
-  default: 15,
+  default: 60,
 });
 
 export const userChatMyNicknameState = atom({
@@ -71,12 +71,35 @@ export const userChatGameState = atom({
   effects_UNSTABLE: [persistAtom],
 });
 
+// 제시어, 문법 점수 통합
+export const userChatScoreState = atom({
+  key: 'userChatScoreState',
+  default: {
+    myGrammerScore: 0,
+    otherGrammerScore: 0,
+    myContextScore: 0,
+    otherContextScore: 0,
+    myWordUsed: false,
+    otherWordUsed: false,
+  },
+  effects_UNSTABLE: [persistAtom],
+});
+
+// 점수 관련 사항 시작
 export const userChatFilteredState = atom({
   key: 'userChatFilteredState',
   default: [],
   effects_UNSTABLE: [persistAtom],
 });
 
+// 문법 검사 문장 리스트
+export const userChatGrammerMsgListState = atom({
+  key: 'userChatGrammerMsgListState',
+  default: [],
+  effects_UNSTABLE: [persistAtom],
+});
+
+// 제시어 사용 여부
 export const userChatTargetWordState = atom({
   key: 'userChatTargetWordState',
   default: false,

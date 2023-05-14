@@ -7,31 +7,11 @@ import {
   userChatTargetWordState,
 } from '../../store';
 
-interface ResultScoreProps {
-  myNickname: string;
-  myWordUsed: boolean;
-  myGrammarScore: number;
-  myContextScore: number;
-  otherNickname: string;
-  otherWordUsed: boolean;
-  otherGrammarScore: number;
-  otherContextScore: number;
-}
-
-const ResultScore = ({
-  myNickname,
-  myWordUsed,
-  myContextScore,
-  myGrammarScore,
-  otherContextScore,
-  otherGrammarScore,
-  otherNickname,
-  otherWordUsed,
-}: ResultScoreProps) => {
+const ResultScore = () => {
   const userChatNickname = useRecoilValue(userChatMyNicknameState);
   const userChatTarget = useRecoilValue(userChatTargetWordState);
   const result = useRecoilValue(userChatResultState);
-  console.log('result', typeof result);
+  console.log('result', result);
   return (
     <div className="bg-white grid grid-cols-8 mx-5 p-5 rounded-3xl space-x-10">
       <div className="col-span-2 text-center font-bold flex flex-col justify-end">
@@ -41,7 +21,7 @@ const ResultScore = ({
           <div>문맥성</div>
         </div>
       </div>
-      {result &&
+      {/* {result &&
         result.map((item: any, index: number) => (
           <div
             key={index}
@@ -67,7 +47,7 @@ const ResultScore = ({
               </>
             )}
           </div>
-        ))}
+        ))} */}
       {/* <div className="col-span-3 bg-green-100 rounded-2xl space-y-3 text-center font-bold flex flex-col justify-end">
         <div className="p-2 bg-white rounded-xl m-2">{myNickname}</div>
         <div>{myWordUsed ? '성공' : '실패'}</div>

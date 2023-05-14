@@ -1,36 +1,78 @@
 'use client';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import {
+  userChatGrammerMsgListState,
+  userChatMessageListState,
+  userChatMyNicknameState,
+} from '../../store';
+import { useRecoilValue } from 'recoil';
+import { resultArray } from '@/util/AiChat';
+import { AiOutlineCheckCircle, AiOutlineWarning } from 'react-icons/ai';
 
-interface message {
-  nickname: string;
-  message: string;
-  contextResult?: string;
-  grammarResult?: string;
-}
-interface resultProps {
-  result: message[];
-}
-
-const me = '닉네임1';
-
-const AnalyzeResult = ({ result }: resultProps) => {
-  console.log(result);
+const AnalyzeResult = () => {
+  // console.log(result);
+  const messageList = useRecoilValue(userChatMessageListState);
+  const myNickname = useRecoilValue(userChatMyNicknameState);
+  const grammerList = useRecoilValue(userChatGrammerMsgListState);
+  const [res, setRes] = useState([]);
+  useEffect(() => {
+    const handleAnalyze = async () => {
+      const result = await resultArray(messageList, grammerList);
+      setRes(result);
+    };
+    handleAnalyze();
+  }, []);
+  useEffect(() => {
+    console.log('res', res);
+  }, [res]);
   return (
-    <div className="px-5 border-2">
-      {result.map((item, index) => (
+    <div className="p-5 border-2 bg-blue-200 rounded-xl">
+      {res.map((item: any, index) => (
         <div
           key={index}
           className={`${
-            item.nickname === me
-              ? 'flex flex-col justify-end items-end border-4 border-red-500'
-              : 'border-4 border-blue-400'
+            item.nickname === myNickname
+              ? 'flex flex-col justify-end items-end mb-2'
+              : 'w-fit'
           }`}
         >
-          <div className={`${item.nickname === me ? 'my-chat' : 'other-chat'}`}>
-            <div>{item.message}</div>
-            {item.contextResult && <div>{item.contextResult}</div>}
-            {item.grammarResult && <div>{item.grammarResult}</div>}
-          </div>
+          {item.nickname !== myNickname && (
+            <div className="other-chat">{item.message}</div>
+          )}
+          {item.nickname === myNickname && (
+            <div className="bg-brandY rounded-br-none rounded-2xl p-5 ml-24 mb-1 mr-3 break-words mt-3">
+              {item.type === 'pass' && (
+                <>
+                  <div className="rounded-2xl py-2 w-fit flex relative">
+                    <AiOutlineWarning className="absolute bottom-2.5" />
+                    <div className="pl-5">pass</div>
+                  </div>
+                </>
+              )}
+              {item.type === 'correct' && (
+                <>
+                  <div className="text-green-500 rounded-2xl py-2 w-fit flex relative font-bold">
+                    <AiOutlineCheckCircle className="absolute bottom-3" />
+                    <div className="pl-5">문법 상 고칠 부분이 없습니다.</div>
+                  </div>
+                  <div>{item.message}</div>
+                </>
+              )}
+              {item.type === 'grammerCheck' && (
+                <>
+                  <div className="text-red-700 rounded-2xl py-2 w-fit flex flex-col relative font-bold">
+                    <AiOutlineWarning className="absolute bottom-3" />
+                    <div className="pl-5">문법 상 개선 필요</div>
+                  </div>
+                  <div>{item.message}</div>
+                  <hr className="my-1 h-[2px] bg-gray-500" />
+                  <div
+                    dangerouslySetInnerHTML={{ __html: item.correctMessage }}
+                  />
+                </>
+              )}
+            </div>
+          )}
         </div>
       ))}
     </div>
