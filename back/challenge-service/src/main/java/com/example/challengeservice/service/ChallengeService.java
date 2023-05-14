@@ -31,5 +31,5 @@ public interface ChallengeService {
     /** 멤버 챌린지 영상 좋아요 해제 **/
     void deleteLike(Long memberChallengeId, Long memberId);
     /** 내가 참여중인 멤버 챌린지 조회 **/
-    List<MemberChallengeResponseDto> getMyChallenges(String nickname);
+    List<MemberChallengeResponseDto> getMyChallenges(Long memberId);
 }
