@@ -22,6 +22,7 @@ import {
   userChatTargetWordState,
   userChatGrammerMsgListState,
   userChatScoreState,
+  userChatLastChatState,
 } from '../../store';
 import UserChatSendText from './UserChatSendText';
 import { BsKeyboard } from 'react-icons/bs';
@@ -68,7 +69,7 @@ const ChatRoom = () => {
   const [score, setScore] = useRecoilState(userChatScoreState); // 점수
   const [contextResult, setContextResult] = useState<any>(null); // openAi 결과
   // 라스트 채팅
-  const [lastChat, setLastChat] = useState(false);
+  const [lastChat, setLastChat] = useRecoilState(userChatLastChatState);
 
   // ref
   const chatWindowRef = useRef<HTMLDivElement>(null);
@@ -84,8 +85,8 @@ const ChatRoom = () => {
   useEffect(() => {
     if (
       score.myContextScore !== 0 &&
-      score.otherContextScore !== 0
-      // lastChat
+      score.otherContextScore !== 0 &&
+      lastChat
     ) {
       console.log('lastChat', lastChat);
       handleSendResult();
@@ -228,7 +229,7 @@ const ChatRoom = () => {
             console.log('Received message', message);
             try {
               const content = JSON.parse(message.body);
-              // console.log('subscribe : ', content);
+              console.log('subscribe : ', content);
               setMessageList((messageList) => [...messageList, content]);
               if (content.nickname !== nickname) {
                 setIsRunning(true);
@@ -302,7 +303,7 @@ const ChatRoom = () => {
       messageData.message = '시간초과';
     }
     stompClient?.publish({
-      destination: `/sub/user-chat/rooms/${userChatRoom.roomId}`,
+      destination: `/pub/user-chat/rooms/${userChatRoom.roomId}`,
       body: JSON.stringify(messageData),
       headers: {
         Authorization: `Bearer ${token}`,

@@ -7,6 +7,7 @@ import {
   userChatFirstState,
   userChatGameState,
   userChatGrammerMsgListState,
+  userChatLastChatState,
   userChatMessageListState,
   userChatMyNicknameState,
   userChatRoomIdState,
@@ -40,11 +41,13 @@ const WaitRoom = () => {
   const setWordState = useSetRecoilState(userChatTargetWordState);
   const setGrammerMsgState = useSetRecoilState(userChatGrammerMsgListState);
   const setScoreState = useSetRecoilState(userChatScoreState);
+  const setLastChat = useSetRecoilState(userChatLastChatState);
   // socket
   const pingIntervalIdRef = useRef<NodeJS.Timer | null>(null);
   useEffect(() => {
     // recoil 초기화
     console.log('userChatFirstState', user);
+    setLastChat(false);
     setMessageListState([]);
     setScoreState({
       myGrammerScore: 0,

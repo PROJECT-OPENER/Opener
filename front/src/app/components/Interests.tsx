@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Button from './Button';
 import useSWR from 'swr';
 import { getInterestListApi } from '../api/chatApi';
@@ -11,8 +11,11 @@ import useUser from '../hooks/userHook';
 const Interests = () => {
   const router = useRouter();
   const { user } = useUser();
-
-  if (user.data.interests.length > 0) redirect('/chat');
+  useEffect(() => {
+    if (user) {
+      if (user.data.interests.length > 0) redirect('/chat');
+    }
+  }, [user]);
   const { data, isLoading } = useSWR('get/interest', getInterestListApi, {
     focusThrottleInterval: 5000,
   });

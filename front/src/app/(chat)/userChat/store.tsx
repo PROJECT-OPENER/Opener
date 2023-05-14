@@ -111,3 +111,9 @@ export const userChatResultState = atom({
   default: [],
   effects_UNSTABLE: [persistAtom],
 });
+
+export const userChatLastChatState = atom({
+  key: 'userChatLastChatState',
+  default: false,
+  effects_UNSTABLE: [persistAtom],
+});
