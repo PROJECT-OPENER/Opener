@@ -2,6 +2,8 @@ package com.example.shadowingservice.controller;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -20,6 +22,7 @@ import com.example.shadowingservice.dto.response.AuthShadowingCategoryResponseDt
 import com.example.shadowingservice.dto.response.AuthNoRoadMapResponseDto;
 import com.example.shadowingservice.dto.response.LoginShadowingDetailDto;
 import com.example.shadowingservice.dto.response.AuthMainThemeRoadMapResponseDto;
+import com.example.shadowingservice.entity.member.Roadmap;
 import com.example.shadowingservice.service.ShadowingService;
 
 import lombok.RequiredArgsConstructor;
@@ -37,8 +40,9 @@ public class AuthShadowingController {
 	 * @return
 	 */
 	@GetMapping("/roadmap")
-	public ResponseEntity<BaseResponseDto<List<AuthNoRoadMapResponseDto>>> getAuthMainRoadMapList() {
-		Long memberId = 2L;
+	public ResponseEntity<BaseResponseDto<List<AuthNoRoadMapResponseDto>>>
+	getAuthMainRoadMapList(HttpServletRequest request) {
+		Long memberId = Long.parseLong(request.getHeader("memberId"));
 		List<AuthNoRoadMapResponseDto> authNoRoadMapResponseDtoList = shadowingService.getAuthRoadMapList(memberId);
 		return ResponseEntity.status(HttpStatus.OK)
 			.body(new BaseResponseDto<>
@@ -52,8 +56,9 @@ public class AuthShadowingController {
 	 * @return
 	 */
 	@GetMapping("/videos/{video-id}")
-	public ResponseEntity<BaseResponseDto<Object>> getShadowingDetail(@PathVariable("video-id") Long videoId) {
-		Long memberId = 2L;
+	public ResponseEntity<BaseResponseDto<Object>> getShadowingDetail(HttpServletRequest request,
+		@PathVariable("video-id") Long videoId) {
+		Long memberId = Long.parseLong(request.getHeader("memberId"));
 		LoginShadowingDetailDto loginShadowingDetailDto = shadowingService.getLoginShadowingDetailDto(videoId,
 			memberId);
 		return ResponseEntity.status(HttpStatus.OK)
@@ -69,13 +74,14 @@ public class AuthShadowingController {
 	 * @return
 	 */
 	@GetMapping("/shadowings")
-	public ResponseEntity<BaseResponseDto<Object>> getCategoryList(@RequestParam("category") String category,
+	public ResponseEntity<BaseResponseDto<Object>> getCategoryList(HttpServletRequest request,
+		@RequestParam("category") String category,
 		@RequestParam("startIndex") int startIndex,
 		@RequestParam("endIndex") int endIndex) {
 
 		IndexDto indexDto = new IndexDto(startIndex, endIndex);
 		Long interestId = shadowingService.getInterestByName(category).getInterestId();
-		Long memberId = 2L;
+		Long memberId = Long.parseLong(request.getHeader("memberId"));
 
 		List<AuthShadowingCategoryDto> shadowingCategoryDtoList = shadowingService.getAuthShadowingCategoryList(
 			memberId, category,
@@ -99,9 +105,10 @@ public class AuthShadowingController {
 	 * @return
 	 */
 	@PatchMapping("/videos/{video-id}")
-	public ResponseEntity<BaseResponseDto<Object>> updateRepeatCount(@PathVariable("video-id") Long videoId) {
+	public ResponseEntity<BaseResponseDto<Object>> updateRepeatCount(HttpServletRequest request,
+		@PathVariable("video-id") Long videoId) {
 
-		Long memberId = 2L;
+		Long memberId = Long.parseLong(request.getHeader("memberId"));
 		shadowingService.updateRepeatCount(videoId, memberId);
 
 		return ResponseEntity.status(HttpStatus.OK)
@@ -115,9 +122,10 @@ public class AuthShadowingController {
 	 * @return
 	 */
 	@PostMapping("/videos/{video-id}/bookmark")
-	public ResponseEntity<BaseResponseDto<Object>> createBookmark(@PathVariable("video-id") Long videoId) {
+	public ResponseEntity<BaseResponseDto<Object>> createBookmark(HttpServletRequest request,
+		@PathVariable("video-id") Long videoId) {
 
-		Long memberId = 2L;
+		Long memberId = Long.parseLong(request.getHeader("memberId"));
 
 		shadowingService.createBookmark(memberId, videoId);
 
@@ -132,9 +140,10 @@ public class AuthShadowingController {
 	 * @return
 	 */
 	@DeleteMapping("/videos/{video-id}/bookmark")
-	public ResponseEntity<BaseResponseDto<Object>> deleteBookmark(@PathVariable("video-id") Long videoId) {
+	public ResponseEntity<BaseResponseDto<Object>> deleteBookmark(HttpServletRequest request,
+		@PathVariable("video-id") Long videoId) {
 
-		Long memberId = 2L;
+		Long memberId = Long.parseLong(request.getHeader("memberId"));
 
 		shadowingService.deleteBookmark(memberId, videoId);
 
@@ -148,20 +157,13 @@ public class AuthShadowingController {
 	 * @return
 	 */
 	@GetMapping("/main-roadmap")
-	public ResponseEntity<BaseResponseDto<AuthMainThemeRoadMapResponseDto>> getAuthMainRoadMap() {
-		/*List<RoadMapResponseDto> roadMapResponseDtoList = shadowingService.getMainRoadMapList();
-		ThemeRoadMapResponseDto themeRoadMapResponseDto = new ThemeRoadMapResponseDto
-			(roadMapResponseDtoList.get(0).getStepTheme(), roadMapResponseDtoList);
-		NoMainRoadMapResponseDto noMainRoadMapResponseDto = new NoMainRoadMapResponseDto(1, themeRoadMapResponseDto);
-		return ResponseEntity.status(HttpStatus.OK)
-			.body(new BaseResponseDto<>
-				(200, "비로그인 로드맵 리스트 불러오기 완료", noMainRoadMapResponseDto));*/
-		System.out.println("===============================");
-		System.out.println("들어온거니?");
-		System.out.println("===============================");
-		int stepNo = 1;
-		int stepTheme = 1;
-		Long memberId = 2L;
+	public ResponseEntity<BaseResponseDto<AuthMainThemeRoadMapResponseDto>> getAuthMainRoadMap(
+		HttpServletRequest request) {
+
+		Long memberId = Long.parseLong(request.getHeader("memberId"));
+		Roadmap roadmap = shadowingService.getMemberRoadmap(memberId);
+		int stepNo = roadmap.getStepNo();
+		int stepTheme = roadmap.getStepTheme();
 
 		AuthMainThemeRoadMapResponseDto authMainThemeRoadMapResponseDto =
 			shadowingService.getAuthMainRoadMapList(memberId, stepNo, stepTheme);

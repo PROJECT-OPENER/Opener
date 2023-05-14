@@ -17,6 +17,7 @@ import com.example.shadowingservice.dto.response.RecommendationDto;
 import com.example.shadowingservice.dto.response.RoadMapResponseDto;
 import com.example.shadowingservice.dto.response.ShadowingCategoryDto;
 import com.example.shadowingservice.dto.response.ShadowingDetailDto;
+import com.example.shadowingservice.entity.member.Roadmap;
 
 public interface ShadowingService {
 	/** 비로그인 쉐도잉 로드맵 전체 목록 조회 **/
@@ -66,5 +67,8 @@ public interface ShadowingService {
 
 	/** 단어 조회 **/
 	DictionaryResponseDto getWord(String word);
+
+	/** 사용자 로드맵 정보 조회 **/
+	Roadmap getMemberRoadmap(Long memberId);
 
 }
