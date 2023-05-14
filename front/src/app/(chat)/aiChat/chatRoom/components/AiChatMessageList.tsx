@@ -40,7 +40,7 @@ const AiChatMessageList = () => {
     window.speechSynthesis.speak(speech);
   };
   return (
-    <div>
+    <div className="lg:rounded-b-3xl">
       {messageList.map((message, index) => (
         <div
           key={index}

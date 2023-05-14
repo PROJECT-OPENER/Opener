@@ -29,7 +29,15 @@ const UserChatSendText = ({ handleSendMessage }: Props) => {
   const handleKeyboardChange = (event: {
     target: { value: React.SetStateAction<string> };
   }) => {
-    setMessage(event.target.value);
+    const value = event.target.value;
+
+    if (
+      /^[a-zA-Z0-9 !@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]*$/.test(String(value)) ||
+      value === ''
+    ) {
+      setMessage(value);
+    }
+    // setMessage(event.target.value);
     // console.log(event.target.value);
     // 높이가 변경될 때마다 `Textarea`의 높이를 자동으로 조절합니다.
     if (textareaRef.current !== null) {
@@ -65,7 +73,7 @@ const UserChatSendText = ({ handleSendMessage }: Props) => {
       <div className="relative w-full ml-20 mt-2">
         <textarea
           ref={textareaRef}
-          placeholder="메시지를 입력하세요."
+          placeholder="메시지를 영문으로 입력하세요."
           className="mr-2 pl-4 px-10 pr-12 py-2 rounded-lg border-2 text-sm border-gray-400 focus:outline-none focus:border-brandY w-full max-w-[100%] overflow-hidden resize-none min-h-[40px] shadow-custom"
           value={message}
           rows={1}

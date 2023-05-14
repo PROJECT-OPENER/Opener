@@ -38,7 +38,7 @@ const AiChatSendText = ({ handleSendMessage }: Props) => {
     }
   };
   return (
-    <div className="flex items-center min-h-[50px] mx-5 relative">
+    <div className="flex items-center min-h-[50px] mx-5 relative lg:rounded-b-3xl">
       <button
         type="button"
         className={`bg-brandY text-white font-bold py-2 px-2 rounded-full mr-3 absolute bottom-[0.65rem] shadow-custom`}

@@ -109,7 +109,7 @@ const AiChatSendVoice = ({ handleSendMessage }: Props) => {
     };
   }, []);
   return (
-    <div className="grid grid-cols-3 shadow-custom">
+    <div className="grid grid-cols-3 shadow-custom lg:rounded-b-3xl">
       <div className="flex flex-col justify-end p-5">
         {!isRecording && (
           <button type="button" className="text-3xl" onClick={handleKeyboard}>
