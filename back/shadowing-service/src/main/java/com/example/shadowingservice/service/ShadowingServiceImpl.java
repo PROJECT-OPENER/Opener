@@ -26,6 +26,7 @@ import com.example.shadowingservice.dto.response.RoadMapResponseDto;
 import com.example.shadowingservice.dto.response.ShadowingCategoryDto;
 import com.example.shadowingservice.dto.response.ShadowingDetailDto;
 import com.example.shadowingservice.dto.response.ThemeRoadMapResponseDto;
+import com.example.shadowingservice.entity.member.Roadmap;
 import com.example.shadowingservice.entity.shadowing.Bookmark;
 import com.example.shadowingservice.entity.shadowing.Dictionary;
 import com.example.shadowingservice.entity.shadowing.Interest;
@@ -34,6 +35,7 @@ import com.example.shadowingservice.entity.shadowing.ShadowingVideo;
 import com.example.shadowingservice.repository.BookmarkRepository;
 import com.example.shadowingservice.repository.DictionaryRepository;
 import com.example.shadowingservice.repository.InterestRepository;
+import com.example.shadowingservice.repository.RoadmapRepository;
 import com.example.shadowingservice.repository.ShadowingStatusRepository;
 import com.example.shadowingservice.repository.ShadowingVideoInterestRepository;
 import com.example.shadowingservice.repository.ShadowingVideoRepository;
@@ -51,6 +53,7 @@ public class ShadowingServiceImpl implements ShadowingService {
 	private final StepRepository stepRepository;
 	private final BookmarkRepository bookmarkRepository;
 	private final DictionaryRepository dictionaryRepository;
+	private final RoadmapRepository roadmapRepository;
 
 	/**
 	 * 이우승
@@ -436,6 +439,18 @@ public class ShadowingServiceImpl implements ShadowingService {
 			.wordType(dictionary.getWordType())
 			.level(dictionary.getLevel())
 			.build();
+	}
+
+	/**
+	 * 이우승
+	 * explain : 사용자 로드맵 정보 조회
+	 * @param memberId
+	 * @return
+	 */
+	@Override
+	public Roadmap getMemberRoadmap(Long memberId) {
+		Roadmap roadmap = roadmapRepository.findByMember_MemberId(memberId);
+		return roadmap;
 	}
 
 }
