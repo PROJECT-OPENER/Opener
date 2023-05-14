@@ -360,7 +360,7 @@ public class ChattingServiceImpl implements ChattingService {
 	 */
 	public void sendGameResult(FinishGameResponseDto finishGameResponseDto, String roomId) {
 		log.info("SEND GAME RESULT");
-		messagingTemplate.convertAndSend("/sub/user-chat/rooms/result/" + roomId, finishGameResponseDto);
+		messagingTemplate.convertAndSend("/sub/user-chat/rooms/" + roomId + "/result", finishGameResponseDto);
 	}
 
 	/**
