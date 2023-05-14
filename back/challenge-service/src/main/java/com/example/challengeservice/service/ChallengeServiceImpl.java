@@ -294,8 +294,8 @@ public class ChallengeServiceImpl implements ChallengeService {
 	}
 
 	@Override
-	public List<MemberChallengeResponseDto> getMyChallenges(String nickname) {
-		Member member = memberRepository.findByNickname(nickname)
+	public List<MemberChallengeResponseDto> getMyChallenges(Long memberId) {
+		Member member = memberRepository.findByMemberId(memberId)
 			.orElseThrow(() -> new ApiException(ExceptionEnum.WRONG_MEMBER_EXCEPTION));
 		List<MemberChallenge> memberChallenges = memberChallengeRepository.findAllByMember_MemberId(
 			member.getMemberId());

@@ -82,9 +82,8 @@ public class AuthChallengeController {
 	 */
 	@GetMapping("/member-challenges")
 	public ResponseEntity<BaseListResponseDto<MemberChallengeResponseDto>> getMyChallenges(HttpServletRequest request) {
-		// Todo : 멤버 id 하드코딩. 변경 필요
-		String nickname = "2번";
-		List<MemberChallengeResponseDto> myChallenges = challengeService.getMyChallenges(nickname);
+		Long memberId = Long.parseLong(request.getHeader("memberId"));
+		List<MemberChallengeResponseDto> myChallenges = challengeService.getMyChallenges(memberId);
 		return ResponseEntity.status(HttpStatus.OK)
 			.body(new BaseListResponseDto<MemberChallengeResponseDto>(200, "나의 챌린지 리스트 조회 성공", myChallenges));
 	}
