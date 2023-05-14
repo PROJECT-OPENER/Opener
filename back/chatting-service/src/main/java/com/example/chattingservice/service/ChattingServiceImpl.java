@@ -359,6 +359,7 @@ public class ChattingServiceImpl implements ChattingService {
 	 * @param roomId : 방 ID
 	 */
 	public void sendGameResult(FinishGameResponseDto finishGameResponseDto, String roomId) {
+		log.info("SEND GAME RESULT");
 		messagingTemplate.convertAndSend("/sub/user-chat/rooms/result/" + roomId, finishGameResponseDto);
 	}
 
