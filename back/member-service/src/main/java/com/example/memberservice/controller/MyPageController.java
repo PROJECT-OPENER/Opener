@@ -93,6 +93,12 @@ public class MyPageController {
 		return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseDto<>(200, "프로필 사진 변경에 성공했습니다."));
 	}
 
+	/**
+	 * 김윤미
+	 * explain : 사용자 뱃지 조회
+	 * @param request
+	 * @return
+	 */
 	@GetMapping("/badge")
 	public ResponseEntity<BaseResponseDto<BadgeResponseDto>> getBadge(HttpServletRequest request) {
 		Long memberId = Long.valueOf(request.getHeader("memberId"));
