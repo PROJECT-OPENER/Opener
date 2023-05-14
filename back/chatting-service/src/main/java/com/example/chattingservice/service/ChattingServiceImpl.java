@@ -69,7 +69,7 @@ public class ChattingServiceImpl implements ChattingService {
 	@Transactional
 	public List<InterestResponseDto> getInterests() {
 		List<Interest> interests = interestRepository.findAll();
-		if (interests == null)
+		if (interests.isEmpty())
 			throw new ApiException(ExceptionEnum.INTERESTS_NOT_FOUND_EXCEPTION);
 		return interests.stream()
 			.map(InterestResponseDto::new)
