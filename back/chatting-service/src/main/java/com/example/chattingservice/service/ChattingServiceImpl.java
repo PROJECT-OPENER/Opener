@@ -2,6 +2,7 @@ package com.example.chattingservice.service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
@@ -25,9 +26,11 @@ import com.example.chattingservice.dto.response.FinishGameResponseDto;
 import com.example.chattingservice.dto.response.InterestResponseDto;
 import com.example.chattingservice.dto.response.ScoreResponseDto;
 import com.example.chattingservice.dto.response.ResultResponseDto;
+import com.example.chattingservice.dto.response.TipResponseDto;
 import com.example.chattingservice.entity.Interest;
 import com.example.chattingservice.entity.Keyword;
 import com.example.chattingservice.entity.chat.WaitingRoom;
+import com.example.chattingservice.entity.chat.enums.Tips;
 import com.example.chattingservice.entity.member.Member;
 import com.example.chattingservice.repository.InterestRepository;
 import com.example.chattingservice.repository.MemberRepository;
@@ -369,5 +372,18 @@ public class ChattingServiceImpl implements ChattingService {
 	 */
 	private List<ResultResponseDto> getResults(List<SendMessageRequestDto> messages) {
 		return messages.stream().map(ResultResponseDto::new).collect(Collectors.toList());
+	}
+
+	/**
+	 * 김윤미
+	 * explain : 관심사에 대한 TIP 정보 조회
+	 * @param interestId : 관심사 ID
+	 * @return : 관심사 TIP 정보 목록
+	 */
+	@Override
+	public List<TipResponseDto> getTips(Long interestId) {
+		return Arrays.stream(Tips.valuesByType(interestId.intValue()))
+			.map(TipResponseDto::new)
+			.collect(Collectors.toList());
 	}
 }

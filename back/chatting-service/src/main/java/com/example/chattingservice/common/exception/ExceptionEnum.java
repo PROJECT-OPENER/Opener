@@ -13,6 +13,7 @@ public enum ExceptionEnum {
 	 */
 	MEMBER_NOT_FOUND_EXCEPTION(HttpStatus.NOT_FOUND, -399, "가입된 사용자가 아닙니다."),
 	INTERESTS_NOT_FOUND_EXCEPTION(HttpStatus.NOT_FOUND, -300, "현재 관심사 목록이 없습니다."),
+	TIP_NOT_FOUND_EXCEPTION(HttpStatus.NOT_FOUND, -302, "해당 관심사에 대한 팁이 존재하지 않습니다."),
 	;
 	private final HttpStatus status;
 	private final int code;
