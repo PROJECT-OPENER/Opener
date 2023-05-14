@@ -19,13 +19,13 @@ import org.springframework.transaction.annotation.Transactional;
 import com.example.chattingservice.common.exception.ApiException;
 import com.example.chattingservice.common.exception.ExceptionEnum;
 import com.example.chattingservice.dto.request.FinishGameRequestDto;
-import com.example.chattingservice.dto.request.ScoreRequestDto;
 import com.example.chattingservice.dto.request.SendMessageRequestDto;
 import com.example.chattingservice.dto.response.ChatRoomResponseDto;
 import com.example.chattingservice.dto.response.FinishGameResponseDto;
 import com.example.chattingservice.dto.response.InterestResponseDto;
 import com.example.chattingservice.dto.response.ScoreResponseDto;
 import com.example.chattingservice.dto.response.ResultResponseDto;
+import com.example.chattingservice.entity.Interest;
 import com.example.chattingservice.entity.Keyword;
 import com.example.chattingservice.entity.chat.WaitingRoom;
 import com.example.chattingservice.entity.member.Member;
@@ -68,14 +68,12 @@ public class ChattingServiceImpl implements ChattingService {
 	@Override
 	@Transactional
 	public List<InterestResponseDto> getInterests() {
-		List<InterestResponseDto> interests = interestRepository.findAll()
-			.stream()
+		List<Interest> interests = interestRepository.findAll();
+		if (interests == null)
+			throw new ApiException(ExceptionEnum.INTERESTS_NOT_FOUND_EXCEPTION);
+		return interests.stream()
 			.map(InterestResponseDto::new)
 			.collect(Collectors.toList());
-		if (interests.isEmpty()) {
-			throw new ApiException(ExceptionEnum.INTERESTS_NOT_FOUND_EXCEPTION);
-		}
-		return interests;
 	}
 
 	/**
