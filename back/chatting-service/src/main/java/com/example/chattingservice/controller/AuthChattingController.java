@@ -28,14 +28,14 @@ public class AuthChattingController {
 	 * @param sendMessageRequestDto
 	 */
 	@MessageMapping("/user-chat/rooms/{room-id}")
-	public void sendMessage(@Header("Authorization") String token, @PathVariable String roomId,
+	public void sendMessage(@Header("Authorization") String token, @DestinationVariable("room-id") String roomId,
 		@Payload SendMessageRequestDto sendMessageRequestDto) {
-		messagingTemplate.convertAndSend("/sub/user-chat/rooms" + roomId,
+		messagingTemplate.convertAndSend("/sub/user-chat/rooms/" + roomId,
 			sendMessageRequestDto);
 	}
 
 	@MessageMapping("/user-chat/rooms/result/{room-id}")
-	public void finishGame(@Header("Authorization") String token, @Payload FinishGameRequestDto finishGameRequestDto, @PathVariable(value = "room-id") String roomId) {
+	public void finishGame(@Header("Authorization") String token, @Payload FinishGameRequestDto finishGameRequestDto, @DestinationVariable("room-id") String roomId) {
 		chattingService.finishGame(token, finishGameRequestDto, roomId);
 	}
 

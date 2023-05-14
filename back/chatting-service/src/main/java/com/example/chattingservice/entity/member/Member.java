@@ -1,7 +1,6 @@
 package com.example.chattingservice.entity.member;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -11,6 +10,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.DynamicUpdate;
 
 import com.example.chattingservice.entity.BaseEntity;
 import com.example.chattingservice.entity.member.enums.Gender;
@@ -26,6 +27,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
+@DynamicUpdate
 @Table(name = "member")
 public class Member extends BaseEntity {
 	@Id
@@ -58,9 +60,5 @@ public class Member extends BaseEntity {
 	@Column(name = "login_date")
 	private LocalDate loginDate;
 
-	public void setBaseDateInfo(LocalDateTime createDate, LocalDateTime lastModifiedDate) {
-		this.createDate = createDate;
-		this.lastModifiedDate = lastModifiedDate;
-	}
 }
 
