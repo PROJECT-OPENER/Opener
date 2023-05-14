@@ -3,17 +3,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import useSWRInfinite from 'swr/infinite';
 import ChallengeDetail from './ChallengeDetail';
-import { memberChallenge } from '@/types/share';
-
-interface scrollChallengeList {
-  // original: number;
-  totalLength: number;
-  memberChallengeList: memberChallenge[];
-}
-
-interface dataList {
-  data: scrollChallengeList;
-}
+import { memberChallenge, challengeCategorySwrData } from '@/types/share';
 
 type Props = {
   category: string;
@@ -28,13 +18,14 @@ const ChallengeCategoryList = ({ category, startIdx }: Props) => {
     return response.json();
   };
 
-  const { data, error, size, setSize, isLoading } = useSWRInfinite<dataList>(
-    (index) =>
-      `${BASE_URL}challenge-service/member-challenges?category=${category}&startIndex=${startIdx}&endIndex=${
-        startIdx > index + 3 ? startIdx + 3 : index + 3
-      }`,
-    fetcher,
-  );
+  const { data, error, size, setSize, isLoading } =
+    useSWRInfinite<challengeCategorySwrData>(
+      (index) =>
+        `${BASE_URL}challenge-service/member-challenges?category=${category}&startIndex=${startIdx}&endIndex=${
+          startIdx > index + 3 ? startIdx + 3 : index + 3
+        }`,
+      fetcher,
+    );
 
   const challenges = data ? data.flat() : [];
   const endIndex = challenges[0]?.data.totalLength - 1;
@@ -45,7 +36,7 @@ const ChallengeCategoryList = ({ category, startIdx }: Props) => {
   const [observer, setObserver] = useState<IntersectionObserver | null>(null);
 
   const listEndRef = useRef<HTMLParagraphElement>(null);
-
+  console.log('왜', data);
   useEffect(() => {
     if (observer && isEnd) {
       console.log('불러오기 끝');
@@ -77,25 +68,28 @@ const ChallengeCategoryList = ({ category, startIdx }: Props) => {
   }, []);
 
   return (
-    <>
+    <div className="overflow-scroll h-screen snap-mandatory snap-y scrollbar-hide">
       {challengeList && (
-        <div>
+        <div className="">
           {challengeList.map((chal) => (
-            <div key={chal.memberChallengeId}>
+            <div key={chal.memberChallengeId} className="snap-center">
               <ChallengeDetail challengeList={chal}></ChallengeDetail>
             </div>
           ))}
         </div>
       )}
+      <p>{challenges[0]?.data.totalLength}</p>
+      <p>{challengeList?.length}</p>
+
       <p
         className={
-          challenges[0]?.data.totalLength <= challengeList?.length
+          challenges[0]?.data.totalLength - startIdx <= challengeList?.length
             ? 'hidden'
             : 'list-end'
         }
         ref={listEndRef}
       ></p>
-    </>
+    </div>
   );
 };
 

@@ -39,16 +39,19 @@ const SingleChallengeView = ({ challengeId }: Props) => {
   const [isView, setIsView] = useState<boolean>(false);
   const [isLike, setIsLike] = useState<boolean>(false);
   const [isDelete, setIsDelete] = useState<boolean>(false);
-
+  const [isPause, setIsPause] = useState<boolean>(false);
   const options = {
     root: null,
-    threshold: [0.3, 0.9],
+    threshold: [0.9],
   };
   const [detailobserver, setDetailobserver] =
     useState<IntersectionObserver | null>(null);
 
   const onPlayReady: YouTubeProps['onReady'] = (event) => {
     event.target.pauseVideo();
+    const iframe = event.target.getIframe();
+    const parent = iframe.contentWindow.parent;
+    parent.addEventListener('click', handleParentClick);
   };
 
   const playingStateChange = (event: any) => {
@@ -101,12 +104,28 @@ const SingleChallengeView = ({ challengeId }: Props) => {
     );
     alert('클립보드에 복사를 완료했습니다.');
   };
+
   const youtubePlayStart = async () => {
     if (youtubePlayRef.current) {
       const player = await youtubePlayRef.current.internalPlayer;
       player.playVideo();
     }
   };
+
+  const handleParentClick = async () => {
+    console.log('클릭');
+    if (youtubePlayRef.current) {
+      const player = youtubePlayRef.current.getInternalPlayer();
+      const status = await player.getPlayerState();
+      if (status === 1) {
+        player.pauseVideo();
+        detailobserver?.disconnect();
+      } else {
+        player.playVideo();
+      }
+    }
+  };
+
   useEffect(() => {
     // 촬영 영상 실행 준비되면 유튜브 플레이
     if (isView) {
@@ -156,12 +175,13 @@ const SingleChallengeView = ({ challengeId }: Props) => {
       iv_load_policy: 3,
     },
   };
+  console.log(data);
 
   return (
     <>
       {!isDelete && (
         <div
-          className="h-[900px] flex flex-col items-center pt-10 mb-10"
+          className="h-[900px] flex flex-col items-center pt-10"
           ref={videoRef}
         >
           <div className="relative overflow-hidden mt-10 rounded-xl z-0 h-[810px]  bg-white">
@@ -171,15 +191,14 @@ const SingleChallengeView = ({ challengeId }: Props) => {
                 src={challengeInfo?.curMemberChallenge.memberChallengeUrl}
                 className="h-[810px] overflow-hidden relative"
               ></video>
-              <div className="absolute bottom-20 left-0 ml-2 mb-2">
-                <YouTube
-                  videoId="2p7tw_Nzne0"
-                  opts={opts}
-                  onReady={onPlayReady}
-                  ref={youtubePlayRef}
-                  onStateChange={playingStateChange}
-                />
-              </div>
+              <YouTube
+                videoId="2p7tw_Nzne0"
+                opts={opts}
+                onReady={onPlayReady}
+                ref={youtubePlayRef}
+                onStateChange={playingStateChange}
+                className="absolute bottom-20 left-0 ml-2 mb-2"
+              />
               {user && (
                 <>
                   <div className="absolute bottom-20 right-0 mr-2 mb-2">

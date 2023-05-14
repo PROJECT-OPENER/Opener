@@ -137,6 +137,12 @@ export interface allMemberChallengeList {
   memberChallengeList: memberChallenge[];
 }
 
+export interface idMemberChallengeList {
+  original: originalChallenge;
+  totalLength: number;
+  memberChallengeList: memberChallenge[];
+}
+
 // 원본 영상
 export interface originalVideo {
   challengeId: number;
@@ -166,4 +172,12 @@ export interface curMemberChallenge {
 export interface challengeDetail {
   curMemberChallenge: curMemberChallenge;
   watchOriginalChallengeResponseDto: originalVideo;
+}
+
+export interface challengeCategorySwrData {
+  data: allMemberChallengeList;
+}
+
+export interface challengeIdSwrData {
+  data: idMemberChallengeList;
 }
