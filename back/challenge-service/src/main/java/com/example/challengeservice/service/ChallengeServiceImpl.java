@@ -150,7 +150,7 @@ public class ChallengeServiceImpl implements ChallengeService {
 	 * @param memberChallengeId : 멤버 챌린지의 id
 	 */
 	@Override
-	public WatchMemberChallengeResponseDto watchMemberChallenge(Long memberChallengeId, Long memberId) {
+	public WatchMemberChallengeResponseDto watchMemberChallenge(Long memberChallengeId, String memberId) {
 		MemberChallenge memberChallenge = memberChallengeRepository.findByMemberChallengeId(memberChallengeId)
 			.orElseThrow(() -> new ApiException(ExceptionEnum.MEMBER_CHALLENGE_NOT_FOUND_EXCEPTION));
 		Challenge challenge = challengeRepository.findByChallengeId(memberChallenge.getChallenge().getChallengeId())
@@ -158,7 +158,10 @@ public class ChallengeServiceImpl implements ChallengeService {
 		int joinCount = memberChallengeRepository.countByChallenge(challenge);
 		WatchOriginalChallengeResponseDto watchOriginalChallengeResponseDto = WatchOriginalChallengeResponseDto.from(
 			challenge, joinCount);
-		int isLove = loveRepository.countByMemberChallengeAndMember_MemberId(memberChallenge, memberId);
+		int isLove = 0;
+		if (memberId != null) {
+			isLove = loveRepository.countByMemberChallengeAndMember_MemberId(memberChallenge, Long.parseLong(memberId));
+		}
 		SelectMemberChallengeResponseDto selectMemberChallengeResponseDto = SelectMemberChallengeResponseDto.from(
 			memberChallenge, isLove);
 		return WatchMemberChallengeResponseDto.from(watchOriginalChallengeResponseDto,
