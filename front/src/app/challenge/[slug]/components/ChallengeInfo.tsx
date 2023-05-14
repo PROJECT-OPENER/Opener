@@ -1,51 +1,103 @@
 'use client';
-import React, { useEffect, useState } from 'react';
-import { memberChallengeOriginalApi } from '@/app/api/challengeApi';
-import { indexMemberChallengeList } from '@/types/share';
+import React, { useEffect, useState, useRef } from 'react';
 import VoiceChallengeCard from './VoiceChallengeCard';
 import VoiceChallengeInfo from './VoiceChallengeInfo';
+import useSWRInfinite from 'swr/infinite';
+import { memberChallenge, challengeIdSwrData } from '@/types/share';
 
 type Props = {
   voiceId: number;
 };
 
 const ChallengeInfo = ({ voiceId }: Props) => {
-  const [memberChallengeList, setMemberChallengeList] =
-    useState<indexMemberChallengeList>();
-  useEffect(() => {
-    const getData = async () => {
-      const response = await memberChallengeOriginalApi(voiceId, {
-        startIndex: 0,
-        endIndex: 10,
-      });
-      console.log('안됨?', response);
-      setMemberChallengeList({
-        original: response.original,
-        memberChallengeResponseDtoList: response.memberChallengeList,
-        totalLength: response.totalLength,
-      });
-    };
-    getData();
-    // console.log('memberChallengeList:', memberChallengeList);
-  }, []);
+  const BASE_URL = process.env.NEXT_PUBLIC_SERVER_URL;
 
-  const originalChallenge = memberChallengeList?.original;
-  if (!originalChallenge) {
-    return <div>Loading...</div>;
-  }
+  const fetcher = async (url: string) => {
+    const response = await fetch(url);
+    return response.json();
+  };
+
+  const { data, error, size, setSize, isLoading } =
+    useSWRInfinite<challengeIdSwrData>(
+      (index) =>
+        `${BASE_URL}challenge-service/challenges/${voiceId}?startIndex=${0}&endIndex=${
+          index + 2
+        }`,
+      fetcher,
+    );
+
+  const challenges = data ? data.flat() : [];
+
+  const challengeList: memberChallenge[] =
+    challenges[challenges.length - 1]?.data?.memberChallengeList;
+
+  const originalChallenge = challenges[0]?.data?.original;
+  const endIndex = challenges[0]?.data?.totalLength - 1;
+  const isEnd = challengeList?.length > endIndex;
+
+  const [observer, setObserver] = useState<IntersectionObserver | null>(null);
+
+  const listEndRef = useRef<HTMLParagraphElement>(null);
+
+  useEffect(() => {
+    console.log(challengeList?.length, endIndex);
+    if (observer && isEnd) {
+      console.log('불러오기 끝');
+      observer.unobserve;
+      if (listEndRef.current) {
+        listEndRef.current.className = 'hidden';
+      }
+    }
+  }, [isEnd]);
+
+  useEffect(() => {
+    const options = {
+      root: null,
+      threshold: 0.5,
+    };
+    if (!observer) {
+      const newObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach((entry) => {
+          if (entry.intersectionRatio > 0.3 && !isEnd) {
+            console.log(isEnd);
+            setSize((prev) => prev + 3);
+          }
+        });
+      }, options);
+      if (listEndRef.current && newObserver) {
+        newObserver.observe(listEndRef.current); // list의 끝부분을 알려주는 p 타겟 요소를 관찰
+      }
+      setObserver(newObserver);
+    }
+  }, []);
 
   return (
     <div className="md:w-2/3 w-full flex flex-col justify-center">
-      <VoiceChallengeInfo
-        originalChallengeResponseDto={originalChallenge}
-      ></VoiceChallengeInfo>
-      <VoiceChallengeCard
-        memberChallengeResponseDtoList={
-          memberChallengeList?.memberChallengeResponseDtoList || []
+      {isLoading && (
+        <div className="h-screen w-screen">
+          <h1>로딩중</h1>
+        </div>
+      )}
+      {data && (
+        <div className="">
+          <VoiceChallengeInfo
+            originalChallengeResponseDto={originalChallenge}
+          ></VoiceChallengeInfo>
+          <VoiceChallengeCard
+            memberChallengeResponseDtoList={challengeList || []}
+            totalLength={endIndex + 1 || 0}
+            originalId={originalChallenge?.challengeId}
+          ></VoiceChallengeCard>
+        </div>
+      )}
+      <p
+        className={
+          challenges[0]?.data?.totalLength - 1 <= challengeList?.length
+            ? 'hidden'
+            : 'list-end'
         }
-        totalLength={memberChallengeList?.totalLength || 0}
-        originalId={originalChallenge.challengeId}
-      ></VoiceChallengeCard>
+        ref={listEndRef}
+      ></p>
     </div>
   );
 };

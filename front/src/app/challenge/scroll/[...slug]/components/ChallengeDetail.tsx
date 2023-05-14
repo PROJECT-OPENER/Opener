@@ -23,7 +23,6 @@ const ChallengeDetail = ({ challengeList }: Props) => {
     const response = await fetch(url);
     return response.json();
   };
-
   const { user } = useUser();
 
   const { data, isLoading, error } = useSWR(
@@ -38,7 +37,6 @@ const ChallengeDetail = ({ challengeList }: Props) => {
   const [isLike, setIsLike] = useState<boolean>(false);
   const [likeCnt, setLikeCnt] = useState<number>(0);
   const [isDelete, setIsDelete] = useState<boolean>(false);
-
   const options = {
     root: null,
     threshold: [0.3, 0.9],
@@ -48,6 +46,23 @@ const ChallengeDetail = ({ challengeList }: Props) => {
 
   const onPlayReady: YouTubeProps['onReady'] = (event) => {
     event.target.pauseVideo();
+    const iframe = event.target.getIframe();
+    const parent = iframe.contentWindow.parent;
+    parent.addEventListener('click', handleParentClick);
+  };
+
+  const handleParentClick = async () => {
+    console.log('클릭');
+    if (youtubePlayRef.current) {
+      const player = youtubePlayRef.current.getInternalPlayer();
+      const status = await player.getPlayerState();
+      if (status === 1) {
+        player.pauseVideo();
+        // detailobserver?.disconnect();
+      } else {
+        player.playVideo();
+      }
+    }
   };
 
   const playingStateChange = (event: any) => {
@@ -58,15 +73,15 @@ const ChallengeDetail = ({ challengeList }: Props) => {
         player.playVideo();
         memberPlayerRef.current.pause();
         memberPlayerRef.current.load();
-        console.log('ENDED');
+        // console.log('ENDED');
       }
       if (event.data === YouTube.PlayerState.PLAYING) {
         memberPlayerRef.current.play();
-        console.log('PLAYING');
+        // console.log('PLAYING');
       }
       if (event.data === YouTube.PlayerState.PAUSED) {
         memberPlayerRef.current.pause();
-        console.log('PAUSED');
+        // console.log('PAUSED');
       }
     }
   };
@@ -74,12 +89,12 @@ const ChallengeDetail = ({ challengeList }: Props) => {
   const likeClick = async (method: string) => {
     if (method == 'post') {
       const response = await likeCreateApi(challengeList.memberChallengeId);
-      console.log('response', response);
+      // console.log('response', response);
       setIsLike(true);
       setLikeCnt(likeCnt + 1);
     } else {
       const response = await likeDeleteApi(challengeList.memberChallengeId);
-      console.log('response', response);
+      // console.log('response', response);
       setIsLike(false);
       setLikeCnt(likeCnt - 1);
     }
@@ -161,28 +176,24 @@ const ChallengeDetail = ({ challengeList }: Props) => {
   };
 
   return (
-    <>
+    <div className="py-5">
       {!isDelete && (
-        <div
-          className="h-[900px] flex flex-col items-center pt-10 mb-10"
-          ref={videoRef}
-        >
-          <div className="relative overflow-hidden mt-10 rounded-xl z-0 h-[810px]  bg-white">
+        <div className="h-[800px]  flex flex-col items-center" ref={videoRef}>
+          <div className="relative overflow-hidden rounded-xl z-0 h-[810px]">
             <div className={isView ? 'relative h-[810px]' : 'hidden'}>
               <video
                 ref={memberPlayerRef}
                 src={challengeInfo?.curMemberChallenge.memberChallengeUrl}
                 className="h-[810px] overflow-hidden relative"
               ></video>
-              <div className="absolute bottom-20 left-0 ml-2 mb-2">
-                <YouTube
-                  videoId="2p7tw_Nzne0"
-                  opts={opts}
-                  onReady={onPlayReady}
-                  ref={youtubePlayRef}
-                  onStateChange={playingStateChange}
-                />
-              </div>
+              <YouTube
+                videoId="2p7tw_Nzne0"
+                opts={opts}
+                onReady={onPlayReady}
+                ref={youtubePlayRef}
+                onStateChange={playingStateChange}
+                className="absolute bottom-20 left-0 ml-2 mb-2"
+              />
               {user && (
                 <>
                   <div className="absolute bottom-20 right-0 mr-2 mb-2">
@@ -291,7 +302,7 @@ const ChallengeDetail = ({ challengeList }: Props) => {
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 };
 

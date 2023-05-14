@@ -3,18 +3,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import useSWRInfinite from 'swr/infinite';
 import ChallengeDetail from './ChallengeDetail';
-import { memberChallenge } from '@/types/share';
-
-interface scrollChallengeList {
-  original: number;
-  totalLength: number;
-  memberChallengeList: memberChallenge[];
-}
-
-interface dataList {
-  data: scrollChallengeList;
-  status: number;
-}
+import { memberChallenge, challengeIdSwrData } from '@/types/share';
 
 type Props = {
   originalId: string;
@@ -29,26 +18,20 @@ const ChallengeList = ({ originalId, startIdx }: Props) => {
     return response.json();
   };
 
-  const { data, error, size, setSize, isLoading } = useSWRInfinite<dataList>(
-    (index) =>
-      `${BASE_URL}challenge-service/challenges/${originalId}?startIndex=${startIdx}&endIndex=${
-        startIdx > index + 3 ? startIdx + 3 : index + 3
-      }`,
-    fetcher,
-  );
+  const { data, error, size, setSize, isLoading } =
+    useSWRInfinite<challengeIdSwrData>(
+      (index) =>
+        `${BASE_URL}challenge-service/challenges/${originalId}?startIndex=${startIdx}&endIndex=${
+          startIdx > index + 3 ? startIdx + 3 : index + 3
+        }`,
+      fetcher,
+    );
 
   const challenges = data ? data.flat() : [];
 
   const challengeList: memberChallenge[] =
     challenges[challenges.length - 1]?.data.memberChallengeList;
-
   const endIndex = challenges[0]?.data.totalLength - 1;
-
-  const isLoadingInitialData = !data && !error;
-
-  const isLoadingMore =
-    isLoadingInitialData ||
-    (size > 0 && data && typeof data[size - 1] === 'undefined');
 
   const isEnd = challengeList?.length > endIndex;
   const isEmpty = challengeList?.length === 0;
@@ -90,7 +73,7 @@ const ChallengeList = ({ originalId, startIdx }: Props) => {
   }, []);
 
   return (
-    <>
+    <div className="overflow-scroll h-screen snap-mandatory snap-y scrollbar-hide">
       {isEmpty ? <p>조회된 챌린지가 없습니다.</p> : null}
       {isLoading && (
         <div className="h-screen w-screen">
@@ -98,9 +81,9 @@ const ChallengeList = ({ originalId, startIdx }: Props) => {
         </div>
       )}
       {challengeList && (
-        <div>
+        <div className="">
           {challengeList.map((chal) => (
-            <div key={chal.memberChallengeId}>
+            <div key={chal.memberChallengeId} className="snap-center">
               <ChallengeDetail challengeList={chal}></ChallengeDetail>
             </div>
           ))}
@@ -114,7 +97,7 @@ const ChallengeList = ({ originalId, startIdx }: Props) => {
         }
         ref={listEndRef}
       ></p>
-    </>
+    </div>
   );
 };
 
