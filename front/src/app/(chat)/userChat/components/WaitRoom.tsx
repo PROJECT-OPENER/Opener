@@ -6,9 +6,12 @@ import { useRecoilValue, useSetRecoilState } from 'recoil';
 import {
   userChatFirstState,
   userChatGameState,
+  userChatGrammerMsgListState,
+  userChatLastChatState,
   userChatMessageListState,
   userChatMyNicknameState,
   userChatRoomIdState,
+  userChatScoreState,
   userChatTargetWordState,
   userChatTimeState,
   userChatTimerState,
@@ -27,28 +30,39 @@ const WaitRoom = () => {
     session && session.user.user && session.user.user.data.nickname;
   const token = session?.user.user?.accessToken as string;
   // recoil
-  const setUserChatNickname = useSetRecoilState(userChatMyNicknameState);
-  const setUserChatMessageListState = useSetRecoilState(
-    userChatMessageListState,
-  );
-  const setUserChatTimerState = useSetRecoilState(userChatTimerState);
-  const setUserChatTurnState = useSetRecoilState(userChatTurnState);
-  const setUserChatRoom = useSetRecoilState(userChatRoomIdState);
-  const setUserChatGameState = useSetRecoilState(userChatGameState);
-  const setUserChatFirstState = useSetRecoilState(userChatFirstState);
+  const setNickname = useSetRecoilState(userChatMyNicknameState);
+  const setMessageListState = useSetRecoilState(userChatMessageListState);
+  const setTimerState = useSetRecoilState(userChatTimerState);
+  const setTurnState = useSetRecoilState(userChatTurnState);
+  const setRoom = useSetRecoilState(userChatRoomIdState);
+  const setGameState = useSetRecoilState(userChatGameState);
+  const setFirstState = useSetRecoilState(userChatFirstState);
   const userChatTime = useRecoilValue(userChatTimeState);
-  const setUserChatTargetWordState = useSetRecoilState(userChatTargetWordState);
+  const setWordState = useSetRecoilState(userChatTargetWordState);
+  const setGrammerMsgState = useSetRecoilState(userChatGrammerMsgListState);
+  const setScoreState = useSetRecoilState(userChatScoreState);
+  const setLastChat = useSetRecoilState(userChatLastChatState);
   // socket
   const pingIntervalIdRef = useRef<NodeJS.Timer | null>(null);
   useEffect(() => {
     // recoil 초기화
     console.log('userChatFirstState', user);
-    setUserChatMessageListState([]);
-    setUserChatTimerState(userChatTime);
-    setUserChatTurnState(1);
-    setUserChatGameState(true);
-    setUserChatFirstState(false);
-    setUserChatTargetWordState(false);
+    setLastChat(false);
+    setMessageListState([]);
+    setScoreState({
+      myGrammerScore: 0,
+      otherGrammerScore: 0,
+      myContextScore: 0,
+      otherContextScore: 0,
+      myWordUsed: false,
+      otherWordUsed: false,
+    });
+    setTimerState(userChatTime);
+    setTurnState(1);
+    setGameState(true);
+    setFirstState(false);
+    setWordState(false);
+    setGrammerMsgState([]);
     const socket = new WebSocket(`${process.env.NEXT_PUBLIC_SOCKET_URL}`);
     const client = new Client({
       webSocketFactory: () => socket,
@@ -84,7 +98,7 @@ const WaitRoom = () => {
           try {
             const content = JSON.parse(message.body);
             console.log('content : ', content);
-            setUserChatRoom(content);
+            setRoom(content);
             clearInterval(intervalId);
             router.push('/userChat/chatRoom');
             client.deactivate();
@@ -104,7 +118,7 @@ const WaitRoom = () => {
 
     client.activate();
     // setStompClient(client);
-    setUserChatNickname(nickname as string);
+    setNickname(nickname as string);
 
     return () => {
       if (pingIntervalIdRef.current) {

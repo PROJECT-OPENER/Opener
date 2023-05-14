@@ -64,6 +64,7 @@ const AiChatRoom = () => {
       // 3. 응답을 messageList에 추가합니다.
       const prompt = pushChatLog(promptData, message);
       const res = await openAiChatApi(prompt);
+      console.log('res', res.data.choices[0].text);
       const result = await res.data.choices[0].text.replace(/^\n{2}AI:\s*/, '');
       await handleReceiveMessage(result);
     } catch (error) {

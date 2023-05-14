@@ -42,7 +42,7 @@ export const handleProcessArray = (arrays: any[], nickname: string) => {
 };
 
 export const convertToJSON = (str: string) => {
-  console.log('str', str);
+  // console.log('str', str);
   let jsonString = str.trim();
 
   // 문자열이 ']' 또는 '}]'로 끝나지 않은 경우

@@ -84,63 +84,33 @@ const Result = () => {
     <div>
       {isLoading && <div>로딩중</div>}
       {/* {result && <div className="bg-red-200">{text}</div>} */}
-      {!showAnalysis && (
-        <div>
-          <ResultTrophy
-            myScore={data.myScore.currentScore}
-            myScoreChange={data.myScore.changeScore}
-            winnerNickname={data.winnerNickname}
-          />
-          <ResultScore
-            myNickname={data.myScore.myNickname}
-            otherNickname={data.otherScore.otherNickname}
-            myContextScore={data.myScore.contextScore}
-            myGrammarScore={data.myScore.grammarScore}
-            otherContextScore={data.otherScore.contextScore}
-            otherGrammarScore={data.otherScore.grammarScore}
-            myWordUsed={data.myScore.wordUsed}
-            otherWordUsed={data.otherScore.wordUsed}
-          />
-          <div className="bg-white m-5 p-5 rounded-3xl space-y-3">
-            <button
-              type="button"
-              className="bg-brandP text-white py-3 rounded-2xl text-center font-xl font-bold block w-full"
-              onClick={() => {
-                setShowAnalysis(!showAnalysis);
-              }}
-            >
-              분석 결과 보기
-            </button>
-            <Link
-              href={'/chat'}
-              className="bg-white py-3 rounded-2xl text-center font-xl font-bold shadow-custom block"
-            >
-              나가기
-            </Link>
-          </div>
+
+      <div>
+        <ResultTrophy
+          myScore={data.myScore.currentScore}
+          myScoreChange={data.myScore.changeScore}
+          winnerNickname={data.winnerNickname}
+        />
+        <ResultScore />
+        <div className="bg-white m-5 p-5 rounded-3xl space-y-3">
+          <button
+            type="button"
+            className="bg-brandP text-white py-3 rounded-2xl text-center font-xl font-bold block w-full"
+            onClick={() => {
+              setShowAnalysis(!showAnalysis);
+            }}
+          >
+            문법 피드백 보기
+          </button>
+          {showAnalysis && <AnalyzeResult />}
+          <Link
+            href={'/chat'}
+            className="bg-white py-3 rounded-2xl text-center font-xl font-bold shadow-custom block"
+          >
+            나가기
+          </Link>
         </div>
-      )}
-      {showAnalysis && (
-        <div>
-          <div className="top-nav flex justify-between m-3 p-3">
-            <button
-              type="button"
-              onClick={() => {
-                setShowAnalysis(!showAnalysis);
-              }}
-            >
-              <TfiAngleLeft
-                className="tabmenu-items-ico"
-                size={'2rem'}
-                color="#838383"
-              />
-            </button>
-            <div>주제</div>
-            <div>느낌표</div>
-          </div>
-          <AnalyzeResult result={data.result} />
-        </div>
-      )}
+      </div>
     </div>
   );
 };

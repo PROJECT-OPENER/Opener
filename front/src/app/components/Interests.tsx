@@ -1,14 +1,21 @@
 'use client';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Button from './Button';
 import useSWR from 'swr';
 import { getInterestListApi } from '../api/chatApi';
 import { interestInterface } from '@/types/share';
 import { interestRegisterApi } from '../api/userApi';
-import { useRouter } from 'next/navigation';
+import { redirect, useRouter } from 'next/navigation';
+import useUser from '../hooks/userHook';
 
 const Interests = () => {
   const router = useRouter();
+  const { user } = useUser();
+  useEffect(() => {
+    if (user) {
+      if (user.data.interests.length > 0) redirect('/chat');
+    }
+  }, [user]);
   const { data, isLoading } = useSWR('get/interest', getInterestListApi, {
     focusThrottleInterval: 5000,
   });
@@ -27,8 +34,8 @@ const Interests = () => {
     if (activeIndex.length < 2) return alert('2개 이상 선택해주세요.');
     try {
       interestRegisterApi(activeIndex);
-      router.push('/');
       alert('관심사 등록이 완료되었습니다.');
+      router.push('/chat');
     } catch (err) {
       alert(err);
     }

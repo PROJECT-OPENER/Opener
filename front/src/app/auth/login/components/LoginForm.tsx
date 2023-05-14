@@ -66,7 +66,7 @@ const LoginForm = () => {
         email: data.email,
         password: data.password,
         redirect: true,
-        callbackUrl: '/',
+        callbackUrl: '/chat',
       });
       console.log(result);
     } catch (err) {
