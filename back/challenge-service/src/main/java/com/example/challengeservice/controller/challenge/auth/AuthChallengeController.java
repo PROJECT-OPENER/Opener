@@ -4,7 +4,6 @@ import com.example.challengeservice.dto.BaseListResponseDto;
 import com.example.challengeservice.dto.BaseResponseDto;
 import com.example.challengeservice.dto.request.MemberChallengeRequestDto;
 import com.example.challengeservice.dto.response.MemberChallengeResponseDto;
-import com.example.challengeservice.repository.MemberRepository;
 import com.example.challengeservice.service.ChallengeService;
 import com.google.firebase.auth.FirebaseAuthException;
 
@@ -35,10 +34,11 @@ public class AuthChallengeController {
 	 * @param memberChallengeRequestDto
 	 */
 	@PostMapping("/challenges/{challengeId}/member-challenge")
-	public ResponseEntity<BaseResponseDto> createMemberChallenge(@PathVariable Long challengeId,
-		@ModelAttribute MemberChallengeRequestDto memberChallengeRequestDto)
+	public ResponseEntity<BaseResponseDto> createMemberChallenge(HttpServletRequest request,
+		@PathVariable Long challengeId, @ModelAttribute MemberChallengeRequestDto memberChallengeRequestDto)
 		throws IOException, FirebaseAuthException {
-		challengeService.createMemberChallenge(challengeId, memberChallengeRequestDto);
+		Long memberId = Long.parseLong(request.getHeader("memberId"));
+		challengeService.createMemberChallenge(challengeId, memberChallengeRequestDto, memberId);
 		return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseDto<>(200, "나의 영상 등록 완료"));
 	}
 
@@ -59,9 +59,8 @@ public class AuthChallengeController {
 	@PostMapping("/member-challenges/{memberChallengeId}/like")
 	public ResponseEntity<BaseResponseDto> createLike(HttpServletRequest request,
 		@PathVariable Long memberChallengeId) {
-		// Todo : 멤버 id 하드코딩．　변경　필요
-		String nickname = "2번";
-		challengeService.createLike(memberChallengeId, nickname);
+		Long memberId = Long.parseLong(request.getHeader("memberId"));
+		challengeService.createLike(memberChallengeId, memberId);
 		return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseDto<>(200, "좋아요 성공"));
 	}
 
@@ -72,9 +71,8 @@ public class AuthChallengeController {
 	@DeleteMapping("/member-challenges/{memberChallengeId}/like")
 	public ResponseEntity<BaseResponseDto> deleteLike(HttpServletRequest request,
 		@PathVariable Long memberChallengeId) {
-		// Todo : 멤버 id 하드코딩．　변경　필요
-		String nickname = "2번";
-		challengeService.deleteLike(memberChallengeId, nickname);
+		Long memberId = Long.parseLong(request.getHeader("memberId"));
+		challengeService.deleteLike(memberChallengeId, memberId);
 		return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseDto<>(200, "좋아요 해제 성공"));
 	}
 

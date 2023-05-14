@@ -23,25 +23,25 @@ import lombok.NoArgsConstructor;
 @Table(name = "challenge")
 public class Challenge extends BaseEntity {
 	@Id
-	@GeneratedValue(strategy= GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "challenge_id")
 	private Long challengeId;
 	@Column(name = "title")
 	private String title;
-	@Column(name="challenge_url", length = 1000)
+	@Column(name = "challenge_url", length = 1000)
 	private String challengeUrl;
-	@Column(name="challenge_img", length = 1000)
+	@Column(name = "challenge_img", length = 1000)
 	private String challengeImg;
-	@Column(name="eng_caption", length = 2000)
+	@Column(name = "eng_caption", length = 2000)
 	private String engCaption;
-	@Column(name="kor_capotion", length = 2000)
+	@Column(name = "kor_capotion", length = 2000)
 	private String korCaption;
-	@Column(name="caption_time", length = 1000)
+	@Column(name = "caption_time", length = 1000)
 	private String captionTime;
 
-	public static Challenge from(OriginalChallengeRequestDto originalChallengeRequestDto, String fileUrl, String imgUrl){
-		return Challenge
-			.builder()
+	public static Challenge from(OriginalChallengeRequestDto originalChallengeRequestDto, String fileUrl,
+		String imgUrl) {
+		return Challenge.builder()
 			.title(originalChallengeRequestDto.getTitle())
 			.challengeUrl(fileUrl)
 			.challengeImg(imgUrl)
