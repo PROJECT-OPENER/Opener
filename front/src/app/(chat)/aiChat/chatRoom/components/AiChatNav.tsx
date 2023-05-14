@@ -1,3 +1,4 @@
+'use client';
 import Button from '@/app/components/Button';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';

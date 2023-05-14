@@ -42,14 +42,14 @@ const ChoiceBox = () => {
   if (isLoading) return <div>로딩중...</div>;
 
   return (
-    <div className="w-[400px] mx-auto">
+    <div className="mx-auto">
       {data && (
         <div className="grid grid-cols-2">
           {data.data.map((item: interestInterface) => {
             return (
               <div
                 key={item.interestId}
-                className={`m-5 h-[150px] w-[150px] rounded-xl flex justify-center items-center shadow-xl ${
+                className={`m-5 h-[150px] w-[150px] rounded-xl flex justify-center items-center shadow-xl hover:cursor-pointer ${
                   activeIndex === item.interestId
                     ? 'bg-brandP text-white'
                     : 'bg-white'

@@ -23,23 +23,22 @@ import {
   userChatGrammerMsgListState,
   userChatScoreState,
   userChatLastChatState,
+  userChatResultState,
 } from '../../store';
 import UserChatSendText from './UserChatSendText';
 import { BsKeyboard } from 'react-icons/bs';
 import useInterval from '@/app/hooks/useInterval';
 import { convertToJSON, handleTurn } from '@/util/Math';
-import { bingGrammerCheckApi, openAiUserChatApi } from '@/app/api/openAi';
-import {
-  applySpellCheckFeedback,
-  checkGrammer,
-  isStringValidJSON,
-} from '@/util/AiChat';
+import { openAiUserChatApi } from '@/app/api/openAi';
+import { checkGrammer, isStringValidJSON } from '@/util/AiChat';
 import Loading from '@/app/components/Loading';
 import useSWR from 'swr';
+import { useRouter } from 'next/navigation';
 
 const ChatRoom = () => {
   const { data: session } = useSession();
   const token = session?.user.user?.accessToken as string;
+  const router = useRouter();
   // console.log('nickname', nickname);
   // socket
   const [stompClient, setStompClient] = useState<Client | null>(null);
@@ -62,20 +61,20 @@ const ChatRoom = () => {
   const delay = 1000; // 1초
   const [isRunning, setIsRunning] = useState(false); // 타이머 실행 여부
   const [filtered, setFiltered] = useRecoilState(userChatFilteredState); //
-  const setUserChatTargetWordState = useSetRecoilState(userChatTargetWordState); // 제시어 사용 여부
   const [grammerMsg, setGrammerMsgState] = useRecoilState(
     userChatGrammerMsgListState,
   ); // 문법 검사 메세지
   const [score, setScore] = useRecoilState(userChatScoreState); // 점수
-  const [contextResult, setContextResult] = useState<any>(null); // openAi 결과
   // 라스트 채팅
   const [lastChat, setLastChat] = useRecoilState(userChatLastChatState);
+  // 결과
+  const setResult = useSetRecoilState(userChatResultState);
 
   // ref
   const chatWindowRef = useRef<HTMLDivElement>(null);
 
   const { data: contextResultApi } = useSWR(
-    !gameState ? '/api/data' : null,
+    !gameState && lastChat ? '/api/data' : null,
     () => openAiUserChatApi(filtered),
   );
 
@@ -100,9 +99,9 @@ const ChatRoom = () => {
         const res = convertToJSON(
           contextResultApi?.data.choices[0].text,
         ) as any;
-        console.log('res', res);
+        // console.log('res', res);
         res.forEach((item: any) => {
-          if (item.nickname === nickname) {
+          if (item.nickname === 'User1') {
             updateMyContextScore(item.score);
           } else {
             updateOtherContextScore(item.score);
@@ -117,7 +116,7 @@ const ChatRoom = () => {
     if (turn === 999) {
       setGameState(false);
       const filteredMessages = messageList.map(({ nickname, message }) => ({
-        nickname,
+        nickname: lastChat ? 'User1' : 'User2',
         message,
       }));
       setFiltered(filteredMessages);
@@ -190,7 +189,7 @@ const ChatRoom = () => {
           if (chatNickname === nickname) {
             updateMyGrammerScore(res.score);
           } else {
-            updateOtherGrammerScore(res.score);
+            updateotherGrammarScore(res.score);
           }
         };
         check();
@@ -226,10 +225,10 @@ const ChatRoom = () => {
         client.subscribe(
           `/sub/user-chat/rooms/${userChatRoom.roomId}`,
           (message) => {
-            console.log('Received message', message);
+            // console.log('Received message', message);
             try {
               const content = JSON.parse(message.body);
-              console.log('subscribe : ', content);
+              // console.log('subscribe : ', content);
               setMessageList((messageList) => [...messageList, content]);
               if (content.nickname !== nickname) {
                 setIsRunning(true);
@@ -244,13 +243,15 @@ const ChatRoom = () => {
         client.subscribe(
           `/sub/user-chat/rooms/${userChatRoom.roomId}/result`,
           (message) => {
-            console.log('Received message', message);
+            // console.log('Received message', message);
             try {
               const content = JSON.parse(message.body);
               console.log('subscribe : ', content);
+              setResult(content);
+              router.push('/userChat/Result');
             } catch (e) {
-              console.error('Failed to parse message body:', message.body);
-              // console.error(e);
+              // console.error('Failed to parse message body:', message.body);
+              console.error(e);
             }
           },
         );
@@ -279,7 +280,7 @@ const ChatRoom = () => {
       score: score,
       messageList: messageList,
     };
-    // console.log('payload', payload);
+    console.log('payload', payload);
     stompClient?.publish({
       destination: `/pub/user-chat/rooms/result/${userChatRoom.roomId}`,
       body: JSON.stringify(payload),
@@ -287,7 +288,7 @@ const ChatRoom = () => {
         Authorization: `Bearer ${token}`,
       },
     });
-    console.log(`Payload: ${JSON.stringify(payload)}`);
+    // console.log(`Payload: ${JSON.stringify(payload)}`);
   };
   // 메세지 전송
   const handleSendMessage = () => {
@@ -327,13 +328,13 @@ const ChatRoom = () => {
   const updateMyGrammerScore = (score: number) => {
     setScore((prevState: any) => ({
       ...prevState,
-      myGrammerScore: prevState.myGrammerScore + score,
+      myGrammarScore: prevState.myGrammarScore + score,
     }));
   };
-  const updateOtherGrammerScore = (score: number) => {
+  const updateotherGrammarScore = (score: number) => {
     setScore((prevState: any) => ({
       ...prevState,
-      otherGrammerScore: prevState.otherGrammerScore + score,
+      otherGrammarScore: prevState.otherGrammarScore + score,
     }));
   };
   const updateMyContextScore = (score: string) => {
@@ -423,9 +424,6 @@ const ChatRoom = () => {
       )}
       {!gameState && (
         <div className="flex justify-center items-center flex-col h-screen font-bold">
-          <div className="flex-none">
-            <UserChatNav />
-          </div>
           <Loading />
           <div>잠시만 기다려주세요.</div>
           <button type="button" onClick={handleSendResult}>

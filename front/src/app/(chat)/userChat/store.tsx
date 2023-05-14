@@ -75,8 +75,8 @@ export const userChatGameState = atom({
 export const userChatScoreState = atom({
   key: 'userChatScoreState',
   default: {
-    myGrammerScore: 0,
-    otherGrammerScore: 0,
+    myGrammarScore: 0,
+    otherGrammarScore: 0,
     myContextScore: 0,
     otherContextScore: 0,
     myWordUsed: false,
@@ -108,7 +108,7 @@ export const userChatTargetWordState = atom({
 
 export const userChatResultState = atom({
   key: 'userChatResultState',
-  default: [],
+  default: {},
   effects_UNSTABLE: [persistAtom],
 });
 

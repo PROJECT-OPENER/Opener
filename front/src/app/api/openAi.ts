@@ -28,7 +28,7 @@ export const openAiUserChatApi = async (data: []) => {
     'https://api.openai.com/v1/completions',
     {
       model: 'text-davinci-003',
-      prompt: `${data}\n\n위 대화를 분석하여 닉네임 별로 영어 수준에 맞게 점수를 줘라. \n점수는 100점이 만점이다.\n반드시 두 사람의 점수가 달라야 한다.\n반드시 아래 예시 형태로만 대답해줘.\n예시 반환값: [{"nickname":"4번", "score":"00점"}, {"nickname":"1번", "score":"00점"}]`,
+      prompt: `${data}\n\n위 대화를 분석하여 닉네임 별로 영어 수준에 맞게 점수를 줘라. \n점수는 100점이 만점이다.\n반드시 두 사람의 점수가 달라야 한다.\n반드시 아래 예시 형태로만 대답해줘. \n예시 반환값: [{"nickname":"User1", "score":"00점"}, {"nickname":"User2", "score":"00점"}]`,
       temperature: 0.9,
       max_tokens: 150,
       top_p: 1,
