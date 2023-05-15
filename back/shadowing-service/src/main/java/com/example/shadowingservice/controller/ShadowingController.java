@@ -7,12 +7,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.shadowingservice.dto.BaseListResponseDto;
 import com.example.shadowingservice.dto.BaseResponseDto;
+import com.example.shadowingservice.dto.request.CaptionDto;
 import com.example.shadowingservice.dto.request.IndexDto;
 import com.example.shadowingservice.dto.response.DictionaryResponseDto;
 import com.example.shadowingservice.dto.response.InterestResponseDto;
@@ -89,9 +92,9 @@ public class ShadowingController {
 	 * @param videoId
 	 * @return
 	 */
-	@GetMapping("/videos/{video-id}")
-	public ResponseEntity<BaseResponseDto<Object>> getShadowingDetail(@PathVariable("video-id") Long videoId) {
-		ShadowingDetailDto shadowingDetailDto = shadowingService.getShadowingDetailDto(videoId);
+	@PostMapping("/videos/{video-id}")
+	public ResponseEntity<BaseResponseDto<Object>> getShadowingDetail(@RequestBody CaptionDto captionDto, @PathVariable("video-id") Long videoId) {
+		ShadowingDetailDto shadowingDetailDto = shadowingService.getShadowingDetailDto(captionDto, videoId);
 		return ResponseEntity.status(HttpStatus.OK)
 			.body(new BaseResponseDto<>(200, "영상 조회 완료", shadowingDetailDto));
 	}
