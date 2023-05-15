@@ -30,24 +30,17 @@ public class Challenge extends BaseEntity {
 	private String title;
 	@Column(name = "challenge_url", length = 1000)
 	private String challengeUrl;
-	@Column(name = "challenge_img", length = 1000)
-	private String challengeImg;
-	@Column(name = "eng_caption", length = 2000)
-	private String engCaption;
-	@Column(name = "kor_capotion", length = 2000)
-	private String korCaption;
-	@Column(name = "caption_time", length = 1000)
-	private String captionTime;
+	@Column(name = "caption_time", length = 100)
+	private String startTime;
+	@Column(name = "caption_time", length = 100)
+	private String endTime;
 
-	public static Challenge from(OriginalChallengeRequestDto originalChallengeRequestDto, String fileUrl,
-		String imgUrl) {
+	public static Challenge from(OriginalChallengeRequestDto originalChallengeRequestDto) {
 		return Challenge.builder()
 			.title(originalChallengeRequestDto.getTitle())
-			.challengeUrl(fileUrl)
-			.challengeImg(imgUrl)
-			.engCaption(originalChallengeRequestDto.getEngCaption())
-			.korCaption(originalChallengeRequestDto.getKorCaption())
-			.captionTime(originalChallengeRequestDto.getCaptionTime())
+			.challengeUrl(originalChallengeRequestDto.getChallengeUrl())
+			.startTime(originalChallengeRequestDto.getStartTime())
+			.endTime(originalChallengeRequestDto.getEndTime())
 			.build();
 	}
 }

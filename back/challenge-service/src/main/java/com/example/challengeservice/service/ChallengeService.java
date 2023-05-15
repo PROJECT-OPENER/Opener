@@ -10,7 +10,7 @@ import com.google.firebase.auth.FirebaseAuthException;
 
 public interface ChallengeService {
     /** 챌린지 영상 등록 **/
-    void createOriginalChallenge(OriginalChallengeRequestDto originalChallengeRequestDto) throws IOException, FirebaseAuthException;
+    void createOriginalChallenge(OriginalChallengeRequestDto originalChallengeRequestDto);
     /** 원본 영상 정보 조회 **/
     List<OriginalChallengeResponseDto> getOriginalChallenges();
     /** 원본 챌린지 선택 조회 **/

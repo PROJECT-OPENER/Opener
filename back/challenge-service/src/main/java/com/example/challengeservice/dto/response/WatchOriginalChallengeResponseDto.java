@@ -10,20 +10,18 @@ import lombok.*;
 public class WatchOriginalChallengeResponseDto {
     private Long challengeId;
     private String title;
-    private String korCaption;
-    private String engCaption;
-    private String captionTime;
     private String challengeUrl;
+    private String startTime;
+    private String endTime;
     private int joinCount;
 
     public static WatchOriginalChallengeResponseDto from(Challenge challenge, int joinCount) {
         return WatchOriginalChallengeResponseDto.builder()
                 .challengeId(challenge.getChallengeId())
                 .title(challenge.getTitle())
-                .korCaption(challenge.getKorCaption())
-                .engCaption(challenge.getEngCaption())
-                .captionTime(challenge.getCaptionTime())
                 .challengeUrl(challenge.getChallengeUrl())
+                .startTime(challenge.getStartTime())
+                .endTime(challenge.getEndTime())
                 .joinCount(joinCount)
                 .build();
     }
