@@ -1,13 +1,36 @@
 import React, { useEffect, useState } from 'react';
 import { useRecoilValue } from 'recoil';
-import { aiChatMessageListState } from '../../store';
+import { aiChatMessageListState, aiChatSub } from '../../store';
 import ProfileImage from '@/app/components/ProfileImage';
 import { BsVolumeUp } from 'react-icons/bs';
+import { openAiChatApi } from '@/app/api/openAi';
+type Props = {
+  handleReceiveMessage?: (result: string) => void;
+};
 
-const AiChatMessageList = () => {
+const AiChatMessageList = ({ handleReceiveMessage }: Props) => {
   const messageList = useRecoilValue(aiChatMessageListState);
   const [synth, setSynth] = useState<SpeechSynthesisVoice[]>([]);
   const [robotClick, setRobotClick] = useState(0);
+  const subject = useRecoilValue(aiChatSub);
+  const [isFirst, setIsFirst] = useState(false);
+  useEffect(() => {
+    if (handleReceiveMessage && !isFirst) {
+      const res = openAiChatApi(
+        `인공지능 챗 봇인 너가 영어학습을 도와줄 거라는 간단한 소개를 한 후 ${subject.name}와 관련된 대화를 영어로 시작해줘. 대화의 시작은 너의 소개야`,
+      );
+      res.then((res) => {
+        // const regex = /^AI: /;
+        const result: string = res.data.choices[0].text.replace(
+          /^\n{2}AI:\s*/,
+          '',
+        );
+        // console.log(result);
+        handleReceiveMessage(result);
+        setIsFirst(true);
+      });
+    }
+  }, []);
 
   useEffect(() => {
     const voice = window.speechSynthesis.getVoices();

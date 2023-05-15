@@ -76,9 +76,9 @@ const LoginForm = () => {
   };
 
   return (
-    <>
-      <h1 className="text-4xl font-bold mb-10">OPENER</h1>
-      <form onSubmit={handleSubmit(handleLogin)} className="mt-5 w-[450px]">
+    <div className="w-[450px] max-sm:w-[300px] flex flex-col justify-center items-center">
+      <h1 className="text-4xl font-bold mb-10 text-center">OPENER</h1>
+      <form onSubmit={handleSubmit(handleLogin)} className="mt-5 w-full">
         <div className="shadow rounded-md">
           <div className="relative" onBlur={() => setIsEmailActive(false)}>
             <input
@@ -119,7 +119,7 @@ const LoginForm = () => {
         </div>
         <Button type="submit" text="로그인" className="validator-submit" />
       </form>
-    </>
+    </div>
   );
 };
 
