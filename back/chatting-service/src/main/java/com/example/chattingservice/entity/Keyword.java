@@ -23,7 +23,7 @@ import lombok.Setter;
 @Builder
 @Entity
 @Table(name = "keyword")
-public class Keyword {
+public class Keyword extends BaseEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long keywordId;
