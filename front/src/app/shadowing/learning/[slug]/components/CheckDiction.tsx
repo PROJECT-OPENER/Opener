@@ -9,7 +9,7 @@ import {
   PropertyId,
   PronunciationAssessmentConfig,
 } from 'microsoft-cognitiveservices-speech-sdk';
-
+import { Chart } from './chart';
 const CheckDiction = (props: any) => {
   const [assessmentResult, setAssessmentResult] = useState<any>();
 
@@ -201,11 +201,6 @@ const CheckDiction = (props: any) => {
       console.log('EndOfDictation');
     }
   };
-  const DetailResult = (index: number) => {
-    console.log(assessmentResult);
-    console.log(assessmentResult.list[index]?.pronunciationAssessment);
-  };
-
   return (
     <div className="relative flex flex-col justify-between h-full">
       <div className="mb-4 min-h-[60px]">
@@ -214,31 +209,61 @@ const CheckDiction = (props: any) => {
           {assessmentResult?.list.map((caption: any, index: number) => {
             return (
               <span key={index}>
-                <span onClick={() => DetailResult(index)}>
-                  {caption.isPron ? (
-                    <>
-                      <span className="cursor-pointer hover:bg-black">
-                        {caption.word}
-                      </span>
-                    </>
+                <span>
+                  {caption.isPron ||
+                  caption.pronunciationAssessment?.AccuracyScore > 70 ? (
+                    <span className="text-[#04ff00] cursor-pointer">
+                      {caption.word}
+                    </span>
+                  ) : caption.isPron ||
+                    caption.pronunciationAssessment?.AccuracyScore > 50 ? (
+                    <span className="text-[#ffbd08] cursor-pointer">
+                      {caption.word}
+                    </span>
+                  ) : caption.isPron ||
+                    caption.pronunciationAssessment?.ErrorType !== 'None' ? (
+                    <span className="text-[#ff1b1b] cursor-pointer">
+                      {caption.word}
+                    </span>
                   ) : (
-                    <>
-                      <span className="text-red-600/75 cursor-pointer hover:bg-black">
-                        {caption.word}
-                      </span>
-                    </>
+                    <span className="text-[#808080] cursor-pointer">
+                      {caption.word}
+                    </span>
                   )}
                 </span>{' '}
+                {/* AccuracyScore: 100
+                    ErrorType: "None" */}
               </span>
             );
           })}
         </p>
       </div>
-      <div>
-        <p>accuracy: {assessmentResult?.assessment?.accuracy}점</p>
-        <p>fluency: {assessmentResult?.assessment?.fluency}점</p>
-        <p>completeness: {assessmentResult?.assessment?.completeness}점</p>
-        <p>pron: {assessmentResult?.assessment?.pron}점</p>
+      <div className="flex flex-col justify-center items-center mb-3">
+        {assessmentResult?.assessment ? (
+          <div className="bg-slate-50 rounded-md border py-3 px-2">
+            <p className="text-center font-semibold">발음 평가 결과</p>
+            <div className="flex flex-row justify-center items-center">
+              <div className="w-[100px] ">
+                <Chart value={assessmentResult.assessment.pron} />
+                <p className="text-center text-xs">발음 점수</p>
+              </div>
+              <div className="w-[70px] ">
+                <Chart value={assessmentResult.assessment.accuracy} />
+                <p className="text-center text-xs">정확성</p>
+              </div>
+              <div className="w-[70px] ">
+                <Chart value={assessmentResult.assessment.fluency} />
+                <p className="text-center text-xs">유창성</p>
+              </div>
+              <div className="w-[70px] ">
+                <Chart value={assessmentResult.assessment.completeness} />
+                <p className="text-center text-xs">완성도</p>
+              </div>
+            </div>
+          </div>
+        ) : (
+          ''
+        )}
       </div>
       <div className="flex flex-row items-end justify-between">
         <div className="w-full">
