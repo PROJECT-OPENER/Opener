@@ -1,10 +1,12 @@
 'use client';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Button from '@/app/components/Button';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import useSWR from 'swr';
 import { getInterestListApi } from '@/app/api/chatApi';
 import { interestInterface } from '@/types/share';
+import { useSetRecoilState } from 'recoil';
+import { aiChatSub } from '../store';
 
 const ChoiceBox = () => {
   const { data, isLoading } = useSWR('get/interest', getInterestListApi, {
@@ -13,30 +15,20 @@ const ChoiceBox = () => {
 
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [selected, setSelected] = useState<string>('');
-  const searchParams = useSearchParams();
+  const setAiSub = useSetRecoilState(aiChatSub);
   const router = useRouter();
-
-  const createQueryString = useCallback(
-    (name: string, value: string) => {
-      const params = new URLSearchParams(searchParams);
-      params.set(name, value);
-
-      return params.toString();
-    },
-    [searchParams],
-  );
 
   useEffect(() => {
     setActiveIndex(null);
+    setAiSub({ subIndex: 0, name: '' });
   }, []);
 
   const handleClick = () => {
     if (activeIndex === null) {
       alert('주제를 선택해주세요.');
     } else {
-      router.push(
-        '/aiChat/chatRoom' + '?' + createQueryString('sub', `${selected}`),
-      );
+      setAiSub({ subIndex: activeIndex, name: selected });
+      router.push('/aiChat/chatRoom');
     }
   };
   if (isLoading) return <div>로딩중...</div>;

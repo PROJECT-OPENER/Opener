@@ -41,6 +41,15 @@ export interface interestInterface {
   interestId: number;
   interest: string;
 }
+export interface slideInterface {
+  infinite: boolean;
+  speed: number;
+  slidesToShow: number;
+  slidesToScroll: number;
+  arrows: boolean;
+  autoplay: boolean;
+  rows?: number;
+}
 // end of 유저 관련 타입
 
 // response 관련 타입

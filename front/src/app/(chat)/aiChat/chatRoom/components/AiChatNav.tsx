@@ -1,13 +1,22 @@
 'use client';
 import Button from '@/app/components/Button';
 import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
 import React, { useState } from 'react';
 import AiChatNavSlider from './AiChatNavSlider';
+import { useRecoilValue } from 'recoil';
+import { aiChatSub } from '../../store';
+
+const settings = {
+  infinite: true,
+  speed: 500,
+  slidesToShow: 1,
+  slidesToScroll: 1,
+  arrows: false,
+  autoplay: true,
+};
 
 const AiChatNav = () => {
-  const searchParams = useSearchParams();
-  const subject = searchParams.get('sub');
+  const subject = useRecoilValue(aiChatSub);
   const [isTip, setIsTip] = useState(true);
   const handleTip = () => {
     setIsTip(!isTip);
@@ -20,11 +29,11 @@ const AiChatNav = () => {
         <Button type="button" className="" text="TIP" onClick={handleTip} />
       </div>
       {isTip && (
-        <div className="h-[60px] bg-brandP px-5 flex items-center justify-between space-x-3 max-w-full">
-          <div className="text-2xl font-bold text-white flex items-center">
-            {subject}
+        <div className="h-[60px] bg-brandP px-5 flex items-center justify-between space-x-3 max-w-full]">
+          <div className="text-2xl font-bold text-white flex items-center max-sm:text-sm">
+            {subject.name}
           </div>
-          <AiChatNavSlider />
+          <AiChatNavSlider setting={settings} />
           <Button
             text="x"
             className="text-white text-xl"
