@@ -13,6 +13,7 @@ import com.example.challengeservice.dto.response.*;
 import com.example.challengeservice.entity.challenge.Love;
 import com.example.challengeservice.entity.challenge.MemberChallenge;
 import com.example.challengeservice.entity.member.Member;
+import com.example.challengeservice.messageQueue.KafkaProducer;
 import com.example.challengeservice.repository.LoveRepository;
 import com.example.challengeservice.repository.MemberRepository;
 import com.google.firebase.auth.FirebaseAuthException;
@@ -35,6 +36,7 @@ public class ChallengeServiceImpl implements ChallengeService {
 	private final LoveRepository loveRepository;
 	private final MemberRepository memberRepository;
 	private final FireBaseService fireBaseService;
+	private final KafkaProducer kafkaProducer;
 
 	/**
 	 * 신대득
@@ -246,6 +248,7 @@ public class ChallengeServiceImpl implements ChallengeService {
 		List<Love> loveList = loveRepository.findAllByMemberChallenge_MemberChallengeId(memberChallengeId);
 		loveRepository.deleteAll(loveList);
 		memberChallengeRepository.delete(memberChallenge);
+		kafkaProducer.sendDeleteEvent(memberChallenge.getMemberChallengeId());
 	}
 
 	/**
