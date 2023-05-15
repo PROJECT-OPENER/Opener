@@ -10,20 +10,20 @@ type Props = {
 
 const VoiceChallengeInfo = ({ originalChallengeResponseDto }: Props) => {
   return (
-    <div className="bg-[#F8F8F8] p-10 grid grid-cols-3 ">
-      <div className="m-5 ">
+    <div className="bg-[#F8F8F8] p-5 grid grid-cols-5 ">
+      <div className="mx-5 flex items-center col-span-2">
         <Link
           href={`challenge/${originalChallengeResponseDto.challengeId}/original`}
         >
           <img
-            className="h-48 w-32 rounded-lg bg-gray-200"
-            src={originalChallengeResponseDto.challengeImg}
+            className="w-auto rounded-lg bg-gray-200"
+            src={`https://img.youtube.com/vi/${originalChallengeResponseDto.challengeUrl}/0.jpg`}
             alt="..."
           />
         </Link>
       </div>
-      <div className="col-span-2 flex flex-col justify-center">
-        <div className="my-5 text-xl font-medium">
+      <div className="col-span-3 flex flex-col justify-center mx-2">
+        <div className="my-5 text-xl font-medium ">
           <p>{originalChallengeResponseDto.title}</p>
         </div>
         <div className="flex items-center mb-5 text-xl font-medium">
@@ -33,7 +33,7 @@ const VoiceChallengeInfo = ({ originalChallengeResponseDto }: Props) => {
         <div className="flex justify-between">
           <Link
             href={`challenge/${originalChallengeResponseDto.challengeId}/original`}
-            className="bg-[#F0F0F0] w-48 py-3 rounded-3xl flex justify-center items-center shadow-sm"
+            className="bg-[#F0F0F0]  w-48 py-3 rounded-3xl flex justify-center items-center shadow-sm"
           >
             <GrPlayFill size={'1.3rem'} className="fill-black mr-2" />
             <p className="text-lg font-bold">미리보기</p>

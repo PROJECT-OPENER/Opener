@@ -36,7 +36,6 @@ const ChallengeCategoryList = ({ category, startIdx }: Props) => {
   const [observer, setObserver] = useState<IntersectionObserver | null>(null);
 
   const listEndRef = useRef<HTMLParagraphElement>(null);
-  console.log('왜', data);
   useEffect(() => {
     if (observer && isEnd) {
       console.log('불러오기 끝');

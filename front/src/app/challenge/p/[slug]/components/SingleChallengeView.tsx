@@ -175,7 +175,6 @@ const SingleChallengeView = ({ challengeId }: Props) => {
       iv_load_policy: 3,
     },
   };
-  console.log(data);
 
   return (
     <>

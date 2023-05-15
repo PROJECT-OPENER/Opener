@@ -4,6 +4,13 @@ type Props = {
   challengeList: memberChallenge;
 };
 
+type videoInfoType = {
+  start: number;
+  end: number;
+  engCaption: any;
+  videoUrl: string;
+};
+import axios from 'axios';
 import React, { useRef, useEffect, useState } from 'react';
 import YouTube, { YouTubeProps } from 'react-youtube';
 import { memberChallenge, challengeDetail } from '@/types/share';
@@ -18,18 +25,124 @@ import { RiShareForwardFill, RiDeleteBin5Fill } from 'react-icons/ri';
 import useSWR from 'swr';
 
 const ChallengeDetail = ({ challengeList }: Props) => {
+  // ㄱㅂㅈㄱ ========================================
+  const FAST_API_URL = process.env.NEXT_PUBLIC_FAST_API;
+
+  const getCaptionApi = async (videoId: string) => {
+    return await axios({
+      method: 'GET',
+      url: FAST_API_URL + '/fast/caption/' + videoId,
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+      },
+    }).then((res) => {
+      return res.data;
+    });
+  };
   const BASE_URL = process.env.NEXT_PUBLIC_SERVER_URL;
   const fetcher = async (url: string) => {
     const response = await fetch(url);
     return response.json();
   };
   const { user } = useUser();
-
+  const [caption, setCaption] = useState<any>();
+  const [videoInfo, setVideoInfo] = useState<videoInfoType>(); // 가져온 영상 정보를 담는 state
   const { data, isLoading, error } = useSWR(
     `${BASE_URL}challenge-service/watch/member-challenges/${challengeList.memberChallengeId}/video`,
     fetcher,
   );
   const challengeInfo: challengeDetail = data?.data;
+
+  useEffect(() => {
+    if (data) {
+      const getVideo = async () => {
+        data.engCaption = await getCaptionApi(
+          challengeInfo.watchOriginalChallengeResponseDto.challengeUrl,
+        );
+        setVideoInfo({
+          start: convertTime(
+            challengeInfo.watchOriginalChallengeResponseDto.startTime,
+          ),
+          end: convertTime(
+            challengeInfo.watchOriginalChallengeResponseDto.endTime,
+          ),
+          engCaption: convert(data.engCaption),
+          videoUrl:
+            challengeInfo.watchOriginalChallengeResponseDto.challengeUrl,
+        });
+      };
+      getVideo();
+      const convert = (cap: string) => {
+        const resArray = [];
+        if (cap) {
+          const subtitles = cap.replace('WEBVTT\n\n', '');
+          const subtitle = subtitles.split('\n\n');
+          for (let i = 0; i < subtitle.length; i++) {
+            const sub = subtitle[i].split('\n');
+            const subtitleTime = sub[0].split(' --> ');
+            const subtitleText = sub.slice(1).join('\n');
+            if (subtitleTime) {
+              resArray.push({
+                startTime: convertTime(subtitleTime[0]),
+                endTime: convertTime(subtitleTime[1]),
+                text: subtitleText,
+              });
+            }
+          }
+        }
+        return [...resArray];
+      };
+    }
+
+    return () => {
+      cancelAnimationFrame(animFrame.current);
+    };
+  }, [data]);
+
+  const convertTime = (timeString: string): number => {
+    if (!timeString) return 0;
+    const time = timeString.split('.')[0].split(/[:,]/).map(parseFloat);
+
+    if (time.length > 2) {
+      const [hours, minutes, seconds] = time;
+      return hours * 3600 + minutes * 60 + seconds;
+    } else {
+      const [minutes, seconds] = time;
+      return minutes * 60 + seconds;
+    }
+  };
+
+  const changeSubtitle = (time: number) => {
+    if (videoInfo) {
+      for (let i = 0; i < videoInfo?.engCaption.length; i++) {
+        if (
+          time >= videoInfo?.engCaption[i].startTime &&
+          time < videoInfo?.engCaption[i].endTime
+        ) {
+          setCaption({
+            ...caption,
+            eng: videoInfo.engCaption[i]?.text,
+          });
+          return;
+        }
+      }
+    }
+  };
+  const animFrame = useRef<any>();
+  const youtubeRecordRef = useRef<any>();
+  const tracePlayer = () => {
+    if (youtubeRecordRef.current?.getPlayerState() === 1) {
+      const currentTime = youtubeRecordRef.current.getCurrentTime();
+      changeSubtitle(currentTime);
+      animFrame.current = requestAnimationFrame(tracePlayer);
+    } else {
+      return cancelAnimationFrame(animFrame.current);
+    }
+  };
+
+  // ==================
+
   const youtubePlayRef = useRef<YouTube>(null);
   const videoRef = useRef<HTMLDivElement>(null);
   const memberPlayerRef = useRef<HTMLVideoElement>(null);
@@ -52,7 +165,6 @@ const ChallengeDetail = ({ challengeList }: Props) => {
   };
 
   const handleParentClick = async () => {
-    console.log('클릭');
     if (youtubePlayRef.current) {
       const player = youtubePlayRef.current.getInternalPlayer();
       const status = await player.getPlayerState();
@@ -186,12 +298,23 @@ const ChallengeDetail = ({ challengeList }: Props) => {
                 src={challengeInfo?.curMemberChallenge.memberChallengeUrl}
                 className="h-[810px] overflow-hidden relative"
               ></video>
+              <div className="absolute top-10 bg-black  h-14 bg-opacity-20 font-black text-white text-2xl flex justify-center items-center w-full">
+                {caption?.eng}
+              </div>
               <YouTube
-                videoId="2p7tw_Nzne0"
+                videoId={
+                  challengeInfo?.watchOriginalChallengeResponseDto?.challengeUrl
+                }
                 opts={opts}
-                onReady={onPlayReady}
+                onReady={(event) => {
+                  youtubeRecordRef.current = event.target;
+                  onPlayReady(event);
+                }}
                 ref={youtubePlayRef}
-                onStateChange={playingStateChange}
+                onStateChange={(event) => {
+                  playingStateChange(event);
+                  tracePlayer();
+                }}
                 className="absolute bottom-20 left-0 ml-2 mb-2"
               />
               {user && (

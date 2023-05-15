@@ -99,7 +99,9 @@ export interface listInterface {
 export interface originalChallenge {
   challengeId: number;
   title: string;
-  challengeImg: string;
+  challengeUrl: string;
+  startTime: string;
+  endTime: string;
   joinCount: number;
 }
 
@@ -124,13 +126,6 @@ export interface memberChallenge {
   memberChallengeDate: string;
 }
 
-export interface originalChallenge {
-  challengeId: number;
-  title: string;
-  challengeImg: string;
-  joinCount: number;
-}
-
 // all 페이지에서 가져오는 챌린지 리스트
 export interface allMemberChallengeList {
   totalLength: number;
@@ -146,12 +141,11 @@ export interface idMemberChallengeList {
 // 원본 영상
 export interface originalVideo {
   challengeId: number;
-  title: string;
-  korCaption: string;
-  engCaption: string;
-  captionTime: string;
   challengeUrl: string;
+  endTime: string;
   joinCount: number;
+  startTime: string;
+  title: string;
 }
 
 // 채팅
