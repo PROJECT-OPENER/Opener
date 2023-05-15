@@ -30,9 +30,9 @@ public class Challenge extends BaseEntity {
 	private String title;
 	@Column(name = "challenge_url", length = 1000)
 	private String challengeUrl;
-	@Column(name = "caption_time", length = 100)
+	@Column(name = "start_time", length = 100)
 	private String startTime;
-	@Column(name = "caption_time", length = 100)
+	@Column(name = "end_time", length = 100)
 	private String endTime;
 
 	public static Challenge from(OriginalChallengeRequestDto originalChallengeRequestDto) {
