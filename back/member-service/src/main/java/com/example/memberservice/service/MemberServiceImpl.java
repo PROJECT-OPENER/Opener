@@ -438,4 +438,24 @@ public class MemberServiceImpl implements MemberService {
 			.peek(dto -> dto.setLikeCount(loveRepository.countByMemberChallenge_MemberChallengeId(memberId)))
 			.collect(Collectors.toList());
 	}
+
+	/**
+	 * 김윤미
+	 * explain : 내가 좋아요 한 챌린지 목록 조회
+	 * @param memberId : 사용자 ID
+	 * @param pageable : 페이징 정보
+	 * @return : 챌린지 정보 + 챌린지 좋아요 개수 정보
+	 */
+	@Override
+	@Transactional
+	public List<ChallengeResponseDto> getMyLoveChallenges(Long memberId, Pageable pageable) {
+		memberRepository.findById(memberId)
+			.orElseThrow(() -> new ApiException(ExceptionEnum.MEMBER_NOT_FOUND_EXCEPTION));
+		return memberChallengeRepository.findByLovedMemberIdOrderByCreateDateDesc(memberId, pageable)
+			.getContent()
+			.stream()
+			.map(ChallengeResponseDto::new)
+			.peek(dto -> dto.setLikeCount(loveRepository.countByMemberChallenge_MemberChallengeId(memberId)))
+			.collect(Collectors.toList());
+	}
 }
