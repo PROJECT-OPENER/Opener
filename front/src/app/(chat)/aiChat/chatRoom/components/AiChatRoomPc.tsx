@@ -1,11 +1,9 @@
 'use client';
 import React, { useEffect, useRef } from 'react';
-import AiChatNav from './AiChatNav';
 import AiChatMessageList from './AiChatMessageList';
 import AiChatSendVoice from './AiChatSendVoice';
 import AiChatSendText from './AiChatSendText';
 import { openAiChatApi } from '@/app/api/openAi';
-import { useSearchParams } from 'next/navigation';
 import {
   aiChatIsChatState,
   aiChatIsRecordingState,
@@ -78,6 +76,7 @@ const AiChatRoomPc = () => {
     <div>
       <TopNavPc />
       <div className="absolute top-20 left-10 right-10 grid grid-cols-3 bottom-10">
+        {/* 왼쪽, 정보 */}
         <div className="flex flex-col justify-between h-[70%] mt-20">
           <AiChatNavPc />
           <div className="flex-none h-fit flex flex-col bg-[#B474FF] pt-5 rounded-3xl">
@@ -108,7 +107,7 @@ const AiChatRoomPc = () => {
             </div>
           </div>
         </div>
-        {/* three.js */}
+        {/* 중앙, three.js */}
         <div className="w-full h-full flex justify-center items-center">
           <Image
             src={'/images/metamong.png'}
@@ -118,6 +117,7 @@ const AiChatRoomPc = () => {
             className="object-fill w-96 h-96"
           />
         </div>
+        {/* 오른쪽, 채팅 */}
         <div className="h-[70%] mt-20">
           <div
             ref={chatWindowRef}
