@@ -9,6 +9,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Pageable;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -31,6 +32,7 @@ import com.example.memberservice.dto.request.member.ProfileImgRequestDto;
 import com.example.memberservice.dto.request.member.SignUpMemberRequestDto;
 import com.example.memberservice.dto.request.member.CheckEmailCodeRequestDto;
 import com.example.memberservice.dto.response.member.BadgeResponseDto;
+import com.example.memberservice.dto.response.member.ChallengeResponseDto;
 import com.example.memberservice.dto.response.member.LoginMemberResponseDto;
 import com.example.memberservice.dto.response.member.LoginResponseDto;
 import com.example.memberservice.entity.member.Badge;
@@ -39,6 +41,8 @@ import com.example.memberservice.entity.member.MemberInterest;
 import com.example.memberservice.entity.shadowing.Interest;
 import com.example.memberservice.repository.BadgeRepository;
 import com.example.memberservice.repository.InterestRepository;
+import com.example.memberservice.repository.LoveRepository;
+import com.example.memberservice.repository.MemberChallengeRepository;
 import com.example.memberservice.repository.MemberInterestRepository;
 import com.example.memberservice.repository.MemberRepository;
 
@@ -53,6 +57,8 @@ public class MemberServiceImpl implements MemberService {
 	private final MemberInterestRepository memberInterestRepository;
 	private final MemberRepository memberRepository;
 	private final BadgeRepository badgeRepository;
+	private final MemberChallengeRepository memberChallengeRepository;
+	private final LoveRepository loveRepository;
 	private final RedisService redisService;
 	private final JavaMailSender javaMailSender;
 	private final BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -409,5 +415,23 @@ public class MemberServiceImpl implements MemberService {
 			.build();
 
 		return badgeResponseDto;
+	}
+
+	/**
+	 * 김윤미
+	 * explain : 내 챌린지 정보 조회
+	 * @param memberId : 사용자 ID
+	 * @param pageable : 페이징 정보
+	 * @return : 챌린지 정보 + 챌린지 좋아요 개수 정보
+	 */
+	@Override
+	@Transactional
+	public List<ChallengeResponseDto> getMyChallenges(Long memberId, Pageable pageable) {
+		return memberChallengeRepository.findByMember_MemberIdOrderByCreateDateDesc(memberId, pageable)
+			.getContent()
+			.stream()
+			.map(ChallengeResponseDto::new)
+			.peek(dto -> dto.setLikeCount(loveRepository.countByMemberChallenge_MemberChallengeId(memberId)))
+			.collect(Collectors.toList());
 	}
 }

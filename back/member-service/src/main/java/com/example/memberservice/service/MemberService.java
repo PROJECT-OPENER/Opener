@@ -1,5 +1,9 @@
 package com.example.memberservice.service;
 
+import java.util.List;
+
+import org.springframework.data.domain.Pageable;
+
 import com.example.memberservice.dto.request.member.LoginRequestDto;
 import com.example.memberservice.dto.request.member.MemberInterestsRequestDto;
 import com.example.memberservice.dto.request.member.NicknameRequestDto;
@@ -8,6 +12,7 @@ import com.example.memberservice.dto.request.member.ProfileImgRequestDto;
 import com.example.memberservice.dto.request.member.SignUpMemberRequestDto;
 import com.example.memberservice.dto.request.member.CheckEmailCodeRequestDto;
 import com.example.memberservice.dto.response.member.BadgeResponseDto;
+import com.example.memberservice.dto.response.member.ChallengeResponseDto;
 import com.example.memberservice.dto.response.member.LoginMemberResponseDto;
 import com.example.memberservice.dto.response.member.LoginResponseDto;
 
@@ -53,4 +58,7 @@ public interface MemberService {
 
 	/** 내 뱃지 조회 **/
 	BadgeResponseDto getBadge(Long memberId);
+
+	/** 내 챌린지 목록 조회 **/
+	List<ChallengeResponseDto> getMyChallenges(Long memberId, Pageable pageable);
 }
