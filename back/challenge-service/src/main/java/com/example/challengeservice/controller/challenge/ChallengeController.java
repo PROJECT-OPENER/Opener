@@ -33,7 +33,7 @@ public class ChallengeController {
 	 */
 	@PostMapping("/challenges")
 	public ResponseEntity<BaseResponseDto> createOriginalChallenge(
-		OriginalChallengeRequestDto originalChallengeRequestDto) {
+		@RequestBody OriginalChallengeRequestDto originalChallengeRequestDto) {
 		challengeService.createOriginalChallenge(originalChallengeRequestDto);
 		return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseDto<>(200, "원본 챌린지 등록 완료"));
 	}
