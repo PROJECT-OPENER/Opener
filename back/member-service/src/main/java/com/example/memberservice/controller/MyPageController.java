@@ -3,6 +3,7 @@ package com.example.memberservice.controller;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -14,15 +15,17 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.memberservice.dto.BaseListResponseDto;
 import com.example.memberservice.dto.BaseResponseDto;
 import com.example.memberservice.dto.request.member.MemberInterestsRequestDto;
 import com.example.memberservice.dto.request.member.NicknameRequestDto;
 import com.example.memberservice.dto.request.member.PasswordRequestDto;
 import com.example.memberservice.dto.request.member.ProfileImgRequestDto;
 import com.example.memberservice.dto.response.member.BadgeResponseDto;
-import com.example.memberservice.dto.response.member.LoginMemberResponseDto;
+import com.example.memberservice.dto.response.member.ChallengeResponseDto;
 import com.example.memberservice.service.MemberServiceImpl;
 
+import feign.Response;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -105,5 +108,21 @@ public class MyPageController {
 		return ResponseEntity.status(HttpStatus.OK)
 			.body(new BaseResponseDto<BadgeResponseDto>(200, "내 뱃지 조회에 성공했습니다.",
 				memberService.getBadge(memberId)));
+	}
+
+	/**
+	 * 김윤미
+	 * explain : 사용자 챌린지 목록 조회
+	 * @param request
+	 * @param pageable
+	 * @return
+	 */
+	@GetMapping("/challenge")
+	public ResponseEntity<BaseListResponseDto<ChallengeResponseDto>> getMyChallenges(HttpServletRequest request,
+		Pageable pageable) {
+		Long memberId = Long.valueOf(request.getHeader("memberId"));
+		return ResponseEntity.status(HttpStatus.OK)
+			.body(new BaseListResponseDto<ChallengeResponseDto>(200, "내 챌린지 목록 조회에 성공했습니다.",
+				memberService.getMyChallenges(memberId, pageable)));
 	}
 }
