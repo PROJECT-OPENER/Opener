@@ -48,4 +48,5 @@ public class ShadowingStatus extends BaseEntity {
 	private ShadowingVideo shadowingVideo;
 	private int repeatCount;
 	private LocalDate statusDate;
+	private int viewCount;
 }
