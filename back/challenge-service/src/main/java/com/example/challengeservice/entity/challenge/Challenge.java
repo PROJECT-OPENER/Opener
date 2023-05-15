@@ -28,7 +28,7 @@ public class Challenge extends BaseEntity {
 	private Long challengeId;
 	@Column(name = "title")
 	private String title;
-	@Column(name = "challenge_url", length = 1000)
+	@Column(name = "challenge_url", length = 100)
 	private String challengeUrl;
 	@Column(name = "start_time", length = 100)
 	private String startTime;
