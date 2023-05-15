@@ -92,6 +92,12 @@ export interface listInterface {
   korSentence: string;
   isMarked: string;
 }
+export interface searchWordInterface {
+  word: string;
+  meaning: string;
+  wordType: string;
+  level: string;
+}
 
 // end of 쉐도잉 관련 타입
 

@@ -34,10 +34,6 @@ body {
   padding: 0 1rem;
 }
 
-#logo {
-  width: 120px;
-  height: auto;
-}
 .tabmenu,
 .tabmenu-back {
   position: fixed;

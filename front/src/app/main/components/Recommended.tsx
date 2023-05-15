@@ -44,12 +44,16 @@ const Recommended = () => {
               <Link
                 href={'/shadowing/learning/' + content.videoId}
                 key={index}
-                className="shadow-custom w-[320px] h-[300px] p-4 rounded-xl bg-[#ffffff] hover:bg-brandY"
+                className="shadow-custom w-[320px] h-[300px] p-4 rounded-3xl bg-[#ffffff] hover:bg-brandY"
               >
                 {/* next.config.js에서 remotePatterns안에 user-images.githubusercontent.com 삭제해야함 */}
-                <div className="relative w-full h-[calc(100%-80px)] rounded-lg overflow-hidden">
-                  <Image src={content.thumbnailUrl} alt="" fill />
-                </div>
+                <Image
+                  src={content.thumbnailUrl}
+                  alt=""
+                  width={288}
+                  height={188}
+                  className="relative rounded-xl overflow-hidden"
+                />
                 <div className="mt-4 p-1">
                   <p className="text-base font-semibold mb-1">
                     {content.engSentence}
@@ -75,7 +79,7 @@ const Recommended = () => {
                 <Link
                   href={'/shadowing/learning/' + content.videoId}
                   key={index}
-                  className="shadow-custom mr-4 w-[250px] sm:w-[280px] p-3 rounded-xl bg-[#ffffff] hover:bg-brandY"
+                  className="shadow-custom mr-4 w-[250px] sm:w-[280px] p-3 rounded-3xl bg-[#ffffff] hover:bg-brandY"
                 >
                   {/* next.config.js에서 remotePatterns안에 user-images.githubusercontent.com 삭제해야함 */}
                   <div className="relative block w-full h-[calc(100%-100px)] sm:h-[calc(100%-116px)] rounded-lg overflow-hidden">
@@ -83,7 +87,7 @@ const Recommended = () => {
                       src={content.thumbnailUrl}
                       alt=""
                       fill
-                      style={{ objectFit: 'contain' }}
+                      sizes="(min-width: 640px) 254px, 226px, height: auto"
                     />
                   </div>
                   <div className="mt-2 px-1">
@@ -96,7 +100,7 @@ const Recommended = () => {
               );
             })}
             <div>
-              <button className="shadow-custom mr-2 w-[110px] h-[250px] sm:h-[285px] rounded-xl bg-[#fff] hover:text-white active:text-white hover:bg-brandP active:bg-[#620fcf]">
+              <button className="shadow-custom mr-2 w-[110px] h-[250px] sm:h-[285px] rounded-3xl bg-[#fff] hover:text-white active:text-white hover:bg-brandP active:bg-[#620fcf]">
                 더 보기
               </button>
             </div>

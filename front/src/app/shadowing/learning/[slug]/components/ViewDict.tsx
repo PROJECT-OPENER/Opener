@@ -1,22 +1,26 @@
-type viewDictType = {
-  word: string;
-};
-const ViewDict = (props: viewDictType) => {
+import { searchWordInterface } from '@/types/share';
+
+const ViewDict = (props: { word: searchWordInterface }) => {
+  const wordInfo = props.word;
+  const meaning = wordInfo.meaning.split(',');
   return (
     <div className="lg:overflow-y-scroll lg:max-h-[150px]">
       <p className="mb-5">
         <span className="text-lg font-semibold text-[#0B8AFF]">
-          {props.word}
+          {wordInfo.word}
         </span>
-        <span className="ml-1 text-base text-[#949494]">[fuck:you]</span>
+        <span className="ml-1 text-sm text-[#949494] ml-2">
+          {wordInfo.level}
+        </span>
       </p>
-      <p className="mb-2 text-base text-[#949494]">명사</p>
-      <p className="mb-2">1. (허구적인, 재미있는) 이야기</p>
-      <p className="mb-2">
-        2. (실제 있었던 일에 대한) 이야기[말] 허구적인, (재미있는) 이야기
-      </p>
-      <p className="mb-2">3. (과거의 사건들을 담은) 이야기, 일대기, 역사</p>
-      <p className="mb-2">4. (신문, 잡지 등의) 기사</p>
+      <p className="mb-2 text-base text-[#949494]">{wordInfo.wordType}</p>
+      {meaning.map((mean, index) => {
+        return (
+          <p className="mb-2" key={index}>
+            {index + 1}. {mean}
+          </p>
+        );
+      })}
     </div>
   );
 };

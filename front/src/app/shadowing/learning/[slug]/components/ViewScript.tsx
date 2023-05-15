@@ -9,6 +9,8 @@ import {
   getVideoApi,
   setCountVideoApi,
   setBookmarkApi,
+  getCaptionApi,
+  translateCaptionApi,
 } from '@/app/api/shadowingApi';
 import {
   BsMic,
@@ -19,10 +21,9 @@ import {
   BsChevronRight,
 } from 'react-icons/bs';
 import { TfiAngleLeft } from 'react-icons/tfi';
-import { scriptInterface } from '@/types/share';
+import { scriptInterface, searchWordInterface } from '@/types/share';
 import Link from 'next/link';
-
-// import { oauthSignIn } from '@/app/api/shadowingApi';
+import { dictionaryApi } from '@/app/api/shadowingApi';
 
 type videoInfoType =
   | {
@@ -40,8 +41,11 @@ const ViewScript = ({ params }: { params: { slug: string } }) => {
   const videoId = params.slug;
   const playerRef = useRef<YouTubePlayer>(null);
   const [checkDiction, setCheckDiction] = useState<boolean>(false);
-  const [searchWord, setSearchWord] = useState<string>('');
-  const [caption, setCaption] = useState<{ eng: string[]; kor: string }>();
+  const [searchWord, setSearchWord] = useState<searchWordInterface>();
+  const [caption, setCaption] = useState<{
+    eng: string[] | null;
+    kor: string;
+  }>();
   const [count, setCount] = useState<number>(1);
   const showCountRef = useRef<boolean>(false);
   const [speed, setSpeed] = useState<number>(1);
@@ -56,7 +60,13 @@ const ViewScript = ({ params }: { params: { slug: string } }) => {
   useEffect(() => {
     const getVideo = async (videoId: string) => {
       const data = await getVideoApi(videoId);
-      // console.log(data);
+      console.log(data);
+      if (data.engCaption === null || data.engCaption === '') {
+        data.engCaption = await getCaptionApi(data.videoUrl);
+        data.korCaption = await translateCaptionApi(
+          data.engCaption.replace('WEBVTT\n\n', ''),
+        );
+      }
       setVideoInfo({
         start: convertTime(data.start),
         end: convertTime(data.end),
@@ -68,6 +78,7 @@ const ViewScript = ({ params }: { params: { slug: string } }) => {
       });
       setCount(data.repeat ? data.repeat + 1 : 1);
     };
+
     const convert = (cap: string) => {
       const resArray: scriptInterface[] = [];
       if (cap) {
@@ -91,8 +102,12 @@ const ViewScript = ({ params }: { params: { slug: string } }) => {
     getVideo(videoId);
   }, []);
 
-  const searchDict = (word: string): void => {
-    setSearchWord(word);
+  const searchDict = async (word: string) => {
+    const res = await dictionaryApi(word);
+    console.log(res);
+    if (res.status === 200) {
+      setSearchWord(res.data.data);
+    }
   };
 
   const bookMark = () => {
@@ -230,7 +245,6 @@ const ViewScript = ({ params }: { params: { slug: string } }) => {
   };
 
   useEffect(() => {
-    // oauthSignIn(); // 현재 사용 불가능
     return () => {
       console.log('clear');
       cancelAnimationFrame(raf.current); // requestAnimationFrame(tracePlayer) 후 clear <= 메모리 누수 방지
@@ -282,7 +296,7 @@ const ViewScript = ({ params }: { params: { slug: string } }) => {
           }}
         />
       </div>
-      <div className="w-[85%] py-5 px-8 max-w-[1024px]">
+      <div className="w-full lg:w-[85%] py-5 px-8 max-w-[1024px]">
         <div className="relative w-full rounded-lg bg-white shadow-custom py-6 px-8 flex flex-col lg:flex-row justify-between">
           <div className="w-full flex flex-col justify-between h-full">
             {checkDiction ? (
@@ -329,7 +343,7 @@ const ViewScript = ({ params }: { params: { slug: string } }) => {
                 </div>
                 <div className="mt-2 mb-5 min-h-[60px]">
                   <div className="english_subtitle">
-                    {caption?.eng.map((word, index) => {
+                    {caption?.eng?.map((word, index) => {
                       return (
                         <span key={index}>
                           <span
