@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.data.domain.Pageable;
 
+import com.example.shadowingservice.dto.request.CaptionDto;
 import com.example.shadowingservice.dto.response.AuthMainThemeRoadMapResponseDto;
 import com.example.shadowingservice.dto.response.AuthNoRoadMapResponseDto;
 import com.example.shadowingservice.dto.response.AuthRoadMapResponseDto;
@@ -39,7 +40,7 @@ public interface ShadowingService {
 	void updateRepeatCount(Long videoId, Long memberId);
 
 	/** 비로그인 쉐도잉 영상 조회 **/
-	ShadowingDetailDto getShadowingDetailDto(Long videoId);
+	ShadowingDetailDto getShadowingDetailDto(CaptionDto captionDto, Long videoId);
 
 	/** 로그인 쉐도잉 영상 조회 **/
 	LoginShadowingDetailDto getLoginShadowingDetailDto(Long videoId, Long memberId);

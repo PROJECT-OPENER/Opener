@@ -6,12 +6,15 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.transaction.Transactional;
+
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.example.shadowingservice.common.StepMap;
 import com.example.shadowingservice.common.exception.ApiException;
 import com.example.shadowingservice.common.exception.ExceptionEnum;
+import com.example.shadowingservice.dto.request.CaptionDto;
 import com.example.shadowingservice.dto.response.AuthMainThemeRoadMapResponseDto;
 import com.example.shadowingservice.dto.response.AuthNoRoadMapResponseDto;
 import com.example.shadowingservice.dto.response.AuthRoadMapResponseDto;
@@ -235,9 +238,20 @@ public class ShadowingServiceImpl implements ShadowingService {
 	 * @return
 	 */
 	@Override
-	public ShadowingDetailDto getShadowingDetailDto(Long videoId) {
+	@Transactional
+	public ShadowingDetailDto getShadowingDetailDto(CaptionDto captionDto, Long videoId) {
 		ShadowingVideo shadowingVideo = shadowingVideoRepository.findByVideoId(videoId)
 			.orElseThrow(() -> new ApiException(ExceptionEnum.SHADOWING_NOT_FOUND_EXCEPTION));
+
+		if (shadowingVideo.getKorCaption() == null || shadowingVideo.getKorCaption().isEmpty()) {
+			shadowingVideo.setKorCaption(captionDto.getKorCaption());
+		}
+
+		if (shadowingVideo.getEngCaption() == null || shadowingVideo.getKorCaption().isEmpty()) {
+			shadowingVideo.setEngCaption(captionDto.getEngCaption());
+		}
+
+		shadowingVideoRepository.save(shadowingVideo);
 
 		return ShadowingDetailDto.builder()
 			.videoUrl(shadowingVideo.getVideoUrl())
