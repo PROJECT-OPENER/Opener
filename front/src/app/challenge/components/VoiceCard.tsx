@@ -18,8 +18,8 @@ const VoiceCard = ({ challenge }: Props) => {
           <div className="grid grid-cols-3">
             <div className="flex items-center">
               <img
-                className="md:h-48 w-auto rounded-lg "
-                src={challenge.challengeImg}
+                className="md:h-48 rounded-lg "
+                src={`https://img.youtube.com/vi/${challenge.challengeUrl}/0.jpg`}
                 alt=""
               />
             </div>

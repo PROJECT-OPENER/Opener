@@ -3,36 +3,47 @@
 import React, { useEffect, useState } from 'react';
 import { originalVideoApi } from '@/app/api/challengeApi';
 import { originalVideo } from '@/types/share';
+import YouTube, { YouTubeProps } from 'react-youtube';
+
 type Props = {
   challengeId: number;
 };
 
 const OriginalVideo = ({ challengeId }: Props) => {
   const [originVideo, setOriginVideo] = useState<originalVideo>();
+  const opts: YouTubeProps['opts'] = {
+    height: '800',
+    width: '450',
+    playerVars: {
+      controls: 1,
+      loop: 1,
+      disablekb: 1,
+      autohide: 0,
+      autoplay: 1,
+      fs: 0,
+      showinfo: 0,
+      rel: 0,
+      iv_load_policy: 3,
+    },
+  };
   useEffect(() => {
     const getData = async () => {
       const response = await originalVideoApi(challengeId);
+      console.log(response);
       setOriginVideo({
         challengeId: response.challengeId,
         title: response.title,
-        korCaption: response.korCaption,
-        engCaption: response.engCaption,
-        captionTime: response.captionTime,
         challengeUrl: response.challengeUrl,
+        endTime: response.endTime,
         joinCount: response.joinCount,
+        startTime: response.startTime,
       });
     };
     getData();
   }, []);
   return (
-    <div className="bg-gray-100 p-10">
-      <p>원본 영상입니다.</p>
-      <p>{originVideo?.title}</p>
-      <p>{originVideo?.korCaption}</p>
-      <p>{originVideo?.engCaption}</p>
-      <p>{originVideo?.captionTime}</p>
-      <p>{originVideo?.challengeUrl}</p>
-      <p>{originVideo?.joinCount}</p>
+    <div className="">
+      <YouTube videoId={originVideo?.challengeUrl} opts={opts} className="" />
     </div>
   );
 };

@@ -5,10 +5,18 @@ import { useRouter } from 'next/navigation';
 import YouTube, { YouTubeProps } from 'react-youtube';
 import Button from '@/app/components/Button';
 import { getSession } from 'next-auth/react';
-import { uploadChallenge } from '@/app/api/challengeApi';
+import { uploadChallenge, originalVideoApi } from '@/app/api/challengeApi';
+import axios from 'axios';
 
 type Props = {
   originalId: number;
+};
+
+type videoInfoType = {
+  start: number;
+  end: number;
+  engCaption: any;
+  videoUrl: string;
 };
 
 const ShootingVideo = ({ originalId }: Props) => {
@@ -35,6 +43,104 @@ const ShootingVideo = ({ originalId }: Props) => {
         alert('영상 공유를 성공하였습니다.');
         router.push('/challenge');
       }
+    }
+  };
+
+  // ========================================
+  const [caption, setCaption] = useState<any>();
+  const [videoInfo, setVideoInfo] = useState<videoInfoType>(); // 가져온 영상 정보를 담는 state
+  const FAST_API_URL = process.env.NEXT_PUBLIC_FAST_API;
+
+  const getCaptionApi = async (videoId: string) => {
+    return await axios({
+      method: 'GET',
+      url: FAST_API_URL + '/fast/caption/' + videoId,
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+      },
+    }).then((res) => {
+      return res.data;
+    });
+  };
+
+  useEffect(() => {
+    const getVideo = async () => {
+      const originalRes = await originalVideoApi(originalId);
+      const engCaption = await getCaptionApi(originalRes.challengeUrl);
+      setVideoInfo({
+        start: convertTime(originalRes.startTime),
+        end: convertTime(originalRes.endTime),
+        engCaption: convert(engCaption),
+        videoUrl: originalRes.challengeUrl,
+      });
+      // console.log(videoInfo);
+    };
+    getVideo();
+    const convert = (cap: string) => {
+      const resArray = [];
+      if (cap) {
+        const subtitles = cap.replace('WEBVTT\n\n', '');
+        const subtitle = subtitles.split('\n\n');
+        for (let i = 0; i < subtitle.length; i++) {
+          const sub = subtitle[i].split('\n');
+          const subtitleTime = sub[0].split(' --> ');
+          const subtitleText = sub.slice(1).join('\n');
+          if (subtitleTime) {
+            resArray.push({
+              startTime: convertTime(subtitleTime[0]),
+              endTime: convertTime(subtitleTime[1]),
+              text: subtitleText,
+            });
+          }
+        }
+      }
+      return [...resArray];
+    };
+
+    return () => {
+      cancelAnimationFrame(animFrame.current);
+    };
+  }, []);
+
+  const convertTime = (timeString: string): number => {
+    if (!timeString) return 0;
+    const time = timeString.split('.')[0].split(/[:,]/).map(parseFloat);
+
+    if (time.length > 2) {
+      const [hours, minutes, seconds] = time;
+      return hours * 3600 + minutes * 60 + seconds;
+    } else {
+      const [minutes, seconds] = time;
+      return minutes * 60 + seconds;
+    }
+  };
+
+  const changeSubtitle = (time: number) => {
+    if (videoInfo) {
+      for (let i = 0; i < videoInfo?.engCaption.length; i++) {
+        if (
+          time >= videoInfo?.engCaption[i].startTime &&
+          time < videoInfo?.engCaption[i].endTime
+        ) {
+          setCaption({
+            ...caption,
+            eng: videoInfo.engCaption[i]?.text,
+          });
+          return;
+        }
+      }
+    }
+  };
+  const animFrame = useRef<any>();
+  const youtubeSubscribeRef = useRef<any>();
+  const tracePlayer = () => {
+    if (youtubeSubscribeRef.current?.getPlayerState() === 1) {
+      const currentTime = youtubeSubscribeRef.current.getCurrentTime();
+      changeSubtitle(currentTime);
+      animFrame.current = requestAnimationFrame(tracePlayer);
+    } else {
+      return cancelAnimationFrame(animFrame.current);
     }
   };
 
@@ -229,14 +335,23 @@ const ShootingVideo = ({ originalId }: Props) => {
           <>
             <div className={isPreview ? 'hidden' : 'relative'}>
               <video className="" autoPlay muted ref={previewPlayer}></video>
+              <div className="absolute top-10 bg-black  h-14 bg-opacity-20 font-black text-white text-2xl flex justify-center items-center w-full">
+                {caption?.eng}
+              </div>
               <div className="absolute bottom-0 left-0 ml-2 mb-2">
                 <YouTube
                   style={videoStyle}
-                  videoId="Wb7dDxDNvtc"
+                  videoId={videoInfo?.videoUrl}
                   opts={opts}
-                  onReady={onRecordReady}
+                  onReady={(event) => {
+                    youtubeSubscribeRef.current = event.target;
+                    onRecordReady(event);
+                  }}
                   ref={youtubeRecordRef}
-                  onStateChange={recordingStateChange}
+                  onStateChange={(event) => {
+                    recordingStateChange(event);
+                    tracePlayer();
+                  }}
                   className={isRec ? '' : 'hidden'}
                 />
               </div>
@@ -265,15 +380,24 @@ const ShootingVideo = ({ originalId }: Props) => {
           <>
             <div className={isPreview ? 'relative' : 'hidden'}>
               <video ref={recordingPlayer}></video>
+              <div className="absolute top-10 bg-black  h-14 bg-opacity-20 font-black text-white text-2xl flex justify-center items-center w-full">
+                {caption?.eng}
+              </div>
               <canvas ref={thumbCanvas} className="hidden"></canvas>
               <img ref={thumbnail} />
               <div className="absolute bottom-0 left-0 ml-2 mb-2">
                 <YouTube
-                  videoId="Wb7dDxDNvtc"
+                  videoId={videoInfo?.videoUrl}
                   opts={opts}
-                  onReady={onPlayReady}
+                  onReady={(event) => {
+                    onPlayReady(event);
+                    youtubeSubscribeRef.current = event.target;
+                  }}
                   ref={youtubePlayRef}
-                  onStateChange={playingStateChange}
+                  onStateChange={(event) => {
+                    playingStateChange(event);
+                    tracePlayer();
+                  }}
                 />
               </div>
               <div className="absolute bottom-0 right-0 mr-2 mb-10">
