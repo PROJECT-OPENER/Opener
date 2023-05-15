@@ -66,6 +66,6 @@ app.add_middleware(
 )
 
 
-@app.get("/caption/{video_id}")
+@app.get("/fast/caption/{video_id}")
 def read_item(video_id: str):
     return get_caption(video_id)
