@@ -21,3 +21,16 @@
 .highlight {
   @apply text-brandP rounded-md font-bold;
 }
+
+@keyframes animate-bounce-right {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(3px);
+  }
+}
+
+.animate-bounce-right {
+  animation: animate-bounce-right 1s ease-in-out infinite;
+}

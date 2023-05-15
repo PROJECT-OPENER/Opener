@@ -19,7 +19,6 @@ import {
   userChatTimeState,
   userChatTimerState,
   userChatTurnState,
-  userChatTargetWordState,
   userChatGrammerMsgListState,
   userChatScoreState,
   userChatLastChatState,
@@ -34,6 +33,9 @@ import { checkGrammer, isStringValidJSON } from '@/util/AiChat';
 import Loading from '@/app/components/Loading';
 import useSWR from 'swr';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
+import UserChatRoundPc from './UserChatRoundPc';
+import Link from 'next/link';
 
 const ChatRoom = () => {
   const { data: session } = useSession();
@@ -150,50 +152,6 @@ const ChatRoom = () => {
     // 문법 검사
     if (messageList.length > 0 && turn < 12) {
       // console.log('messageList', turn);
-      const text = messageList[messageList.length - 1].message;
-      const chatNickname = messageList[messageList.length - 1].nickname;
-      if (text === 'pass') {
-        const pass = async () => {
-          const payload = {
-            type: 'pass',
-            nickname: chatNickname,
-            message: 'pass',
-            turn: turn,
-            score: 0,
-          };
-          await setGrammerMsgState((prev: any) => {
-            const isTurnExist = prev.some(
-              (item: any) => item.turn === payload.turn,
-            );
-            if (isTurnExist) return prev;
-            return [...prev, payload];
-          });
-        };
-        pass();
-      } else {
-        // 제시어 체크
-        if (text.includes(userChatRoom.keyword)) {
-          if (chatNickname === nickname) updateMyWordUsed();
-          else updateOtherWordUsed();
-        }
-        // 문법 검사
-        const check = async () => {
-          const res = await checkGrammer(text, chatNickname, turn);
-          await setGrammerMsgState((prev: any) => {
-            const isTurnExist = prev.some(
-              (item: any) => item.turn === res.turn,
-            );
-            if (isTurnExist) return prev;
-            return [...prev, res];
-          });
-          if (chatNickname === nickname) {
-            updateMyGrammerScore(res.score);
-          } else {
-            updateotherGrammarScore(res.score);
-          }
-        };
-        check();
-      }
     }
     if (turn === 11) setTurn(999);
   }, [messageList]);
@@ -312,6 +270,7 @@ const ChatRoom = () => {
     });
     // setMessage('');
     // }
+    handleGrammerCheck(messageData.message, messageData.nickname);
     setMessage('');
     setIsRecording(false);
     setTurn(turn + 1);
@@ -319,6 +278,49 @@ const ChatRoom = () => {
     setTimer(userChatTime);
     if (turn === 10) {
       setLastChat(true);
+    }
+  };
+  //문법 검사
+  const handleGrammerCheck = (text: string, chatNickname: string) => {
+    if (text === 'pass') {
+      const pass = async () => {
+        const payload = {
+          type: 'pass',
+          nickname: chatNickname,
+          message: 'pass',
+          turn: turn,
+          score: 0,
+        };
+        await setGrammerMsgState((prev: any) => {
+          const isTurnExist = prev.some(
+            (item: any) => item.turn === payload.turn,
+          );
+          if (isTurnExist) return prev;
+          return [...prev, payload];
+        });
+      };
+      pass();
+    } else {
+      // 제시어 체크
+      if (text.includes(userChatRoom.keyword)) {
+        if (chatNickname === nickname) updateMyWordUsed();
+        else updateOtherWordUsed();
+      }
+      // 문법 검사
+      const check = async () => {
+        const res = await checkGrammer(text, chatNickname, turn);
+        await setGrammerMsgState((prev: any) => {
+          const isTurnExist = prev.some((item: any) => item.turn === res.turn);
+          if (isTurnExist) return prev;
+          return [...prev, res];
+        });
+        if (chatNickname === nickname) {
+          updateMyGrammerScore(res.score);
+        } else {
+          updateotherGrammarScore(res.score);
+        }
+      };
+      check();
     }
   };
   const handleKeyboard = () => {
@@ -361,78 +363,201 @@ const ChatRoom = () => {
       otherWordUsed: true,
     }));
   };
+  const handleLeftGame = () => {
+    const confirmed = window.confirm('게임을 나가시겠습니까?');
+    if (confirmed) {
+      router.push('/chat');
+    }
+  };
 
   return (
-    <div className="h-screen border-2 flex flex-col">
-      {gameState && (
-        <>
-          <div className="flex-none">
-            <UserChatNav />
-          </div>
-          <div
-            ref={chatWindowRef}
-            className="flex-auto h-0 overflow-y-auto bg-blue-200"
-          >
-            <div className="min-h-full">
-              <UserChatMessageList />
+    <>
+      {/* 모바일, 440부터 pc */}
+      <div className="h-screen border-2 flex flex-col lg:hidden">
+        {gameState && (
+          <>
+            <div className="flex-none">
+              <UserChatNav />
             </div>
+            <div
+              ref={chatWindowRef}
+              className="flex-auto h-0 overflow-y-auto bg-blue-200"
+            >
+              <div className="min-h-full">
+                <UserChatMessageList />
+              </div>
+            </div>
+            <div className="flex-none h-fit flex flex-col bg-blue-200">
+              {/* 녹음 시 텍스트 보여주기 */}
+              {!isChat && isRecording && (
+                <div className="relative mx-5">
+                  <div className="bg-white rounded-xl text-xl py-3 pl-5 pr-10 min-h-[3.25rem]">
+                    {message.length > 1 ? message : 'Listening...'}
+                  </div>
+                  <button
+                    type="button"
+                    className="absolute right-0 top-0 bottom-0 text-3xl pr-3"
+                    onClick={handleKeyboard}
+                  >
+                    <BsKeyboard className="fill-black" />
+                  </button>
+                </div>
+              )}
+              {gameState && handleTurn(isFirst, turn) && (
+                <div className="mx-5 mb-5 bg-brandP rounded-xl">
+                  {/* 녹음 */}
+                  {!isChat && (
+                    <UserChatSendVoice handleSendMessage={handleSendMessage} />
+                  )}
+                  {/* 키보드 */}
+                  {isChat && (
+                    <UserChatSendText handleSendMessage={handleSendMessage} />
+                  )}
+                </div>
+              )}
+              {gameState && !handleTurn(isFirst, turn) && (
+                <div className="mx-5 mb-5 bg-brandP rounded-xl">
+                  <div className="p-5 text-center text-xl text-white animate-pulse">
+                    상대방의 턴입니다.
+                  </div>
+                </div>
+              )}
+              {!gameState && (
+                <div className="mx-5 mb-5 bg-brandP rounded-xl">
+                  <div className="p-5 text-center text-xl text-white">
+                    <span className="">게임종료</span>
+                  </div>
+                </div>
+              )}
+            </div>
+          </>
+        )}
+        {!gameState && (
+          <div className="flex justify-center items-center flex-col h-screen font-bold">
+            <Loading />
+            <div>잠시만 기다려주세요.</div>
+            <button type="button" onClick={handleSendResult}>
+              버튼
+            </button>
+            <div>대화가 분석되면 결과 화면으로 이동합니다.</div>
           </div>
-          <div className="flex-none h-fit flex flex-col bg-blue-200">
-            {/* 녹음 시 텍스트 보여주기 */}
-            {!isChat && isRecording && (
-              <div className="relative mx-5">
-                <div className="bg-white rounded-xl text-xl py-3 pl-5 pr-10 min-h-[3.25rem]">
-                  {message.length > 1 ? message : 'Listening...'}
+        )}
+      </div>
+      {/* pc */}
+      {/* pc */}
+      {/* pc */}
+      <div className="max-lg:hidden">
+        <div className="absolute top-3 left-10 right-10 grid grid-cols-3 bg-white shadow-custom p-3 rounded-xl">
+          <Image
+            src={'/images/logo.png'}
+            alt="Logo"
+            width={100}
+            height={24}
+            priority
+            className="mt-2"
+          />
+          <h1 className="text-center text-3xl font-bold">TREB</h1>
+          <button
+            className="text-end text-xl"
+            onClick={handleLeftGame}
+            type="button"
+          >
+            종료
+          </button>
+        </div>
+        <div className="absolute top-20 left-10 right-10 grid grid-cols-3 bottom-10">
+          {/* 왼쪽, 제시어 및 info */}
+          <div className="col-span-1 flex flex-col justify-between h-[90%] mt-2 space-y-3">
+            {gameState && (
+              <>
+                <UserChatRoundPc />
+                <UserChatNav />
+                <div className="flex-none h-fit flex flex-col bg-[#B474FF] pt-5 rounded-3xl">
+                  {/* 녹음 시 텍스트 보여주기 */}
+                  {!isChat && isRecording && (
+                    <div className="relative mx-5">
+                      <div className="bg-white rounded-xl text-xl py-3 pl-5 pr-10 min-h-[3.25rem]">
+                        {message.length > 1 ? message : 'Listening...'}
+                      </div>
+                      <button
+                        type="button"
+                        className="absolute right-0 top-0 bottom-0 text-3xl pr-3"
+                        onClick={handleKeyboard}
+                      >
+                        <BsKeyboard className="fill-black" />
+                      </button>
+                    </div>
+                  )}
+                  {gameState && handleTurn(isFirst, turn) && (
+                    <div className="mx-5 mb-5 bg-brandP rounded-xl">
+                      {/* 녹음 */}
+                      {!isChat && (
+                        <UserChatSendVoice
+                          handleSendMessage={handleSendMessage}
+                        />
+                      )}
+                      {/* 키보드 */}
+                      {isChat && (
+                        <UserChatSendText
+                          handleSendMessage={handleSendMessage}
+                        />
+                      )}
+                    </div>
+                  )}
+                  {gameState && !handleTurn(isFirst, turn) && (
+                    <div className="mx-5 mb-5 bg-brandP rounded-xl">
+                      <div className="p-5 text-center text-xl text-white animate-pulse">
+                        상대방을 기다리고 있습니다.
+                      </div>
+                    </div>
+                  )}
+                  {!gameState && (
+                    <div className="mx-5 mb-5 bg-brandP rounded-xl">
+                      <div className="p-5 text-center text-xl text-white">
+                        <span className="">게임종료</span>
+                      </div>
+                    </div>
+                  )}
                 </div>
-                <button
-                  type="button"
-                  className="absolute right-0 top-0 bottom-0 text-3xl pr-3"
-                  onClick={handleKeyboard}
-                >
-                  <BsKeyboard className="fill-black" />
-                </button>
-              </div>
-            )}
-            {gameState && handleTurn(isFirst, turn) && (
-              <div className="mx-5 mb-5 bg-brandP rounded-xl">
-                {/* 녹음 */}
-                {!isChat && (
-                  <UserChatSendVoice handleSendMessage={handleSendMessage} />
-                )}
-                {/* 키보드 */}
-                {isChat && (
-                  <UserChatSendText handleSendMessage={handleSendMessage} />
-                )}
-              </div>
-            )}
-            {gameState && !handleTurn(isFirst, turn) && (
-              <div className="mx-5 mb-5 bg-brandP rounded-xl">
-                <div className="p-5 text-center text-xl text-white animate-pulse">
-                  상대방의 턴입니다.
-                </div>
-              </div>
+              </>
             )}
             {!gameState && (
-              <div className="mx-5 mb-5 bg-brandP rounded-xl">
-                <div className="p-5 text-center text-xl text-white">
-                  <span className="">게임종료</span>
-                </div>
+              <div className="font-bold bg-white rounded-3xl text-center p-3 flex justify-center items-center flex-col my-auto">
+                <Loading />
+                <div>잠시만 기다려주세요.</div>
+                <button type="button" onClick={handleSendResult}>
+                  버튼
+                </button>
+                <div>대화가 분석되면 결과 화면으로 이동합니다.</div>
               </div>
             )}
           </div>
-        </>
-      )}
-      {!gameState && (
-        <div className="flex justify-center items-center flex-col h-screen font-bold">
-          <Loading />
-          <div>잠시만 기다려주세요.</div>
-          <button type="button" onClick={handleSendResult}>
-            버튼
-          </button>
-          <div>대화가 분석되면 결과 화면으로 이동합니다.</div>
+          {/* 중앙, three.js */}
+          <div className="w-full h-full flex justify-center items-center">
+            <Image
+              src={'/images/metamong.png'}
+              alt=""
+              width={500}
+              height={500}
+              className="object-fill w-96 h-96"
+            />
+          </div>
+          {/* 오른쪽, 채팅 */}
+          <div className="col-span-1 flex flex-col justify-between h-[90%] mt-2">
+            <div
+              ref={chatWindowRef}
+              className={`${
+                gameState ? '' : 'bg-red-300'
+              } flex-auto h-0 overflow-y-auto bg-[#B474FF] rounded-3xl`}
+            >
+              <div className="min-h-full">
+                <UserChatMessageList />
+              </div>
+            </div>
+          </div>
         </div>
-      )}
-    </div>
+      </div>
+    </>
   );
 };
 

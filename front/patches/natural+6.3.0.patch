@@ -1,0 +1,13 @@
+diff --git a/node_modules/natural/lib/natural/classifiers/classifier_train_parallel.js b/node_modules/natural/lib/natural/classifiers/classifier_train_parallel.js
+index 8fd405e..59a05a2 100644
+--- a/node_modules/natural/lib/natural/classifiers/classifier_train_parallel.js
++++ b/node_modules/natural/lib/natural/classifiers/classifier_train_parallel.js
+@@ -6,7 +6,7 @@ try {
+   Threads = require('webworker-threads')
+ } catch (e) {
+   // Since webworker-threads are optional, only thow if the module is found
+-  if (e.code !== 'MODULE_NOT_FOUND') throw e
++  // if (e.code !== 'MODULE_NOT_FOUND') throw e
+ }
+ 
+ function checkThreadSupport () {
