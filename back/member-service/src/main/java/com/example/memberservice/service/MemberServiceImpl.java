@@ -400,6 +400,8 @@ public class MemberServiceImpl implements MemberService {
 	@Override
 	@Transactional
 	public BadgeResponseDto getBadge(Long memberId) {
+		memberRepository.findById(memberId)
+			.orElseThrow(() -> new ApiException(ExceptionEnum.MEMBER_NOT_FOUND_EXCEPTION));
 		Badge badge = badgeRepository.findByMember_MemberId(memberId).orElse(Badge.builder()
 			.attendanceCount(0)
 			.shadowingCount(0)
@@ -427,6 +429,8 @@ public class MemberServiceImpl implements MemberService {
 	@Override
 	@Transactional
 	public List<ChallengeResponseDto> getMyChallenges(Long memberId, Pageable pageable) {
+		memberRepository.findById(memberId)
+			.orElseThrow(() -> new ApiException(ExceptionEnum.MEMBER_NOT_FOUND_EXCEPTION));
 		return memberChallengeRepository.findByMember_MemberIdOrderByCreateDateDesc(memberId, pageable)
 			.getContent()
 			.stream()
