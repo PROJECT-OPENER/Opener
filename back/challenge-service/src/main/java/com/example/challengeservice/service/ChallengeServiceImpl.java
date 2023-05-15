@@ -42,25 +42,8 @@ public class ChallengeServiceImpl implements ChallengeService {
 	 * @param originalChallengeRequestDto
 	 */
 	@Override
-	public void createOriginalChallenge(OriginalChallengeRequestDto originalChallengeRequestDto) throws
-		IOException,
-		FirebaseAuthException {
-		// Todo : 하드코딩 바꿔야할 부분
-		// Member member = memberRepository.findByMemberId(1L)
-		// 	.orElseThrow(() -> new ApiException(ExceptionEnum.WRONG_MEMBER_EXCEPTION));
-		int myCount = (int)challengeRepository.count() + 1;
-		String fileName = originalChallengeRequestDto.getTitle() + "_" + myCount;
-
-		if (originalChallengeRequestDto.getChallengeFile().isEmpty()) {
-			throw new ApiException(ExceptionEnum.FILE_NOT_FOUND_EXCEPTION);
-		}
-		if (originalChallengeRequestDto.getChallengeImg().isEmpty()) {
-			throw new ApiException(ExceptionEnum.IMG_NOT_FOUND_EXCEPTION);
-		}
-		String fileUrl = fireBaseService.uploadFiles(originalChallengeRequestDto.getChallengeFile(),
-			fileName + "_file");
-		String imgUrl = fireBaseService.uploadFiles(originalChallengeRequestDto.getChallengeImg(), fileName + "_img");
-		Challenge challenge = Challenge.from(originalChallengeRequestDto, fileUrl, imgUrl);
+	public void createOriginalChallenge(OriginalChallengeRequestDto originalChallengeRequestDto) {
+		Challenge challenge = Challenge.from(originalChallengeRequestDto);
 		challengeRepository.save(challenge);
 	}
 
@@ -223,9 +206,7 @@ public class ChallengeServiceImpl implements ChallengeService {
 	 */
 	@Override
 	public void createMemberChallenge(Long challengeId, MemberChallengeRequestDto memberChallengeRequestDto,
-		Long memberId) throws
-		IOException,
-		FirebaseAuthException {
+		Long memberId) throws IOException, FirebaseAuthException {
 		Challenge challenge = challengeRepository.findByChallengeId(challengeId)
 			.orElseThrow(() -> new ApiException(ExceptionEnum.CHALLENGE_NOT_FOUND_EXCEPTION));
 		Member member = memberRepository.findByMemberId(memberId)
@@ -307,7 +288,8 @@ public class ChallengeServiceImpl implements ChallengeService {
 			.map(memberChallenge -> {
 				int likeCount = loveRepository.countByMemberChallenge(memberChallenge);
 				return MemberChallengeResponseDto.from(memberChallenge, likeCount);
-			}).sorted(Comparator.comparing(MemberChallengeResponseDto::getMemberChallengeDate).reversed())
+			})
+			.sorted(Comparator.comparing(MemberChallengeResponseDto::getMemberChallengeDate).reversed())
 			.collect(Collectors.toList());
 		return memberChallengeResponseDtoList;
 	}

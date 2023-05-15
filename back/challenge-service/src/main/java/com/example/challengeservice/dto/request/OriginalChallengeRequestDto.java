@@ -14,9 +14,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class OriginalChallengeRequestDto {
 	private String title;
-	private MultipartFile challengeFile;
-	private MultipartFile challengeImg;
-	private String engCaption;
-	private String korCaption;
-	private String captionTime;
+	private String challengeUrl;
+	private String startTime;
+	private String endTime;
 }

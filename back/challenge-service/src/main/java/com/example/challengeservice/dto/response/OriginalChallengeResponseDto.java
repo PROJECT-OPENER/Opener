@@ -15,14 +15,14 @@ import lombok.NoArgsConstructor;
 public class OriginalChallengeResponseDto {
     private Long challengeId;
     private String title;
-    private String challengeImg;
+    private String challengeUrl;
     private int joinCount;
 
     public static OriginalChallengeResponseDto from(Challenge challenge, int joinCount) {
         return OriginalChallengeResponseDto.builder()
                 .challengeId(challenge.getChallengeId())
                 .title(challenge.getTitle())
-                .challengeImg(challenge.getChallengeImg())
+                .challengeUrl(challenge.getChallengeUrl())
                 .joinCount(joinCount)
                 .build();
     }
