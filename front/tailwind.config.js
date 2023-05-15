@@ -20,6 +20,9 @@ module.exports = {
       boxShadow: {
         custom: '0 2px 10px 0 rgba(0, 0, 0, 0.1)',
       },
+      aspectRatio: {
+        '7.25/10': '7.25 / 10',
+      },
     },
   },
   plugins: [require('tailwind-scrollbar-hide')], // 스크롤바 숨기기
