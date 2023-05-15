@@ -32,6 +32,9 @@ import com.example.chattingservice.entity.Keyword;
 import com.example.chattingservice.entity.chat.WaitingRoom;
 import com.example.chattingservice.entity.chat.enums.Tips;
 import com.example.chattingservice.entity.member.Member;
+import com.example.chattingservice.messagequeue.KafkaProducer;
+import com.example.chattingservice.messagequeue.dto.ScoreDto;
+import com.example.chattingservice.messagequeue.dto.produce.FinishGameProduceDto;
 import com.example.chattingservice.repository.InterestRepository;
 import com.example.chattingservice.repository.MemberRepository;
 import com.example.chattingservice.repository.KeywordRepository;
@@ -52,8 +55,7 @@ public class ChattingServiceImpl implements ChattingService {
 	private final SimpMessagingTemplate messagingTemplate;
 	private final RedisService redisService;
 	private final ObjectMapper objectMapper;
-
-	private final RedisTemplate redisTemplate;
+	private final KafkaProducer kafkaProducer;
 
 	@Value("${spring.img.baseurl}")
 	private String baseImgUrl;
@@ -244,9 +246,12 @@ public class ChattingServiceImpl implements ChattingService {
 			myScoreResponseDto, otherScoreResponseDto, winner, other.getNickname());
 		sendGameResult(finishGameResponseDto, roomId);
 
-		/**
-		 * TODO : kafka producer로 점수 반영 전송
-		 */
+		ScoreDto myScore = ScoreDto.builder().nickname(myScoreResponseDto.getNickname()).score(myEloScore).build();
+		ScoreDto otherScore = ScoreDto.builder()
+			.nickname(otherScoreResponseDto.getNickname())
+			.score(otherEloScore)
+			.build();
+		kafkaProducer.sendScoreToMemberService(new FinishGameProduceDto(myScore, otherScore));
 	}
 
 	/**
