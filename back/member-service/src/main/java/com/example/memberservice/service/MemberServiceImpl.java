@@ -435,7 +435,7 @@ public class MemberServiceImpl implements MemberService {
 			.getContent()
 			.stream()
 			.map(ChallengeResponseDto::new)
-			.peek(dto -> dto.setLikeCount(loveRepository.countByMemberChallenge_MemberChallengeId(memberId)))
+			.peek(dto -> dto.setLikeCount(loveRepository.countByMemberChallenge_MemberChallengeId(dto.getMemberChallengeId())))
 			.collect(Collectors.toList());
 	}
 
@@ -455,7 +455,7 @@ public class MemberServiceImpl implements MemberService {
 			.getContent()
 			.stream()
 			.map(ChallengeResponseDto::new)
-			.peek(dto -> dto.setLikeCount(loveRepository.countByMemberChallenge_MemberChallengeId(memberId)))
+			.peek(dto -> dto.setLikeCount(loveRepository.countByMemberChallenge_MemberChallengeId(dto.getMemberChallengeId())))
 			.collect(Collectors.toList());
 	}
 }
