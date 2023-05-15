@@ -125,4 +125,20 @@ public class MyPageController {
 			.body(new BaseListResponseDto<ChallengeResponseDto>(200, "내 챌린지 목록 조회에 성공했습니다.",
 				memberService.getMyChallenges(memberId, pageable)));
 	}
+
+	/**
+	 * 김윤미
+	 * explain : 사용자가 좋아요 한 챌린지 목록 조회
+	 * @param request
+	 * @param pageable
+	 * @return
+	 */
+	@GetMapping("/like")
+	public ResponseEntity<BaseListResponseDto<ChallengeResponseDto>> getMyLoveChallenges(HttpServletRequest request,
+		Pageable pageable) {
+		Long memberId = Long.valueOf(request.getHeader("memberId"));
+		return ResponseEntity.status(HttpStatus.OK)
+			.body(new BaseListResponseDto<ChallengeResponseDto>(200, "내가 좋아요한 챌린지 목록 조회에 성공했습니다.",
+				memberService.getMyLoveChallenges(memberId, pageable)));
+	}
 }

@@ -61,4 +61,7 @@ public interface MemberService {
 
 	/** 내 챌린지 목록 조회 **/
 	List<ChallengeResponseDto> getMyChallenges(Long memberId, Pageable pageable);
+
+	/** 내가 좋아요 한 챌린지 목록 조회 **/
+	List<ChallengeResponseDto> getMyLoveChallenges(Long memberId, Pageable pageable);
 }
