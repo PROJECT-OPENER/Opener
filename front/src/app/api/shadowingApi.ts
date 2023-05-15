@@ -2,6 +2,8 @@ import axios from 'axios';
 import { shadowingApi } from './axiosConfig';
 import { getSession } from 'next-auth/react';
 
+const FAST_API_URL = process.env.NEXT_PUBLIC_FAST_API;
+
 export const getRoadMapApi = async () => {
   console.log('getroadmap');
   const session = await getSession();
@@ -91,38 +93,44 @@ export const setBookmarkApi = async (videoId: string, isSet: boolean) => {
   }
 };
 
-// oauthSignIn => 현재 사용 불가능
-// export const oauthSignIn = async () => {
-//   const client_id = process.env.NEXT_PUBLIC_GOOGLE_OAUTH_ID;
-//   const redirect_uri = process.env.NEXT_PUBLIC_SERVER_URL;
-//   // Google's OAuth 2.0 endpoint for requesting an access token
-//   const oauth2Endpoint = 'https://accounts.google.com/o/oauth2/v2/auth';
+// 단어사전 API
+export const dictionaryApi = (word: string) => {
+  console.log('요청');
+  return shadowingApi.get(`/dictionary/${word}`);
+};
 
-//   // Create <form> element to submit parameters to OAuth 2.0 endpoint.
-//   const form = document.createElement('form');
-//   form.setAttribute('method', 'GET'); // Send as a GET request.
-//   form.setAttribute('action', oauth2Endpoint);
+export const getCaptionApi = async (videoId: string) => {
+  console.log('get caption');
+  return await axios({
+    method: 'GET',
+    url: FAST_API_URL + '/caption/' + videoId,
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+    },
+  }).then((res) => res.data);
+};
 
-//   // Parameters to pass to OAuth 2.0 endpoint.
-//   const params = {
-//     client_id: client_id,
-//     redirect_uri: redirect_uri,
-//     response_type: 'token',
-//     scope: 'https://www.googleapis.com/auth/youtube.force-ssl', // 해당 스코프는 프로젝트가 https인 경우에만 가능
-//     include_granted_scopes: 'true',
-//     state: 'pass-through value',
-//   };
-
-//   // Add form parameters as hidden input values.
-//   for (const p in params) {
-//     const input = document.createElement('input');
-//     input.setAttribute('type', 'hidden');
-//     input.setAttribute('name', p);
-//     input.setAttribute('value', params[p]);
-//     form.appendChild(input);
-//   }
-
-//   // Add form to page and submit it to open the OAuth 2.0 endpoint.
-//   document.body.appendChild(form);
-//   form.submit();
-// };
+export const translateCaptionApi = async (data: string) => {
+  console.log('translate');
+  const response = await axios.post(
+    'https://api.openai.com/v1/completions',
+    {
+      model: 'text-davinci-003',
+      prompt: 'Translate these captions into korean:\n' + data,
+      temperature: 0.3,
+      max_tokens: 3654,
+      top_p: 1,
+      frequency_penalty: 0,
+      presence_penalty: 0,
+    },
+    {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + String(process.env.NEXT_PUBLIC_OPEN_API),
+      },
+    },
+  );
+  console.log(response);
+  return response.data.choices[0].text;
+};
