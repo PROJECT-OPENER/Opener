@@ -31,7 +31,7 @@ const TopNav = () => {
     if (pathname.startsWith(topNavNone[i])) return <div></div>;
   }
   return (
-    <div className="topnav">
+    <div className="topnav z-10">
       <Link href={'/'}>
         <Image src={logo.src} alt="Logo" width={100} height={24} priority />
       </Link>
