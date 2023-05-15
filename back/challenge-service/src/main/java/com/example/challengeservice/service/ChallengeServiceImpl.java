@@ -243,6 +243,8 @@ public class ChallengeServiceImpl implements ChallengeService {
 	public void deleteMemberChallenge(Long memberChallengeId) {
 		MemberChallenge memberChallenge = memberChallengeRepository.findByMemberChallengeId(memberChallengeId)
 			.orElseThrow(() -> new ApiException(ExceptionEnum.MEMBER_CHALLENGE_NOT_FOUND_EXCEPTION));
+		List<Love> loveList = loveRepository.findAllByMemberChallenge_MemberChallengeId(memberChallengeId);
+		loveRepository.deleteAll(loveList);
 		memberChallengeRepository.delete(memberChallenge);
 	}
 

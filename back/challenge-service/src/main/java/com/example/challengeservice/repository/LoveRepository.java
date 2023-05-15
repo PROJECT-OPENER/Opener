@@ -7,6 +7,7 @@ import com.example.challengeservice.entity.member.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -18,4 +19,5 @@ public interface LoveRepository extends JpaRepository<Love, Long> {
 	Optional<Love> findByMemberChallengeAndMember(MemberChallenge memberChallenge, Member member);
 
 	int countByMemberChallengeAndMember(MemberChallenge memberChallenge, Member member);
+	List<Love> findAllByMemberChallenge_MemberChallengeId(Long memberChallengeId);
 }
