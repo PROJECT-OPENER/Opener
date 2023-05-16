@@ -14,6 +14,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class ChallengeBadgeProduceDto implements Serializable {
-	@JsonProperty("member_id")
 	private Long memberId;
 }
