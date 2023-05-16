@@ -48,8 +48,8 @@ const Roadmap = () => {
   }, []);
 
   return (
-    <div className="shadow-custom min-h-[160px] flex flex-col lg:flex-row justify-around py-5 px-2 rounded-3xl lg:py-8 sm:px-10">
-      <p className="lg:text-xl text-center text-lg font-bold mb-3 w-full flex flex-col justify-center">
+    <div className="shadow-custom min-h-[160px] flex flex-col lg:flex-row justify-around rounded-3xl py-5 px-2 lg:py-8 sm:px-10 mx-4 lg:mx-0 bg-white">
+      <p className="lg:text-xl text-center text-lg font-bold mb-3 w-full flex flex-col justify-center ">
         학습 로드맵
       </p>
       {data?.map((content, index) => {
@@ -57,7 +57,7 @@ const Roadmap = () => {
           <Link
             href={'/shadowing/learning/' + content.videoId}
             key={index}
-            className="flex flex-row lg:flex-col-reverse justify-between items-center w-full py-3 px-6"
+            className="flex flex-row lg:flex-col-reverse justify-between items-center w-full py-3 px-6 hover:bg-[#f7f7f7] rounded-xl"
           >
             <div className="lg:mt-3">
               <p className="text-start text-lg font-semibold">

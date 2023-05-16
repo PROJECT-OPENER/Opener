@@ -26,26 +26,26 @@ const Famous = () => {
   }, []);
 
   return (
-    <div className="pb-4 overflow-hidden my-3">
+    <div className="mt-10">
       {/* 데스크탑 용 */}
       <div className="hidden lg:block">
         <div className="flex flex-row justify-between mb-3">
           <h1 className="text-lg">인기 챌린지</h1>
           <Link href={`/challenge/all`}>더 보기</Link>
         </div>
-        <div className="hidden lg:flex flex-row justify-between w-full h-full">
+        <div className="hidden lg:flex flex-row justify-start w-full h-full">
           {contents?.map((content, index) => {
             return (
               <Link
                 key={index}
                 href={`/challenge/scroll/LIKE/${index}`}
-                className="relative block rounded-lg w-full h-full "
+                className="relative block rounded-lg mr-4 lsat:mr-0"
               >
-                <div className="shadow-custom w-[155px] h-[225.5px] rounded-3xl bg-brandP relative">
+                <div className="opacity-90 hover:opacity-100 shadow-custom hover:shadow-customhover w-[157.2px] h-full rounded-3xl relative">
                   <img
                     src={content.memberChallengeImg}
                     alt=""
-                    className="rounded-3xl relative"
+                    className="rounded-3xl relative h-full"
                   />
                   <div className="absolute inset-x-0 bottom-0 left-0 h-8 ml-2 flex text-white">
                     <AiFillHeart
@@ -66,17 +66,21 @@ const Famous = () => {
 
       {/* 모바일 용 */}
       <div className="lg:hidden">
-        <h1 className="text-lg mb-3">인기 챌린지</h1>
-        <PerfectScrollbar options={options} className="w-full h-full py-4">
-          <div className="flex flex-row relative h-full w-full">
+        <h1 className="text-lg mb-3 ml-4">인기 챌린지</h1>
+        <PerfectScrollbar options={options} className="w-full">
+          <div className="flex flex-row relative w-full p-4">
             {contents.map((content, index) => {
               return (
-                <Link key={index} href={`/challenge/scroll/LIKE/${index}`}>
-                  <div className="relative shadow-custom mr-2 w-[110px] sm:w-[137.5px] h-[160px] sm:h-[200px] rounded-3xl bg-brandP">
+                <Link
+                  key={index}
+                  href={`/challenge/scroll/LIKE/${index}`}
+                  className="relative"
+                >
+                  <div className="relative shadow-custom hover:shadow-customhover mr-2 w-[110px] sm:w-[137.5px] rounded-xl h-full">
                     <img
                       src={content.memberChallengeImg}
                       alt=""
-                      className="rounded-3xl relative"
+                      className="rounded-xl relative h-full"
                     />
                     <div className="absolute inset-x-0 bottom-0 left-0 h-8 ml-2 flex text-white">
                       <AiFillHeart
@@ -94,7 +98,7 @@ const Famous = () => {
             })}
             <div>
               <Link href={`/challenge/all`}>
-                <button className="shadow-custom mr-2 w-[110px] h-[160px] sm:h-[200px] rounded-3xl bg-[#fff] hover:text-white active:text-white hover:bg-brandP active:bg-[#620fcf]">
+                <button className="shadow-custom mr-2 w-[110px] h-full rounded-xl bg-[#fff] hover:text-white active:text-white hover:bg-brandP active:bg-[#620fcf]">
                   더 보기
                 </button>
               </Link>
