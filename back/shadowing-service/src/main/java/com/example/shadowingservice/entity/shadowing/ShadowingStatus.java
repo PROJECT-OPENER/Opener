@@ -22,7 +22,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -49,4 +48,13 @@ public class ShadowingStatus extends BaseEntity {
 	private int repeatCount;
 	private LocalDate statusDate;
 	private int viewCount;
+
+	public void updateRepeatCount(int repeatCount) {
+		this.repeatCount = repeatCount;
+	}
+
+	public void updateViewCount(int viewCount) {
+		this.viewCount = viewCount;
+	}
+
 }

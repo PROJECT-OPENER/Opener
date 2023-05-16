@@ -23,6 +23,8 @@ import com.example.shadowingservice.dto.response.AuthNoRoadMapResponseDto;
 import com.example.shadowingservice.dto.response.LoginShadowingDetailDto;
 import com.example.shadowingservice.dto.response.AuthMainThemeRoadMapResponseDto;
 import com.example.shadowingservice.entity.member.Roadmap;
+import com.example.shadowingservice.entity.shadowing.ShadowingStatus;
+import com.example.shadowingservice.repository.ShadowingStatusRepository;
 import com.example.shadowingservice.service.ShadowingService;
 
 import lombok.RequiredArgsConstructor;
@@ -135,20 +137,20 @@ public class AuthShadowingController {
 
 	/**
 	 * 이우승
-	 * explain : 북마크 삭제
+	 * explain : 북마크 등록/해제
 	 * @param videoId
 	 * @return
 	 */
-	@DeleteMapping("/videos/{video-id}/bookmark")
-	public ResponseEntity<BaseResponseDto<Object>> deleteBookmark(HttpServletRequest request,
+	@PatchMapping("/videos/{video-id}/bookmark")
+	public ResponseEntity<BaseResponseDto<Object>> patchBookmark(HttpServletRequest request,
 		@PathVariable("video-id") Long videoId) {
 
 		Long memberId = Long.parseLong(request.getHeader("memberId"));
 
-		shadowingService.deleteBookmark(memberId, videoId);
+		shadowingService.patchBookmark(memberId, videoId);
 
 		return ResponseEntity.status(HttpStatus.OK)
-			.body(new BaseResponseDto<>(200, "북마크 삭제 완료", null));
+			.body(new BaseResponseDto<>(200, "북마크 등록/해제 완료", null));
 	}
 
 	/**

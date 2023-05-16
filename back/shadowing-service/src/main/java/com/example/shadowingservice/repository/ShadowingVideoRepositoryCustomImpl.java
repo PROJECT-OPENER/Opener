@@ -29,7 +29,6 @@ import com.example.shadowingservice.entity.shadowing.ShadowingStatus;
 import com.example.shadowingservice.entity.shadowing.ShadowingVideo;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Expression;
-import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.CaseBuilder;
@@ -80,6 +79,7 @@ public class ShadowingVideoRepositoryCustomImpl implements ShadowingVideoReposit
 
 		int repeatCount = 0;
 		boolean isMarked = false;
+		int viewCount = 1;
 
 		if (result == null) {
 			throw new ApiException(ExceptionEnum.SHADOWING_NOT_FOUND_EXCEPTION);
@@ -87,12 +87,13 @@ public class ShadowingVideoRepositoryCustomImpl implements ShadowingVideoReposit
 
 		if (result.get(shadowingStatus.repeatCount) == null) {
 			ShadowingVideo video = em.find(ShadowingVideo.class, videoId);
-			ShadowingStatus status = new ShadowingStatus(
-				memberId,
-				video,
-				0,
-				LocalDate.now()
-			);
+			ShadowingStatus status = ShadowingStatus.builder()
+				.memberId(memberId)
+				.shadowingVideo(video)
+				.repeatCount(0)
+				.statusDate(LocalDate.now())
+				.viewCount(1)
+				.build();
 			em.persist(status);
 			em.flush();
 		} else {

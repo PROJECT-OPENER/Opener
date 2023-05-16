@@ -22,7 +22,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -37,5 +36,10 @@ public class Bookmark extends BaseEntity {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "video_id", nullable = false)
 	private ShadowingVideo shadowingVideo;
+	private boolean isMarked;
+
+	public void updateMarked(boolean isMarked) {
+		this.isMarked = isMarked;
+	}
 
 }
