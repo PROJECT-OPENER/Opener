@@ -1,3 +1,4 @@
+'use client';
 import Image from 'next/image';
 import Link from 'next/link';
 import { AiOutlineHeart } from 'react-icons/ai';
@@ -15,7 +16,7 @@ const BotMyChallange = () => {
   const { data, error, isLoading, isValidating, size, setSize } =
     useSWRInfinite(getKey, fetcher);
 
-  if (!data) return 'loading';
+  if (!data) return <div>loading..</div>;
   const datas = data ? [].concat(...data) : [];
 
   return (

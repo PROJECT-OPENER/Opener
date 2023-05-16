@@ -6,8 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "postinstall": "patch-package"
+    "lint": "next lint"
   },
   "dependencies": {
     "@ffmpeg-installer/ffmpeg": "^1.1.0",
@@ -38,7 +37,6 @@
     "next": "13.3.0",
     "next-auth": "^4.22.1",
     "openai": "^3.2.1",
-    "patch-package": "^7.0.0",
     "postcss": "8.4.23",
     "react": "18.2.0",
     "react-dom": "18.2.0",
