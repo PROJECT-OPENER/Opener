@@ -1,6 +1,5 @@
 'use client';
 import Button from '@/app/components/Button';
-import Link from 'next/link';
 import React, { useState } from 'react';
 import { useRecoilValue } from 'recoil';
 import {
@@ -63,8 +62,8 @@ const UserChatNav = () => {
         )}
       </div>
       {/* pc */}
-      <div className="max-lg:hidden bg-[#B474FF] rounded-3xl p-5 space-y-3">
-        <h1 className="text-white font-bold text-center xl:text-2xl lg:text-base mb-5">
+      <div className="max-lg:hidden bg-[#fff6] rounded-3xl p-5 space-y-3 shadow-custom">
+        <h1 className="text-black font-bold text-center xl:text-2xl lg:text-base mb-5">
           제시어 : {userChatRoom.keyword}
         </h1>
         <div className="bg-brandP p-3 rounded-3xl flex items-center xl:text-base lg:text-sm">

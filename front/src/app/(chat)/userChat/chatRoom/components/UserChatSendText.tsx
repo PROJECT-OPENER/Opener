@@ -1,9 +1,8 @@
 'use client';
-import React, { useEffect, useRef } from 'react';
+import React, { useRef } from 'react';
 import { BsArrowUp, BsMic } from 'react-icons/bs';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import {
-  userChatGameState,
   userChatIsChatState,
   userChatMessageState,
   userChatTimerState,
