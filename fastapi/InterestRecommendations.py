@@ -67,7 +67,7 @@ def get_recommendations(user_id):
 
     return recommended_videos_info.to_dict('records')
 
-@app.get("/fast/recommendations/{member_id}")
+@app.get("/auth/fast/recommendations/{member_id}")
 async def get_recommendations_api(member_id: int):
     # ratings를 갱신합니다.
     update_ratings()

@@ -63,8 +63,8 @@ public interface ShadowingService {
 	/** 북마크 등록 **/
 	void createBookmark(Long memberId, Long videoId);
 
-	/** 북마크 삭제 **/
-	void deleteBookmark(Long memberId, Long videoId);
+	/** 북마크 등록/해제 **/
+	void patchBookmark(Long memberId, Long videoId);
 
 	/** 단어 조회 **/
 	DictionaryResponseDto getWord(String word);

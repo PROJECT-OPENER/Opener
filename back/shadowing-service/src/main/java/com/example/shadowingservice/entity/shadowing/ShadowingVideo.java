@@ -21,7 +21,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -41,5 +40,13 @@ public class ShadowingVideo extends BaseEntity {
 	private String korSentence;
 	private String engCaption;
 	private String korCaption;
+
+	public void updateEngCaption(String engCaption) {
+		this.engCaption = engCaption;
+	}
+
+	public void updateKorCapation(String korCaption) {
+		this.korCaption = korCaption;
+	}
 
 }

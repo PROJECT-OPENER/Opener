@@ -224,9 +224,9 @@ public class ShadowingServiceImpl implements ShadowingService {
 		int count = shadowingStatus.getRepeatCount();
 
 		if (count + 1 >= 21) {
-			shadowingStatus.setRepeatCount(1);
+			shadowingStatus.updateRepeatCount(1);
 		} else {
-			shadowingStatus.setRepeatCount(count + 1);
+			shadowingStatus.updateRepeatCount(count + 1);
 		}
 		shadowingStatusRepository.save(shadowingStatus);
 	}
@@ -244,11 +244,11 @@ public class ShadowingServiceImpl implements ShadowingService {
 			.orElseThrow(() -> new ApiException(ExceptionEnum.SHADOWING_NOT_FOUND_EXCEPTION));
 
 		if (shadowingVideo.getKorCaption() == null || shadowingVideo.getKorCaption().isEmpty()) {
-			shadowingVideo.setKorCaption(captionDto.getKorCaption());
+			shadowingVideo.updateKorCapation(captionDto.getKorCaption());
 		}
 
 		if (shadowingVideo.getEngCaption() == null || shadowingVideo.getKorCaption().isEmpty()) {
-			shadowingVideo.setEngCaption(captionDto.getEngCaption());
+			shadowingVideo.updateEngCaption(captionDto.getEngCaption());
 		}
 
 		shadowingVideoRepository.save(shadowingVideo);
@@ -270,9 +270,20 @@ public class ShadowingServiceImpl implements ShadowingService {
 	 * @return
 	 */
 	@Override
+	@Transactional
 	public LoginShadowingDetailDto getLoginShadowingDetailDto(Long videoId, Long memberId) {
+
 		LoginShadowingDetailDto loginShadowingDetailDto = shadowingVideoRepository
-			.getLoginShadowingDetailDto(videoId, memberId).get();
+			.getLoginShadowingDetailDto(videoId, memberId)
+			.orElseThrow(() -> new ApiException(ExceptionEnum.SHADOWING_NOT_FOUND_EXCEPTION));
+
+		ShadowingStatus shadowingStatus = shadowingStatusRepository
+			.findByShadowingVideo_VideoIdAndMemberId(videoId, memberId)
+			.orElseThrow(() -> new ApiException(ExceptionEnum.SHADOWING_STATUS_NOT_FOUND_EXCEPTION));
+		shadowingStatus.updateViewCount(shadowingStatus.getViewCount() + 1);
+
+		shadowingStatusRepository.save(shadowingStatus);
+
 		return loginShadowingDetailDto;
 	}
 
@@ -408,31 +419,36 @@ public class ShadowingServiceImpl implements ShadowingService {
 			bookmarkRepository.findByMemberIdAndShadowingVideo_VideoId(memberId, videoId);
 
 		if (existingBookmark.isPresent()) {
-			throw new ApiException(ExceptionEnum.BOOKMARK_ALREADY_EXIST);
+			patchBookmark(memberId, videoId);
+		}else {
+			Bookmark bookmark = Bookmark.builder()
+				.memberId(memberId)
+				.shadowingVideo(shadowingVideo)
+				.isMarked(true)
+				.build();
+
+			bookmarkRepository.save(bookmark);
 		}
-
-		Bookmark bookmark = Bookmark.builder()
-			.memberId(memberId)
-			.shadowingVideo(shadowingVideo)
-			.build();
-
-		bookmarkRepository.save(bookmark);
 	}
 
 	/**
 	 * 이우승
-	 * explain : 북마크 삭제
+	 * explain : 북마크 등록/해제
 	 * @param memberId
 	 * @param videoId
 	 */
 	@Override
-	public void deleteBookmark(Long memberId, Long videoId) {
+	@Transactional
+	public void patchBookmark(Long memberId, Long videoId) {
 
 		Bookmark bookmark = bookmarkRepository.findByMemberIdAndShadowingVideo_VideoId(memberId, videoId)
 			.orElseThrow(() -> new ApiException(ExceptionEnum.ROOKMARK_NOT_FOUND_EXCEPTION));
 
-		bookmarkRepository.delete(bookmark);
-
+		if(!bookmark.isMarked()) {
+			bookmark.updateMarked(true);
+		}else {
+			bookmark.updateMarked(false);
+ 		}
 	}
 
 	/**
