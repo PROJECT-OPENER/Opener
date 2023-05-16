@@ -18,4 +18,7 @@ public interface ChattingService {
 
 	/** Tip 문장 조회 **/
 	List<TipResponseDto> getTips(Long interestId);
+
+	/** 게임 중 ping **/
+	void reportHere(String token, String roomId);
 }

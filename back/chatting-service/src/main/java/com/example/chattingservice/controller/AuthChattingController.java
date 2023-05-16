@@ -59,4 +59,15 @@ public class AuthChattingController {
 				chattingService.getTips(interestId)));
 	}
 
+	/**
+	 * 김윤미
+	 * explain : 게임 중 생존 신고 ping
+	 * @param token
+	 * @param roomId
+	 */
+	@MessageMapping("/user-chat/rooms/{room-id}/here")
+	public void reportHere(@Header("Authorization") String token, @DestinationVariable("room-id") String roomId) {
+		chattingService.reportHere(token, roomId);
+	}
+
 }

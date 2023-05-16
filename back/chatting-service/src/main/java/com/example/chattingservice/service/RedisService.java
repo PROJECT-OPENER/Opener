@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 
+import java.time.Duration;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
@@ -94,6 +95,28 @@ public class RedisService {
 	 */
 	public void deleteRooms(String key) {
 		redisTemplate.opsForZSet().removeRange(key, 0, -1);
+	}
+
+	/**
+	 * 김윤미
+	 * explain : 게임 중 상태 등록
+	 * @param key
+	 * @param opposite
+	 */
+	public void setGameStatus(String key, String opposite) {
+		Duration expireDuration = Duration.ofSeconds(5L);
+		redisTemplate.opsForValue().set(key, opposite, expireDuration);
+	}
+
+	/**
+	 * 김윤미
+	 * explain : 생존 신고 후 상대 닉네임 반환
+	 * @param key
+	 * @return
+	 */
+	public String reportAndGetOpposite(String key) {
+		Duration expireDuration = Duration.ofSeconds(5L);
+		return (String)redisTemplate.opsForValue().getAndExpire(key, expireDuration);
 	}
 }
 

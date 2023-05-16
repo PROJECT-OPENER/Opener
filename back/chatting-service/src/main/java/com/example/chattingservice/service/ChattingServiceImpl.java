@@ -26,6 +26,7 @@ import com.example.chattingservice.dto.response.FinishGameResponseDto;
 import com.example.chattingservice.dto.response.InterestResponseDto;
 import com.example.chattingservice.dto.response.ScoreResponseDto;
 import com.example.chattingservice.dto.response.ResultResponseDto;
+import com.example.chattingservice.dto.response.SuspendGameResponseDto;
 import com.example.chattingservice.dto.response.TipResponseDto;
 import com.example.chattingservice.entity.Interest;
 import com.example.chattingservice.entity.Keyword;
@@ -186,6 +187,7 @@ public class ChattingServiceImpl implements ChattingService {
 	 */
 	private void sendChatRoomToUser(String senderNickname, ChatRoomResponseDto chatRoom) {
 		messagingTemplate.convertAndSend("/sub/user-chat/" + senderNickname, chatRoom);
+		redisService.setGameStatus(GAMING.getKey() + senderNickname, chatRoom.getOtherNickname());
 	}
 
 	/**
@@ -246,9 +248,21 @@ public class ChattingServiceImpl implements ChattingService {
 			myScoreResponseDto, otherScoreResponseDto, winner, other.getNickname());
 		sendGameResult(finishGameResponseDto, roomId);
 
-		ScoreDto myScore = ScoreDto.builder().nickname(myScoreResponseDto.getNickname()).score(myEloScore).build();
+		produceScore(myScoreResponseDto.getNickname(), myEloScore, otherScoreResponseDto.getNickname(), otherEloScore);
+	}
+
+	/**
+	 * 김윤미
+	 * explain : member service로 변경 ELO 점수 Produce
+	 * @param myNickname : 내 닉네임
+	 * @param myEloScore : 내 새 ELO 점수
+	 * @param otherNickname : 상대 닉네임
+	 * @param otherEloScore : 상대 새 ELO 점수
+	 */
+	private void produceScore(String myNickname, int myEloScore, String otherNickname, int otherEloScore) {
+		ScoreDto myScore = ScoreDto.builder().nickname(myNickname).score(myEloScore).build();
 		ScoreDto otherScore = ScoreDto.builder()
-			.nickname(otherScoreResponseDto.getNickname())
+			.nickname(otherNickname)
 			.score(otherEloScore)
 			.build();
 		kafkaProducer.sendScoreToMemberService(new FinishGameProduceDto(myScore, otherScore));
@@ -391,4 +405,35 @@ public class ChattingServiceImpl implements ChattingService {
 			.map(TipResponseDto::new)
 			.collect(Collectors.toList());
 	}
+
+	/**
+	 * 김윤미
+	 * explain : 게임 중 ping 신호
+	 * 상대방이 게임 중이지 않으면 게임 중단
+	 * @param token : ping 전송한 사용자 정보
+	 * @param roomId : 게임 중인 방 ID
+	 */
+	@Override
+	public void reportHere(String token, String roomId) {
+		Member member = getMember(token);
+		String otherNickname = redisService.reportAndGetOpposite(GAMING.getKey() + member.getNickname());
+		Member opposite = memberRepository.findMemberByNickname(otherNickname)
+			.orElseThrow(() -> new ApiException(ExceptionEnum.MEMBER_NOT_FOUND_EXCEPTION));
+		if (otherNickname == null) {
+			int myScore = member.getScore();
+			int otherScore = opposite.getScore();
+			int myEloScore = getNewEloScore(myScore, otherScore, true);
+			int otherEloScore = getNewEloScore(otherScore, myScore, false);
+			SuspendGameResponseDto suspendGameResponseDto = SuspendGameResponseDto.builder()
+				.roomId(roomId)
+				.message("탈주발생")
+				.currentScore(myScore)
+				.changeScore(myEloScore - myScore)
+				.build();
+			messagingTemplate.convertAndSend("/sub/user-chat/rooms/" + roomId,
+				suspendGameResponseDto);
+			produceScore(member.getNickname(), myEloScore, opposite.getNickname(), otherEloScore);
+		}
+	}
+
 }
