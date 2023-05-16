@@ -421,9 +421,9 @@ public class ChattingServiceImpl implements ChattingService {
 	public void reportHere(String token, String roomId) {
 		Member member = getMember(token);
 		String otherNickname = redisService.reportAndGetOpposite(GAMING.getKey() + member.getNickname());
-		Member opposite = memberRepository.findMemberByNickname(otherNickname)
-			.orElseThrow(() -> new ApiException(ExceptionEnum.MEMBER_NOT_FOUND_EXCEPTION));
-		if (otherNickname == null) {
+		if (!redisService.existsOpposite(GAMING.getKey() + otherNickname)) {
+			Member opposite = memberRepository.findMemberByNickname(otherNickname)
+				.orElseThrow(() -> new ApiException(ExceptionEnum.MEMBER_NOT_FOUND_EXCEPTION));
 			int myScore = member.getScore();
 			int otherScore = opposite.getScore();
 			int myEloScore = getNewEloScore(myScore, otherScore, true);
