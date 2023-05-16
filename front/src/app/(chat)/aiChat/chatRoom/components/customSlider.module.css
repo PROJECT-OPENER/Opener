@@ -1,0 +1,25 @@
+.slick-active .slick-current {
+  --text-width: 300px; /* 텍스트 너비를 원하는 값으로 설정합니다. */
+  width: var(--text-width); /* 슬라이드 너비를 CSS 변수로 설정합니다. */
+  overflow: hidden; /* 넘치는 부분을 숨깁니다. */
+  position: relative; /* 자식 요소의 위치를 상대적으로 설정합니다. */
+}
+
+.slick-active p {
+  position: relative; /* 애니메이션을 적용하기 위해 상대적인 위치로 설정합니다. */
+  animation: slideAnimation 5s infinite; /* 5초간 반복되는 애니메이션을 적용합니다. */
+  white-space: nowrap; /* 텍스트가 줄바꿈되지 않도록 설정합니다. */
+  animation-delay: 1s; /* 애니메이션의 시작을 1초 후로 지연시킵니다. */
+  animation-fill-mode: forwards; /* 애니메이션 종료 시점의 상태를 유지합니다. */
+}
+
+@keyframes slideAnimation {
+  0% {
+    transform: translateX(0); /* 시작 위치를 왼쪽으로 설정합니다. */
+  }
+  100% {
+    transform: translateX(
+      calc(-100% + var(--text-width))
+    ); /* 왼쪽으로 (전체 너비 - 텍스트 너비)만큼 이동하여 보이지 않도록 설정합니다. */
+  }
+}

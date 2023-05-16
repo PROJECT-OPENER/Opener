@@ -127,12 +127,12 @@ const AiChatSendVoice = ({ handleSendMessage }: Props) => {
         )}
       </div>
       <div className="flex flex-col justify-center items-center py-5">
-        <div className="text-white">
+        <div className="text-white mb-4">
           {isRecording ? '듣고있어요' : '말씀해주세요.'}
         </div>
         <button
           onClick={isRecording ? stopAndSendMessage : start}
-          className="rounded-full bg-white p-1 text-3xl text-black w-20 h-20 flex justify-center items-center"
+          className="rounded-full bg-white p-1 text-3xl text-black w-20 lg:w-14 h-20 lg:h-14 flex justify-center items-center"
         >
           {isRecording ? <BsArrowUp /> : <BsMic />}
         </button>

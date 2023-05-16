@@ -103,7 +103,7 @@ export const getCaptionApi = async (videoId: string) => {
   console.log('get caption');
   return await axios({
     method: 'GET',
-    url: FAST_API_URL + '/caption/' + videoId,
+    url: FAST_API_URL + '/fast/caption/' + videoId,
     headers: {
       'Content-Type': 'application/json',
       Accept: 'application/json',

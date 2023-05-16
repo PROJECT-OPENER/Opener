@@ -43,16 +43,15 @@ const Categories = () => {
   };
   const [selected, setSelected] = useState<string>('아이브');
   const categories = [
-    '전체',
+    'ALL',
     '추천',
-    'sns',
+    '영화',
     'bookmark',
-    '아이브',
-    '뉴진스',
-    '여행4',
-    '여행5',
-    '여행6',
-    '여행8',
+    '여행',
+    '독서',
+    '음악',
+    '오락',
+    '스포츠',
   ];
   const clickCat = (category: string) => {
     setSelected(category);

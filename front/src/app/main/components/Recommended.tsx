@@ -31,7 +31,7 @@ const Recommended = () => {
     minScrollbarLength: 2,
   };
   return (
-    <div className="pb-4 my-3">
+    <div className="mt-10">
       {/* 데스크탑 용 */}
       <div className="hidden lg:block">
         <div className="flex flex-row justify-between mb-3">
@@ -44,7 +44,7 @@ const Recommended = () => {
               <Link
                 href={'/shadowing/learning/' + content.videoId}
                 key={index}
-                className="shadow-custom w-[320px] h-[300px] p-4 rounded-3xl bg-[#ffffff] hover:bg-brandY"
+                className="opacity-90 hover:opacity-100 shadow-custom w-[320px] h-[300px] p-4 rounded-3xl bg-[#ffffff] hover:shadow-customhover"
               >
                 {/* next.config.js에서 remotePatterns안에 user-images.githubusercontent.com 삭제해야함 */}
                 <Image
@@ -67,34 +67,32 @@ const Recommended = () => {
       </div>
 
       {/* 모바일 용 */}
-      <div className="lg:hidden">
-        <h1 className="text-lg mb-3">추천 문장</h1>
-        <PerfectScrollbar
-          options={options}
-          className="w-full h-full py-4 relative"
-        >
-          <div className="flex flex-row relative h-full w-[100%] min-w-[1000px]">
+      <div className="lg:hidden overflow-hidden">
+        <h1 className="text-lg mb-3 ml-4">추천 문장</h1>
+        <PerfectScrollbar options={options} className="w-full">
+          <div className="flex flex-row relative w-full p-4">
             {data?.map((content, index) => {
               return (
                 <Link
                   href={'/shadowing/learning/' + content.videoId}
                   key={index}
-                  className="shadow-custom mr-4 w-[250px] sm:w-[280px] p-3 rounded-3xl bg-[#ffffff] hover:bg-brandY"
+                  className="shadow-custom mr-4 p-3 rounded-3xl bg-[#ffffff] hover:shadow-customhover"
                 >
                   {/* next.config.js에서 remotePatterns안에 user-images.githubusercontent.com 삭제해야함 */}
-                  <div className="relative block w-full h-[calc(100%-100px)] sm:h-[calc(100%-116px)] rounded-lg overflow-hidden">
-                    <Image
+                  <div className="relative w-[254px]">
+                    <img
                       src={content.thumbnailUrl}
                       alt=""
-                      fill
-                      sizes="(min-width: 640px) 254px, 226px, height: auto"
+                      className="w-full rounded-xl"
                     />
-                  </div>
-                  <div className="mt-2 px-1">
-                    <p className="text-base font-semibold mb-1">
-                      {content.engSentence}
-                    </p>
-                    <p className="text-sm font-light">{content.korSentence}</p>
+                    <div className="mt-2 px-1">
+                      <p className="text-base font-semibold mb-1">
+                        {content.engSentence}
+                      </p>
+                      <p className="text-sm font-light">
+                        {content.korSentence}
+                      </p>
+                    </div>
                   </div>
                 </Link>
               );

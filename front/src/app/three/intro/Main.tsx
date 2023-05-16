@@ -6,6 +6,7 @@ import {
   Text,
   OrbitControls,
   Float,
+  Text3D,
 } from '@react-three/drei';
 import * as THREE from 'three';
 import { useEffect, useRef } from 'react';
@@ -14,7 +15,7 @@ import { useFrame, useThree } from '@react-three/fiber';
 
 export default function Main() {
   const directionalLight = useRef<THREE.DirectionalLight>(null);
-  const model = useGLTF('./models/Michelle.glb');
+  const model = useGLTF('/models/Michelle.glb');
 
   model.scene.traverse((child) => {
     if (child instanceof THREE.Mesh) {
@@ -72,25 +73,33 @@ export default function Main() {
         position={[7, 2, 3]}
         intensity={5}
       />
-      {/* <Float>
-        <Text font="../font/BlackHanSans-Regular.woff" position={[2, 0, -1.5]}>
-          WORLD
-        </Text>
+      <Float>
+        <Text3D
+          // ref={textRef}
+          font="/font/BlackHanSans.json"
+          size={1}
+          position={[1, 0, -1.5]}
+        >
+          어서와
+          <meshStandardMaterial color="black" />
+        </Text3D>
       </Float>
       <Float>
-        <Text
-          ref={textRef}
-          font="../font/BlackHanSans-Regular.woff"
-          fontSize={2}
+        <Text3D
+          // ref={textRef}
+          font="/font/BlackHanSans.json"
+          size={2}
           rotation={[0, -Math.PI / 2, 0]}
-          position={[10, 0, 3]}
+          position={[10, 0, 1]}
         >
-          HELLO
-        </Text>
-      </Float> */}
+          어서와
+          <meshNormalMaterial />
+        </Text3D>
+      </Float>
       <primitive object={model.scene} scale={5} position={[-1.5, -7, -1]} />
       <ambientLight />
       <OrbitControls makeDefault enabled={false} />
+      {/* <EffectComposer multisampling={0}></EffectComposer> */}
     </>
   );
 }
