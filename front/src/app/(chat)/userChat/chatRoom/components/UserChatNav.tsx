@@ -9,14 +9,22 @@ import {
   userChatTurnState,
 } from '../../store';
 import { BsCircleFill } from 'react-icons/bs';
+import { useRouter } from 'next/navigation';
 
 const UserChatNav = () => {
+  const router = useRouter();
   const userChatRoom = useRecoilValue(userChatRoomIdState);
   const turn = useRecoilValue(userChatTurnState);
   const [isTip, setIsTip] = useState(true);
   const timer = useRecoilValue(userChatTimerState);
   const handleTip = () => {
     setIsTip(!isTip);
+  };
+  const handleLeftGame = () => {
+    const confirmed = window.confirm('게임을 나가시겠습니까?');
+    if (confirmed) {
+      router.push('/chat');
+    }
   };
   return (
     <>
@@ -29,7 +37,9 @@ const UserChatNav = () => {
         }
       >
         <div className="flex justify-between items-center h-[60px] mx-5 text-2xl">
-          <Link href={'./userChat/Result'}>종료</Link>
+          <button type="button" onClick={handleLeftGame}>
+            종료
+          </button>
           <div>Round {turn === 11 ? '10' : turn}</div>
           <Button type="button" className="" text="TIP" onClick={handleTip} />
         </div>

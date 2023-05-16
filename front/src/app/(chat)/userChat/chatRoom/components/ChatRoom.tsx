@@ -28,14 +28,13 @@ import UserChatSendText from './UserChatSendText';
 import { BsKeyboard } from 'react-icons/bs';
 import useInterval from '@/app/hooks/useInterval';
 import { convertToJSON, handleTurn } from '@/util/Math';
-import { openAiUserChatApi } from '@/app/api/openAi';
+import { openAiContextScore, openAiUserChatApi } from '@/app/api/openAi';
 import { checkGrammer, isStringValidJSON } from '@/util/AiChat';
 import Loading from '@/app/components/Loading';
 import useSWR from 'swr';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import UserChatRoundPc from './UserChatRoundPc';
-import Link from 'next/link';
 
 const ChatRoom = () => {
   const { data: session } = useSession();
@@ -71,57 +70,27 @@ const ChatRoom = () => {
   const [lastChat, setLastChat] = useRecoilState(userChatLastChatState);
   // 결과
   const setResult = useSetRecoilState(userChatResultState);
+  const result = useRecoilValue(userChatResultState);
 
   // ref
   const chatWindowRef = useRef<HTMLDivElement>(null);
+  const pingIntervalIdRef = useRef<NodeJS.Timer | null>(null);
 
-  const { data: contextResultApi } = useSWR(
-    !gameState && lastChat ? '/api/data' : null,
-    () => openAiUserChatApi(filtered),
-  );
-
-  // if (!isDataValid(data)) {
-  //   revalidate();
-  // }
   useEffect(() => {
-    if (
-      score.myContextScore !== 0 &&
-      score.otherContextScore !== 0 &&
-      lastChat
-    ) {
-      console.log('lastChat', lastChat);
+    console.log('setResult', result);
+  }, [result]);
+
+  useEffect(() => {
+    console.log('isFirst', isFirst);
+    if (turn === 999 && lastChat) {
+      console.log('score', score);
       handleSendResult();
     }
-  }, [contextResultApi]);
-
-  useEffect(() => {
-    // console.log('result', typeof contextResultApi?.data.choices[0].text);
-    if (contextResultApi !== undefined) {
-      if (isStringValidJSON(contextResultApi?.data.choices[0].text)) {
-        const res = convertToJSON(
-          contextResultApi?.data.choices[0].text,
-        ) as any;
-        // console.log('res', res);
-        res.forEach((item: any) => {
-          if (item.nickname === 'User1') {
-            updateMyContextScore(item.score);
-          } else {
-            updateOtherContextScore(item.score);
-          }
-        });
-      }
-    }
-    // console.log('texcontextResultt', contextResult);
-  }, [contextResultApi]);
+  }, [score]);
 
   useEffect(() => {
     if (turn === 999) {
       setGameState(false);
-      const filteredMessages = messageList.map(({ nickname, message }) => ({
-        nickname: lastChat ? 'User1' : 'User2',
-        message,
-      }));
-      setFiltered(filteredMessages);
     }
   }, [turn]);
 
@@ -144,14 +113,9 @@ const ChatRoom = () => {
     isRunning ? delay : null,
   );
   useEffect(() => {
-    // console.log('score', score);
     // 스크롤이 최하단으로 자동으로 이동되도록 chatWindowRef의 scrollTop 속성을 최대값으로 설정합니다.
     if (chatWindowRef.current) {
       chatWindowRef.current.scrollTop = chatWindowRef.current.scrollHeight;
-    }
-    // 문법 검사
-    if (messageList.length > 0 && turn < 12) {
-      // console.log('messageList', turn);
     }
     if (turn === 11) setTurn(999);
   }, [messageList]);
@@ -166,13 +130,12 @@ const ChatRoom = () => {
     }
   }, []);
   useEffect(() => {
-    // console.log(userChatRoom);
-    // console.log(userChatRoom.roomId);
     const socket = new WebSocket(`${process.env.NEXT_PUBLIC_SOCKET_URL}`);
     const client = new Client({
       webSocketFactory: () => socket,
       onConnect: () => {
         console.log('Stomp client connected');
+        // 방 입장
         client?.publish({
           destination: `/pub/user-chat/${userChatRoom.roomId as string}`,
           body: 'Test OnConnect',
@@ -180,17 +143,57 @@ const ChatRoom = () => {
             Authorization: `Bearer ${token}`,
           },
         });
+        // 생존 핑
+        const intervalId = setInterval(() => {
+          const messageData = {
+            nickname: nickname,
+          };
+          console.log('ping');
+          // 1초마다 메시지를 보냅니다.
+          client.publish({
+            destination: `/pub/user-chat/rooms/here/${userChatRoom.roomId}`,
+            // body: JSON.stringify(messageData), // 메시지 내용은 임의로 설정합니다.
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+        }, 3000);
+        pingIntervalIdRef.current = intervalId;
+        // 메세지 수신
         client.subscribe(
           `/sub/user-chat/rooms/${userChatRoom.roomId}`,
           (message) => {
-            // console.log('Received message', message);
             try {
               const content = JSON.parse(message.body);
-              // console.log('subscribe : ', content);
-              setMessageList((messageList) => [...messageList, content]);
+              console.log('subscribe : ', content);
+              if (content.message === '탈주발생') {
+                console.log('탈주발생');
+                console.log('탈주발생', content);
+                setResult(content);
+                router.push('/userChat/Escape');
+                return;
+              }
               if (content.nickname !== nickname) {
                 setIsRunning(true);
               }
+              if (content.message.includes(userChatRoom.keyword)) {
+                if (content.nickname === nickname) updateMyWordUsed();
+                if (content.nickname === userChatRoom.otherNickname)
+                  updateOtherWordUsed();
+              }
+              setMessageList((messageList) => {
+                const updatedMessageList = [...messageList, content];
+                if (isFirst === false) {
+                  console.log('isFirst22222', isFirst);
+                  handleContextScore(
+                    updatedMessageList,
+                    content.nickname,
+                    content.message,
+                  ); // setMessageList 호출 이후에 handleContextScore 호출
+                }
+
+                return updatedMessageList;
+              });
               setTurn(content.turn);
             } catch (e) {
               console.error('Failed to parse message body:', message.body);
@@ -201,14 +204,12 @@ const ChatRoom = () => {
         client.subscribe(
           `/sub/user-chat/rooms/${userChatRoom.roomId}/result`,
           (message) => {
-            // console.log('Received message', message);
             try {
               const content = JSON.parse(message.body);
               console.log('subscribe : ', content);
               setResult(content);
               router.push('/userChat/Result');
             } catch (e) {
-              // console.error('Failed to parse message body:', message.body);
               console.error(e);
             }
           },
@@ -226,10 +227,85 @@ const ChatRoom = () => {
     setStompClient(client);
 
     return () => {
+      if (pingIntervalIdRef.current) {
+        clearInterval(pingIntervalIdRef.current);
+      }
       client.deactivate();
       setIsFirst(false);
     };
   }, []);
+  // 문맥 점수 메서드
+  const handleContextScore = async (
+    updatedMessageList: any,
+    chatNickname: string,
+    msg: string,
+  ) => {
+    console.log('handleContextScore', updatedMessageList, chatNickname, msg);
+    console.log('contextScore', score.myContextScore, score.otherContextScore);
+    // 패스
+    if (msg === 'pass') {
+      return;
+    } else {
+      // 문맥 점수
+      const filteredMessages = updatedMessageList.map(
+        ({ nickname, message }: { nickname: string; message: string }) => ({
+          nickname,
+          message,
+        }),
+      );
+      const res = await openAiContextScore(filteredMessages);
+      const text = res.data.choices[0].text;
+      console.log('text', text);
+      const number = parseFloat(text.replace(/[^0-9.]/g, ''));
+      handleContextState(number, msg, chatNickname);
+    }
+  };
+  // 문맥 점수 메서드 - 일반
+  const handleContextState = (
+    number: number,
+    msg: string,
+    chatNickname: string,
+  ) => {
+    if (typeof number !== 'number') {
+      if (chatNickname === nickname) {
+        if (msg.length < 5) {
+          updateMyContextScore(8);
+        } else if (msg.length >= 5 && msg.length < 10) {
+          updateMyContextScore(14);
+        } else {
+          updateMyContextScore(20);
+        }
+      }
+      if (chatNickname !== nickname) {
+        if (msg.length < 5) {
+          updateOtherContextScore(8);
+        } else if (msg.length >= 5 && msg.length < 10) {
+          updateOtherContextScore(14);
+        } else {
+          updateOtherContextScore(20);
+        }
+      }
+    } else {
+      if (chatNickname === nickname) {
+        if (msg.length < 5) {
+          updateMyContextScore(number - 10);
+        } else if (msg.length >= 5 && msg.length < 10) {
+          updateMyContextScore(number - 5);
+        } else {
+          updateMyContextScore(number);
+        }
+      }
+      if (chatNickname !== nickname) {
+        if (msg.length < 5) {
+          updateOtherContextScore(number - 10);
+        } else if (msg.length >= 5 && msg.length < 10) {
+          updateOtherContextScore(number - 5);
+        } else {
+          updateOtherContextScore(number);
+        }
+      }
+    }
+  };
   // 결과 전송
   const handleSendResult = () => {
     console.log('handleSendResult');
@@ -246,7 +322,6 @@ const ChatRoom = () => {
         Authorization: `Bearer ${token}`,
       },
     });
-    // console.log(`Payload: ${JSON.stringify(payload)}`);
   };
   // 메세지 전송
   const handleSendMessage = () => {
@@ -259,7 +334,7 @@ const ChatRoom = () => {
       roomId: userChatRoom.roomId,
     };
     if (!isRunning) {
-      messageData.message = '시간초과';
+      messageData.message = 'pass';
     }
     stompClient?.publish({
       destination: `/pub/user-chat/rooms/${userChatRoom.roomId}`,
@@ -268,8 +343,6 @@ const ChatRoom = () => {
         Authorization: `Bearer ${token}`,
       },
     });
-    // setMessage('');
-    // }
     handleGrammerCheck(messageData.message, messageData.nickname);
     setMessage('');
     setIsRecording(false);
@@ -301,11 +374,6 @@ const ChatRoom = () => {
       };
       pass();
     } else {
-      // 제시어 체크
-      if (text.includes(userChatRoom.keyword)) {
-        if (chatNickname === nickname) updateMyWordUsed();
-        else updateOtherWordUsed();
-      }
       // 문법 검사
       const check = async () => {
         const res = await checkGrammer(text, chatNickname, turn);
@@ -339,16 +407,18 @@ const ChatRoom = () => {
       otherGrammarScore: prevState.otherGrammarScore + score,
     }));
   };
-  const updateMyContextScore = (score: string) => {
+  const updateMyContextScore = (score: number) => {
+    console.log('updateMyContextScore', score);
     setScore((prevState: any) => ({
       ...prevState,
-      myContextScore: score,
+      myContextScore: prevState.myContextScore + score,
     }));
   };
-  const updateOtherContextScore = (score: string) => {
+  const updateOtherContextScore = (score: number) => {
+    console.log('updateOtherContextScore', score);
     setScore((prevState: any) => ({
       ...prevState,
-      otherContextScore: score,
+      otherContextScore: prevState.otherContextScore + score,
     }));
   };
   const updateMyWordUsed = () => {

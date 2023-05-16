@@ -29,8 +29,8 @@ export const config = {
   matcher: [
     '/interest',
     '/mypage(.*)',
-    // '/chat',
-    // '/userChat(.*)',
-    // '/aiChat(.*)',
+    '/chat',
+    '/userChat(.*)',
+    '/aiChat(.*)',
   ],
 };

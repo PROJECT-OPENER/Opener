@@ -5,6 +5,11 @@ interface ChatLogElement {
   sender: 'AI' | 'HUMAN';
 }
 
+interface chat {
+  nickname: string;
+  message: string;
+}
+
 export const handleChatLog = (chatLog: ChatLogElement[]) => {
   let result = '';
   chatLog.forEach((chat, index) => {
@@ -113,4 +118,10 @@ export const isStringValidJSON = (str: any) => {
   } catch (error) {
     return false;
   }
+};
+
+export const convertArrayToChatString = (array: []) => {
+  return array
+    .map((item: chat) => `${item.nickname}: ${item.message}`)
+    .join('\n');
 };

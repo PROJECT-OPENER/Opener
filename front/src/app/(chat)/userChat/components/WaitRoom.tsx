@@ -86,7 +86,7 @@ const WaitRoom = () => {
           console.log('interval');
           // 1초마다 메시지를 보냅니다.
           client.publish({
-            destination: '/pub/user-chat/',
+            destination: '/pub/user-chat',
             body: JSON.stringify(messageData), // 메시지 내용은 임의로 설정합니다.
             headers: {
               Authorization: `Bearer ${token}`,
