@@ -41,4 +41,12 @@ public class ShadowingVideo extends BaseEntity {
 	private String engCaption;
 	private String korCaption;
 
+	public void updateEngCaption(String engCaption) {
+		this.engCaption = engCaption;
+	}
+
+	public void updateKorCapation(String korCaption) {
+		this.korCaption = korCaption;
+	}
+
 }

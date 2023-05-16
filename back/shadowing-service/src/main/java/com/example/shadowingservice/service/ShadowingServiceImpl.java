@@ -244,11 +244,11 @@ public class ShadowingServiceImpl implements ShadowingService {
 			.orElseThrow(() -> new ApiException(ExceptionEnum.SHADOWING_NOT_FOUND_EXCEPTION));
 
 		if (shadowingVideo.getKorCaption() == null || shadowingVideo.getKorCaption().isEmpty()) {
-			shadowingVideo.setKorCaption(captionDto.getKorCaption());
+			shadowingVideo.updateKorCapation(captionDto.getKorCaption());
 		}
 
 		if (shadowingVideo.getEngCaption() == null || shadowingVideo.getKorCaption().isEmpty()) {
-			shadowingVideo.setEngCaption(captionDto.getEngCaption());
+			shadowingVideo.updateEngCaption(captionDto.getEngCaption());
 		}
 
 		shadowingVideoRepository.save(shadowingVideo);
