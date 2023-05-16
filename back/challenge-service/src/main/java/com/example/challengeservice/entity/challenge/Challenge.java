@@ -34,6 +34,8 @@ public class Challenge extends BaseEntity {
 	private String startTime;
 	@Column(name = "end_time", length = 100)
 	private String endTime;
+	@Column(name = "caption", length = 20000)
+	private String caption;
 
 	public static Challenge from(OriginalChallengeRequestDto originalChallengeRequestDto) {
 		return Challenge.builder()
@@ -41,6 +43,7 @@ public class Challenge extends BaseEntity {
 			.challengeUrl(originalChallengeRequestDto.getChallengeUrl())
 			.startTime(originalChallengeRequestDto.getStartTime())
 			.endTime(originalChallengeRequestDto.getEndTime())
+			.caption(originalChallengeRequestDto.getCaption())
 			.build();
 	}
 }

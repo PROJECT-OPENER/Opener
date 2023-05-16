@@ -17,4 +17,5 @@ public class OriginalChallengeRequestDto {
 	private String challengeUrl;
 	private String startTime;
 	private String endTime;
+	private String caption;
 }

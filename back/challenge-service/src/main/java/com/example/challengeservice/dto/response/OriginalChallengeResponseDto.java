@@ -13,17 +13,19 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class OriginalChallengeResponseDto {
-    private Long challengeId;
-    private String title;
-    private String challengeUrl;
-    private int joinCount;
+	private Long challengeId;
+	private String title;
+	private String challengeUrl;
+	private String caption;
+	private int joinCount;
 
-    public static OriginalChallengeResponseDto from(Challenge challenge, int joinCount) {
-        return OriginalChallengeResponseDto.builder()
-                .challengeId(challenge.getChallengeId())
-                .title(challenge.getTitle())
-                .challengeUrl(challenge.getChallengeUrl())
-                .joinCount(joinCount)
-                .build();
-    }
+	public static OriginalChallengeResponseDto from(Challenge challenge, int joinCount) {
+		return OriginalChallengeResponseDto.builder()
+			.challengeId(challenge.getChallengeId())
+			.title(challenge.getTitle())
+			.challengeUrl(challenge.getChallengeUrl())
+			.caption(challenge.getCaption())
+			.joinCount(joinCount)
+			.build();
+	}
 }
