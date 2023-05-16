@@ -23,13 +23,13 @@ import reactor.core.publisher.Mono;
 
 @Component
 @Slf4j
-public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<AuthorizationHeaderFilter.Config> {
+public class AuthorizationChallengeFilter extends AbstractGatewayFilterFactory<AuthorizationChallengeFilter.Config> {
 
 	private final RedisService redisService;
 	private final ObjectMapper mapper;
 
-	public AuthorizationHeaderFilter(RedisService redisService, ObjectMapper mapper) {
-		super(AuthorizationHeaderFilter.Config.class);
+	public AuthorizationChallengeFilter(RedisService redisService, ObjectMapper mapper) {
+		super(AuthorizationChallengeFilter.Config.class);
 		this.redisService = redisService;
 		this.mapper = mapper;
 	}
@@ -48,7 +48,7 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
 			ServerHttpRequest request = exchange.getRequest();
 
 			if (!request.getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
-				return onError(exchange, "No authorization header", HttpStatus.UNAUTHORIZED);
+				return chain.filter(exchange);
 			}
 
 			String authorizationHeader = request.getHeaders().get(HttpHeaders.AUTHORIZATION).get(0);
