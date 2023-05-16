@@ -19,11 +19,6 @@ const UserChatSendText = ({ handleSendMessage }: Props) => {
   const [message, setMessage] = useRecoilState(userChatMessageState);
   const [isChat, setisChat] = useRecoilState(userChatIsChatState);
   const timer = useRecoilValue(userChatTimerState);
-  const gameState = useRecoilValue(userChatGameState);
-
-  useEffect(() => {
-    console.log('message', gameState);
-  }, [gameState]);
 
   // functions
   const handleKeyboardChange = (event: {

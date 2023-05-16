@@ -1,3 +1,4 @@
+import { convertArrayToChatString } from '@/util/AiChat';
 import axios from 'axios';
 export const openAiChatApi = async (data: string) => {
   const response = await axios.post(
@@ -63,4 +64,29 @@ export const bingGrammerCheckApi = async (text: string) => {
   } catch (error) {
     console.error('Error:', error);
   }
+};
+
+export const openAiContextScore = async (data: []) => {
+  console.log(data);
+  const payload = convertArrayToChatString(data);
+  const response = await axios.post(
+    'https://api.openai.com/v1/completions',
+    {
+      model: 'text-davinci-003',
+      prompt: `${payload}\n\n위 대화의 마지막 문장이 그 이전 문장에 대한 답변으로 적절한지 점수를 줘라. 0~20점 사이로 줘라.`,
+      temperature: 0.7,
+      max_tokens: 150,
+      top_p: 1,
+      frequency_penalty: 0,
+      presence_penalty: 0.6,
+    },
+    {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + String(process.env.NEXT_PUBLIC_OPEN_API),
+      },
+    },
+  );
+  console.log(response);
+  return response;
 };
