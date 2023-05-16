@@ -6,7 +6,7 @@ const Home = () => {
   return (
     <div className="absolute top-0 left-0 w-full flex flex-col items-center lg:pb-10">
       <div className="relative w-full h-[250px] sm:h-[350px] lg:h-[500px] min-w-[330px] max-w-[1024px]">
-        {/* <Main /> */}
+        <Main />
       </div>
       <div className="relative w-full h-full min-w-[330px] max-w-[1024px]">
         <Roadmap />

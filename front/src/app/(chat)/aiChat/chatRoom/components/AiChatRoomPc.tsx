@@ -75,7 +75,7 @@ const AiChatRoomPc = () => {
   return (
     <div>
       <div className="relative top-0 left-0 h-[100vh] w-full">
-        {/* <Model /> */}
+        <Model />
       </div>
       <div className="absolute top-0 left-0 h-[100vh] w-[100vw] flex flex-row justify-center items-end pb-10 px-8">
         <TopNavPc />
