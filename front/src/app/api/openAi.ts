@@ -1,3 +1,4 @@
+import { ucFilterMsgInterface } from '@/types/userChatTypes';
 import { convertArrayToChatString } from '@/util/AiChat';
 import axios from 'axios';
 export const openAiChatApi = async (data: string) => {
@@ -66,7 +67,7 @@ export const bingGrammerCheckApi = async (text: string) => {
   }
 };
 
-export const openAiContextScore = async (data: []) => {
+export const openAiContextScore = async (data: ucFilterMsgInterface[]) => {
   console.log(data);
   const payload = convertArrayToChatString(data);
   const response = await axios.post(

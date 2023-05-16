@@ -85,13 +85,6 @@ export const userChatScoreState = atom({
   effects_UNSTABLE: [persistAtom],
 });
 
-// 점수 관련 사항 시작
-export const userChatFilteredState = atom({
-  key: 'userChatFilteredState',
-  default: [],
-  effects_UNSTABLE: [persistAtom],
-});
-
 // 문법 검사 문장 리스트
 export const userChatGrammerMsgListState = atom({
   key: 'userChatGrammerMsgListState',
