@@ -63,7 +63,7 @@ const AiChatMessageList = ({ handleReceiveMessage }: Props) => {
     window.speechSynthesis.speak(speech);
   };
   return (
-    <div className="lg:rounded-b-3xl">
+    <div className="lg:rounded-b-3xl lg:text-white">
       {messageList.map((message, index) => (
         <div
           key={index}

@@ -1,26 +1,40 @@
 'use client';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import { slideInterface } from '@/types/share';
-import { BsCircleFill } from 'react-icons/bs';
+// import { BsCircleFill } from 'react-icons/bs';
 import { useRecoilValue } from 'recoil';
 import { aiChatSub } from '../../store';
 import useSWR from 'swr';
 import { getTipApi } from '@/app/api/chatApi';
-
+import styles from './customSlider.module.css';
 interface TipType {
   tipDescription: string;
   tipTitle: string;
 }
 
-interface AiChatNavSliderProps {
-  settings?: slideInterface;
-  setting?: slideInterface;
-}
+// const settings = {
+//   infinite: true,
+//   speed: 500,
+//   slidesToShow: 1,
+//   slidesToScroll: 1,
+//   arrows: false,
+//   autoplay: true,
+// };
 
-const AiChatNavSlider = ({ settings, setting }: AiChatNavSliderProps) => {
+const AiChatNavSlider = () => {
+  const settings = {
+    infinite: true,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    arrows: false,
+    autoplay: true,
+    rows: 1,
+    useCss: styles,
+  };
   const subject = useRecoilValue(aiChatSub);
   const { data, isLoading } = useSWR(
     'get/tip',
@@ -32,38 +46,33 @@ const AiChatNavSlider = ({ settings, setting }: AiChatNavSliderProps) => {
   useEffect(() => {
     console.log('data', data);
   }, [data]);
+
   if (isLoading) return <div>로딩중...</div>;
   return (
     <>
-      <div className="lg:hidden h-[60px] max-w-[90%]">
+      <div className="">
         {data !== void 0 && (
-          <Slider
-            {...setting}
-            className="flex items-center w-[80%] h-[60px] flex-1"
-          >
+          <Slider {...settings} className="">
             {data.data.map((tip: TipType, idx: number) => (
-              <div
-                key={idx}
-                className="text-white flex items-center mt-2 max-sm:mt-3 max-sm:text-xs text-sm"
-              >
-                <div className="font-bold text-white truncate">
+              <div key={idx} className="px-2">
+                <p className="text-sm whitespace-nowrap mb-1">{tip.tipTitle}</p>
+                <p className="text-xs whitespace-nowrap">
                   {tip.tipDescription}
-                </div>
-                <div className="text-white truncate">{tip.tipTitle}</div>
+                </p>
               </div>
             ))}
           </Slider>
         )}
       </div>
-      <div className="max-lg:hidden">
+      {/* <div className="max-lg:hidden">
         {data !== void 0 && (
           <Slider {...settings} className="space-y-3">
             {data.data.map((tip: TipType, idx: number) => (
               <div
                 key={idx}
-                className="flex items-center bg-brandP p-3 rounded-xl mt-5 relative"
+                className="flex items-center p-3 rounded-xl relative"
               >
-                <BsCircleFill className="fill-red-300 absolute mt-4" />
+                <BsCircleFill className="fill-red-300 absolute" />
                 <div className="ml-6 text-white">
                   <div className="truncate">{tip.tipTitle}</div>
                   <div className="font-bold truncate">{tip.tipDescription}</div>
@@ -72,7 +81,7 @@ const AiChatNavSlider = ({ settings, setting }: AiChatNavSliderProps) => {
             ))}
           </Slider>
         )}
-      </div>
+      </div> */}
     </>
   );
 };

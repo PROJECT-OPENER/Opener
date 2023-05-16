@@ -79,15 +79,12 @@ const AiChatRoom = () => {
       <div className="flex-none">
         <AiChatNav />
       </div>
-      <div
-        ref={chatWindowRef}
-        className="flex-auto h-0 overflow-y-auto bg-blue-200"
-      >
+      <div ref={chatWindowRef} className="flex-auto h-0 overflow-y-auto">
         <div className="min-h-full">
           <AiChatMessageList />
         </div>
       </div>
-      <div className="flex-none h-fit flex flex-col bg-blue-200">
+      <div className="flex-none h-fit flex flex-col">
         {/* 녹음 시 텍스트 보여주기 */}
         {!isChat && isRecording && (
           <div className="relative mx-5">
