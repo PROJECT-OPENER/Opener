@@ -68,7 +68,7 @@ const ShowList = (props: { category: string }) => {
         })}
         <button
           onClick={() => setSize(size + 1)}
-          className="border border-[#e3e3e3] p-3 bg-[#f0f0f0] hover:bg-white hover:shadow-custom rounded rounded-xl"
+          className="border border-[#e3e3e3] p-3 bg-[#f0f0f0] hover:bg-white active:bg-[#f0f0f0] hover:shadow-custom rounded-xl"
         >
           load more
         </button>
