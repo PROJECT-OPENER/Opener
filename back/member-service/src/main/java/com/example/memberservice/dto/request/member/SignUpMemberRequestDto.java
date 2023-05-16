@@ -41,6 +41,7 @@ public class SignUpMemberRequestDto {
 			.nickname(this.getNickname())
 			.birth(LocalDate.parse(this.getBirth()))
 			.gender(Gender.valueOf(this.getGender()))
+			.score(1500)
 			.build();
 	}
 }

@@ -38,6 +38,7 @@ import com.example.memberservice.dto.response.member.LoginResponseDto;
 import com.example.memberservice.entity.member.Badge;
 import com.example.memberservice.entity.member.Member;
 import com.example.memberservice.entity.member.MemberInterest;
+import com.example.memberservice.entity.member.Roadmap;
 import com.example.memberservice.entity.shadowing.Interest;
 import com.example.memberservice.repository.BadgeRepository;
 import com.example.memberservice.repository.InterestRepository;
@@ -45,6 +46,7 @@ import com.example.memberservice.repository.LoveRepository;
 import com.example.memberservice.repository.MemberChallengeRepository;
 import com.example.memberservice.repository.MemberInterestRepository;
 import com.example.memberservice.repository.MemberRepository;
+import com.example.memberservice.repository.RoadmapRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -53,6 +55,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {
+	private final RoadmapRepository roadmapRepository;
 	private final InterestRepository interestRepository;
 	private final MemberInterestRepository memberInterestRepository;
 	private final MemberRepository memberRepository;
@@ -180,7 +183,16 @@ public class MemberServiceImpl implements MemberService {
 			.shadowingCount(0)
 			.gameCount(0)
 			.build();
+
 		badgeRepository.save(badge);
+
+		Roadmap roadmap = Roadmap.builder()
+			.member(member)
+			.stepNo(1)
+			.stepTheme(1)
+			.build();
+
+		roadmapRepository.save(roadmap);
 	}
 
 	/**
@@ -435,7 +447,8 @@ public class MemberServiceImpl implements MemberService {
 			.getContent()
 			.stream()
 			.map(ChallengeResponseDto::new)
-			.peek(dto -> dto.setLikeCount(loveRepository.countByMemberChallenge_MemberChallengeId(dto.getMemberChallengeId())))
+			.peek(dto -> dto.setLikeCount(
+				loveRepository.countByMemberChallenge_MemberChallengeId(dto.getMemberChallengeId())))
 			.collect(Collectors.toList());
 	}
 
@@ -455,7 +468,8 @@ public class MemberServiceImpl implements MemberService {
 			.getContent()
 			.stream()
 			.map(ChallengeResponseDto::new)
-			.peek(dto -> dto.setLikeCount(loveRepository.countByMemberChallenge_MemberChallengeId(dto.getMemberChallengeId())))
+			.peek(dto -> dto.setLikeCount(
+				loveRepository.countByMemberChallenge_MemberChallengeId(dto.getMemberChallengeId())))
 			.collect(Collectors.toList());
 	}
 }
