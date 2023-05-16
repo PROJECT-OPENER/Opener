@@ -1,10 +1,10 @@
 'use client';
 import { useState } from 'react';
 import BotBadge from './BotBadge';
-import BotLikeChallange from './BotLikeChallange';
-import BotMyChallange from './BotMyChallange';
 import { CgMenuGridO, CgHeart } from 'react-icons/cg';
 import { SlBadge } from 'react-icons/sl';
+import BotMyChallange from './BotMyChallange';
+import BotLikeChallange from './BotLikeChallange';
 
 const MypageBotSection = () => {
   const tabList: { [key: number]: JSX.Element } = {
