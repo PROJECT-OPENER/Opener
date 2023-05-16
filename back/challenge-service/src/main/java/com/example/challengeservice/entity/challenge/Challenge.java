@@ -34,7 +34,7 @@ public class Challenge extends BaseEntity {
 	private String startTime;
 	@Column(name = "end_time", length = 100)
 	private String endTime;
-	@Column(name = "caption", length = 20000)
+	@Column(name = "caption", columnDefinition = "LONGTEXT")
 	private String caption;
 
 	public static Challenge from(OriginalChallengeRequestDto originalChallengeRequestDto) {
