@@ -118,5 +118,15 @@ public class RedisService {
 		Duration expireDuration = Duration.ofSeconds(5L);
 		return (String)redisTemplate.opsForValue().getAndExpire(key, expireDuration);
 	}
+
+	/**
+	 * 김윤미
+	 * explain : 상대가 게임 중인지 여부 반환
+	 * @param key
+	 * @return
+	 */
+	public boolean existsOpposite(String key) {
+		return redisTemplate.opsForValue().get(key) != null ? true : false;
+	}
 }
 
