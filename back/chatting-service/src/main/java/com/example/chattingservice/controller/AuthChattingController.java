@@ -65,7 +65,7 @@ public class AuthChattingController {
 	 * @param token
 	 * @param roomId
 	 */
-	@MessageMapping("/user-chat/rooms/{room-id}/here")
+	@MessageMapping("/user-chat/rooms/here/{room-id}")
 	public void reportHere(@Header("Authorization") String token, @DestinationVariable("room-id") String roomId) {
 		chattingService.reportHere(token, roomId);
 	}
