@@ -101,3 +101,13 @@ export const imageUpdateApi = async (payload: FormData) => {
   );
   return response.data;
 };
+
+// 마이페이지 - 나의 뱃지 조회 - 은혁
+export const getMyBadgesApi = () => memberApi.get('/auth/members/mypage/badge');
+
+// 마이페이지 - 내가 업로드(또는 좋아요)한 챌린지 목록 조회 - 은혁
+export const fetcher = (url: string) =>
+  memberApi.get(url).then((res) => {
+    console.log(url, res.data.data);
+    return res.data.data;
+  });
