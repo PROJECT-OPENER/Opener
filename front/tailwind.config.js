@@ -19,6 +19,7 @@ module.exports = {
       },
       boxShadow: {
         custom: '0 2px 10px 0 rgba(0, 0, 0, 0.1)',
+        customhover: '0 2px 10px 0 rgba(0, 0, 0, 0.3)',
       },
       aspectRatio: {
         '7.25/10': '7.25 / 10',
