@@ -56,7 +56,7 @@ public class MemberChallenge extends BaseEntity {
 			.build();
 	}
 
-	public void updateIsDelete(Boolean isDelete){
-		this.isDelete=isDelete;
+	public void updateIsDelete(Boolean isDelete) {
+		this.isDelete = isDelete;
 	}
 }
