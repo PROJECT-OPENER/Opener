@@ -149,9 +149,11 @@ public class ChallengeServiceImpl implements ChallengeService {
 		WatchOriginalChallengeResponseDto watchOriginalChallengeResponseDto = WatchOriginalChallengeResponseDto.from(
 			challenge, joinCount);
 		int isLove = 0;
+		log.info("curMemberId is : {}", memberId);
 		if (memberId != null) {
 			isLove = loveRepository.countByMemberChallengeAndMember_MemberIdAndIsLove(memberChallenge,
 				Long.parseLong(memberId), true);
+			log.info("curMemberId is : {}", memberId);
 		}
 		SelectMemberChallengeResponseDto selectMemberChallengeResponseDto = SelectMemberChallengeResponseDto.from(
 			memberChallenge, isLove);
