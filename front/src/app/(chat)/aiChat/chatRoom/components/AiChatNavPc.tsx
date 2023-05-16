@@ -15,7 +15,7 @@ const AiChatNavPc = () => {
     //     <AiChatNavSlider />
     //   </div>
     // </div>
-  );
+  // );
 };
 
 export default AiChatNavPc;
