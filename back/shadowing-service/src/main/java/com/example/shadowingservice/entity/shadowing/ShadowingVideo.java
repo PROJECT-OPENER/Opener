@@ -3,6 +3,7 @@ package com.example.shadowingservice.entity.shadowing;
 import java.io.Serializable;
 import java.time.LocalTime;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -38,7 +39,9 @@ public class ShadowingVideo extends BaseEntity {
 	private Long stepId;
 	private String engSentence;
 	private String korSentence;
+	@Column(columnDefinition = "LONGTEXT")
 	private String engCaption;
+	@Column(columnDefinition = "LONGTEXT")
 	private String korCaption;
 
 	public void updateEngCaption(String engCaption) {

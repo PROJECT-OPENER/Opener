@@ -6,6 +6,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -92,11 +93,21 @@ public class ShadowingController {
 	 * @param videoId
 	 * @return
 	 */
-	@PostMapping("/videos/{video-id}")
-	public ResponseEntity<BaseResponseDto<Object>> getShadowingDetail(@RequestBody CaptionDto captionDto, @PathVariable("video-id") Long videoId) {
-		ShadowingDetailDto shadowingDetailDto = shadowingService.getShadowingDetailDto(captionDto, videoId);
+	@GetMapping("/videos/{video-id}")
+	public ResponseEntity<BaseResponseDto<Object>> getShadowingDetail(@PathVariable("video-id") Long videoId) {
+		ShadowingDetailDto shadowingDetailDto = shadowingService.getShadowingDetailDto(videoId);
 		return ResponseEntity.status(HttpStatus.OK)
 			.body(new BaseResponseDto<>(200, "영상 조회 완료", shadowingDetailDto));
+	}
+
+	@PatchMapping("/videos/{video-id}")
+	public ResponseEntity<BaseResponseDto<Object>> updateCaption
+		(@RequestBody CaptionDto captionDto, @PathVariable("video-id") Long videoId) {
+
+		shadowingService.updateCaption(captionDto, videoId);
+
+		return ResponseEntity.status(HttpStatus.OK)
+			.body(new BaseResponseDto<>(200, "영상 자막 추가 완료", null));
 	}
 
 	/**
@@ -123,7 +134,7 @@ public class ShadowingController {
 
 	@GetMapping("/main-recommendation")
 	public ResponseEntity<BaseListResponseDto<RecommendationDto>> getRecommendationList() {
-		PageRequest page = PageRequest.of(0, 3);
+		PageRequest page = PageRequest.of(0, 6);
 		List<RecommendationDto> recommendationDtoList = shadowingService.getRecommendationList(page);
 		return ResponseEntity.status(HttpStatus.OK)
 			.body(new BaseListResponseDto<>(200, "비로그인 추천 문장 불러오기 완료", recommendationDtoList));
