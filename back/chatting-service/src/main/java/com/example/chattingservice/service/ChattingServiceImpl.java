@@ -109,7 +109,7 @@ public class ChattingServiceImpl implements ChattingService {
 	 * @param score
 	 * @return
 	 */
-	public int getScoreLimit(int score) {
+	private int getScoreLimit(int score) {
 		return (score >= 30 && score <= 70) ? 30 : 40;
 	}
 
@@ -120,6 +120,7 @@ public class ChattingServiceImpl implements ChattingService {
 	 * @param score
 	 * @param scoreLimit
 	 */
+	@Transactional
 	public void createRoom(Member member, int score, int scoreLimit) {
 		Set<WaitingRoom> waitingRoomSet = redisService.getWaitingRoom(WAITING.getKey(), score - scoreLimit,
 			score + scoreLimit);
@@ -196,7 +197,8 @@ public class ChattingServiceImpl implements ChattingService {
 	 * @param token : 로그인 토큰
 	 * @return : 사용자 객체
 	 */
-	private Member getMember(String token) {
+	@Transactional
+	public Member getMember(String token) {
 		token = token.replace("Bearer ", "");
 		Long memberId = Long.valueOf(redisService.getMemberId(token));
 		if (memberId == null) {
@@ -214,6 +216,7 @@ public class ChattingServiceImpl implements ChattingService {
 	 * @param roomId : 방 ID
 	 */
 	@Override
+	@Transactional
 	public void finishGame(String token, FinishGameRequestDto finishGameRequestDto, String roomId) {
 		Member member = getMember(token);
 		Member other = memberRepository.findMemberByNickname(finishGameRequestDto.getOtherNickname())
@@ -305,7 +308,7 @@ public class ChattingServiceImpl implements ChattingService {
 	 * @param myScore : 내 점수
 	 * @return : 예측 승률
 	 */
-	public double predictWinRate(int otherScore, int myScore) {
+	private double predictWinRate(int otherScore, int myScore) {
 		return 1 / (1 + Math.pow(10, (otherScore - myScore) / 400));
 	}
 
@@ -380,7 +383,7 @@ public class ChattingServiceImpl implements ChattingService {
 	 * @param finishGameResponseDto : 게임 결과 정보
 	 * @param roomId : 방 ID
 	 */
-	public void sendGameResult(FinishGameResponseDto finishGameResponseDto, String roomId) {
+	private void sendGameResult(FinishGameResponseDto finishGameResponseDto, String roomId) {
 		log.info("SEND GAME RESULT");
 		messagingTemplate.convertAndSend("/sub/user-chat/rooms/" + roomId + "/result", finishGameResponseDto);
 	}
@@ -414,6 +417,7 @@ public class ChattingServiceImpl implements ChattingService {
 	 * @param roomId : 게임 중인 방 ID
 	 */
 	@Override
+	@Transactional
 	public void reportHere(String token, String roomId) {
 		Member member = getMember(token);
 		String otherNickname = redisService.reportAndGetOpposite(GAMING.getKey() + member.getNickname());
