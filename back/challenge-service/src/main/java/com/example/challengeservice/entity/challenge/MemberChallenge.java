@@ -42,6 +42,9 @@ public class MemberChallenge extends BaseEntity {
 	@Column(name = "member_challenge_url", length = 1000)
 	private String memberChallengeUrl;
 
+	@Column(name = "is_delete")
+	private Boolean isDelete;
+
 	public static MemberChallenge from(Challenge challenge, Member member, String memberChallengeImg,
 		String memberChallengeUrl) {
 		return MemberChallenge.builder()
@@ -49,6 +52,11 @@ public class MemberChallenge extends BaseEntity {
 			.member(member)
 			.memberChallengeImg(memberChallengeImg)
 			.memberChallengeUrl(memberChallengeUrl)
+			.isDelete(false)
 			.build();
+	}
+
+	public void updateIsDelete(Boolean isDelete) {
+		this.isDelete = isDelete;
 	}
 }
