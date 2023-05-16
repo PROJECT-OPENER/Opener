@@ -238,20 +238,9 @@ public class ShadowingServiceImpl implements ShadowingService {
 	 * @return
 	 */
 	@Override
-	@Transactional
-	public ShadowingDetailDto getShadowingDetailDto(CaptionDto captionDto, Long videoId) {
+	public ShadowingDetailDto getShadowingDetailDto(Long videoId) {
 		ShadowingVideo shadowingVideo = shadowingVideoRepository.findByVideoId(videoId)
 			.orElseThrow(() -> new ApiException(ExceptionEnum.SHADOWING_NOT_FOUND_EXCEPTION));
-
-		if (shadowingVideo.getKorCaption() == null || shadowingVideo.getKorCaption().isEmpty()) {
-			shadowingVideo.updateKorCapation(captionDto.getKorCaption());
-		}
-
-		if (shadowingVideo.getEngCaption() == null || shadowingVideo.getKorCaption().isEmpty()) {
-			shadowingVideo.updateEngCaption(captionDto.getEngCaption());
-		}
-
-		shadowingVideoRepository.save(shadowingVideo);
 
 		return ShadowingDetailDto.builder()
 			.videoUrl(shadowingVideo.getVideoUrl())
@@ -260,6 +249,23 @@ public class ShadowingServiceImpl implements ShadowingService {
 			.engCaption(shadowingVideo.getEngCaption())
 			.korCaption(shadowingVideo.getKorCaption())
 			.build();
+	}
+
+	/**
+	 * 이우승
+	 * explain : 쉐도잉 영상 설명 추가
+	 * @param captionDto
+	 * @param videoId
+	 */
+	@Override
+	@Transactional
+	public void updateCaption(CaptionDto captionDto, Long videoId) {
+		ShadowingVideo video = shadowingVideoRepository.findByVideoId(videoId)
+			.orElseThrow(() -> new ApiException(ExceptionEnum.SHADOWING_NOT_FOUND_EXCEPTION));
+
+		video.updateEngCaption(captionDto.getEngCaption());
+		video.updateKorCapation(captionDto.getKorCaption());
+
 	}
 
 	/**

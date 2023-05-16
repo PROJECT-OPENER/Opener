@@ -40,8 +40,11 @@ public interface ShadowingService {
 	void updateRepeatCount(Long videoId, Long memberId);
 
 	/** 비로그인 쉐도잉 영상 조회 **/
-	ShadowingDetailDto getShadowingDetailDto(CaptionDto captionDto, Long videoId);
+	ShadowingDetailDto getShadowingDetailDto(Long videoId);
 
+	/** 비로그인 쉐도잉 설명 추가 **/
+	void updateCaption(CaptionDto captionDto, Long videoId);
+	
 	/** 로그인 쉐도잉 영상 조회 **/
 	LoginShadowingDetailDto getLoginShadowingDetailDto(Long videoId, Long memberId);
 
