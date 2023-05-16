@@ -37,4 +37,7 @@ public class Love extends BaseEntity {
 			.isLove(true)
 			.build();
 	}
+	public void updateIsLove(Boolean isLove){
+		this.isLove=isLove;
+	}
 }

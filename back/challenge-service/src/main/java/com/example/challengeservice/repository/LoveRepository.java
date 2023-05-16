@@ -12,12 +12,15 @@ import java.util.Optional;
 
 @Repository
 public interface LoveRepository extends JpaRepository<Love, Long> {
-	int countByMemberChallenge(MemberChallenge memberChallenge);
+	int countByMemberChallengeAndIsLove(MemberChallenge memberChallenge, Boolean isLove);
 
-	int countByMemberChallengeAndMember_MemberId(MemberChallenge memberChallenge, Long memberId);
+	int countByMemberChallengeAndMember_MemberIdAndIsLove(MemberChallenge memberChallenge, Long memberId,
+		Boolean isLove);
 
 	Optional<Love> findByMemberChallengeAndMember(MemberChallenge memberChallenge, Member member);
 
-	int countByMemberChallengeAndMember(MemberChallenge memberChallenge, Member member);
-	List<Love> findAllByMemberChallenge_MemberChallengeId(Long memberChallengeId);
+	Optional<Love> findByMemberChallengeAndMemberAndIsLove(MemberChallenge memberChallenge, Member member,
+		Boolean isLove);
+
+	List<Love> findAllByMemberChallenge_MemberChallengeIdAndIsLove(Long memberChallengeId, Boolean isLove);
 }

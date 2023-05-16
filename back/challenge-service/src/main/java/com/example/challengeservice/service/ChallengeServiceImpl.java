@@ -5,6 +5,8 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import javax.transaction.Transactional;
+
 import com.example.challengeservice.common.exception.ApiException;
 import com.example.challengeservice.common.exception.ExceptionEnum;
 import com.example.challengeservice.dto.request.MemberChallengeRequestDto;
@@ -14,6 +16,7 @@ import com.example.challengeservice.entity.challenge.Love;
 import com.example.challengeservice.entity.challenge.MemberChallenge;
 import com.example.challengeservice.entity.member.Member;
 import com.example.challengeservice.messageQueue.KafkaProducer;
+import com.example.challengeservice.messageQueue.dto.produce.DeleteMemberChallengeDto;
 import com.example.challengeservice.repository.LoveRepository;
 import com.example.challengeservice.repository.MemberRepository;
 import com.google.firebase.auth.FirebaseAuthException;
@@ -61,7 +64,7 @@ public class ChallengeServiceImpl implements ChallengeService {
 		}
 		List<OriginalChallengeResponseDto> originChallengeResponseDtoList = new LinkedList<>();
 		for (Challenge challenge : challengeList) {
-			int joinCount = memberChallengeRepository.countByChallenge(challenge);
+			int joinCount = memberChallengeRepository.countByChallengeAndIsDelete(challenge, false);
 			originChallengeResponseDtoList.add(OriginalChallengeResponseDto.from(challenge, joinCount));
 		}
 		return originChallengeResponseDtoList;
@@ -75,7 +78,7 @@ public class ChallengeServiceImpl implements ChallengeService {
 		Challenge challenge = challengeRepository.findByChallengeId(challengeId)
 			.orElseThrow(() -> new ApiException(ExceptionEnum.CHALLENGE_NOT_FOUND_EXCEPTION));
 
-		int joinCount = memberChallengeRepository.countByChallenge(challenge);
+		int joinCount = memberChallengeRepository.countByChallengeAndIsDelete(challenge, false);
 		return OriginalChallengeResponseDto.from(challenge, joinCount);
 	}
 
@@ -89,9 +92,10 @@ public class ChallengeServiceImpl implements ChallengeService {
 	public SelectOriginalResponseDto selectOriginalChallenge(Long challengeId, Integer startIndex, Integer endIndex) {
 		OriginalChallengeResponseDto originalChallengeResponseDto = getOriginalChallengeInfo(challengeId);
 		List<MemberChallengeResponseDto> memberChallengeResponseDtoList = new ArrayList<>();
-		List<MemberChallenge> memberChallenges = memberChallengeRepository.findAllByChallengeId(challengeId);
+		List<MemberChallenge> memberChallenges = memberChallengeRepository.findAllByChallengeIdAndIsDelete(challengeId,
+			false);
 		for (MemberChallenge memberChallenge : memberChallenges) {
-			int likeCount = loveRepository.countByMemberChallenge(memberChallenge);
+			int likeCount = loveRepository.countByMemberChallengeAndIsLove(memberChallenge, true);
 			MemberChallengeResponseDto memberChallengeResponseDto = MemberChallengeResponseDto.from(memberChallenge,
 				likeCount);
 			memberChallengeResponseDtoList.add(memberChallengeResponseDto);
@@ -124,7 +128,7 @@ public class ChallengeServiceImpl implements ChallengeService {
 	public WatchOriginalChallengeResponseDto watchOriginalChallenge(Long challengeId) {
 		Challenge challenge = challengeRepository.findByChallengeId(challengeId)
 			.orElseThrow(() -> new ApiException(ExceptionEnum.CHALLENGE_NOT_FOUND_EXCEPTION));
-		int joinCount = memberChallengeRepository.countByChallenge(challenge);
+		int joinCount = memberChallengeRepository.countByChallengeAndIsDelete(challenge, false);
 		return WatchOriginalChallengeResponseDto.from(challenge, joinCount);
 	}
 
@@ -136,16 +140,18 @@ public class ChallengeServiceImpl implements ChallengeService {
 	 */
 	@Override
 	public WatchMemberChallengeResponseDto watchMemberChallenge(Long memberChallengeId, String memberId) {
-		MemberChallenge memberChallenge = memberChallengeRepository.findByMemberChallengeId(memberChallengeId)
+		MemberChallenge memberChallenge = memberChallengeRepository.findByMemberChallengeIdAndIsDelete(
+				memberChallengeId, false)
 			.orElseThrow(() -> new ApiException(ExceptionEnum.MEMBER_CHALLENGE_NOT_FOUND_EXCEPTION));
 		Challenge challenge = challengeRepository.findByChallengeId(memberChallenge.getChallenge().getChallengeId())
 			.orElseThrow(() -> new ApiException(ExceptionEnum.CHALLENGE_NOT_FOUND_EXCEPTION));
-		int joinCount = memberChallengeRepository.countByChallenge(challenge);
+		int joinCount = memberChallengeRepository.countByChallengeAndIsDelete(challenge, false);
 		WatchOriginalChallengeResponseDto watchOriginalChallengeResponseDto = WatchOriginalChallengeResponseDto.from(
 			challenge, joinCount);
 		int isLove = 0;
 		if (memberId != null) {
-			isLove = loveRepository.countByMemberChallengeAndMember_MemberId(memberChallenge, Long.parseLong(memberId));
+			isLove = loveRepository.countByMemberChallengeAndMember_MemberIdAndIsLove(memberChallenge,
+				Long.parseLong(memberId), true);
 		}
 		SelectMemberChallengeResponseDto selectMemberChallengeResponseDto = SelectMemberChallengeResponseDto.from(
 			memberChallenge, isLove);
@@ -165,7 +171,7 @@ public class ChallengeServiceImpl implements ChallengeService {
 			throw new ApiException(ExceptionEnum.MEMBER_CHALLENGES_NOT_FOUND_EXCEPTION);
 		}
 		for (MemberChallenge memberChallenge : memberChallengeList) {
-			int likeCount = loveRepository.countByMemberChallenge(memberChallenge);
+			int likeCount = loveRepository.countByMemberChallengeAndIsLove(memberChallenge, true);
 			MemberChallengeResponseDto memberChallengeResponseDto = MemberChallengeResponseDto.from(memberChallenge,
 				likeCount);
 			memberChallengeResponseDtoList.add(memberChallengeResponseDto);
@@ -213,12 +219,9 @@ public class ChallengeServiceImpl implements ChallengeService {
 			.orElseThrow(() -> new ApiException(ExceptionEnum.CHALLENGE_NOT_FOUND_EXCEPTION));
 		Member member = memberRepository.findByMemberId(memberId)
 			.orElseThrow(() -> new ApiException(ExceptionEnum.WRONG_MEMBER_EXCEPTION));
-		int myCount =
-			memberChallengeRepository.countByChallenge_ChallengeIdAndMember_MemberId(challengeId, member.getMemberId())
-				+ 1;
 		String fileName = challenge.getTitle() + "_" + memberChallengeRequestDto.getNickName() + LocalDateTime.now();
-		if (memberChallengeRepository.findByChallenge_ChallengeIdAndMember_MemberId(challengeId, member.getMemberId())
-			.isPresent()) {
+		if (memberChallengeRepository.findByChallenge_ChallengeIdAndMember_MemberIdAndIsDelete(challengeId,
+			member.getMemberId(), false).isPresent()) {
 			throw new ApiException(ExceptionEnum.MEMBER_CHALLENGE_EXIST_EXCEPTION);
 		}
 		if (memberChallengeRequestDto.getMemberChallengeFile().isEmpty()) {
@@ -242,13 +245,20 @@ public class ChallengeServiceImpl implements ChallengeService {
 	 * @param memberChallengeId : 멤버 챌린지 id
 	 */
 	@Override
+	@Transactional
 	public void deleteMemberChallenge(Long memberChallengeId) {
-		MemberChallenge memberChallenge = memberChallengeRepository.findByMemberChallengeId(memberChallengeId)
+		MemberChallenge memberChallenge = memberChallengeRepository.findByMemberChallengeIdAndIsDelete(
+				memberChallengeId, false)
 			.orElseThrow(() -> new ApiException(ExceptionEnum.MEMBER_CHALLENGE_NOT_FOUND_EXCEPTION));
-		List<Love> loveList = loveRepository.findAllByMemberChallenge_MemberChallengeId(memberChallengeId);
-		loveRepository.deleteAll(loveList);
-		memberChallengeRepository.delete(memberChallenge);
-		kafkaProducer.sendDeleteEvent(memberChallenge.getMemberChallengeId());
+
+		List<Love> loveList = loveRepository.findAllByMemberChallenge_MemberChallengeIdAndIsLove(memberChallengeId,
+			true);
+		for (Love love : loveList) {
+			love.updateIsLove(false);
+		}
+
+		memberChallenge.updateIsDelete(true);
+		kafkaProducer.sendDeleteEvent(new DeleteMemberChallengeDto(memberChallenge.getMemberChallengeId()));
 	}
 
 	/**
@@ -259,39 +269,47 @@ public class ChallengeServiceImpl implements ChallengeService {
 	 * @param memberId          : 현재 로그인한 멤버의 id
 	 */
 	@Override
+	@Transactional
 	public void createLike(Long memberChallengeId, Long memberId) {
 		Member member = memberRepository.findByMemberId(memberId)
 			.orElseThrow(() -> new ApiException(ExceptionEnum.WRONG_MEMBER_EXCEPTION));
-		MemberChallenge memberChallenge = memberChallengeRepository.findByMemberChallengeId(memberChallengeId)
+		MemberChallenge memberChallenge = memberChallengeRepository.findByMemberChallengeIdAndIsDelete(
+				memberChallengeId, false)
 			.orElseThrow(() -> new ApiException(ExceptionEnum.MEMBER_CHALLENGE_NOT_FOUND_EXCEPTION));
-		int count = loveRepository.countByMemberChallengeAndMember(memberChallenge, member);
-		if (count > 0) {
-			throw new ApiException(ExceptionEnum.LOVE_EXIST_EXCEPTION);
+		Optional<Love> optionalLove = loveRepository.findByMemberChallengeAndMember(memberChallenge, member);
+		if (optionalLove.isPresent()) {
+			Love love = optionalLove.get();
+			if (love.getIsLove() == false) {
+				love.updateIsLove(true);
+			}
+		} else {
+			loveRepository.save(Love.from(member, memberChallenge));
 		}
-		loveRepository.save(Love.from(member, memberChallenge));
 	}
 
 	@Override
+	@Transactional
 	public void deleteLike(Long memberChallengeId, Long memberId) {
 		Member member = memberRepository.findByMemberId(memberId)
 			.orElseThrow(() -> new ApiException(ExceptionEnum.WRONG_MEMBER_EXCEPTION));
-		MemberChallenge memberChallenge = memberChallengeRepository.findByMemberChallengeId(memberChallengeId)
+		MemberChallenge memberChallenge = memberChallengeRepository.findByMemberChallengeIdAndIsDelete(
+				memberChallengeId, false)
 			.orElseThrow(() -> new ApiException(ExceptionEnum.MEMBER_CHALLENGE_NOT_FOUND_EXCEPTION));
-		Love love = loveRepository.findByMemberChallengeAndMember(memberChallenge, member)
+		Love love = loveRepository.findByMemberChallengeAndMemberAndIsLove(memberChallenge, member, true)
 			.orElseThrow(() -> new ApiException(ExceptionEnum.LOVE_NOT_FOUND_EXCEPTION));
-		loveRepository.delete(love);
+		love.updateIsLove(false);
 	}
 
 	@Override
 	public List<MemberChallengeResponseDto> getMyChallenges(Long memberId) {
 		Member member = memberRepository.findByMemberId(memberId)
 			.orElseThrow(() -> new ApiException(ExceptionEnum.WRONG_MEMBER_EXCEPTION));
-		List<MemberChallenge> memberChallenges = memberChallengeRepository.findAllByMember_MemberId(
-			member.getMemberId());
+		List<MemberChallenge> memberChallenges = memberChallengeRepository.findAllByMember_MemberIdAndIsDelete(
+			member.getMemberId(), false);
 
 		List<MemberChallengeResponseDto> memberChallengeResponseDtoList = memberChallenges.stream()
 			.map(memberChallenge -> {
-				int likeCount = loveRepository.countByMemberChallenge(memberChallenge);
+				int likeCount = loveRepository.countByMemberChallengeAndIsLove(memberChallenge, true);
 				return MemberChallengeResponseDto.from(memberChallenge, likeCount);
 			})
 			.sorted(Comparator.comparing(MemberChallengeResponseDto::getMemberChallengeDate).reversed())
