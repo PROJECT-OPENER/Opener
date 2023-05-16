@@ -16,7 +16,7 @@ import com.example.challengeservice.entity.challenge.Love;
 import com.example.challengeservice.entity.challenge.MemberChallenge;
 import com.example.challengeservice.entity.member.Member;
 import com.example.challengeservice.messageQueue.KafkaProducer;
-import com.example.challengeservice.messageQueue.dto.produce.DeleteMemberChallengeDto;
+import com.example.challengeservice.messageQueue.dto.produce.ChallengeBadgeProduceDto;
 import com.example.challengeservice.repository.LoveRepository;
 import com.example.challengeservice.repository.MemberRepository;
 import com.google.firebase.auth.FirebaseAuthException;
@@ -238,6 +238,7 @@ public class ChallengeServiceImpl implements ChallengeService {
 			fileName + "_img");
 		MemberChallenge memberChallenge = MemberChallenge.from(challenge, member, imgUrl, fileUrl);
 		memberChallengeRepository.save(memberChallenge);
+		kafkaProducer.sendBadgeEvent(new ChallengeBadgeProduceDto(member.getMemberId()));
 	}
 
 	/**
@@ -260,7 +261,6 @@ public class ChallengeServiceImpl implements ChallengeService {
 		}
 
 		memberChallenge.updateIsDelete(true);
-		kafkaProducer.sendDeleteEvent(new DeleteMemberChallengeDto(memberChallenge.getMemberChallengeId()));
 	}
 
 	/**
