@@ -1,11 +1,7 @@
 'use client';
 import React from 'react';
 import { useRecoilValue } from 'recoil';
-import {
-  userChatLastChatState,
-  userChatMyNicknameState,
-  userChatResultState,
-} from '../../store';
+import { userChatMyNicknameState, userChatResultState } from '../../store';
 
 const ResultScore = () => {
   const myNickname = useRecoilValue(userChatMyNicknameState);

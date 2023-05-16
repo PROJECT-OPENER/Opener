@@ -1,13 +1,13 @@
 import { bingGrammerCheckApi } from '@/app/api/openAi';
+import { Message } from '@/types/share';
+import {
+  ucFilterMsgInterface,
+  ucGrammerMsgInterface,
+} from '@/types/userChatTypes';
 
 interface ChatLogElement {
   text: string;
   sender: 'AI' | 'HUMAN';
-}
-
-interface chat {
-  nickname: string;
-  message: string;
 }
 
 export const handleChatLog = (chatLog: ChatLogElement[]) => {
@@ -91,10 +91,13 @@ export const checkGrammer = async (
   }
 };
 
-export const resultArray = async (original: any, feedback: any) => {
-  const mergedArray = original.map((item1: any) => {
+export const resultArray = async (
+  original: Message[],
+  feedback: ucGrammerMsgInterface[],
+) => {
+  const mergedArray = original.map((item1: Message) => {
     const item2 = feedback.find(
-      (item2: any) =>
+      (item2: ucGrammerMsgInterface) =>
         item2.nickname === item1.nickname && item2.turn === item1.turn,
     );
     if (item2) {
@@ -111,17 +114,9 @@ export const resultArray = async (original: any, feedback: any) => {
   return mergedArray;
 };
 
-export const isStringValidJSON = (str: any) => {
-  try {
-    const json = JSON.parse(str);
-    return Array.isArray(json) && json.length > 0;
-  } catch (error) {
-    return false;
-  }
-};
-
-export const convertArrayToChatString = (array: []) => {
+// 필터링 한 채팅 배열을 문자열로 변환
+export const convertArrayToChatString = (array: ucFilterMsgInterface[]) => {
   return array
-    .map((item: chat) => `${item.nickname}: ${item.message}`)
+    .map((item: ucFilterMsgInterface) => `${item.nickname}: ${item.message}`)
     .join('\n');
 };

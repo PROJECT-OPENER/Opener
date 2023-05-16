@@ -18,13 +18,12 @@ import {
   BsMic,
 } from 'react-icons/bs';
 
-const subscriptionKey = '73f54ad18a1942b98944cca014f59386';
-const serviceRegion = 'eastus';
-
 type Props = {
   handleSendMessage: () => void;
 };
 const AiChatSendVoice = ({ handleSendMessage }: Props) => {
+  const subscriptionKey = process.env.NEXT_PUBLIC_TTS_API;
+  const serviceRegion = 'eastus';
   // recoil
   const [message, setMessage] = useRecoilState(aiChatMessageState);
   const [isRecording, setIsRecording] = useRecoilState(aiChatIsRecordingState);
@@ -34,7 +33,7 @@ const AiChatSendVoice = ({ handleSendMessage }: Props) => {
 
   // azure
   const speechConfig = SpeechConfig.fromSubscription(
-    subscriptionKey,
+    subscriptionKey as string,
     serviceRegion,
   );
   const audioConfig = AudioConfig.fromDefaultMicrophoneInput();
