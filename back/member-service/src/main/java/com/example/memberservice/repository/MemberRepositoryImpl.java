@@ -1,27 +1,38 @@
 package com.example.memberservice.repository;
+import java.util.List;
+import java.util.stream.Collectors;
 
-import static com.example.memberservice.entity.member.QMemberInterest.memberInterest;
+import javax.persistence.EntityManager;
 
-import com.example.memberservice.entity.member.Member;
-import com.querydsl.jpa.impl.JPAQueryFactory;
+import org.springframework.beans.factory.annotation.Value;
+
+import com.example.memberservice.dto.response.member.RankResponseDto;
 
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class MemberRepositoryImpl implements MemberRepositoryCustom {
-	private final JPAQueryFactory queryFactory;
+	private final EntityManager em;
 
-	/**
-	 * 김윤미
-	 * explain : 사용자의 관심사 개수를 조회
-	 * @param member : 사용자 정보
-	 * @return : 사용자의 관심사 개수
-	 */
-	@Override
-	public int countDistinctInterestIdsByMember(Member member) {
-		return Math.toIntExact(queryFactory.selectDistinct(memberInterest.interest.interestId)
-			.from(memberInterest)
-			.where(memberInterest.member.memberId.eq(member.getMemberId()))
-			.fetchFirst());
+	@Value("${spring.img.baseurl}")
+	private String baseImgUrl;
+
+	public List<RankResponseDto> getRankingList() {
+		List<Object[]> result = em.createNativeQuery(
+				"SELECT nickname, profile, score, DENSE_RANK() OVER (ORDER BY score DESC) as `rank` " +
+					"FROM member " +
+					"ORDER BY score DESC " +
+					"LIMIT 10")
+			.getResultList();
+
+		return result.stream()
+			.map(record -> RankResponseDto.builder()
+				.nickname((String)record[0])
+				.profile(record[1] == null ? baseImgUrl : (String) record[1])
+				.score(((Number)record[2]).intValue())
+				.rank(((Number)record[3]).intValue())
+				.build())
+			.collect(Collectors.toList());
 	}
+
 }

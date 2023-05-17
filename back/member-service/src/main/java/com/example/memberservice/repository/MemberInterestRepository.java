@@ -9,6 +9,6 @@ import com.example.memberservice.entity.member.Member;
 import com.example.memberservice.entity.member.MemberInterest;
 
 @Repository
-public interface MemberInterestRepository extends JpaRepository<MemberInterest, Long>, MemberRepositoryCustom {
+public interface MemberInterestRepository extends JpaRepository<MemberInterest, Long>, MemberInterestRepositoryCustom {
 	List<MemberInterest> findAllByMember(Member member);
 }
