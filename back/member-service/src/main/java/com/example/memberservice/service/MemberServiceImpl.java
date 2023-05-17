@@ -399,6 +399,7 @@ public class MemberServiceImpl implements MemberService {
 			.email(member.getEmail())
 			.nickname(member.getNickname())
 			.profile(member.getProfile() == null ? baseImgUrl : member.getProfile())
+			.score(member.getScore())
 			.interests(interests)
 			.build();
 	}
