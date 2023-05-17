@@ -11,6 +11,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.example.memberservice.entity.BaseEntity;
+import com.example.memberservice.messagequeue.dto.consume.ShadowingRoadmapConsumeDto;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -38,4 +39,10 @@ public class Roadmap extends BaseEntity {
 
 	private int stepTheme;
 	private int sentenceNo;
+
+	public void updateRoadmap(ShadowingRoadmapConsumeDto dto) {
+		this.stepNo = dto.getStepNo();
+		this.stepTheme = dto.getStepTheme();
+		this.sentenceNo = dto.getSentenceNo();
+	}
 }
