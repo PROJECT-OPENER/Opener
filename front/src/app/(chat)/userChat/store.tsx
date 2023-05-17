@@ -110,3 +110,8 @@ export const userChatLastChatState = atom({
   default: false,
   effects_UNSTABLE: [persistAtom],
 });
+
+export const bonobonoState = atom({
+  key: 'bonobonoState',
+  default: false,
+});

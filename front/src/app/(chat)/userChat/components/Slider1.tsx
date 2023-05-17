@@ -1,5 +1,7 @@
 import React from 'react';
 import classNames from 'classnames';
+import { useRecoilState } from 'recoil';
+import { bonobonoState } from '../store';
 
 const colors = [
   'text-red-500',
@@ -34,22 +36,49 @@ export const ColoredText = (text: string) => {
 };
 
 const Slider1 = () => {
+  const [isBono, setIsBono] = useRecoilState(bonobonoState);
   return (
     <div className="h-full flex flex-col justify-center items-center text-center space-y-5">
-      <h1 className="text-xl font-bold">게임 소개</h1>
-      <h1>
-        {ColoredText('각 참가자는 15초 이내에 하나의 문장을 입력해야 합니다.')}
+      <h1
+        className="text-xl font-bold animate-pulse"
+        onClick={() => {
+          setIsBono(!isBono);
+        }}
+      >
+        게임 소개
       </h1>
-      <h1>
-        {ColoredText(
-          '총 10번의 턴으로 구성되어 있으며, 대회는 1:1 대결 형태로 진행됩니다.',
-        )}
-      </h1>
-      <h1>
-        {ColoredText(
-          '입력된 문장들의 문법과 문맥을 AI가 분석하여 승패를 결정합니다.',
-        )}
-      </h1>
+      {isBono && (
+        <>
+          <h1>
+            {ColoredText(
+              '각 참가자는 15초 이내에 하나의 문장을 입력해야 합니다.',
+            )}
+          </h1>
+          <h1>
+            {ColoredText(
+              '총 10번의 턴으로 구성되어 있으며, 대회는 1:1 대결 형태로 진행됩니다.',
+            )}
+          </h1>
+          <h1>
+            {ColoredText(
+              '입력된 문장들의 문법과 문맥을 AI가 분석하여 승패를 결정합니다.',
+            )}
+          </h1>
+        </>
+      )}
+      {!isBono && (
+        <>
+          <h1 className="">
+            각 참가자는 15초 이내에 하나의 문장을 입력해야 합니다.
+          </h1>
+          <h1>
+            총 10번의 턴으로 구성되어 있으며, 대회는 1:1 대결 형태로 진행됩니다.
+          </h1>
+          <h1>
+            입력된 문장들의 문법과 문맥을 AI가 분석하여 승패를 결정합니다.
+          </h1>
+        </>
+      )}
     </div>
   );
 };
