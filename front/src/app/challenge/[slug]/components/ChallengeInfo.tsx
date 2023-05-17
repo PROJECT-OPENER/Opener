@@ -21,7 +21,7 @@ const ChallengeInfo = ({ voiceId }: Props) => {
     useSWRInfinite<challengeIdSwrData>(
       (index) =>
         `${BASE_URL}challenge-service/challenges/${voiceId}?startIndex=${0}&endIndex=${
-          index + 2
+          index + 5
         }`,
       fetcher,
     );

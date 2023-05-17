@@ -71,7 +71,6 @@ export const fetcher = async (url: string, token: string) => {
   const session = await getSession();
   const accessToken = session?.user.user?.accessToken;
   if (accessToken) {
-    console.log(accessToken);
     const response = await fetch(url, {
       headers: {
         Authorization: `Bearer ${accessToken}`, // 토큰을 헤더에 추가
@@ -111,7 +110,6 @@ const handleResponseError = (error: AxiosError): Promise<AxiosError> => {
   // Handle Authentication Error
   // Redirect to the login page
   if (error.response.status === 401) {
-    console.log(error);
     console.log('401 error');
   }
 

@@ -136,23 +136,27 @@ const ChallengeDetail = ({ challengeList }: Props) => {
   };
   const [detailobserver, setDetailobserver] =
     useState<IntersectionObserver | null>(null);
+  const parentRef = useRef<HTMLDivElement>(null);
 
   const onPlayReady: YouTubeProps['onReady'] = (event) => {
     event.target.pauseVideo();
-    const iframe = event.target.getIframe();
-    const parent = iframe.contentWindow.parent;
-    parent.addEventListener('click', handleParentClick);
+    if (parentRef.current) {
+      parentRef.current.addEventListener('click', handleParentClick);
+    }
   };
 
   const handleParentClick = async () => {
+    console.log('클릭');
     if (youtubePlayRef.current) {
       const player = youtubePlayRef.current.getInternalPlayer();
       const status = await player.getPlayerState();
       if (status === 1) {
         player.pauseVideo();
+        console.log('정지');
         // detailobserver?.disconnect();
       } else {
         player.playVideo();
+        console.log('시작');
       }
     }
   };
@@ -160,13 +164,6 @@ const ChallengeDetail = ({ challengeList }: Props) => {
   const playingStateChange = (event: any) => {
     // 유튜브랑 싱크 맞추기 위해서 사용
     if (memberPlayerRef.current) {
-      if (event.data === YouTube.PlayerState.ENDED) {
-        const player = youtubePlayRef.current?.internalPlayer;
-        player.playVideo();
-        memberPlayerRef.current.pause();
-        memberPlayerRef.current.load();
-        // console.log('ENDED');
-      }
       if (event.data === YouTube.PlayerState.PLAYING) {
         memberPlayerRef.current.play();
         // console.log('PLAYING');
@@ -174,6 +171,13 @@ const ChallengeDetail = ({ challengeList }: Props) => {
       if (event.data === YouTube.PlayerState.PAUSED) {
         memberPlayerRef.current.pause();
         // console.log('PAUSED');
+      }
+      if (event.data === YouTube.PlayerState.ENDED) {
+        const player = youtubePlayRef.current?.internalPlayer;
+        player.playVideo();
+        memberPlayerRef.current.pause();
+        memberPlayerRef.current.load();
+        // console.log('ENDED');
       }
     }
   };
@@ -212,7 +216,7 @@ const ChallengeDetail = ({ challengeList }: Props) => {
 
   const shareClick = () => {
     window.navigator.clipboard.writeText(
-      `http://localhost:3000/challenge/p/${challengeList.memberChallengeId}`,
+      `https://k8c1041.p.ssafy.io/challenge/p/${challengeList.memberChallengeId}`,
     );
     alert('클립보드에 복사를 완료했습니다.');
   };
@@ -273,18 +277,30 @@ const ChallengeDetail = ({ challengeList }: Props) => {
   return (
     <div className="py-5">
       <DetailPageNav
-        className="max-w-[1500px] absolute top-3 left-10 right-10"
+        className="fixed top-3 left-10 right-10 z-10"
         title="CHALLANGE"
         propEvent={handleLeftGame}
       />
       {!isDelete && (
-        <div className="h-[800px] flex flex-col items-center" ref={videoRef}>
-          <div className="relative overflow-hidden rounded-xl h-[800px] w-[450px] bg-black">
-            <div className={isView ? 'relative h-[800px]' : 'hidden'}>
+        <div
+          className="h-screen flex flex-col items-center overflow-hidden"
+          ref={videoRef}
+        >
+          <div
+            className="relative overflow-hidden rounded-xl z-0 md:h-[704px] md:w-[396px] h-[640px] w-[360px] bg-black mt-20"
+            ref={parentRef}
+          >
+            <div
+              className={
+                isView
+                  ? 'relative md:h-[704px] md:w-[396px] h-[640px] w-[360px] flex justify-center items-center overflow-hidden'
+                  : 'hidden'
+              }
+            >
               <video
                 ref={memberPlayerRef}
                 src={challengeInfo?.curMemberChallenge.memberChallengeUrl}
-                className="h-[800px] overflow-hidden relative"
+                className="md:h-[704px] md:w-[396px] h-[640px] w-[360px] relative"
               ></video>
               <div className="absolute top-10 w-full  flex justify-center items-center">
                 <div className="bg-black h-10 flex items-center bg-opacity-20 font-black text-white md:text-xl ">
@@ -408,11 +424,17 @@ const ChallengeDetail = ({ challengeList }: Props) => {
                 </>
               )}
             </div>
-            <div className={isView ? 'hidden' : 'relative rounded-xl'}>
+            <div
+              className={
+                isView
+                  ? 'hidden'
+                  : 'relative rounded-xl flex justify-center items-center'
+              }
+            >
               <img
                 src={challengeList?.memberChallengeImg}
                 alt=""
-                className="h-[810px] overflow-hidden relative"
+                className="md:h-[704px] md:w-[396x] h-[640px] w-[360px] overflow-hidden relative"
               />
             </div>
           </div>

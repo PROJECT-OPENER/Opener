@@ -1,15 +1,13 @@
 'use client';
 
 import React, { useEffect, useState, useRef } from 'react';
-import Button from '@/app/components/Button';
 import { memberChallenge, challengeCategorySwrData } from '@/types/share';
 import Link from 'next/link';
 import { AiFillHeart } from 'react-icons/ai';
 import useSWRInfinite from 'swr/infinite';
 
 const ChallengeCard = () => {
-  let category = 'LIKE';
-
+  const [category, setCategory] = useState<string>('LIKE'); // 주의
   const fetcher = async (url: string) => {
     const response = await fetch(url);
     return response.json();
@@ -20,7 +18,7 @@ const ChallengeCard = () => {
     useSWRInfinite<challengeCategorySwrData>(
       (index) =>
         `${BASE_URL}challenge-service/member-challenges?category=${category}&startIndex=${0}&endIndex=${
-          index + 2
+          index + 8
         }`,
       fetcher,
     );
@@ -82,7 +80,7 @@ const ChallengeCard = () => {
               type="button"
               className="ml-4 bg-brandP  w-32 text-white rounded-xl shadow-xl py-3"
               onClick={() => {
-                category = 'LIKE';
+                setCategory('LIKE');
                 mutate();
                 if (likeButton.current && recentButton.current) {
                   recentButton.current.className =
@@ -99,7 +97,7 @@ const ChallengeCard = () => {
               ref={recentButton}
               className=" ml-4 bg-white w-32 text-black rounded-xl shadow-xl py-3"
               onClick={() => {
-                category = 'RECENT';
+                setCategory('RECENT');
                 mutate();
                 if (likeButton.current && recentButton.current) {
                   likeButton.current.className =
@@ -120,16 +118,16 @@ const ChallengeCard = () => {
               >
                 <Link
                   href={`challenge/scroll/${category}/${index}`}
-                  className="relative block rounded-lg w-full h-full"
+                  className="overflow-hidden relative rounded-lg w-full h-full bg-black flex justify-center items-center"
                 >
                   <img
-                    className="w-full h-full rounded-lg relative shadow-xl"
+                    className="w-auto h-auto relative shadow-xl"
                     src={memberChallenge.memberChallengeImg}
                     alt=""
                   />
-                  <div className="absolute inset-x-0 bottom-0 left-0 h-8 ml-2 flex text-white">
+                  <div className="absolute inset-x-2  bottom-2 left-0 h-8 ml-2 flex text-white items-center">
                     <AiFillHeart
-                      size={'2rem'}
+                      size={'1rem'}
                       className="fill-white mr-2"
                       style={{
                         filter: 'drop-shadow(3px 3px 5px rgba(0, 0, 0, 0.3))',
@@ -147,7 +145,7 @@ const ChallengeCard = () => {
         className={
           challenges[0]?.data.totalLength <= challengeList?.length
             ? 'hidden'
-            : 'list-end bottom-0'
+            : 'list-end h-20'
         }
         ref={listEndRef}
       ></p>

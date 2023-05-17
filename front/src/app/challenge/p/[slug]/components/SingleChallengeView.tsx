@@ -11,11 +11,11 @@ import {
 } from '@/app/api/challengeApi';
 import useUser from '@/app/hooks/userHook';
 import { AiFillHeart } from 'react-icons/ai';
-import { TfiAngleLeft } from 'react-icons/tfi';
 import { RiShareForwardFill, RiDeleteBin5Fill } from 'react-icons/ri';
 import useSWR from 'swr';
 import TopNavPc from '@/app/components/TopNavPc';
 import { fetcher } from '@/app/api/axiosConfig';
+import DetailPageNav from '@/app/components/DetailPageNav';
 
 type Props = {
   challengeId: number;
@@ -44,11 +44,12 @@ const SingleChallengeView = ({ challengeId }: Props) => {
   const memberPlayerRef = useRef<HTMLVideoElement>(null);
   const [isLike, setIsLike] = useState<boolean>(false);
   const [isDelete, setIsDelete] = useState<boolean>(false);
+  const parentRef = useRef<HTMLDivElement>(null);
   const onPlayReady: YouTubeProps['onReady'] = (event) => {
     event.target.pauseVideo();
-    const iframe = event.target.getIframe();
-    const parent = iframe.contentWindow.parent;
-    parent.addEventListener('click', handleParentClick);
+    if (parentRef.current) {
+      parentRef.current.addEventListener('click', handleParentClick);
+    }
   };
 
   const playingStateChange = (event: any) => {
@@ -59,15 +60,15 @@ const SingleChallengeView = ({ challengeId }: Props) => {
         player.playVideo();
         memberPlayerRef.current.pause();
         memberPlayerRef.current.load();
-        console.log('ENDED');
+        // console.log('ENDED');
       }
       if (event.data === YouTube.PlayerState.PLAYING) {
         memberPlayerRef.current.play();
-        console.log('PLAYING');
+        // console.log('PLAYING');
       }
       if (event.data === YouTube.PlayerState.PAUSED) {
         memberPlayerRef.current.pause();
-        console.log('PAUSED');
+        // console.log('PAUSED');
       }
     }
   };
@@ -96,7 +97,7 @@ const SingleChallengeView = ({ challengeId }: Props) => {
 
   const shareClick = () => {
     window.navigator.clipboard.writeText(
-      `http://localhost:3000/challenge/p/${challengeId}`,
+      `https://k8c1041.p.ssafy.io/challenge/p/${challengeId}`,
     );
     alert('클립보드에 복사를 완료했습니다.');
   };
@@ -233,24 +234,31 @@ const SingleChallengeView = ({ challengeId }: Props) => {
       return cancelAnimationFrame(animFrame.current);
     }
   };
-
+  const handleLeftGame = () => {
+    router.push('/challenge');
+  };
   return (
     <>
+      <DetailPageNav
+        className="fixed top-3 left-10 right-10 z-10"
+        title="CHALLANGE"
+        propEvent={handleLeftGame}
+      />
       {!isDelete && (
         <>
-          <div className="hidden md:block h-20 w-screen z-10">
-            <TopNavPc />
-          </div>
           <div
-            className="md:m-10 h-screen flex flex-col items-center"
+            className="h-screen flex flex-col items-center overflow-hidden"
             ref={videoRef}
           >
-            <div className="relative overflow-hidden rounded-xl z-0 h-[800px] w-[450px]  bg-black">
-              <div className="relative h-[810px]">
+            <div
+              className="relative overflow-hidden rounded-xl z-0 md:h-[704px] md:w-[396px] h-[640px] w-[360px] bg-black mt-20"
+              ref={parentRef}
+            >
+              <div className="relative md:h-[704px] md:w-[396px] h-[640px] w-[360px] flex justify-center items-center overflow-hidden">
                 <video
                   ref={memberPlayerRef}
                   src={challengeInfo?.curMemberChallenge.memberChallengeUrl}
-                  className="h-[810px] overflow-hidden relative"
+                  className="md:h-[704px] md:w-[396px] h-[640px] w-[360px] relative"
                 ></video>
                 <div className="absolute top-10 w-full  flex justify-center items-center">
                   <div className="bg-black h-10 flex items-center bg-opacity-20 font-black text-white md:text-xl ">

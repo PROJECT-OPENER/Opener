@@ -10,7 +10,8 @@ type Props = {
 
 const VoiceChallengeInfo = ({ originalChallengeResponseDto }: Props) => {
   return (
-    <div className="bg-[#F8F8F8] p-5 grid grid-cols-5 ">
+    // [#F8F8F8]
+    <div className="bg-white p-5 grid grid-cols-5  rounded-lg">
       <div className="mx-5 flex items-center col-span-2">
         <Link
           href={`challenge/${originalChallengeResponseDto.challengeId}/original`}
@@ -23,10 +24,10 @@ const VoiceChallengeInfo = ({ originalChallengeResponseDto }: Props) => {
         </Link>
       </div>
       <div className="col-span-3 flex flex-col justify-center mx-2">
-        <div className="my-5 text-xl font-medium mx-2">
+        <div className="my-5 text-lg font-medium mx-2">
           <p>{originalChallengeResponseDto.title}</p>
         </div>
-        <div className="flex items-center mb-5 text-xl font-medium mx-3">
+        <div className="flex items-center mb-5 text-lg font-medium mx-3">
           <FiUserPlus size={'1.5rem'} className="mr-2" />
           {originalChallengeResponseDto.joinCount}
         </div>

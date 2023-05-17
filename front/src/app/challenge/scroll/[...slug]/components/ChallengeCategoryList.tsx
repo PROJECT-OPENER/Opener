@@ -78,14 +78,11 @@ const ChallengeCategoryList = ({ category, startIdx }: Props) => {
           ))}
         </div>
       )}
-      <p>{challenges[0]?.data.totalLength - startIdx}</p>
-      <p>{challengeList?.length}</p>
-
       <p
         className={
           challenges[0]?.data.totalLength - startIdx <= challengeList?.length
             ? 'hidden'
-            : 'list-end h-20 bg-slate-200'
+            : 'list-end h-20 bg-blue-200'
         }
         ref={listEndRef}
       ></p>

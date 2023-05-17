@@ -42,15 +42,15 @@ const Famous = () => {
                     href={`/challenge/scroll/LIKE/${index}`}
                     className="relative block rounded-lg w-full h-full "
                   >
-                    <div className="shadow-custom w-[155px] h-[225.5px] rounded-3xl bg-brandP relative">
+                    <div className="shadow-custom w-[155px] h-[225.5px] overflow-hidden rounded-3xl bg-black relative flex justify-center items-center">
                       <img
                         src={content.memberChallengeImg}
                         alt=""
                         className="rounded-3xl relative"
                       />
-                      <div className="absolute inset-x-0 bottom-0 left-0 h-8 ml-2 flex text-white">
+                      <div className="absolute inset-x-0 bottom-0 left-0 h-8 ml-2 flex text-white items-center">
                         <AiFillHeart
-                          size={'2rem'}
+                          size={'1rem'}
                           className="fill-white mr-2"
                           style={{
                             filter:
