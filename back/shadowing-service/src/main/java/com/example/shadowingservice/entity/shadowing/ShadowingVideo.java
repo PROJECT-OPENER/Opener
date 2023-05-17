@@ -52,4 +52,8 @@ public class ShadowingVideo extends BaseEntity {
 		this.korCaption = korCaption;
 	}
 
+	public void updateThumbnailUrl(String thumbnailUrl) {
+		this.thumbnailUrl = thumbnailUrl;
+	}
+
 }

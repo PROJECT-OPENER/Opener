@@ -1,11 +1,13 @@
 package com.example.shadowingservice.service;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Pageable;
 
 import com.example.shadowingservice.dto.request.CaptionDto;
+import com.example.shadowingservice.dto.request.ThumbnailRequestDto;
 import com.example.shadowingservice.dto.response.AuthMainThemeRoadMapResponseDto;
 import com.example.shadowingservice.dto.response.AuthNoRoadMapResponseDto;
 import com.example.shadowingservice.dto.response.AuthRoadMapResponseDto;
@@ -19,6 +21,7 @@ import com.example.shadowingservice.dto.response.RoadMapResponseDto;
 import com.example.shadowingservice.dto.response.ShadowingCategoryDto;
 import com.example.shadowingservice.dto.response.ShadowingDetailDto;
 import com.example.shadowingservice.entity.member.Roadmap;
+import com.google.firebase.auth.FirebaseAuthException;
 
 public interface ShadowingService {
 	/** 비로그인 쉐도잉 로드맵 전체 목록 조회 **/
@@ -75,4 +78,7 @@ public interface ShadowingService {
 	/** 사용자 로드맵 정보 조회 **/
 	Roadmap getMemberRoadmap(Long memberId);
 
+	/** 파이어베이스 썸네일 등록 **/
+	void updateShadowingThumbnail(Long videoId, ThumbnailRequestDto thumbnailRequestDto, Long memberId)
+		throws IOException, FirebaseAuthException;
 }

@@ -1,11 +1,15 @@
 package com.example.shadowingservice.controller;
 
+import java.io.IOException;
 import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,6 +22,7 @@ import com.example.shadowingservice.dto.BaseListResponseDto;
 import com.example.shadowingservice.dto.BaseResponseDto;
 import com.example.shadowingservice.dto.request.CaptionDto;
 import com.example.shadowingservice.dto.request.IndexDto;
+import com.example.shadowingservice.dto.request.ThumbnailRequestDto;
 import com.example.shadowingservice.dto.response.DictionaryResponseDto;
 import com.example.shadowingservice.dto.response.InterestResponseDto;
 import com.example.shadowingservice.dto.response.NoMainRoadMapResponseDto;
@@ -29,6 +34,7 @@ import com.example.shadowingservice.dto.response.ShadowingCategoryResponseDto;
 import com.example.shadowingservice.dto.response.ShadowingDetailDto;
 import com.example.shadowingservice.dto.response.ThemeRoadMapResponseDto;
 import com.example.shadowingservice.service.ShadowingService;
+import com.google.firebase.auth.FirebaseAuthException;
 
 import lombok.RequiredArgsConstructor;
 
@@ -174,6 +180,15 @@ public class ShadowingController {
 
 		return ResponseEntity.status(HttpStatus.OK)
 			.body(new BaseResponseDto<>(200, "단어 조회 성공", dictionaryResponseDto));
+	}
+
+	@PostMapping("/challenges/{challengeId}/member-challenge")
+	public ResponseEntity<BaseResponseDto> createMemberChallenge(HttpServletRequest request,
+		@PathVariable Long videoId, @ModelAttribute ThumbnailRequestDto thumbnailRequestDto)
+		throws IOException, FirebaseAuthException {
+		Long memberId = Long.parseLong(request.getHeader("memberId"));
+		shadowingService.updateShadowingThumbnail(videoId, thumbnailRequestDto, memberId);
+		return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseDto<>(200, "썸네일 저장 완료"));
 	}
 
 }
