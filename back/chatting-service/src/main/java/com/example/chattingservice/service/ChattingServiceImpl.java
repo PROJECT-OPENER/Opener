@@ -134,6 +134,7 @@ public class ChattingServiceImpl implements ChattingService {
 			Member opposite = memberRepository.findMemberByNickname(waitingRoom.getCreatedBy())
 				.orElseThrow(() -> new ApiException(ExceptionEnum.MEMBER_NOT_FOUND_EXCEPTION));
 			if (opposite.getMemberId() == member.getMemberId()) {
+				redisService.setWaitingRoomExpiredTime(EXPIRED.getKey() + waitingRoom.getRoomId());
 				continue;
 			}
 			Keyword keyword = keywordRepository.findKeyword();
