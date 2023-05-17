@@ -18,13 +18,14 @@ import {
   userChatTimerState,
   userChatTurnState,
 } from '../store';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import Loading from '@/app/components/Loading';
 import InfoSlider from './InfoSlider';
 import useUser from '@/app/hooks/userHook';
 
 const WaitRoom = () => {
   const router = useRouter();
+  const pathname: string = usePathname();
   const { data: session } = useSession();
   const { user } = useUser();
   console.log('user', user);
@@ -123,6 +124,9 @@ const WaitRoom = () => {
     client.activate();
     // setStompClient(client);
     setNickname(nickname as string);
+
+    // 로컬스토리지 통한 url 접근 막기
+    localStorage.setItem('waitRoom', pathname);
 
     return () => {
       if (pingIntervalIdRef.current) {

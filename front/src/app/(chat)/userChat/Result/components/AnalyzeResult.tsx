@@ -35,7 +35,7 @@ const AnalyzeResult = () => {
     console.log(userChatRoom);
   }, [res]);
   return (
-    <div className="p-5 border-2 bg-blue-200 rounded-xl">
+    <div className="p-5 border-2 bg-[#fff6] rounded-xl">
       {res.map((item: ucAnalyzedMsgInterface | Message, index) => (
         <div
           key={index}

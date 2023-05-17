@@ -4,8 +4,20 @@ import { useRecoilValue } from 'recoil';
 import { userChatResultState } from '../../store';
 import { Fade, Hinge, Slide } from 'react-awesome-reveal';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 const Escape = () => {
   const result = useRecoilValue(userChatResultState);
+  const router = useRouter();
+  useEffect(() => {
+    // 로컬스토리지 통한 url 접근 막기
+    const storedUrl = localStorage.getItem('chatRoom');
+
+    // localStorage에 URL이 저장되어 있으면 해당 URL로 리디렉션
+    if (!storedUrl) {
+      alert('잘못된 접근입니다.');
+      router.push('/chat');
+    }
+  }, []);
   useEffect(() => {
     console.log(result);
   }, [result]);

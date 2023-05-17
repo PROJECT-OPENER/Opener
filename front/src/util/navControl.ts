@@ -9,6 +9,7 @@ export const bottomNavNone = [
   '/aiChat/chatRoom',
   '/login',
   '/userChat/chatRoom',
+  '/userChat/Result',
 ];
 export const topNavNone = [
   '/aiChat/chatRoom',
@@ -17,6 +18,7 @@ export const topNavNone = [
   '/challenge/scroll',
   '/userChat/chatRoom',
   '/challenge/p',
+  '/userChat/Result',
 ];
 
 export const notLogin = ['/auth/login', '/register'];

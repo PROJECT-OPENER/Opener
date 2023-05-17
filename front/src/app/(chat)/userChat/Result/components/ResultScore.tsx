@@ -6,6 +6,7 @@ import { userChatMyNicknameState, userChatResultState } from '../../store';
 const ResultScore = () => {
   const myNickname = useRecoilValue(userChatMyNicknameState);
   const result = useRecoilValue(userChatResultState);
+  if (result.myScore === undefined) return <div>loading...</div>;
   return (
     <div className="bg-white grid grid-cols-8 mx-5 p-5 rounded-3xl space-x-10">
       <div className="col-span-2 text-center font-bold flex flex-col justify-end">
