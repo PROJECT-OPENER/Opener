@@ -17,8 +17,8 @@ const AiChatNav = () => {
     <div>
       <div className="lg:hidden">
         <div className="flex flex-row justify-between items-center p-3 bg-white shadow-custom">
-          <Link href="./aiChat">종료</Link>
-          <p className="text-lg">AI 챗</p>
+          <Link href="./chat">종료</Link>
+          <p className="text-lg">AI CHAT</p>
           <Button type="button" className="" text="TIP" onClick={handleTip} />
         </div>
         {isTip && (

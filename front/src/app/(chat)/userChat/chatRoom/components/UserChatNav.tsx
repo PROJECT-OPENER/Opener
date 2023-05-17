@@ -45,7 +45,7 @@ const UserChatNav = () => {
         {isTip && (
           <div className="h-[60px] bg-brandP px-5 flex items-center justify-between space-x-3 max-w-full">
             <div className="text-xl font-bold text-white flex items-center">
-              제시어 : {userChatRoom.keyword} : {timer}
+              제시어 : {userChatRoom.keyword}
             </div>
             <div className="text-white text-xs flex-1">
               {userChatRoom.exampleEng}
