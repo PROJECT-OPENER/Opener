@@ -445,12 +445,12 @@ public class MemberServiceImpl implements MemberService {
 	public List<ChallengeResponseDto> getMyChallenges(Long memberId, Pageable pageable) {
 		memberRepository.findById(memberId)
 			.orElseThrow(() -> new ApiException(ExceptionEnum.MEMBER_NOT_FOUND_EXCEPTION));
-		return memberChallengeRepository.findByMember_MemberIdOrderByCreateDateDesc(memberId, pageable)
+		return memberChallengeRepository.findByMember_MemberIdAndIsDeleteOrderByCreateDateDesc(memberId, false, pageable)
 			.getContent()
 			.stream()
 			.map(ChallengeResponseDto::new)
 			.peek(dto -> dto.setLikeCount(
-				loveRepository.countByMemberChallenge_MemberChallengeId(dto.getMemberChallengeId())))
+				loveRepository.countByMemberChallenge_MemberChallengeIdAndIsLove(dto.getMemberChallengeId(), true)))
 			.collect(Collectors.toList());
 	}
 
@@ -471,7 +471,7 @@ public class MemberServiceImpl implements MemberService {
 			.stream()
 			.map(ChallengeResponseDto::new)
 			.peek(dto -> dto.setLikeCount(
-				loveRepository.countByMemberChallenge_MemberChallengeId(dto.getMemberChallengeId())))
+				loveRepository.countByMemberChallenge_MemberChallengeIdAndIsLove(dto.getMemberChallengeId(), true)))
 			.collect(Collectors.toList());
 	}
 }

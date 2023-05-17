@@ -7,5 +7,5 @@ import com.example.memberservice.entity.challenge.Love;
 
 @Repository
 public interface LoveRepository extends JpaRepository<Love, Long> {
-	long countByMemberChallenge_MemberChallengeId(Long memberChallengeId);
+	long countByMemberChallenge_MemberChallengeIdAndIsLove(Long memberChallengeId, Boolean isLove);
 }
