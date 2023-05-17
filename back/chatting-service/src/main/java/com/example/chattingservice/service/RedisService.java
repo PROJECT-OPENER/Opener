@@ -1,5 +1,7 @@
 package com.example.chattingservice.service;
 
+import static com.example.chattingservice.entity.redis.RedisKey.*;
+
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -7,7 +9,9 @@ import lombok.RequiredArgsConstructor;
 
 import java.time.Duration;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.ConcurrentHashMap;
+
+import javax.annotation.PostConstruct;
 
 import com.example.chattingservice.entity.chat.WaitingRoom;
 
@@ -16,6 +20,12 @@ import com.example.chattingservice.entity.chat.WaitingRoom;
 public class RedisService {
 
 	private final RedisTemplate redisTemplate;
+	private ConcurrentHashMap<String, WaitingRoom> waitingRooms;
+
+	@PostConstruct
+	public void init() {
+		this.waitingRooms = new ConcurrentHashMap<>();
+	}
 
 	/**
 	 * 김윤미
@@ -79,13 +89,40 @@ public class RedisService {
 	 * explain : 대기방 생성 - 대기열에 추가
 	 * 신대득
 	 * explain : 대기방에 duration 추가
+	 * 김윤미
+	 * explain : ConcurrentHashMap 사용, EXPIRED 키 사용해 대기방 저장
 	 * @param key
 	 * @param chatRoom
 	 * @param score
 	 */
 	public void addWaitingRoom(String key, WaitingRoom chatRoom, int score) {
 		redisTemplate.opsForZSet().add(key, chatRoom, score);
-		redisTemplate.expire(key + ":" + chatRoom, 5L, TimeUnit.SECONDS);
+		Duration expireDuration = Duration.ofSeconds(3L);
+		String roomId = chatRoom.getRoomId();
+		key = EXPIRED.getKey() + roomId;
+		redisTemplate.opsForValue().set(key, chatRoom, expireDuration);
+		waitingRooms.put(key, chatRoom);
+	}
+
+	/**
+	 * 김윤미
+	 * explain : EXPIRED KEY 만료 이벤트 발생 시 대기방 만료 시 map에서 삭제 처리
+	 * @param key
+	 */
+	public void deleteWaitingRoom(String key) {
+		WaitingRoom waitingRoom = waitingRooms.get(key);
+		waitingRooms.remove(key);
+		redisTemplate.opsForZSet().remove(WAITING.getKey(), waitingRoom);
+	}
+
+	/**
+	 * 김윤미
+	 * explain : 대기방 ping 받았을 시 시간 연장
+	 * @param key
+	 */
+	public void setWaitingRoomExpiredTime(String key) {
+		Duration expireDuration = Duration.ofSeconds(2L);
+		redisTemplate.opsForValue().getAndExpire(key, expireDuration);
 	}
 
 	/**

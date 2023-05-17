@@ -7,9 +7,13 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.listener.PatternTopic;
+import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
+
+import com.example.chattingservice.handler.RedisExpirationListener;
 
 @Configuration
 @EnableRedisRepositories
@@ -23,6 +27,8 @@ public class RedisConfig {
 
 	@Value("${spring.redis.password}")
 	private String redisPassword;
+
+	private final String PATTERN = "__keyevent@*__:expired";
 
 	@Bean
 	public RedisConnectionFactory redisConnectionFactory() {
@@ -41,6 +47,15 @@ public class RedisConfig {
 		redisTemplate.setConnectionFactory(redisConnectionFactory());
 
 		return redisTemplate;
+	}
+
+	@Bean
+	public RedisMessageListenerContainer redisMessageListenerContainer(RedisConnectionFactory redisConnectionFactory,
+		RedisExpirationListener expirationListener) {
+		RedisMessageListenerContainer redisMessageListenerContainer = new RedisMessageListenerContainer();
+		redisMessageListenerContainer.setConnectionFactory(redisConnectionFactory);
+		redisMessageListenerContainer.addMessageListener(expirationListener, new PatternTopic(PATTERN));
+		return redisMessageListenerContainer;
 	}
 }
 
