@@ -191,3 +191,10 @@ export interface challengeCategorySwrData {
 export interface challengeIdSwrData {
   data: idMemberChallengeList;
 }
+
+export interface rankInterface {
+  nickname: string;
+  score: number;
+  rank: number;
+  profile: string;
+}
