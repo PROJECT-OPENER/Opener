@@ -16,7 +16,6 @@ import { useRecoilState } from 'recoil';
 import { handleChatLog, pushChatLog } from '@/util/AiChat';
 import { BsKeyboard } from 'react-icons/bs';
 import Model from '@/app/three/chat/Model';
-import TopNavPc from '@/app/components/TopNavPc';
 import DetailPageNav from '@/app/components/DetailPageNav';
 import { useRouter } from 'next/navigation';
 
@@ -95,7 +94,7 @@ const AiChatRoom = () => {
       <div className="absolute top-0 left-0 w-screen h-screen flex flex-col items-center overflow-hidden">
         <div className="lg:block hidden">
           <DetailPageNav
-            className="max-w-[1500px] absolute top-3 left-10 right-10"
+            className="max-w-[1500px] absolute top-3 left-10 right-10 mx-auto"
             title="AI CHAT"
             propEvent={handleLeftGame}
           />
@@ -104,7 +103,7 @@ const AiChatRoom = () => {
           <AiChatNav />
         </div>
 
-        <div className="lg:p-6 lg:pt-20 h-full w-full flex lg:flex-row lg:justify-between lg:items-end">
+        <div className="lg:p-6 lg:pt-20 h-full w-full flex lg:flex-row lg:justify-between lg:items-end lg:max-w-[1560px]">
           <div className="lg:w-full lg:max-w-[410px] lg:block hidden text-sm ">
             <AiChatNav />
           </div>
