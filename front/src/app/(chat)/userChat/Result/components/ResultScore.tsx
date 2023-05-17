@@ -18,16 +18,14 @@ const ResultScore = () => {
       {result.myScore.nickname === myNickname ? (
         <>
           <div className="col-span-3 bg-green-100 rounded-2xl space-y-3 text-center font-bold flex flex-col justify-end">
-            <div className="p-2 bg-white rounded-xl m-2">
-              {result.myScore.nickname}
-            </div>
+            <div className="p-2 bg-white rounded-xl m-2">내 점수</div>
             <div>{result.myScore.wordUsed ? '성공' : '실패'}</div>
             <div>{result.myScore.grammarScore}</div>
             <div>{result.myScore.contextScore}</div>
           </div>
           <div className="col-span-3 bg-yellow-100 rounded-2xl space-y-3 text-center font-bold flex flex-col justify-end">
             <div className="p-2 bg-white rounded-xl m-2">
-              {result.otherScore.nickname}
+              {result.otherScore.nickname}님의 점수
             </div>
             <div>{result.otherScore.wordUsed ? '성공' : '실패'}</div>
             <div>{result.otherScore.grammarScore}</div>
@@ -37,20 +35,18 @@ const ResultScore = () => {
       ) : (
         <>
           <div className="col-span-3 bg-yellow-100 rounded-2xl space-y-3 text-center font-bold flex flex-col justify-end">
-            <div className="p-2 bg-white rounded-xl m-2">
-              {result.otherScore.nickname}
-            </div>
+            <div className="p-2 bg-white rounded-xl m-2">내 점수</div>
             <div>{result.otherScore.wordUsed ? '성공' : '실패'}</div>
-            <div>{result.otherScore.contextScore}</div>
             <div>{result.otherScore.grammarScore}</div>
+            <div>{result.otherScore.contextScore}</div>
           </div>
           <div className="col-span-3 bg-green-100 rounded-2xl space-y-3 text-center font-bold flex flex-col justify-end">
             <div className="p-2 bg-white rounded-xl m-2">
-              {result.myScore.nickname}
+              {result.myScore.nickname}님의 점수
             </div>
             <div>{result.myScore.wordUsed ? '성공' : '실패'}</div>
-            <div>{result.myScore.contextScore}</div>
             <div>{result.myScore.grammarScore}</div>
+            <div>{result.myScore.contextScore}</div>
           </div>
         </>
       )}
