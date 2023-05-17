@@ -79,6 +79,6 @@ public interface ShadowingService {
 	Roadmap getMemberRoadmap(Long memberId);
 
 	/** 파이어베이스 썸네일 등록 **/
-	void updateShadowingThumbnail(Long videoId, ThumbnailRequestDto thumbnailRequestDto, Long memberId)
+	void updateShadowingThumbnail(Long videoId, ThumbnailRequestDto thumbnailRequestDto)
 		throws IOException, FirebaseAuthException;
 }

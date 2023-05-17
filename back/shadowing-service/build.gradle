@@ -31,6 +31,7 @@ ext {
 }
 
 dependencies {
+    implementation 'commons-io:commons-io:2.11.0' // io 사용
     implementation group: 'com.google.firebase', name: 'firebase-admin', version: '8.1.0' // firebase 사용
     implementation group: 'org.modelmapper', name: 'modelmapper', version: '2.3.8'  // modelmapper 추가
     implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"   // querydsl 추가
