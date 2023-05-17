@@ -3,6 +3,7 @@ import Button from '@/app/components/Button';
 import InterestsEdit from './InterestsEdit';
 import { useState, useReducer } from 'react';
 import { updateNicknameApi, updatePasswordApi } from '@/app/api/userApi';
+import useUser from '@/app/hooks/userHook';
 
 interface State {
   nickname: string;
@@ -19,6 +20,7 @@ const reducer = (state: State, action: any) => {
 };
 
 const MypageEditBotSection = () => {
+  const { mutate } = useUser();
   const [interestEdit, setInterestEdit] = useState<boolean>(false);
   const [state, dispatch] = useReducer(reducer, {
     nickname: '',
@@ -35,7 +37,8 @@ const MypageEditBotSection = () => {
 
   const changeNickname = async (newNickname: string) => {
     const response = await updateNicknameApi(newNickname);
-    console.log(response);
+    alert(response.message);
+    return response;
   };
 
   const changePassword = async () => {
@@ -65,7 +68,10 @@ const MypageEditBotSection = () => {
             text="수정"
             className="modification-submit top-3"
             onClick={() => {
-              changeNickname(nickname);
+              changeNickname(nickname)
+                .then((response) => {
+                  mutate();
+                });
             }}
           />
         </div>
