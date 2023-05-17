@@ -91,7 +91,7 @@ const AiChatMessageList = ({ handleReceiveMessage }: Props) => {
                   {message.text}
                   <button
                     type="button"
-                    className="block texl-xl mt-1"
+                    className="block texl-xl mt-3"
                     onClick={() => {
                       textToSpeech(message.text);
                     }}

@@ -18,9 +18,6 @@ import { BsKeyboard } from 'react-icons/bs';
 import TopNavPc from '@/app/components/TopNavPc';
 import AiChatNav from './AiChatNav';
 import Model from '@/app/three/chat/Model';
-import Image from 'next/image';
-import AiModel from '../../components/AiModel';
-import { useRouter } from 'next/navigation';
 const AiChatRoomPc = () => {
   const [message, setMessage] = useRecoilState(aiChatMessageState);
   const [messageList, setMessageList] = useRecoilState(aiChatMessageListState);
@@ -29,7 +26,6 @@ const AiChatRoomPc = () => {
   const [isChat, setisChat] = useRecoilState(aiChatIsChatState);
   const chatWindowRef = useRef<HTMLDivElement>(null);
   const messageListContainerRef = useRef<HTMLDivElement>(null);
-  const router = useRouter();
   useEffect(() => {
     // 스크롤이 최하단으로 자동으로 이동되도록 messageListContainerRef의 scrollTop 속성을 최대값으로 설정합니다.
     if (messageListContainerRef.current) {
@@ -76,33 +72,13 @@ const AiChatRoomPc = () => {
       { text: message, sender: 'AI' },
     ]);
   };
-  const handleLeftGame = () => {
-    router.push('/chat');
-  };
   return (
     <div>
-      <div className="absolute top-0 left-0 right-0 h-[100vh] w-full">
-        <AiModel />
+      <div className="relative top-0 left-0 h-[100vh] w-full">
+        <Model />
       </div>
       <div className="absolute top-0 left-0 h-[100vh] w-[100vw] flex flex-row justify-center items-end pb-10 px-8">
-        <div className="absolute top-3 left-10 right-10 grid grid-cols-3 bg-[#fff6] shadow-custom p-3 rounded-xl max-w-[1500px] mx-auto">
-          <Image
-            src={'/images/logo.png'}
-            alt="Logo"
-            width={100}
-            height={24}
-            priority
-            className="mt-2"
-          />
-          <h1 className="text-center text-3xl font-bold">AI CHAT</h1>
-          <button
-            className="text-end text-xl"
-            onClick={handleLeftGame}
-            type="button"
-          >
-            종료
-          </button>
-        </div>
+        <TopNavPc />
         <div className="flex flex-row justify-between items-end h-[85%] w-full max-w-[1500px] lg:text-sm">
           {/* 왼쪽, 정보 */}
           <div className="w-full max-w-[410px]">
@@ -157,4 +133,4 @@ const AiChatRoomPc = () => {
   );
 };
 
-export default AiChatRoomPc;
+// export default AiChatRoomPc;
