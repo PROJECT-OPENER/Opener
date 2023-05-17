@@ -69,3 +69,17 @@
     transform: rotate(360deg);
   }
 }
+
+.fade-out {
+  /* animation : 효과(@keyframes 이름) 동작시간 */
+    animation: fadeout 3s;
+  }
+  @keyframes fadeout {
+  /* 효과를 동작시간 동안 0 ~ 1까지 */
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
+    }
+  }
