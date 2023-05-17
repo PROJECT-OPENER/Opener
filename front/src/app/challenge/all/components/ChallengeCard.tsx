@@ -73,12 +73,12 @@ const ChallengeCard = () => {
         </div>
       )}
       {data && (
-        <div className="">
-          <div className="my-14 flex">
+        <div className="md:m-10">
+          <div className="md:my-14 flex justify-center">
             <button
               ref={likeButton}
               type="button"
-              className="ml-4 bg-brandP  w-32 text-white rounded-xl shadow-xl py-3"
+              className="md:ml-4 bg-brandP  w-32 text-white rounded-xl shadow-xl py-3"
               onClick={() => {
                 setCategory('LIKE');
                 mutate();
@@ -96,21 +96,24 @@ const ChallengeCard = () => {
               type="button"
               ref={recentButton}
               className=" ml-4 bg-white w-32 text-black rounded-xl shadow-xl py-3"
-              onClick={() => {
-                setCategory('RECENT');
-                mutate();
+              onClick={(e) => {
+                e.preventDefault();
                 if (likeButton.current && recentButton.current) {
+                  console.log('됨');
                   likeButton.current.className =
                     'ml-4 bg-white w-32 text-black rounded-xl shadow-xl py-3';
                   recentButton.current.className =
                     'ml-4 bg-brandP w-32 text-white rounded-xl shadow-xl py-3';
                 }
+                console.log('됏음?');
+                setCategory('RECENT');
+                mutate();
               }}
             >
               최신순
             </button>
           </div>
-          <div className="grid grid-cols-3 gap-4 my-16">
+          <div className="grid grid-cols-3 gap-4 md:my-16 mt-16">
             {challengeList?.map((memberChallenge, index) => (
               <div
                 className="flex justify-center items-center w-[100%] h-[100%]"

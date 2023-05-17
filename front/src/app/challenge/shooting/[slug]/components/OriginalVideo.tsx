@@ -7,17 +7,22 @@ const OriginalVideo = () => {
   const onPlayerReady: YouTubeProps['onReady'] = (event) => {
     event.target.pauseVideo();
   };
-
   const opts: YouTubeProps['opts'] = {
-    height: '390',
-    width: '640',
+    height: '480',
+    width: '270',
     playerVars: {
       controls: 0,
+      disablekb: 1,
     },
   };
   return (
-    <div className="">
-      <YouTube videoId="2g811Eo7K8U" opts={opts} onReady={onPlayerReady} />
+    <div className="w-[100px]">
+      <YouTube
+        videoId="2g811Eo7K8U"
+        opts={opts}
+        onReady={onPlayerReady}
+        className=""
+      />
     </div>
   );
 };

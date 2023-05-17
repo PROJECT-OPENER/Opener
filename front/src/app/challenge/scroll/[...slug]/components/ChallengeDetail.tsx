@@ -277,7 +277,7 @@ const ChallengeDetail = ({ challengeList }: Props) => {
   return (
     <div className="py-5">
       <DetailPageNav
-        className="fixed top-3 left-10 right-10 z-10"
+        className="sm:inline fixed top-3 left-10 right-10 z-10 hidden"
         title="CHALLANGE"
         propEvent={handleLeftGame}
       />
@@ -287,7 +287,7 @@ const ChallengeDetail = ({ challengeList }: Props) => {
           ref={videoRef}
         >
           <div
-            className="relative overflow-hidden rounded-xl z-0 md:h-[704px] md:w-[396px] h-[640px] w-[360px] bg-black mt-20"
+            className="relative overflow-hidden rounded-xl z-0 md:h-[704px] md:w-[396px] h-[640px] w-[360px] bg-black sm:mt-20"
             ref={parentRef}
           >
             <div
@@ -434,7 +434,7 @@ const ChallengeDetail = ({ challengeList }: Props) => {
               <img
                 src={challengeList?.memberChallengeImg}
                 alt=""
-                className="md:h-[704px] md:w-[396x] h-[640px] w-[360px] overflow-hidden relative"
+                className="md:h-auto md:w-[450px] h-auto w-[360px] overflow-hidden relative rounded-xl"
               />
             </div>
           </div>
