@@ -110,7 +110,7 @@ public class ChattingServiceImpl implements ChattingService {
 	 * @return
 	 */
 	private int getScoreLimit(int score) {
-		return (score >= 30 && score <= 70) ? 30 : 40;
+		return (score >= 1300 && score <= 1700) ? 300 : 500;
 	}
 
 	/**
