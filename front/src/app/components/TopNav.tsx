@@ -1,24 +1,31 @@
 'use client';
 import Link from 'next/link';
-import { redirect, usePathname } from 'next/navigation';
+import { redirect, usePathname, useRouter } from 'next/navigation';
 import Image from 'next/image';
 import logo from 'public/images/logo.png';
-import ProfileImage from './ProfileImage';
 import { useSession, signOut } from 'next-auth/react';
-import { topNavNone } from '@/util/navControl';
+import { notLogin, topNavNone } from '@/util/navControl';
 import useUser from '../hooks/userHook';
 import { logoutApi } from '../api/userApi';
 import NavDropdown from './NavDropdown';
-import { useState } from 'react';
+import { useEffect } from 'react';
 
 const TopNav = () => {
   const { data: session } = useSession();
   const pathname: string = usePathname();
-  const [isOpen, setIsOpen] = useState(false);
   const { user, isLoading, error } = useUser();
+  useEffect(() => {
+    console.log('user', user);
+  }, [user]);
+  const router = useRouter();
   if (user) {
     if (user.data.interests.length === 0 && pathname !== '/interest') {
       redirect('/interest');
+    }
+    for (let i = 0; i < notLogin.length; i++) {
+      if (pathname.startsWith(notLogin[i])) {
+        router.push('/');
+      }
     }
   }
   const handleLogout = () => {
@@ -27,7 +34,7 @@ const TopNav = () => {
   };
   if (error) {
     console.log('error');
-    // handleLogout();
+    handleLogout();
   }
   if (isLoading) return <div>loading...</div>;
   for (let i = 0; i < topNavNone.length; i++) {

@@ -4,9 +4,15 @@ import useUser from '../hooks/userHook';
 import { Menu, Transition } from '@headlessui/react';
 import ProfileImage from './ProfileImage';
 import Link from 'next/link';
+import { signOut } from 'next-auth/react';
+import { logoutApi } from '../api/userApi';
 
 const NavDropdown = () => {
   const { user } = useUser();
+  const handleLogout = () => {
+    signOut();
+    logoutApi();
+  };
   return (
     <Menu as="div" className="relative inline-block text-center">
       <div>
@@ -48,6 +54,7 @@ const NavDropdown = () => {
                 className={`${
                   active ? 'bg-slate-100' : ''
                 } block rounded p-2 w-full`}
+                onClick={handleLogout}
               >
                 로그아웃
               </button>
