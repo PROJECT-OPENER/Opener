@@ -10,18 +10,17 @@ import useUser from '@/app/hooks/userHook';
 
 const InterestsEdit = () => {
   const { user, mutate } = useUser();
-  useEffect(() => {
-    let useIndex: number[] = [];
-    user.data.interests.map((item: interestInterface) => {
-      useIndex.push(item.interestId);
-    });
-    setActiveIndex(useIndex);
-  }, []);
+  const [activeIndex, setActiveIndex] = useState<number[]>([]);
   const { data, isLoading } = useSWR('get/interest', getInterestListApi, {
     focusThrottleInterval: 5000,
   });
 
-  const [activeIndex, setActiveIndex] = useState<number[]>([]);
+  useEffect(() => {
+    const interests = user.data.interests.map(
+      (item: interestInterface) => item.interestId,
+    );
+    setActiveIndex(interests);
+  }, []);
 
   const handleClick = (i: number) => {
     if (activeIndex.includes(i)) {
