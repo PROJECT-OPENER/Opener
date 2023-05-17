@@ -37,6 +37,7 @@ const OriginalVideo = ({ challengeId }: Props) => {
         endTime: response.endTime,
         joinCount: response.joinCount,
         startTime: response.startTime,
+        caption: response.caption,
       });
     };
     getData();

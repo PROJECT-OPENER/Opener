@@ -7,7 +7,7 @@ import Button from '@/app/components/Button';
 import { getSession } from 'next-auth/react';
 import { uploadChallenge, originalVideoApi } from '@/app/api/challengeApi';
 import axios from 'axios';
-
+import { RiArrowGoBackLine } from 'react-icons/ri';
 type Props = {
   originalId: number;
 };
@@ -38,43 +38,26 @@ const ShootingVideo = ({ originalId }: Props) => {
       formData.append('memberChallengeImg', blob);
       formData.append('memberChallengeFile', myFile);
       formData.append('nicknasme', nickname || '');
-      const res = await uploadChallenge(originalId, formData);
-      if (res.code === 200) {
-        alert('영상 공유를 성공하였습니다.');
-        router.push('/challenge');
-      }
+      const res = await uploadChallenge(originalId, formData)
+        .then((res) => console.log(res))
+        .catch((err) => console.log(err));
+      console.log('이전', res);
     }
   };
 
   // ========================================
   const [caption, setCaption] = useState<any>();
   const [videoInfo, setVideoInfo] = useState<videoInfoType>(); // 가져온 영상 정보를 담는 state
-  const FAST_API_URL = process.env.NEXT_PUBLIC_FAST_API;
-
-  const getCaptionApi = async (videoId: string) => {
-    return await axios({
-      method: 'GET',
-      url: FAST_API_URL + '/fast/caption/' + videoId,
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-      },
-    }).then((res) => {
-      return res.data;
-    });
-  };
 
   useEffect(() => {
     const getVideo = async () => {
       const originalRes = await originalVideoApi(originalId);
-      const engCaption = await getCaptionApi(originalRes.challengeUrl);
       setVideoInfo({
         start: convertTime(originalRes.startTime),
         end: convertTime(originalRes.endTime),
-        engCaption: convert(engCaption),
+        engCaption: convert(originalRes.caption),
         videoUrl: originalRes.challengeUrl,
       });
-      // console.log(videoInfo);
     };
     getVideo();
     const convert = (cap: string) => {
@@ -335,8 +318,10 @@ const ShootingVideo = ({ originalId }: Props) => {
           <>
             <div className={isPreview ? 'hidden' : 'relative'}>
               <video className="" autoPlay muted ref={previewPlayer}></video>
-              <div className="absolute top-10 bg-black  h-14 bg-opacity-20 font-black text-white text-2xl flex justify-center items-center w-full">
-                {caption?.eng}
+              <div className="absolute top-10  w-full  flex justify-center items-center">
+                <p className="bg-black px-2 h-10 flex items-center bg-opacity-20 font-black text-white text-2xl ">
+                  {caption?.eng}
+                </p>
               </div>
               <div className="absolute bottom-0 left-0 ml-2 mb-2">
                 <YouTube
@@ -355,6 +340,17 @@ const ShootingVideo = ({ originalId }: Props) => {
                   className={isRec ? '' : 'hidden'}
                 />
               </div>
+              <button
+                className={
+                  isRec ? ' absolute bottom-10 right-10 mr-2 mb-2' : 'hidden'
+                }
+                onClick={() => {
+                  alert('영상 촬영이 중단되었습니다.');
+                  window.location.reload();
+                }}
+              >
+                <RiArrowGoBackLine size={'3rem'} color={'white'} />
+              </button>
             </div>
             <div className={loadingDone ? 'absolute bottom-0' : 'hidden'}>
               <button
@@ -380,8 +376,10 @@ const ShootingVideo = ({ originalId }: Props) => {
           <>
             <div className={isPreview ? 'relative' : 'hidden'}>
               <video ref={recordingPlayer}></video>
-              <div className="absolute top-10 bg-black  h-14 bg-opacity-20 font-black text-white text-2xl flex justify-center items-center w-full">
-                {caption?.eng}
+              <div className="absolute top-10 w-full  flex justify-center items-center">
+                <p className="bg-black h-10 flex items-center bg-opacity-20 font-black text-white md:text-2xl ">
+                  {caption?.eng}
+                </p>
               </div>
               <canvas ref={thumbCanvas} className="hidden"></canvas>
               <img ref={thumbnail} />

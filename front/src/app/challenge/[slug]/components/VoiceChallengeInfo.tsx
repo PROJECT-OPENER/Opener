@@ -23,24 +23,24 @@ const VoiceChallengeInfo = ({ originalChallengeResponseDto }: Props) => {
         </Link>
       </div>
       <div className="col-span-3 flex flex-col justify-center mx-2">
-        <div className="my-5 text-xl font-medium ">
+        <div className="my-5 text-xl font-medium mx-2">
           <p>{originalChallengeResponseDto.title}</p>
         </div>
-        <div className="flex items-center mb-5 text-xl font-medium">
+        <div className="flex items-center mb-5 text-xl font-medium mx-3">
           <FiUserPlus size={'1.5rem'} className="mr-2" />
           {originalChallengeResponseDto.joinCount}
         </div>
         <div className="flex justify-between">
           <Link
             href={`challenge/${originalChallengeResponseDto.challengeId}/original`}
-            className="bg-[#F0F0F0]  w-48 py-3 rounded-3xl flex justify-center items-center shadow-sm"
+            className="bg-[#F0F0F0]  w-48 py-3 rounded-3xl flex justify-center items-center shadow-sm mx-2"
           >
             <GrPlayFill size={'1.3rem'} className="fill-black mr-2" />
             <p className="text-lg font-bold">미리보기</p>
           </Link>
           <Link
             href={`challenge/shooting/${originalChallengeResponseDto.challengeId}`}
-            className="bg-[#F0F0F0] w-48 py-3 rounded-3xl flex justify-center items-center sshadow-sm"
+            className="bg-[#F0F0F0] w-48 py-3 rounded-3xl flex justify-center items-center sshadow-sm mx-2"
           >
             <AiOutlineCamera size={'1.5rem'} className="fill-black mr-2" />
             <p className="text-lg font-bold">참여하기</p>

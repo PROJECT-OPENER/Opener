@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-key */
 'use client';
 
 import React, { useEffect, useState } from 'react';
@@ -13,6 +12,7 @@ const VoiceList = () => {
     const getData = async () => {
       const response = await originalChallengeApi();
       setChallengeList(response);
+      console.log(response);
     };
     getData();
   }, []);

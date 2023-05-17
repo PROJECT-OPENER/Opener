@@ -25,11 +25,14 @@ export const uploadChallenge = async (
   challengeId: number,
   payload: FormData,
 ) => {
-  const response = await challengeApi.post(
-    `/auth/challenges/${challengeId}/member-challenge`,
-    payload,
-  );
-  return response.data;
+  const response = await challengeApi
+    .post(`/auth/challenges/${challengeId}/member-challenge`, payload)
+    .then((res) => {
+      return res.data;
+    })
+    .catch((error) => {
+      return error;
+    });
 };
 
 // all 페이지의 챌린지 전체 가져오기
@@ -72,6 +75,19 @@ export const likeDeleteApi = async (memberChallengeId: number) => {
     `/auth/member-challenges/${memberChallengeId}/like`,
   );
   return response.data.data;
+};
+
+// 내가 업로드한 챌린지 목록 조회
+export const getMyChallengesApi = async () => {
+  const response = await challengeApi.get(`/auth/member-challenges`);
+  console.log(response);
+  return response.data.data;
+};
+// 내가 좋아요한 챌린지 목록 조회 => 아직 API 없음
+export const getLikeChallengesApi = async () => {
+  // const response = await challengeApi.get(`/auth/member-challenges`);
+  // console.log(response);
+  // return response.data.data;
 };
 
 // 자신의 영상 삭제

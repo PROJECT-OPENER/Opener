@@ -21,11 +21,11 @@ const VoiceChallengeCard = ({
           <p className="font-extralight text-xl">챌린지가 없습니다..</p>
         </div>
       )}
-      <div className="relative bg-white">
-        <div className="grid grid-cols-3 gap-4 my-16 ">
+      <div className="relative">
+        <div className="grid grid-cols-3 gap-4 my-16">
           {memberChallengeResponseDtoList?.map((memberChallenge, index) => (
             <div
-              className="flex justify-center items-center w-[100%] h-[100%] "
+              className="flex justify-center items-center w-[100%] h-[100%]"
               key={memberChallenge.memberChallengeId}
             >
               <Link
@@ -50,15 +50,6 @@ const VoiceChallengeCard = ({
               </Link>
             </div>
           ))}
-          {/* <div className="bg-slate-300 sm:fixed bottom-20">
-            <Link
-              href={`challenge/shooting/${originalId}`}
-              className="bg-[#F0F0F0] w-48 py-3 px-7 rounded-xl flex justify-center shadow-sm"
-            >
-              <AiOutlineCamera size={'1.5rem'} className="fill-black mr-2" />
-              <p className="text-lg font-bold">참여하기</p>
-            </Link>
-          </div> */}
         </div>
       </div>
     </div>
