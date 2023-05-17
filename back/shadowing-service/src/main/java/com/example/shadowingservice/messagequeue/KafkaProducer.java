@@ -39,7 +39,7 @@ public class KafkaProducer {
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 		}
-		kafkaTemplate.send(SEND_SHADOWING_BADGE_TO_MEMBER.getTopic(), jsonInString);
+		kafkaTemplate.send(SEND_ROADMAP_TO_MEMBER.getTopic(), jsonInString);
 	}
 
 }
