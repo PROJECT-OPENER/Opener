@@ -384,6 +384,10 @@ const ChatRoom = () => {
   // 메세지 전송
   const handleSendMessage = () => {
     console.log('handleSendMessage');
+    if (message.length === 0) {
+      alert('메세지를 입력해주세요.');
+      return;
+    }
     // 메세지 전송
     const messageData = {
       nickname: nickname,

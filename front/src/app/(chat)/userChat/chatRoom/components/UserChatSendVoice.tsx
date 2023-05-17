@@ -19,14 +19,13 @@ import {
   BsMic,
 } from 'react-icons/bs';
 
-const subscriptionKey = '73f54ad18a1942b98944cca014f59386';
-const serviceRegion = 'eastus';
-
 type Props = {
   handleSendMessage: () => void;
 };
 
 const UserChatSendVoice = ({ handleSendMessage }: Props) => {
+  const subscriptionKey = process.env.NEXT_PUBLIC_TTS_API;
+  const serviceRegion = 'eastus';
   // recoil
   const [isRecording, setIsRecording] = useRecoilState(
     userChatIsRecordingState,
@@ -53,7 +52,7 @@ const UserChatSendVoice = ({ handleSendMessage }: Props) => {
   }, [isChat]);
 
   const speechConfig = SpeechConfig.fromSubscription(
-    subscriptionKey,
+    subscriptionKey as string,
     serviceRegion,
   );
   const audioConfig = AudioConfig.fromDefaultMicrophoneInput();
