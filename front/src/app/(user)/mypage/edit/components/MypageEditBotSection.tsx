@@ -1,7 +1,7 @@
 'use client';
 import Button from '@/app/components/Button';
 import InterestsEdit from './InterestsEdit';
-import { useState, useReducer } from 'react';
+import { useState, useReducer, useEffect } from 'react';
 import { updateNicknameApi, updatePasswordApi } from '@/app/api/userApi';
 import useUser from '@/app/hooks/userHook';
 
@@ -20,7 +20,7 @@ const reducer = (state: State, action: any) => {
 };
 
 const MypageEditBotSection = () => {
-  const { mutate } = useUser();
+  const { mutate, user } = useUser();
   const [interestEdit, setInterestEdit] = useState<boolean>(false);
   const [state, dispatch] = useReducer(reducer, {
     nickname: '',
@@ -30,6 +30,12 @@ const MypageEditBotSection = () => {
   });
 
   const { nickname, newPassword1, newPassword2 } = state;
+
+  useEffect(() => {
+    if (user) {
+      dispatch({ name: 'nickname', value: user.data.nickname });
+    }
+  }, [user]);
 
   const onChange = (e: { target: any }) => {
     dispatch(e.target);
@@ -45,8 +51,14 @@ const MypageEditBotSection = () => {
     if (newPassword1 !== newPassword2) {
       alert('비밀번호가 동일하지 않습니다.');
     } else {
-      const response = await updatePasswordApi(newPassword1);
-      console.log(response);
+      try {
+        const response = await updatePasswordApi(newPassword1);
+        alert(response.message);
+      } catch (error) {
+        alert(
+          '[실패] 비밀번호는 최소 8자 이상, 1개 이상의 숫자, 특수문자, 소문자를 포함해야 합니다.',
+        );
+      }
     }
   };
 
