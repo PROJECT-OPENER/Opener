@@ -21,7 +21,7 @@ const MypageTopSection = () => {
         <>
           <div className="mr-10 max-w-[100px]">
             <ProfileImage
-              className="w-full h-full"
+              className="w-full"
               width={500}
               height={500}
               profileUrl={user.data.profile}
