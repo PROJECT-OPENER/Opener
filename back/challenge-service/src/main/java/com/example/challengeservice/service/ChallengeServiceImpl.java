@@ -209,7 +209,7 @@ public class ChallengeServiceImpl implements ChallengeService {
 		if(startIndex>0) {
 			memberChallengeResultList.addAll(memberChallengeResponseDtoList.subList(0,startIndex));
 		}
-		return MemberChallengeListResponseDto.from(memberChallengeResultList.size(),
+		return MemberChallengeListResponseDto.from(memberChallengeResponseDtoList.size(),
 			memberChallengeResultList);
 	}
 
