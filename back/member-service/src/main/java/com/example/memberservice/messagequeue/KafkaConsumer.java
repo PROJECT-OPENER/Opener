@@ -31,8 +31,8 @@ public class KafkaConsumer {
 
 	@KafkaListener(topics = "SEND_SCORE_TO_MEMBER")
 	@Transactional
-	public void processMessage(String kafkaMessage) {
-		log.info("Kafka Message: ===> " + kafkaMessage);
+	public void processGameScore(String kafkaMessage) {
+		log.info("Process Game Score : ===> " + kafkaMessage);
 
 		Map<Object, Object> map = new HashMap<>();
 		try {
@@ -60,5 +60,35 @@ public class KafkaConsumer {
 
 			badge.updateGameCount();
 		}
+	}
+
+	@KafkaListener(topics = "challenge_topic_badge")
+	@Transactional
+	public void processChallengeBadge(String kafkaMessage) {
+		log.info("Process Challenge Badge : ===> " + kafkaMessage);
+
+		Map<Object, Integer> map = new HashMap<>();
+		try {
+			map = objectMapper.readValue(kafkaMessage, new TypeReference<Map<Object, Integer>>() {
+			});
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+		}
+		Long memberId = Long.valueOf(map.get("memberId"));
+		Member member = memberRepository.findById(memberId)
+			.orElseThrow(() -> new ApiException(ExceptionEnum.MEMBER_NOT_FOUND_EXCEPTION));
+
+		Badge badge = badgeRepository.findByMember_MemberId(member.getMemberId()).orElseGet(() -> {
+			Badge newBadge = Badge.builder()
+				.member(member)
+				.attendanceCount(0)
+				.shadowingCount(0)
+				.challengeCount(0)
+				.gameCount(0)
+				.build();
+			return badgeRepository.save(newBadge);
+		});
+
+		badge.updateChallengeCount();
 	}
 }
