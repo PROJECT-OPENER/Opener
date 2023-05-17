@@ -7,13 +7,15 @@
 }
 
 .other-chat {
-  @apply bg-brandP text-white rounded-tl-none rounded-2xl p-5 mr-10 mb-1;
+  @apply lg:bg-brandP bg-[#7d17ffe6] text-white rounded-tl-none rounded-2xl p-4 mr-[4.5rem] mb-1;
 }
 
 .my-chat {
-  @apply bg-brandY text-black rounded-br-none rounded-2xl p-5 ml-24 mb-1 mr-3 break-words mt-3;
+  @apply bg-[#ffd600de] text-black rounded-br-none rounded-2xl p-4 ml-24 mb-1 mr-3 break-words mt-3;
 }
-
+.my-chat, .other-chat {
+  @apply max-w-[500px]
+}
 .modification-submit {
   @apply absolute right-5 w-24 bg-brandP text-white font-bold py-1 rounded-md text-xl;
 }
