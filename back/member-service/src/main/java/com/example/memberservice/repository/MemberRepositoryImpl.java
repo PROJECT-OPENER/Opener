@@ -19,7 +19,7 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
 
 	public List<RankResponseDto> getRankingList() {
 		List<Object[]> result = em.createNativeQuery(
-				"SELECT nickname, profile, score, DENSE_RANK() OVER (ORDER BY score DESC) as `rank` " +
+				"SELECT nickname, profile, score, RANK() OVER (ORDER BY score DESC) as `rank` " +
 					"FROM member " +
 					"ORDER BY score DESC " +
 					"LIMIT 10")
