@@ -10,7 +10,7 @@ type Props = {
 const DetailPageNav = ({ className, title, propEvent }: Props) => {
   return (
     <div
-      className={`${className} hidden sm:grid md:grid-cols-3 grid-cols-2 shadow-custom p-3 rounded-xl bg-[#fff6]`}
+      className={`${className} hidden lg:grid lg:grid-cols-3 grid-cols-2 shadow-custom p-3 rounded-xl bg-[#fff6]`}
     >
       <Image
         src={'/images/logo.png'}
