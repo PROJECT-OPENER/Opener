@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react';
 import Image from 'next/image';
 interface dataInterface {
   videoId: string;
-  thumbnailUrl: string;
+  thumbnailUrl: string | null | undefined;
   engSentence: string;
   korSentence: string;
 }
@@ -37,82 +37,51 @@ const Recommended = () => {
   };
 
   return (
-    <div className="mt-10">
+    <div className="mt-6 lg:mt-10">
       {/* 데스크탑 용 */}
-      {/* next.config.js에서 remotePatterns안에 user-images.githubusercontent.com 삭제해야함 */}
-      <div className="hidden lg:block">
-        <div className="flex flex-row justify-between mb-3">
-          <h1 className="text-lg">추천 문장</h1>
-          <button>더 보기</button>
-        </div>
-        {/* <div className="hidden lg:flex flex-row justify-between w-full h-full">
-          {data &&
-            data?.slice(0, 3).map((content, index) => {
+      <h1 className="text-lg lg:mb-3 ml-4 font-bold">추천 문장</h1>
+      <div className="relative">
+        <div className="p_scrollbar_right" />
+        <PerfectScrollbar options={options} className="w-full">
+          <div className="flex flex-row relative w-[calc(100%+100px)] p-4">
+            {data?.map((content, index) => {
               return (
                 <Link
                   href={'/shadowing/learning/' + content.videoId}
                   key={index}
-                  className="opacity-90 hover:opacity-100 shadow-custom w-[320px] h-[300px] p-4 rounded-3xl bg-[#ffffff] hover:shadow-customhover"
+                  className="shadow-custom mr-4 p-3 rounded-3xl bg-[#ffffff] hover:shadow-customhover"
                 >
-                  <Image
-                    src={content.thumbnailUrl}
-                    alt=""
-                    width={288}
-                    height={188}
-                    className="relative rounded-xl overflow-hidden"
-                  />
-                  <div className="mt-4 p-1">
-                    <p className="text-base font-semibold mb-1">
-                      {content.engSentence}
-                    </p>
-                    <p className="text-sm font-light">{content.korSentence}</p>
+                  {/* next.config.js에서 remotePatterns안에 user-images.githubusercontent.com 삭제해야함 */}
+                  <div className="w-[254px]">
+                    {content.thumbnailUrl ? (
+                      <Image
+                        src={content.thumbnailUrl}
+                        alt=""
+                        fill
+                        className="rounded-xl"
+                      />
+                    ) : (
+                      <div className="w-full h-[188px] rounded-xl bg-brandY" />
+                    )}
+                    <div className="mt-2 px-1 lg:mt-4 lg:p-1">
+                      <p className="text-base font-semibold mb-1 lg:text-base lg:font-semibold lg:mb-1">
+                        {content.engSentence}
+                      </p>
+                      <p className="text-sm font-light lg:text-sm lg:font-light">
+                        {content.korSentence}
+                      </p>
+                    </div>
                   </div>
                 </Link>
               );
             })}
-        </div> */}
-      </div>
-
-      {/* 모바일 용 */}
-
-      {/* next.config.js에서 remotePatterns안에 user-images.githubusercontent.com 삭제해야함 */}
-      <div className="lg:hidden overflow-hidden">
-        <h1 className="text-lg mb-3 ml-4">추천 문장</h1>
-        {/* <PerfectScrollbar options={options} className="w-full">
-          <div className="flex flex-row relative w-full p-4">
-            {data &&
-              data?.map((content, index) => {
-                return (
-                  <Link
-                    href={'/shadowing/learning/' + content.videoId}
-                    key={index}
-                    className="shadow-custom mr-4 p-3 rounded-3xl bg-[#ffffff] hover:shadow-customhover"
-                  >
-                    <div className="relative w-[254px]">
-                      <img
-                        src={content.thumbnailUrl}
-                        alt=""
-                        className="w-full rounded-xl"
-                      />
-                      <div className="mt-2 px-1">
-                        <p className="text-base font-semibold mb-1">
-                          {content.engSentence}
-                        </p>
-                        <p className="text-sm font-light">
-                          {content.korSentence}
-                        </p>
-                      </div>
-                    </div>
-                  </Link>
-                );
-              })}
             <div>
-              <button className="shadow-custom mr-2 w-[110px] h-[250px] sm:h-[285px] rounded-3xl bg-[#fff] hover:text-white active:text-white hover:bg-brandP active:bg-[#620fcf]">
+              <button className="shadow-custom mr-10 w-[110px] h-[250px] sm:h-[285px] rounded-3xl bg-[#fff] hover:text-white active:text-white hover:bg-brandP active:bg-[#620fcf]">
                 더 보기
               </button>
             </div>
           </div>
-        </PerfectScrollbar> */}
+        </PerfectScrollbar>
       </div>
     </div>
   );
