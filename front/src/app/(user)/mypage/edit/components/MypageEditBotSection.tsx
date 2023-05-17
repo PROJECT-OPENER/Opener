@@ -115,7 +115,9 @@ const MypageEditBotSection = () => {
         </div>
       </div>
       <div className="my-16">
-        <h1 className=" text-xl font-bold mx-20 my-3">나의 관심사 수정</h1>
+        <h1 className=" text-xl font-bold mx-20 my-3 max-sm:text-sm">
+          나의 관심사 수정
+        </h1>
         <div className="relative rounded-2xl drop-shadow-md mx-20">
           <div className="space-x-2 text-xs py-3">
             {!interestEdit && (
@@ -124,7 +126,7 @@ const MypageEditBotSection = () => {
                   type="submit"
                   text="수정"
                   onClick={() => setInterestEdit(!interestEdit)}
-                  className="modification-submit -top-10"
+                  className="sm:text-sm modification-submit -top-10"
                 />
               </>
             )}

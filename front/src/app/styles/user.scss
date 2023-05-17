@@ -13,11 +13,12 @@
 .my-chat {
   @apply bg-[#ffd600de] text-black rounded-br-none rounded-2xl p-4 ml-24 mr-3 break-words mt-3;
 }
-.my-chat, .other-chat {
-  @apply max-w-[500px]
+.my-chat,
+.other-chat {
+  @apply max-w-[500px];
 }
 .modification-submit {
-  @apply absolute right-5 w-24 bg-brandP text-white font-bold py-1 rounded-md text-xl;
+  @apply absolute max-sm:w-16 max-sm:text-sm right-5 w-24 bg-brandP text-white font-bold py-1 rounded-md text-xl;
 }
 
 .highlight {
@@ -25,7 +26,8 @@
 }
 
 @keyframes animate-bounce-right {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateX(0);
   }
   50% {
@@ -36,7 +38,6 @@
 .animate-bounce-right {
   animation: animate-bounce-right 1s ease-in-out infinite;
 }
-
 
 .button-spin {
   border: 2px solid #000; /* 블랙 border 추가 */
@@ -72,14 +73,14 @@
 
 .fade-out {
   /* animation : 효과(@keyframes 이름) 동작시간 */
-    animation: fadeout 3s;
-  }
-  @keyframes fadeout {
+  animation: fadeout 3s;
+}
+@keyframes fadeout {
   /* 효과를 동작시간 동안 0 ~ 1까지 */
-    from {
-      opacity: 1;
-    }
-    to {
-      opacity: 0;
-    }
+  from {
+    opacity: 1;
   }
+  to {
+    opacity: 0;
+  }
+}
