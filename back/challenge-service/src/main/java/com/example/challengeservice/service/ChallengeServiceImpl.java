@@ -222,10 +222,6 @@ public class ChallengeServiceImpl implements ChallengeService {
 		Member member = memberRepository.findByMemberId(memberId)
 			.orElseThrow(() -> new ApiException(ExceptionEnum.WRONG_MEMBER_EXCEPTION));
 		String fileName = challenge.getTitle() + "_" + memberChallengeRequestDto.getNickName() + LocalDateTime.now();
-		if (memberChallengeRepository.findByChallenge_ChallengeIdAndMember_MemberIdAndIsDelete(challengeId,
-			member.getMemberId(), false).isPresent()) {
-			throw new ApiException(ExceptionEnum.MEMBER_CHALLENGE_EXIST_EXCEPTION);
-		}
 		if (memberChallengeRequestDto.getMemberChallengeFile().isEmpty()) {
 			throw new ApiException(ExceptionEnum.FILE_NOT_FOUND_EXCEPTION);
 		}
