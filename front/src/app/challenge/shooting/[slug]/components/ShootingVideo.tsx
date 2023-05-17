@@ -9,7 +9,7 @@ import { uploadChallenge, originalVideoApi } from '@/app/api/challengeApi';
 import { RiArrowGoBackLine } from 'react-icons/ri';
 import { MdOutlineCancel } from 'react-icons/md';
 import TopNavPc from '@/app/components/TopNavPc';
-
+import { HiArrowLeftOnRectangle } from 'react-icons/hi2';
 type Props = {
   originalId: number;
 };
@@ -329,7 +329,7 @@ const ShootingVideo = ({ originalId }: Props) => {
   useEffect(() => {
     const handlePopstate = () => {
       stopRecording();
-      console.log('뒤로가기 이벤트 발생');
+      // console.log('뒤로가기 이벤트 발생');
     };
     window.addEventListener('popstate', handlePopstate);
 
@@ -349,7 +349,12 @@ const ShootingVideo = ({ originalId }: Props) => {
             <div className={isPreview ? 'hidden' : 'relative'}>
               <video className="" autoPlay muted ref={previewPlayer}></video>
               <div className="absolute top-10  w-full  flex justify-center items-center">
-                <div className="bg-black h-10 flex items-center bg-opacity-20 font-black text-white md:text-xl ">
+                <div
+                  className="flex justify-center items-center font-black text-white md:text-xl"
+                  style={{
+                    filter: 'drop-shadow(3px 3px 5px rgba(0, 0, 0, 0.9))',
+                  }}
+                >
                   {caption?.eng}
                 </div>
               </div>
@@ -379,7 +384,13 @@ const ShootingVideo = ({ originalId }: Props) => {
                   window.location.reload();
                 }}
               >
-                <MdOutlineCancel size={'3rem'} color={'white'} />
+                <HiArrowLeftOnRectangle
+                  size={'3rem'}
+                  color={'white'}
+                  style={{
+                    filter: 'drop-shadow(3px 3px 5px rgba(0, 0, 0, 0.9))',
+                  }}
+                />
               </button>
             </div>
             <div className={loadingDone ? 'absolute bottom-0' : 'hidden'}>
@@ -397,6 +408,9 @@ const ShootingVideo = ({ originalId }: Props) => {
                   className=""
                   width={100}
                   height={100}
+                  style={{
+                    filter: 'drop-shadow(3px 3px 5px rgba(0, 0, 0, 0.5))',
+                  }}
                 />
               </button>
             </div>
@@ -407,7 +421,12 @@ const ShootingVideo = ({ originalId }: Props) => {
             <div className={isPreview ? 'relative' : 'hidden'}>
               <video ref={recordingPlayer}></video>
               <div className="absolute top-10 w-full  flex justify-center items-center">
-                <p className="bg-black h-10 flex items-center bg-opacity-20 font-black text-white md:text-2xl ">
+                <p
+                  className="\flex items-center justify-center font-black text-white md:text-2xl"
+                  style={{
+                    filter: 'drop-shadow(3px 3px 5px rgba(0, 0, 0, 0.9))',
+                  }}
+                >
                   {caption?.eng}
                 </p>
               </div>
@@ -435,7 +454,13 @@ const ShootingVideo = ({ originalId }: Props) => {
                       router.push('/challenge');
                     }}
                   >
-                    <RiArrowGoBackLine size={'3rem'} color={'white'} />
+                    <RiArrowGoBackLine
+                      size={'3rem'}
+                      color={'white'}
+                      style={{
+                        filter: 'drop-shadow(3px 3px 5px rgba(0, 0, 0, 0.9))',
+                      }}
+                    />
                   </button>
                 </div>
                 <div className="mx-2">
