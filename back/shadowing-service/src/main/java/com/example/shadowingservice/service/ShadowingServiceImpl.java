@@ -1,5 +1,6 @@
 package com.example.shadowingservice.service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -29,15 +30,21 @@ import com.example.shadowingservice.dto.response.RoadMapResponseDto;
 import com.example.shadowingservice.dto.response.ShadowingCategoryDto;
 import com.example.shadowingservice.dto.response.ShadowingDetailDto;
 import com.example.shadowingservice.dto.response.ThemeRoadMapResponseDto;
+import com.example.shadowingservice.entity.member.Member;
 import com.example.shadowingservice.entity.member.Roadmap;
 import com.example.shadowingservice.entity.shadowing.Bookmark;
 import com.example.shadowingservice.entity.shadowing.Dictionary;
 import com.example.shadowingservice.entity.shadowing.Interest;
 import com.example.shadowingservice.entity.shadowing.ShadowingStatus;
 import com.example.shadowingservice.entity.shadowing.ShadowingVideo;
+import com.example.shadowingservice.entity.shadowing.Step;
+import com.example.shadowingservice.messagequeue.KafkaProducer;
+import com.example.shadowingservice.messagequeue.dto.produce.ShadowingBadgeProduceDto;
+import com.example.shadowingservice.messagequeue.dto.produce.ShadowingRoadmapProduceDto;
 import com.example.shadowingservice.repository.BookmarkRepository;
 import com.example.shadowingservice.repository.DictionaryRepository;
 import com.example.shadowingservice.repository.InterestRepository;
+import com.example.shadowingservice.repository.MemberRepository;
 import com.example.shadowingservice.repository.RoadmapRepository;
 import com.example.shadowingservice.repository.ShadowingStatusRepository;
 import com.example.shadowingservice.repository.ShadowingVideoInterestRepository;
@@ -57,6 +64,8 @@ public class ShadowingServiceImpl implements ShadowingService {
 	private final BookmarkRepository bookmarkRepository;
 	private final DictionaryRepository dictionaryRepository;
 	private final RoadmapRepository roadmapRepository;
+	private final MemberRepository memberRepository;
+	private final KafkaProducer kafkaProducer;
 
 	/**
 	 * 이우승
@@ -122,6 +131,8 @@ public class ShadowingServiceImpl implements ShadowingService {
 		StepMap stepMap = StepMap.getInstance();
 		HashMap<Integer, String> hashMap = stepMap.getHashMap();
 		List<Integer> stepNoList = stepRepository.findDistinctStepNo();
+		Member member = memberRepository.findById(memberId)
+			.orElseThrow(() -> new ApiException(ExceptionEnum.MEMBER_NOT_FOUND_EXCEPTION));
 
 		List<AuthNoRoadMapResponseDto> authNoRoadMapResponseDtoList = stepNoList.stream()
 			.map(stepNo -> {
@@ -133,7 +144,7 @@ public class ShadowingServiceImpl implements ShadowingService {
 							List<Long> stepIdList = stepRepository.findStepIdList(stepNo, stepTheme);
 							List<AuthRoadMapResponseDto> shadowingVideoList =
 								shadowingVideoRepository.getAuthThemeRoadMapResponseDtoList(
-									memberId, stepIdList);
+									member, stepIdList);
 
 							if (shadowingVideoList.isEmpty()) {
 								throw new ApiException(ExceptionEnum.VIDEO_ID_LIST_NOT_FOUND_EXCEPTION);
@@ -193,8 +204,10 @@ public class ShadowingServiceImpl implements ShadowingService {
 
 		Optional<Interest> interest = interestRepository.findByInterest(category);
 		List<Long> videoIdList = shadowingVideoInterestRepository.findAllVideoId(interest.get().getInterestId());
+		Member member = memberRepository.findById(memberId)
+			.orElseThrow(() -> new ApiException(ExceptionEnum.MEMBER_NOT_FOUND_EXCEPTION));
 		List<AuthShadowingCategoryDto> shadowingVideoList =
-			shadowingVideoRepository.getAuthCategoryDtoList(memberId, videoIdList, pageable);
+			shadowingVideoRepository.getAuthCategoryDtoList(member, videoIdList, pageable);
 
 		return shadowingVideoList;
 	}
@@ -216,15 +229,20 @@ public class ShadowingServiceImpl implements ShadowingService {
 	 * @param memberId
 	 */
 	@Override
+	@Transactional
 	public void updateRepeatCount(Long videoId, Long memberId) {
 		ShadowingStatus shadowingStatus = shadowingStatusRepository
-			.findByShadowingVideo_VideoIdAndMemberId(videoId, memberId)
+			.findByShadowingVideo_VideoIdAndMember_MemberId(videoId, memberId)
 			.orElseThrow(() -> new ApiException(ExceptionEnum.REPEATCOUNT_NOT_FOUND_EXCEPTION));
 
 		int count = shadowingStatus.getRepeatCount();
 
 		if (count + 1 >= 21) {
 			shadowingStatus.updateRepeatCount(1);
+			if (shadowingStatus.getStatusDate() == null) {
+				shadowingStatus.updateStatusDate(LocalDate.now());
+				kafkaProducer.sendBadgeEvent(new ShadowingBadgeProduceDto(memberId));
+			}
 		} else {
 			shadowingStatus.updateRepeatCount(count + 1);
 		}
@@ -279,12 +297,57 @@ public class ShadowingServiceImpl implements ShadowingService {
 	@Transactional
 	public LoginShadowingDetailDto getLoginShadowingDetailDto(Long videoId, Long memberId) {
 
+		Member member = memberRepository.findById(memberId)
+			.orElseThrow(() -> new ApiException(ExceptionEnum.MEMBER_NOT_FOUND_EXCEPTION));
+
 		LoginShadowingDetailDto loginShadowingDetailDto = shadowingVideoRepository
-			.getLoginShadowingDetailDto(videoId, memberId)
+			.getLoginShadowingDetailDto(videoId, member)
 			.orElseThrow(() -> new ApiException(ExceptionEnum.SHADOWING_NOT_FOUND_EXCEPTION));
 
+		ShadowingVideo shadowingVideo = shadowingVideoRepository.findByVideoId(videoId)
+			.orElseThrow(() -> new ApiException(ExceptionEnum.SHADOWING_NOT_FOUND_EXCEPTION));
+
+		Step step = stepRepository.findByStepId(shadowingVideo.getStepId());
+		Roadmap roadmap = roadmapRepository.findByMember_MemberId(memberId);
+		int themeCount = stepRepository.getThemeCount(roadmap.getStepNo());
+		int sentenceNoLength = stepRepository.getSentenceCount(roadmap.getStepNo(), roadmap.getStepTheme());
+
+		if (step.getStepNo() == roadmap.getStepNo() && step.getStepTheme() == roadmap.getStepTheme()
+			&& step.getSentenceNo() == roadmap.getSentenceNo()) {
+
+			if (sentenceNoLength < roadmap.getSentenceNo() + 1) {
+
+				if (themeCount < roadmap.getStepTheme() + 1) {
+
+					kafkaProducer.sendRoadmapEvent(ShadowingRoadmapProduceDto.builder()
+						.memberId(roadmap.getMember().getMemberId())
+						.stepNo(roadmap.getStepNo() + 1)
+						.stepTheme(roadmap.getStepTheme())
+						.sentenceNo(roadmap.getSentenceNo())
+						.build());
+
+				} else {
+					kafkaProducer.sendRoadmapEvent(ShadowingRoadmapProduceDto.builder()
+						.memberId(roadmap.getMember().getMemberId())
+						.stepNo(roadmap.getStepNo())
+						.stepTheme(roadmap.getStepTheme() + 1)
+						.sentenceNo(roadmap.getSentenceNo())
+						.build());
+				}
+
+			} else {
+				kafkaProducer.sendRoadmapEvent(ShadowingRoadmapProduceDto.builder()
+					.memberId(roadmap.getMember().getMemberId())
+					.stepNo(roadmap.getStepNo())
+					.stepTheme(roadmap.getStepTheme())
+					.sentenceNo(roadmap.getSentenceNo() + 1)
+					.build());
+			}
+
+		}
+
 		ShadowingStatus shadowingStatus = shadowingStatusRepository
-			.findByShadowingVideo_VideoIdAndMemberId(videoId, memberId)
+			.findByShadowingVideo_VideoIdAndMember_MemberId(videoId, memberId)
 			.orElseThrow(() -> new ApiException(ExceptionEnum.SHADOWING_STATUS_NOT_FOUND_EXCEPTION));
 		shadowingStatus.updateViewCount(shadowingStatus.getViewCount() + 1);
 
@@ -330,8 +393,11 @@ public class ShadowingServiceImpl implements ShadowingService {
 			throw new ApiException(ExceptionEnum.VIDEO_ID_LIST_NOT_FOUND_EXCEPTION);
 		}
 
+		Member member = memberRepository.findById(memberId)
+			.orElseThrow(() -> new ApiException(ExceptionEnum.MEMBER_NOT_FOUND_EXCEPTION));
+
 		List<AuthRoadMapResponseDto> authRoadMapResponseDtoList =
-			shadowingVideoRepository.getAuthMainRoadMapResponseDtoList(memberId, videoIdList, stepNo, stepTheme);
+			shadowingVideoRepository.getAuthMainRoadMapResponseDtoList(member, videoIdList, stepNo, stepTheme);
 
 		if (authRoadMapResponseDtoList.isEmpty()) {
 			throw new ApiException(ExceptionEnum.AUTH_MAIN_ROADMAPS_NOT_FOUND_EXCEPTION);
@@ -426,7 +492,7 @@ public class ShadowingServiceImpl implements ShadowingService {
 
 		if (existingBookmark.isPresent()) {
 			patchBookmark(memberId, videoId);
-		}else {
+		} else {
 			Bookmark bookmark = Bookmark.builder()
 				.memberId(memberId)
 				.shadowingVideo(shadowingVideo)
@@ -450,11 +516,11 @@ public class ShadowingServiceImpl implements ShadowingService {
 		Bookmark bookmark = bookmarkRepository.findByMemberIdAndShadowingVideo_VideoId(memberId, videoId)
 			.orElseThrow(() -> new ApiException(ExceptionEnum.ROOKMARK_NOT_FOUND_EXCEPTION));
 
-		if(!bookmark.isMarked()) {
+		if (!bookmark.isMarked()) {
 			bookmark.updateMarked(true);
-		}else {
+		} else {
 			bookmark.updateMarked(false);
- 		}
+		}
 	}
 
 	/**
