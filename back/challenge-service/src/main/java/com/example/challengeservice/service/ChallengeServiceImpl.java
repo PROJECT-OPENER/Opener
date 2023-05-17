@@ -168,7 +168,7 @@ public class ChallengeServiceImpl implements ChallengeService {
 			throw new ApiException(ExceptionEnum.CATEGORY_NOT_FOUND_EXCEPTION);
 		}
 		List<MemberChallengeResponseDto> memberChallengeResponseDtoList = new ArrayList<>();
-		List<MemberChallenge> memberChallengeList = memberChallengeRepository.findAll();
+		List<MemberChallenge> memberChallengeList = memberChallengeRepository.findAllByIsDelete(false);
 		if (memberChallengeList.isEmpty()) {
 			throw new ApiException(ExceptionEnum.MEMBER_CHALLENGES_NOT_FOUND_EXCEPTION);
 		}

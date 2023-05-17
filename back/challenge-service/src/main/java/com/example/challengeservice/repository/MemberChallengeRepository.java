@@ -14,6 +14,8 @@ import com.example.challengeservice.entity.challenge.MemberChallenge;
 public interface MemberChallengeRepository extends JpaRepository<MemberChallenge, Long> {
 	int countByChallengeAndIsDelete(Challenge challenge, Boolean isDelete);
 
+	List<MemberChallenge> findAllByIsDelete(Boolean isDelete);
+
 	@Query("select mc from MemberChallenge mc where mc.challenge.challengeId=:challengeId and mc.isDelete=:isDelete")
 	List<MemberChallenge> findAllByChallengeIdAndIsDelete(Long challengeId, Boolean isDelete);
 
