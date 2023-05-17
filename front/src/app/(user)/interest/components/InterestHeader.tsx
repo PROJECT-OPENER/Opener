@@ -9,7 +9,7 @@ const InterestHeader = () => {
       <h4 className="my-5">
         즐거운 영어 학습을 위해
         <br />
-        {user.data.nickname}님의 관심사를 선택해주세요.
+        {user?.data.nickname}님의 관심사를 선택해주세요.
       </h4>
     </div>
   );
