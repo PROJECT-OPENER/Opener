@@ -33,6 +33,7 @@ public class ShadowingVideo extends BaseEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long videoId;
 	private String thumbnailUrl;
+	@Column(unique = true)
 	private String videoUrl;
 	private LocalTime startTime;
 	private LocalTime endTime;

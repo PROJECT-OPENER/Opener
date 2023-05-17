@@ -317,38 +317,40 @@ public class ShadowingServiceImpl implements ShadowingService {
 		int themeCount = stepRepository.getThemeCount(roadmap.getStepNo());
 		int sentenceNoLength = stepRepository.getSentenceCount(roadmap.getStepNo(), roadmap.getStepTheme());
 
-		if (step.getStepNo() == roadmap.getStepNo() && step.getStepTheme() == roadmap.getStepTheme()
-			&& step.getSentenceNo() == roadmap.getSentenceNo()) {
+		if(shadowingVideo.getStepId() != null) {
+			if (step.getStepNo() == roadmap.getStepNo() && step.getStepTheme() == roadmap.getStepTheme()
+				&& step.getSentenceNo() == roadmap.getSentenceNo()) {
 
-			if (sentenceNoLength < roadmap.getSentenceNo() + 1) {
+				if (sentenceNoLength < roadmap.getSentenceNo() + 1) {
 
-				if (themeCount < roadmap.getStepTheme() + 1) {
+					if (themeCount < roadmap.getStepTheme() + 1) {
 
-					kafkaProducer.sendRoadmapEvent(ShadowingRoadmapProduceDto.builder()
-						.memberId(roadmap.getMember().getMemberId())
-						.stepNo(roadmap.getStepNo() + 1)
-						.stepTheme(roadmap.getStepTheme())
-						.sentenceNo(roadmap.getSentenceNo())
-						.build());
+						kafkaProducer.sendRoadmapEvent(ShadowingRoadmapProduceDto.builder()
+							.memberId(roadmap.getMember().getMemberId())
+							.stepNo(roadmap.getStepNo() + 1)
+							.stepTheme(roadmap.getStepTheme())
+							.sentenceNo(roadmap.getSentenceNo())
+							.build());
+
+					} else {
+						kafkaProducer.sendRoadmapEvent(ShadowingRoadmapProduceDto.builder()
+							.memberId(roadmap.getMember().getMemberId())
+							.stepNo(roadmap.getStepNo())
+							.stepTheme(roadmap.getStepTheme() + 1)
+							.sentenceNo(roadmap.getSentenceNo())
+							.build());
+					}
 
 				} else {
 					kafkaProducer.sendRoadmapEvent(ShadowingRoadmapProduceDto.builder()
 						.memberId(roadmap.getMember().getMemberId())
 						.stepNo(roadmap.getStepNo())
-						.stepTheme(roadmap.getStepTheme() + 1)
-						.sentenceNo(roadmap.getSentenceNo())
+						.stepTheme(roadmap.getStepTheme())
+						.sentenceNo(roadmap.getSentenceNo() + 1)
 						.build());
 				}
 
-			} else {
-				kafkaProducer.sendRoadmapEvent(ShadowingRoadmapProduceDto.builder()
-					.memberId(roadmap.getMember().getMemberId())
-					.stepNo(roadmap.getStepNo())
-					.stepTheme(roadmap.getStepTheme())
-					.sentenceNo(roadmap.getSentenceNo() + 1)
-					.build());
 			}
-
 		}
 
 		ShadowingStatus shadowingStatus = shadowingStatusRepository
