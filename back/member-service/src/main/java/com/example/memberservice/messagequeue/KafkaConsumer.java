@@ -12,8 +12,11 @@ import com.example.memberservice.common.exception.ApiException;
 import com.example.memberservice.common.exception.ExceptionEnum;
 import com.example.memberservice.entity.member.Badge;
 import com.example.memberservice.entity.member.Member;
+import com.example.memberservice.entity.member.Roadmap;
+import com.example.memberservice.messagequeue.dto.consume.ShadowingRoadmapConsumeDto;
 import com.example.memberservice.repository.BadgeRepository;
 import com.example.memberservice.repository.MemberRepository;
+import com.example.memberservice.repository.RoadmapRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -25,6 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RequiredArgsConstructor
 public class KafkaConsumer {
+	private final RoadmapRepository roadmapRepository;
 	private final BadgeRepository badgeRepository;
 	private final MemberRepository memberRepository;
 	private final ObjectMapper objectMapper;
@@ -120,5 +124,30 @@ public class KafkaConsumer {
 		});
 
 		badge.updateShadowingCount();
+	}
+
+	@KafkaListener(topics = "shadowing_topic_roadmap")
+	@Transactional
+	public void processRoadmap(String kafkaMessage) {
+		log.info("Process Roadmap : ===> " + kafkaMessage);
+
+		Map<Object, Object> map = new HashMap<>();
+		try {
+			map = objectMapper.readValue(kafkaMessage, new TypeReference<Map<Object, Object>>() {
+			});
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+		}
+		ShadowingRoadmapConsumeDto dto = new ShadowingRoadmapConsumeDto(map);
+		Long memberId = dto.getMemberId();
+		Member member = memberRepository.findById(memberId)
+			.orElseThrow(() -> new ApiException(ExceptionEnum.MEMBER_NOT_FOUND_EXCEPTION));
+
+		Roadmap roadmap = roadmapRepository.findByMember_MemberId(dto.getMemberId()).orElseGet(() -> {
+			Roadmap initRoadmap = Roadmap.builder().member(member).stepNo(1).stepTheme(1).sentenceNo(1).build();
+			return roadmapRepository.save(initRoadmap);
+		});
+
+		roadmap.updateRoadmap(dto);
 	}
 }
