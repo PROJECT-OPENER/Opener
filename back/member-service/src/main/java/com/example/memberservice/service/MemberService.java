@@ -15,6 +15,7 @@ import com.example.memberservice.dto.response.member.BadgeResponseDto;
 import com.example.memberservice.dto.response.member.ChallengeResponseDto;
 import com.example.memberservice.dto.response.member.LoginMemberResponseDto;
 import com.example.memberservice.dto.response.member.LoginResponseDto;
+import com.example.memberservice.dto.response.member.RankResponseDto;
 
 public interface MemberService {
 	/** 이메일 중복 체크 **/
@@ -64,4 +65,7 @@ public interface MemberService {
 
 	/** 내가 좋아요 한 챌린지 목록 조회 **/
 	List<ChallengeResponseDto> getMyLoveChallenges(Long memberId, Pageable pageable);
+
+	/** 상위 10위권 사용자들의 랭킹 조회 **/
+	List<RankResponseDto> getRank();
 }

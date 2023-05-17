@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.memberservice.common.annotation.Email;
 import com.example.memberservice.common.annotation.Nickname;
+import com.example.memberservice.dto.BaseListResponseDto;
 import com.example.memberservice.dto.BaseResponseDto;
 import com.example.memberservice.dto.request.member.EmailRequestDto;
 import com.example.memberservice.dto.request.member.LoginRequestDto;
@@ -21,6 +22,7 @@ import com.example.memberservice.dto.request.member.SignUpMemberRequestDto;
 import com.example.memberservice.dto.request.member.CheckEmailCodeRequestDto;
 import com.example.memberservice.dto.response.member.LoginMemberResponseDto;
 import com.example.memberservice.dto.response.member.LoginResponseDto;
+import com.example.memberservice.dto.response.member.RankResponseDto;
 import com.example.memberservice.service.MemberServiceImpl;
 
 import lombok.RequiredArgsConstructor;
@@ -114,6 +116,17 @@ public class MemberController {
 			.headers(loginResponseDto.toHeaders())
 			.body(new BaseResponseDto<LoginMemberResponseDto>(204, "선택된 관심사가 없습니다.",
 				loginResponseDto.getLoginMemberResponseDto()));
+	}
+
+	/**
+	 * 김윤미
+	 * explain : 상위 10위 사용자 점수, 순위 리스트 반환
+	 * @return
+	 */
+	@GetMapping("/rank")
+	public ResponseEntity<BaseListResponseDto<RankResponseDto>> getRank() {
+		return ResponseEntity.status(HttpStatus.OK)
+			.body(new BaseListResponseDto<RankResponseDto>(200, "랭킹 조회에 성공했습니다.", memberService.getRank()));
 	}
 
 }

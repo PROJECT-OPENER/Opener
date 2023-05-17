@@ -35,6 +35,7 @@ import com.example.memberservice.dto.response.member.BadgeResponseDto;
 import com.example.memberservice.dto.response.member.ChallengeResponseDto;
 import com.example.memberservice.dto.response.member.LoginMemberResponseDto;
 import com.example.memberservice.dto.response.member.LoginResponseDto;
+import com.example.memberservice.dto.response.member.RankResponseDto;
 import com.example.memberservice.entity.member.Badge;
 import com.example.memberservice.entity.member.Member;
 import com.example.memberservice.entity.member.MemberInterest;
@@ -473,5 +474,16 @@ public class MemberServiceImpl implements MemberService {
 			.peek(dto -> dto.setLikeCount(
 				loveRepository.countByMemberChallenge_MemberChallengeIdAndIsLove(dto.getMemberChallengeId(), true)))
 			.collect(Collectors.toList());
+	}
+
+	/**
+	 * 김윤미
+	 * explain : 상위 10위권 사용자 순위 목록 조회
+	 * @return
+	 */
+	@Override
+	@Transactional
+	public List<RankResponseDto> getRank() {
+		return memberRepository.getRankingList();
 	}
 }
