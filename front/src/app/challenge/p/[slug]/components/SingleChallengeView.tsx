@@ -251,14 +251,14 @@ const SingleChallengeView = ({ challengeId }: Props) => {
             ref={videoRef}
           >
             <div
-              className="relative overflow-hidden rounded-xl z-0 sm:h-[960px] sm:w-[540px] h-screen w-auto bg-black sm:mt-20"
+              className="relative overflow-hidden rounded-xl z-0 sm:h-[736px] sm:w-[414px] h-[640px] w-[360px] bg-black sm:mt-20"
               ref={parentRef}
             >
-              <div className="relative sm:h-[960px] sm:w-[540px] h-screen w-auto flex justify-center items-center overflow-hidden">
+              <div className="relativesm:h-[736px] sm:w-[414px] h-[640px] w-[360px] flex justify-center items-center overflow-hidden">
                 <video
                   ref={memberPlayerRef}
                   src={challengeInfo?.curMemberChallenge.memberChallengeUrl}
-                  className="sm:h-[960px] sm:w-[540px] h-screen w-auto relative"
+                  className="sm:h-[736px] sm:w-[414px] h-[640px] w-[360px] relative"
                 ></video>
                 <div className="absolute top-10 w-full  flex justify-center items-center">
                   <div
