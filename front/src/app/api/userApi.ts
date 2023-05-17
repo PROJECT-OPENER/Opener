@@ -118,3 +118,9 @@ export const fetcher = (url: string) =>
     console.log(url, res.data.data);
     return res.data.data;
   });
+
+// 랭크
+export const getRankApi = async () => {
+  const response = await memberApi.get(`/members/rank`);
+  return response.data;
+};
