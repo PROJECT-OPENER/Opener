@@ -15,6 +15,8 @@ import {
 import { useRecoilState } from 'recoil';
 import { handleChatLog, pushChatLog } from '@/util/AiChat';
 import { BsKeyboard } from 'react-icons/bs';
+import Model from '@/app/three/chat/Model';
+import TopNavPc from '@/app/components/TopNavPc';
 
 const AiChatRoom = () => {
   // recoil
@@ -75,36 +77,64 @@ const AiChatRoom = () => {
     setisChat(true);
   };
   return (
-    <div className="h-screen border-2 flex flex-col">
-      <div className="flex-none">
-        <AiChatNav />
+    <div>
+      <div className="absolute top-0 left-0 w-screen h-screen">
+        <Model />
       </div>
-      <div ref={chatWindowRef} className="flex-auto h-0 overflow-y-auto">
-        <div className="min-h-full">
-          <AiChatMessageList />
+      <div className="absolute top-0 left-0 w-screen h-screen flex flex-col items-center overflow-hidden">
+        <div className="lg:block hidden">
+          <TopNavPc />
         </div>
-      </div>
-      <div className="flex-none h-fit flex flex-col">
-        {/* 녹음 시 텍스트 보여주기 */}
-        {!isChat && isRecording && (
-          <div className="relative mx-5">
-            <div className="bg-white rounded-xl text-xl py-3 pl-5 pr-10 min-h-[3.25rem]">
-              {message.length > 1 ? message : 'Listening...'}
-            </div>
-            <button
-              type="button"
-              className="absolute right-0 top-0 bottom-0 text-3xl pr-3"
-              onClick={handleKeyboard}
-            >
-              <BsKeyboard className="fill-black" />
-            </button>
+        <div className="lg:hidden w-full text-sm">
+          <AiChatNav />
+        </div>
+
+        <div className="lg:p-6 lg:pt-20 h-full w-full flex lg:flex-row lg:justify-between lg:items-end">
+          <div className="lg:w-full lg:max-w-[410px] lg:block hidden text-sm ">
+            <AiChatNav />
           </div>
-        )}
-        <div className="mx-5 mb-5 bg-brandP rounded-xl">
-          {/* 녹음 */}
-          {!isChat && <AiChatSendVoice handleSendMessage={handleSendMessage} />}
-          {/* 키보드 */}
-          {isChat && <AiChatSendText handleSendMessage={handleSendMessage} />}
+          {/* 오른쪽, 채팅 */}
+          <div className="h-full w-full lg:max-w-[410px] lg:max-h-[700px]">
+            <div className="flex flex-col justify-between h-full overflow-y-auto lg:bg-[#fff6] lg:border lg:rounded-3xl shadow-custom">
+              <div
+                ref={chatWindowRef}
+                className="overflow-y-auto lg:px-5 lg:mt-6 flex-auto h-0"
+              >
+                <div className="min-h-full text-sm">
+                  <AiChatMessageList
+                    handleReceiveMessage={handleReceiveMessage}
+                  />
+                </div>
+              </div>
+              <div className="flex-none h-fit flex flex-col lg:rounded-3xl">
+                {/* 녹음 시 텍스트 보여주기 */}
+                {!isChat && isRecording && (
+                  <div className="relative mx-5">
+                    <div className="bg-white rounded-xl py-3 pl-5 pr-10 min-h-[3.25rem] text-sm">
+                      {message.length > 1 ? message : 'Listening...'}
+                    </div>
+                    <button
+                      type="button"
+                      className="absolute right-0 top-0 bottom-0 text-3xl pr-3"
+                      onClick={handleKeyboard}
+                    >
+                      <BsKeyboard className="fill-black" />
+                    </button>
+                  </div>
+                )}
+                <div className="mx-5 mb-5 bg-brandP rounded-xl shadow-custom">
+                  {/* 녹음 */}
+                  {!isChat && (
+                    <AiChatSendVoice handleSendMessage={handleSendMessage} />
+                  )}
+                  {/* 키보드 */}
+                  {isChat && (
+                    <AiChatSendText handleSendMessage={handleSendMessage} />
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

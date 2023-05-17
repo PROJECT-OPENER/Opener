@@ -35,7 +35,7 @@ const MypageEditTopSection = () => {
         <div className="h-[200px] flex px-10 py-12 m-3 rounded-3xl">
           <div className="mr-10 max-w-[100px] relative">
             <ProfileImage
-              className="w-full h-full relative brightness-75"
+              className="w-full relative brightness-75"
               width={500}
               height={500}
               profileUrl={user.data.profile}
