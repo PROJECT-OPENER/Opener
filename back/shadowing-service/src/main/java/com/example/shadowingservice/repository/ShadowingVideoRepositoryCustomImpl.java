@@ -25,6 +25,7 @@ import com.example.shadowingservice.dto.response.LoginShadowingDetailDto;
 
 import com.example.shadowingservice.dto.response.RoadMapResponseDto;
 import com.example.shadowingservice.dto.response.ShadowingCategoryDto;
+import com.example.shadowingservice.entity.member.Member;
 import com.example.shadowingservice.entity.shadowing.ShadowingStatus;
 import com.example.shadowingservice.entity.shadowing.ShadowingVideo;
 import com.querydsl.core.Tuple;
@@ -40,7 +41,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ShadowingVideoRepositoryCustomImpl implements ShadowingVideoRepositoryCustom {
 	private final JPAQueryFactory queryFactory;
-
 	private final EntityManager em;
 
 	/**
@@ -48,12 +48,12 @@ public class ShadowingVideoRepositoryCustomImpl implements ShadowingVideoReposit
 	 * explain : 로그인 쉐도잉 영상 조회
 	 * 사용자의 학습데이터가 없다면 자동으로 테이블에 등록
 	 * @param videoId
-	 * @param memberId
+	 * @param member
 	 * @return
 	 */
 	@Override
 	@Transactional
-	public Optional<LoginShadowingDetailDto> getLoginShadowingDetailDto(Long videoId, Long memberId) {
+	public Optional<LoginShadowingDetailDto> getLoginShadowingDetailDto(Long videoId, Member member) {
 
 		Tuple result = queryFactory
 			.select(
@@ -69,17 +69,16 @@ public class ShadowingVideoRepositoryCustomImpl implements ShadowingVideoReposit
 			.leftJoin(shadowingStatus)
 			.on(shadowingVideo.videoId
 				.eq(shadowingStatus.shadowingVideo.videoId)
-				.and(shadowingStatus.memberId.eq(memberId)))
+				.and(shadowingStatus.member.memberId.eq(member.getMemberId())))
 			.leftJoin(bookmark)
 			.on(bookmark.memberId
-				.eq(memberId).and(shadowingVideo.videoId
+				.eq(member.getMemberId()).and(shadowingVideo.videoId
 					.eq(bookmark.shadowingVideo.videoId)))
 			.where(shadowingVideo.videoId.eq(videoId))
 			.fetchFirst();
 
 		int repeatCount = 0;
 		boolean isMarked = false;
-		int viewCount = 1;
 
 		if (result == null) {
 			throw new ApiException(ExceptionEnum.SHADOWING_NOT_FOUND_EXCEPTION);
@@ -88,10 +87,9 @@ public class ShadowingVideoRepositoryCustomImpl implements ShadowingVideoReposit
 		if (result.get(shadowingStatus.repeatCount) == null) {
 			ShadowingVideo video = em.find(ShadowingVideo.class, videoId);
 			ShadowingStatus status = ShadowingStatus.builder()
-				.memberId(memberId)
+				.member(member)
 				.shadowingVideo(video)
 				.repeatCount(0)
-				.statusDate(LocalDate.now())
 				.viewCount(1)
 				.build();
 			em.persist(status);
@@ -152,12 +150,12 @@ public class ShadowingVideoRepositoryCustomImpl implements ShadowingVideoReposit
 	/**
 	 * 이우승
 	 * explain : 로그인 쉐도잉 로드맵 전체 목록 조회
-	 * @param memberId
+	 * @param member
 	 * @param stepIdList
 	 * @return
 	 */
 	@Override
-	public List<AuthRoadMapResponseDto> getAuthThemeRoadMapResponseDtoList(Long memberId, List<Long> stepIdList) {
+	public List<AuthRoadMapResponseDto> getAuthThemeRoadMapResponseDtoList(Member member, List<Long> stepIdList) {
 		Expression<String> idString = new CaseBuilder()
 			.when(step.stepTheme.eq(1)).then("아이브")
 			.when(step.stepTheme.eq(2)).then("뉴진스")
@@ -178,7 +176,7 @@ public class ShadowingVideoRepositoryCustomImpl implements ShadowingVideoReposit
 			.join(step)
 			.on(shadowingVideo.stepId.eq(step.stepId))
 			.leftJoin(shadowingStatus)
-			.on(shadowingStatus.memberId.eq(memberId)
+			.on(shadowingStatus.member.memberId.eq(member.getMemberId())
 				.and(shadowingStatus.shadowingVideo.videoId.eq(shadowingVideo.videoId)))
 			.where(shadowingVideo.stepId.in(stepIdList))
 			.fetch();
@@ -212,7 +210,7 @@ public class ShadowingVideoRepositoryCustomImpl implements ShadowingVideoReposit
 	/**
 	 * 이우승
 	 * explain : 로그인 메인 로드맵 목록 조회
-	 * @param memberId
+	 * @param member
 	 * @param videoList
 	 * @param stepNo
 	 * @param stepTheme
@@ -220,7 +218,7 @@ public class ShadowingVideoRepositoryCustomImpl implements ShadowingVideoReposit
 	 */
 	@Override
 	public List<AuthRoadMapResponseDto> getAuthMainRoadMapResponseDtoList
-	(Long memberId, List<Long> videoList, int stepNo, int stepTheme) {
+	(Member member, List<Long> videoList, int stepNo, int stepTheme) {
 
 		return queryFactory.select(Projections.constructor(AuthRoadMapResponseDto.class,
 					shadowingVideo.videoId,
@@ -241,7 +239,7 @@ public class ShadowingVideoRepositoryCustomImpl implements ShadowingVideoReposit
 			.on(shadowingVideo.stepId.eq(step.stepId))
 			.leftJoin(shadowingStatus)
 			.on(shadowingStatus.shadowingVideo.videoId.eq(shadowingVideo.videoId)
-				.and(shadowingStatus.memberId.eq(memberId).and(shadowingStatus.shadowingVideo.videoId.in(videoList))))
+				.and(shadowingStatus.member.memberId.eq(member.getMemberId()).and(shadowingStatus.shadowingVideo.videoId.in(videoList))))
 			.where(step.stepNo.eq(stepNo).and(step.stepTheme.eq(stepTheme)))
 			.groupBy(shadowingVideo.videoId, shadowingVideo.engSentence, shadowingVideo.korSentence,
 				step.stepTheme, step.sentenceNo, shadowingStatus.statusDate)
@@ -277,14 +275,14 @@ public class ShadowingVideoRepositoryCustomImpl implements ShadowingVideoReposit
 	/**
 	 * 이우승
 	 * explain : 로그인 카테고리 별 쉐도잉 영상 목록 조회
-	 * @param memberId
+	 * @param member
 	 * @param videoIdList
 	 * @param pageable
 	 * @return
 	 */
 
 	@Override
-	public List<AuthShadowingCategoryDto> getAuthCategoryDtoList(Long memberId, List<Long> videoIdList,
+	public List<AuthShadowingCategoryDto> getAuthCategoryDtoList(Member member, List<Long> videoIdList,
 		Pageable pageable) {
 
 		BooleanExpression inVideoIdList = shadowingVideo.videoId.in(videoIdList);
@@ -299,7 +297,7 @@ public class ShadowingVideoRepositoryCustomImpl implements ShadowingVideoReposit
 			)
 			.from(shadowingVideo)
 			.leftJoin(bookmark)
-			.on(bookmark.shadowingVideo.videoId.eq(shadowingVideo.videoId).and(bookmark.memberId.eq(memberId)))
+			.on(bookmark.shadowingVideo.videoId.eq(shadowingVideo.videoId).and(bookmark.memberId.eq(member.getMemberId())))
 			.where(inVideoIdList)
 			.offset(pageable.getOffset())
 			.limit(pageable.getPageSize())
