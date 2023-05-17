@@ -4,20 +4,25 @@ import Image from 'next/image';
 
 const BotBadge = () => {
   const [data, setData] = useState<any>();
-  const badgeNaming: any = [
-    {
-      attendanceBadge: 'attend',
-      challengeBadge: 'challenge',
-      gameBadge: 'game',
-      shadowingBadge: 'shadowing',
-    },
-    ['', 'b', 's', 'g', 'p', 'd', 'r'],
-  ];
+
   useEffect(() => {
     const getMyBadges = async () => {
-      const res = await getMyBadgesApi();
-      console.log(res.data.data);
-      setData(res.data.data);
+      const result = await getMyBadgesApi();
+      console.log(result.data.data);
+      const res = result.data.data;
+
+      setData({
+        sources: res,
+        badgeSrc: {
+          attendSrc:
+            '/images/badges/attend_' + res.attendanceBadge.level + '.png',
+          challengeSrc:
+            '/images/badges/challenge_' + res.challengeBadge.level + '.png',
+          shadowingSrc: '/images/badges/game_' + res.gameBadge.level + '.png',
+          gameSrc:
+            '/images/badges/shadowing_' + res.shadowingBadge.level + '.png',
+        },
+      });
     };
     getMyBadges();
   }, []);
@@ -25,92 +30,148 @@ const BotBadge = () => {
     <div>
       {data ? (
         <ul>
-          <li>
-            {data.attendanceBadge.level < 5 && (
-              <Image
-                src={
-                  '/images/badges/attend_' +
-                  badgeNaming[1][data.attendanceBadge.level] +
-                  '.png'
-                }
-                fill
-                alt=""
-              />
-            )}
-            {data.attendanceBadge.level >= 5 && (
-              <Image src={'/images/badges/attend_r.png'} fill alt="" />
-            )}
-            {/* <span>출석관련 뱃지 레벨 : {data.attendanceBadge.level}</span> */}
-            <span>출석관련 뱃지 점수 : {data.attendanceBadge.score}</span>
+          <li className="my-4 py-4 border-b flex flex-row justify-between">
+            <div className="relative lg:w-[100px] lg:h-[100px] w-[80px] h-[80px]">
+              {data.sources.attendanceBadge.level < 3 && (
+                <Image src={data.badgeSrc.attendSrc} fill alt="" />
+              )}
+              {data.sources.attendanceBadge.level >= 4 && (
+                <Image src={data.badgeSrc.attendSrc} fill alt="" />
+              )}
+            </div>
+            <div className="w-[calc(100%-130px)]">
+              <p className="sm:text-lg text-base font-bold">
+                출석 Lv.{data.sources.attendanceBadge.level}
+              </p>
+              <p className="sm:text-base text-sm">
+                출석하면 점수가 쌓여요. (1일 1회)
+              </p>
+              <div className="flex flex-row items-center">
+                <div className="w-[calc(100%-50px)] h-[20px] flex flex-col relative justfiy-start border rounded-xl overflow-hidden">
+                  <div
+                    className={
+                      data.sources.attendanceBadge.score
+                        ? `h-full ${
+                            data.sources.attendanceBadge.score
+                              ? `w-[${data.sources.attendanceBadge.score}%]`
+                              : ''
+                          } bg-brandP`
+                        : 'h-full w-0'
+                    }
+                  />
+                </div>
+                <span className="ml-2">
+                  {data.sources.attendanceBadge.score}%
+                </span>
+              </div>
+            </div>
           </li>
-          <li>
-            {data.challengeBadge.level < 5 && (
-              <Image
-                src={
-                  '/images/badges/challenge_' +
-                  badgeNaming[1][data.challengeBadge.level] +
-                  '.png'
-                }
-                fill
-                alt=""
-              />
-            )}
-            {data.challengeBadge.level >= 5 && (
-              <Image src={'/images/badges/challenge_r.png'} fill alt="" />
-            )}
-            {/* <span>출석관련 뱃지 레벨 : {data.attendanceBadge.level}</span> */}
-            <span>챌린지관련 뱃지 점수 : {data.challengeBadge.score}</span>
+          <li className="my-4 py-4 border-b flex flex-row justify-between">
+            <div className="relative lg:w-[100px] lg:h-[100px] w-[80px] h-[80px]">
+              {data.sources.challengeBadge.level < 3 && (
+                <Image src={data.badgeSrc.challengeSrc} fill alt="" />
+              )}
+              {data.sources.challengeBadge.level >= 4 && (
+                <Image src={data.badgeSrc.challengeSrc} fill alt="" />
+              )}
+            </div>
+            <div className="w-[calc(100%-130px)]">
+              <p className="sm:text-lg text-base font-bold">
+                챌린지 Lv.{data.sources.challengeBadge.level}
+              </p>
+              <p className="sm:text-base text-sm">
+                챌린지에 참여하면 점수가 쌓여요.
+              </p>
+              <div className="flex flex-row items-center">
+                <div className="w-[calc(100%-50px)] h-[20px] flex flex-col relative justfiy-start border rounded-xl overflow-hidden">
+                  <div
+                    className={
+                      data.sources.challengeBadge.score
+                        ? `h-full ${
+                            data.sources.challengeBadge.score
+                              ? `w-[${data.sources.challengeBadge.score}%]`
+                              : ''
+                          } bg-brandP`
+                        : 'h-full w-0'
+                    }
+                  />
+                </div>
+                <span className="ml-2">
+                  {data.sources.challengeBadge.score}%
+                </span>
+              </div>
+            </div>
           </li>
-
-          <li>
-            {data.gameBadge.level < 5 && (
-              <Image
-                src={
-                  '/images/badges/game_' +
-                  badgeNaming[1][data.gameBadge.level] +
-                  '.png'
-                }
-                fill
-                alt=""
-              />
-            )}
-            {data.gameBadge.level >= 5 && (
-              <Image src={'/images/badges/game_r.png'} fill alt="" />
-            )}
-            {/* <span>출석관련 뱃지 레벨 : {data.attendanceBadge.level}</span> */}
-            <span>게임관련 뱃지 점수 : {data.gameBadge.score}</span>
+          <li className="my-4 py-4 border-b flex flex-row justify-between">
+            <div className="relative lg:w-[100px] lg:h-[100px] w-[80px] h-[80px]">
+              {data.sources.gameBadge.level < 3 && (
+                <Image src={data.badgeSrc.shadowingSrc} fill alt="" />
+              )}
+              {data.sources.gameBadge.level >= 4 && (
+                <Image src={data.badgeSrc.shadowingSrc} fill alt="" />
+              )}
+            </div>
+            <div className="w-[calc(100%-130px)]">
+              <p className="sm:text-lg text-base font-bold">
+                게임 Lv.{data.sources.gameBadge.level}
+              </p>
+              <p className="sm:text-base text-sm">
+                게임에 참여하면 점수가 쌓여요.
+              </p>
+              <div className="flex flex-row items-center">
+                <div className="w-[calc(100%-50px)] h-[20px] flex flex-col relative justfiy-start border rounded-xl overflow-hidden">
+                  <div
+                    className={
+                      data.sources.gameBadge.score
+                        ? `h-full ${
+                            data.sources.gameBadge.score
+                              ? `w-[${data.sources.gameBadge.score}%]`
+                              : ''
+                          } bg-brandP`
+                        : 'h-full w-0'
+                    }
+                  />
+                </div>
+                <span className="ml-2">{data.sources.gameBadge.score}%</span>
+              </div>
+            </div>
           </li>
-
-          {/* <li>
-            <span>챌린지 관련 뱃지 레벨 : {data.challengeBadge.level}</span>
-            <span>챌린지 관련 뱃지 점수 : {data.challengeBadge.score}</span>
-          </li> */}
-          {/* <li>
-            <span>게임 관련 뱃지 레벨 : {data.gameBadge.level}</span>
-            <span>게임 관련 뱃지 점수 : {data.gameBadge.score}</span>
-          </li> */}
-          <li>
-            {data.shadowingBadge.level < 5 && (
-              <Image
-                src={
-                  '/images/badges/game_' +
-                  badgeNaming[1][data.shadowingBadge.level] +
-                  '.png'
-                }
-                fill
-                alt=""
-              />
-            )}
-            {data.shadowingBadge.level >= 5 && (
-              <Image src={'/images/badges/shadowing_r.png'} fill alt="" />
-            )}
-            {/* <span>출석관련 뱃지 레벨 : {data.attendanceBadge.level}</span> */}
-            <span> 관련 뱃지 점수 : {data.shadowingBadge.score}</span>
+          <li className="my-4 py-4 border-b flex flex-row justify-between">
+            <div className="relative lg:w-[100px] lg:h-[100px] w-[80px] h-[80px]">
+              {data.sources.shadowingBadge.level < 3 && (
+                <Image src={data.badgeSrc.gameSrc} fill alt="" />
+              )}
+              {data.sources.shadowingBadge.level >= 4 && (
+                <Image src={data.badgeSrc.gameSrc} fill alt="" />
+              )}
+            </div>
+            <div className="w-[calc(100%-130px)]">
+              <p className="sm:text-lg text-base font-bold">
+                쉐도잉 Lv.{data.sources.shadowingBadge.level}
+              </p>
+              <p className="sm:text-base text-sm">
+                쉐도잉 학습을 하면 점수가 쌓여요.
+              </p>
+              <div className="flex flex-row items-center">
+                <div className="w-[calc(100%-50px)] h-[20px] flex flex-col relative justfiy-start border rounded-xl overflow-hidden">
+                  <div
+                    className={
+                      data.sources.shadowingBadge.score
+                        ? `h-full ${
+                            data.sources.shadowingBadge.score
+                              ? `w-[${data.sources.shadowingBadge.score}%]`
+                              : ''
+                          } bg-brandP`
+                        : 'h-full w-0'
+                    }
+                  />
+                </div>
+                <span className="ml-2">
+                  {data.sources.shadowingBadge.score}%
+                </span>
+              </div>
+            </div>
           </li>
-          {/* <li>
-            <span>쉐도잉 관련 뱃지 레벨 : {data.shadowingBadge.level}</span>
-            <span>쉐도잉 관련 뱃지 점수 : {data.shadowingBadge.score}</span>
-          </li> */}
         </ul>
       ) : (
         ''
