@@ -25,14 +25,11 @@ export const uploadChallenge = async (
   challengeId: number,
   payload: FormData,
 ) => {
-  const response = await challengeApi
-    .post(`/auth/challenges/${challengeId}/member-challenge`, payload)
-    .then((res) => {
-      return res.data;
-    })
-    .catch((error) => {
-      return error;
-    });
+  const response = await challengeApi.post(
+    `/auth/challenges/${challengeId}/member-challenge`,
+    payload,
+  );
+  return response;
 };
 
 // all 페이지의 챌린지 전체 가져오기

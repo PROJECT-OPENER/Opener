@@ -78,7 +78,7 @@ const ChallengeCategoryList = ({ category, startIdx }: Props) => {
           ))}
         </div>
       )}
-      <p>{challenges[0]?.data.totalLength}</p>
+      <p>{challenges[0]?.data.totalLength - startIdx}</p>
       <p>{challengeList?.length}</p>
 
       <p

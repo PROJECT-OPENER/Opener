@@ -15,7 +15,8 @@ import { TfiAngleLeft } from 'react-icons/tfi';
 import { RiShareForwardFill, RiDeleteBin5Fill } from 'react-icons/ri';
 import useSWR from 'swr';
 import TopNavPc from '@/app/components/TopNavPc';
-import TopNav from '@/app/components/TopNav';
+import { fetcher } from '@/app/api/axiosConfig';
+
 type Props = {
   challengeId: number;
 };
@@ -29,11 +30,6 @@ type videoInfoType = {
 
 const SingleChallengeView = ({ challengeId }: Props) => {
   const BASE_URL = process.env.NEXT_PUBLIC_SERVER_URL;
-
-  const fetcher = async (url: string) => {
-    const response = await fetch(url);
-    return response.json();
-  };
   const router = useRouter();
 
   const { user } = useUser();
@@ -43,18 +39,11 @@ const SingleChallengeView = ({ challengeId }: Props) => {
     fetcher,
   );
   const challengeInfo: challengeDetail = data?.data;
-  console.log(challengeInfo);
   const youtubePlayRef = useRef<YouTube>(null);
   const videoRef = useRef<HTMLDivElement>(null);
   const memberPlayerRef = useRef<HTMLVideoElement>(null);
   const [isLike, setIsLike] = useState<boolean>(false);
   const [isDelete, setIsDelete] = useState<boolean>(false);
-  const options = {
-    root: null,
-    threshold: [0.9],
-  };
-  const [detailobserver, setDetailobserver] =
-    useState<IntersectionObserver | null>(null);
   const onPlayReady: YouTubeProps['onReady'] = (event) => {
     event.target.pauseVideo();
     const iframe = event.target.getIframe();
@@ -99,7 +88,6 @@ const SingleChallengeView = ({ challengeId }: Props) => {
     const response = await deleteMemberChallenge(challengeId);
     if (response.code === 200) {
       alert('영상이 삭제되었습니다.');
-      setIsDelete(true);
       router.push('/challenge');
     } else {
       console.log(response);
@@ -126,7 +114,6 @@ const SingleChallengeView = ({ challengeId }: Props) => {
       const status = await player.getPlayerState();
       if (status === 1) {
         player.pauseVideo();
-        detailobserver?.disconnect();
       } else {
         player.playVideo();
       }
@@ -134,7 +121,6 @@ const SingleChallengeView = ({ challengeId }: Props) => {
   };
 
   useEffect(() => {
-    // 촬영 영상 실행 준비되면 유튜브 플레이
     youtubePlayStart();
   }, [onPlayReady]);
 
@@ -259,7 +245,7 @@ const SingleChallengeView = ({ challengeId }: Props) => {
             className="md:m-10 h-screen flex flex-col items-center"
             ref={videoRef}
           >
-            <div className="relative overflow-hidden rounded-xl z-0 h-[810px]  bg-black">
+            <div className="relative overflow-hidden rounded-xl z-0 h-[800px] w-[450px]  bg-black">
               <div className="relative h-[810px]">
                 <video
                   ref={memberPlayerRef}
@@ -267,9 +253,9 @@ const SingleChallengeView = ({ challengeId }: Props) => {
                   className="h-[810px] overflow-hidden relative"
                 ></video>
                 <div className="absolute top-10 w-full  flex justify-center items-center">
-                  <p className="bg-black px-2 h-10 flex items-center bg-opacity-20 font-black text-white md:text-2xl ">
+                  <div className="bg-black h-10 flex items-center bg-opacity-20 font-black text-white md:text-xl ">
                     {caption?.eng}
-                  </p>
+                  </div>
                 </div>
                 {data && (
                   <YouTube
