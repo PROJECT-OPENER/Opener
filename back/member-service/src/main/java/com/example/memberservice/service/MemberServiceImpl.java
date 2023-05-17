@@ -190,6 +190,7 @@ public class MemberServiceImpl implements MemberService {
 			.member(member)
 			.stepNo(1)
 			.stepTheme(1)
+			.sentenceNo(1)
 			.build();
 
 		roadmapRepository.save(roadmap);
