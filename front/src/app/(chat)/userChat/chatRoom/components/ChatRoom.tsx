@@ -73,17 +73,22 @@ const ChatRoom = () => {
   // 결과
   const setResult = useSetRecoilState(userChatResultState);
   const result = useRecoilValue(userChatResultState);
+  const grammerMsg = useRecoilValue(userChatGrammerMsgListState);
 
   // ref
   const chatWindowRef = useRef<HTMLDivElement>(null);
   const pingIntervalIdRef = useRef<NodeJS.Timer | null>(null);
 
   useEffect(() => {
+    console.log('grammerMsg', grammerMsg);
+  }, [grammerMsg]);
+
+  useEffect(() => {
     console.log('setResult', result);
   }, [result]);
 
   useEffect(() => {
-    console.log('isFirst', isFirst);
+    // console.log('isFirst', isFirst);
     if (turn === 999 && lastChat) {
       console.log('score', score);
       handleSendResult();
@@ -164,7 +169,7 @@ const ChatRoom = () => {
           (message) => {
             try {
               const content = JSON.parse(message.body);
-              console.log('subscribe : ', content);
+              // console.log('subscribe : ', content);
               if (content.message === '탈주발생') {
                 console.log('탈주발생');
                 console.log('탈주발생', content);
@@ -175,15 +180,22 @@ const ChatRoom = () => {
               if (content.nickname !== nickname) {
                 setIsRunning(true);
               }
+              // 제시어 검사
               if (content.message.includes(userChatRoom.keyword)) {
                 if (content.nickname === nickname) updateMyWordUsed();
                 if (content.nickname === userChatRoom.otherNickname)
                   updateOtherWordUsed();
               }
+              handleGrammerCheck(
+                content.message,
+                content.nickname,
+                content.turn,
+              );
+
               setMessageList((messageList) => {
                 const updatedMessageList = [...messageList, content];
                 if (isFirst === false) {
-                  console.log('isFirst22222', isFirst);
+                  // console.log('isFirst22222', isFirst);
                   handleContextScore(
                     updatedMessageList,
                     content.nickname,
@@ -205,7 +217,7 @@ const ChatRoom = () => {
           (message) => {
             try {
               const content = JSON.parse(message.body);
-              console.log('subscribe : ', content);
+              // console.log('subscribe : ', content);
               setResult(content);
               router.push('/userChat/Result');
             } catch (e) {
@@ -233,14 +245,61 @@ const ChatRoom = () => {
       setIsFirst(false);
     };
   }, []);
+  //문법 검사
+  const handleGrammerCheck = (
+    text: string,
+    chatNickname: string,
+    msgTurn: number,
+  ) => {
+    if (text === 'pass') {
+      const pass = async () => {
+        const payload = {
+          type: 'pass',
+          nickname: chatNickname,
+          message: 'pass',
+          turn: msgTurn,
+          score: 0,
+        };
+        await setGrammerMsgState((prev: ucGrammerMsgInterface[]) => {
+          const isTurnExist = prev.some(
+            (item: ucGrammerMsgInterface) => item.turn === payload.turn,
+          );
+          if (isTurnExist) return prev;
+          return [...prev, payload];
+        });
+      };
+      pass();
+    } else {
+      // 문법 검사
+      const check = async () => {
+        console.log('checkGrammer', text, chatNickname, msgTurn);
+        const res = await checkGrammer(text, chatNickname, msgTurn);
+        await setGrammerMsgState((prev: ucGrammerMsgInterface[]) => {
+          const isTurnExist = prev.some(
+            (item: ucGrammerMsgInterface) => item.turn === res.turn,
+          );
+          if (isTurnExist) return prev;
+          return [...prev, res];
+        });
+        if (chatNickname === nickname) {
+          updateMyGrammerScore(res.score);
+        } else {
+          updateotherGrammarScore(res.score);
+        }
+        console.log('res', res);
+        console.log('score', score);
+      };
+      check();
+    }
+  };
   // 문맥 점수 메서드
   const handleContextScore = async (
     updatedMessageList: Message[],
     chatNickname: string,
     msg: string,
   ) => {
-    console.log('handleContextScore', updatedMessageList, chatNickname, msg);
-    console.log('contextScore', score.myContextScore, score.otherContextScore);
+    // console.log('handleContextScore', updatedMessageList, chatNickname, msg);
+    // console.log('contextScore', score.myContextScore, score.otherContextScore);
     // 패스
     if (msg === 'pass') {
       return;
@@ -254,7 +313,7 @@ const ChatRoom = () => {
       );
       const res = await openAiContextScore(filteredMessages);
       const text = res.data.choices[0].text;
-      console.log('text', text);
+      // console.log('text', text);
       const number = parseFloat(text.replace(/[^0-9.]/g, ''));
       handleContextState(number, msg, chatNickname);
     }
@@ -342,7 +401,6 @@ const ChatRoom = () => {
         Authorization: `Bearer ${token}`,
       },
     });
-    handleGrammerCheck(messageData.message, messageData.nickname);
     setMessage('');
     setIsRecording(false);
     setTurn(turn + 1);
@@ -350,46 +408,6 @@ const ChatRoom = () => {
     setTimer(userChatTime);
     if (turn === 10) {
       setLastChat(true);
-    }
-  };
-  //문법 검사
-  const handleGrammerCheck = (text: string, chatNickname: string) => {
-    if (text === 'pass') {
-      const pass = async () => {
-        const payload = {
-          type: 'pass',
-          nickname: chatNickname,
-          message: 'pass',
-          turn: turn,
-          score: 0,
-        };
-        await setGrammerMsgState((prev: ucGrammerMsgInterface[]) => {
-          const isTurnExist = prev.some(
-            (item: ucGrammerMsgInterface) => item.turn === payload.turn,
-          );
-          if (isTurnExist) return prev;
-          return [...prev, payload];
-        });
-      };
-      pass();
-    } else {
-      // 문법 검사
-      const check = async () => {
-        const res = await checkGrammer(text, chatNickname, turn);
-        await setGrammerMsgState((prev: ucGrammerMsgInterface[]) => {
-          const isTurnExist = prev.some(
-            (item: ucGrammerMsgInterface) => item.turn === res.turn,
-          );
-          if (isTurnExist) return prev;
-          return [...prev, res];
-        });
-        if (chatNickname === nickname) {
-          updateMyGrammerScore(res.score);
-        } else {
-          updateotherGrammarScore(res.score);
-        }
-      };
-      check();
     }
   };
   const handleKeyboard = () => {
@@ -409,14 +427,14 @@ const ChatRoom = () => {
     }));
   };
   const updateMyContextScore = (score: number) => {
-    console.log('updateMyContextScore', score);
+    // console.log('updateMyContextScore', score);
     setScore((prevState: ucScoreInterface) => ({
       ...prevState,
       myContextScore: prevState.myContextScore + score,
     }));
   };
   const updateOtherContextScore = (score: number) => {
-    console.log('updateOtherContextScore', score);
+    // console.log('updateOtherContextScore', score);
     setScore((prevState: ucScoreInterface) => ({
       ...prevState,
       otherContextScore: prevState.otherContextScore + score,
@@ -565,12 +583,12 @@ const ChatRoom = () => {
             {/* 오른쪽, 채팅 */}
             <div className="w-full max-w-[450px] h-full">
               <div
-                ref={chatWindowRef}
+                // ref={chatWindowRef}
                 className={`${
                   gameState ? '' : 'bg-red-300'
                 } flex flex-col justify-between h-full overflow-y-auto bg-[#fff6] border lg:rounded-3xl shadow-custom`}
               >
-                <div className="overflow-y-auto px-4 mt-6">
+                <div className="overflow-y-auto px-4 mt-6" ref={chatWindowRef}>
                   <UserChatMessageList />
                 </div>
                 <div className="flex-none h-fit flex flex-col rounded-3xl">

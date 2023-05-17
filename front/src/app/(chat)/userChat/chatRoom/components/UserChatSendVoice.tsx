@@ -134,13 +134,24 @@ const UserChatSendVoice = ({ handleSendMessage }: Props) => {
         </div>
         <button
           onClick={isRecording ? stopAndSendMessage : start}
-          className="rounded-full bg-white p-1 text-3xl text-black w-20 h-20 flex justify-center items-center"
+          className="rounded-full bg-white p-1 text-3xl text-black w-20 h-20 flex justify-center items-center relative"
         >
+          {isRecording && (
+            <div className="absolute h-20 w-20 rounded-full border-4 border-t-brandY border-l-red-300 animate-spin"></div>
+          )}
+
           {isRecording ? <BsArrowUp /> : <BsMic />}
         </button>
       </div>
       <div className="text-end relative">
-        <span className="bg-white h-9 w-9 absolute bottom-3 right-3 rounded-full flex items-center justify-center">
+        <div
+          className={`absolute h-12 w-12 bottom-3 right-3 rounded-full border-4 animate-spin z-50 ${
+            timer < 10
+              ? 'border-t-red-400 border-l-red-400'
+              : 'border-t-red-300'
+          }`}
+        ></div>
+        <span className="bg-white h-12 w-12 absolute bottom-3 right-3 rounded-full flex items-center justify-center">
           {timer}
         </span>
       </div>

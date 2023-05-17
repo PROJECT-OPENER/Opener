@@ -6,6 +6,8 @@ import 'slick-carousel/slick/slick-theme.css';
 import Slider1 from './Slider1';
 import Slider2 from './Slider2';
 import Slider3 from './Slider3';
+import { useRecoilValue } from 'recoil';
+import { bonobonoState } from '../store';
 
 const InfoSlider = () => {
   const settings = {
@@ -17,11 +19,14 @@ const InfoSlider = () => {
     arrows: false,
     autoplay: true,
   };
+  const isBono = useRecoilValue(bonobonoState);
 
   return (
     <Slider
       {...settings}
-      className="bg-white m-5 rounded-3xl p-5 bg-[url('/images/bonobono.png')]"
+      className={`bg-white m-5 rounded-3xl p-5 ${
+        isBono ? 'bg-[url("/images/bonobono.png")]' : ''
+      }`}
     >
       <div>
         <Slider1 />
