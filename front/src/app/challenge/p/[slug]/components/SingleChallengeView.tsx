@@ -251,17 +251,22 @@ const SingleChallengeView = ({ challengeId }: Props) => {
             ref={videoRef}
           >
             <div
-              className="relative overflow-hidden rounded-xl z-0 md:h-[704px] md:w-[396px] h-[640px] w-[360px] bg-black mt-20"
+              className="relative overflow-hidden rounded-xl z-0 sm:h-[960px] sm:w-[540px] h-screen w-auto bg-black sm:mt-20"
               ref={parentRef}
             >
-              <div className="relative md:h-[704px] md:w-[396px] h-[640px] w-[360px] flex justify-center items-center overflow-hidden">
+              <div className="relative sm:h-[960px] sm:w-[540px] h-screen w-auto flex justify-center items-center overflow-hidden">
                 <video
                   ref={memberPlayerRef}
                   src={challengeInfo?.curMemberChallenge.memberChallengeUrl}
-                  className="md:h-[704px] md:w-[396px] h-[640px] w-[360px] relative"
+                  className="sm:h-[960px] sm:w-[540px] h-screen w-auto relative"
                 ></video>
                 <div className="absolute top-10 w-full  flex justify-center items-center">
-                  <div className="bg-black h-10 flex items-center bg-opacity-20 font-black text-white md:text-xl ">
+                  <div
+                    className="flex items-center justify-center font-black text-white md:text-xl"
+                    style={{
+                      filter: 'drop-shadow(3px 3px 5px rgba(0, 0, 0, 0.9))',
+                    }}
+                  >
                     {caption?.eng}
                   </div>
                 </div>

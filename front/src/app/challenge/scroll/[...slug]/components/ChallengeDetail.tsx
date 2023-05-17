@@ -287,23 +287,28 @@ const ChallengeDetail = ({ challengeList }: Props) => {
           ref={videoRef}
         >
           <div
-            className="relative overflow-hidden rounded-xl z-0 md:h-[704px] md:w-[396px] h-[640px] w-[360px] bg-black sm:mt-20"
+            className="relative overflow-hidden rounded-xl z-0 sm:h-[960px] sm:w-[540px] h-screen w-auto bg-black sm:mt-20"
             ref={parentRef}
           >
             <div
               className={
                 isView
-                  ? 'relative md:h-[704px] md:w-[396px] h-[640px] w-[360px] flex justify-center items-center overflow-hidden'
+                  ? 'relative sm:h-[960px] sm:w-[540px] h-screen w-auto flex justify-center items-center overflow-hidden'
                   : 'hidden'
               }
             >
               <video
                 ref={memberPlayerRef}
                 src={challengeInfo?.curMemberChallenge.memberChallengeUrl}
-                className="md:h-[704px] md:w-[396px] h-[640px] w-[360px] relative"
+                className="sm:h-[960px] sm:w-[540px] h-screen w-auto relative"
               ></video>
               <div className="absolute top-10 w-full  flex justify-center items-center">
-                <div className="bg-black h-10 flex items-center bg-opacity-20 font-black text-white md:text-xl ">
+                <div
+                  className="flex items-center justify-center font-black text-white md:text-xl "
+                  style={{
+                    filter: 'drop-shadow(3px 3px 5px rgba(0, 0, 0, 0.9))',
+                  }}
+                >
                   {caption?.eng}
                 </div>
               </div>
@@ -428,13 +433,13 @@ const ChallengeDetail = ({ challengeList }: Props) => {
               className={
                 isView
                   ? 'hidden'
-                  : 'relative rounded-xl flex justify-center items-center'
+                  : 'relative rounded-xl flex justify-center items-center md:h-[960px] md:w-[540px] h-[640px] w-[360px] bg-black'
               }
             >
               <img
                 src={challengeList?.memberChallengeImg}
                 alt=""
-                className="md:h-auto md:w-[450px] h-auto w-[360px] overflow-hidden relative rounded-xl"
+                className="sm:h-[960px] sm:w-[540px] h-screen w-auto overflow-hidden relative"
               />
             </div>
           </div>
