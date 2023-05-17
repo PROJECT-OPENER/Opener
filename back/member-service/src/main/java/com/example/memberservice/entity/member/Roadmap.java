@@ -37,4 +37,5 @@ public class Roadmap extends BaseEntity {
 	private int stepNo;
 
 	private int stepTheme;
+	private int sentenceNo;
 }
