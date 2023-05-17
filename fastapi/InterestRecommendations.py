@@ -18,14 +18,28 @@ app = FastAPI()
 
 engine = create_engine(f'mysql+pymysql://{mysql_user}:{mysql_password}@{mysql_host}/{mysql_db}')
 
-def update_ratings():
+
+
+async def update_ratings():
     df = pd.read_sql_query("SELECT member_id, video_id, view_count FROM shadowingstatus", engine)
     max_views_by_user = df.groupby('member_id')['view_count'].max()
     df['normalized_views'] = df.apply(lambda row: row['view_count'] / max_views_by_user[row['member_id']], axis=1)
     df['ratings'] = df['normalized_views'] * 5
     df.to_sql('ratings', engine, if_exists='replace', index=False)
 
-def get_recommendations(user_id):
+async def get_video_data(video_id):
+    query = f"SELECT video_id, thumbnail_url, eng_sentence, kor_sentence FROM shadowingvideo WHERE video_id = {video_id}"
+    df = pd.read_sql_query(query, engine)
+    return df.to_dict(orient='records')[0]  # Return the first record as a dict
+
+async def get_member_id(nickname: str):
+    query = f"SELECT member_id FROM member WHERE nickname = '{nickname}'"
+    df = pd.read_sql_query(query, engine)
+    if df.empty:
+        return None
+    return df['member_id'].values[0]  # Return the first member_id found
+
+async def get_recommendations(user_id):
     df = pd.read_sql_query("SELECT * FROM ratings", engine)
     reader = Reader(rating_scale=(1, 5))
     data = Dataset.load_from_df(df[['member_id', 'video_id', 'ratings']], reader)
@@ -44,29 +58,30 @@ def get_recommendations(user_id):
     recommended_videos = [video for video, rating in estimated_ratings]
     return recommended_videos, len(recommended_videos)
 
-def get_all_unwatched_videos(user_id, recommended_videos):
+async def get_all_unwatched_videos(user_id, recommended_videos):
     query = f"SELECT video_id FROM shadowingvideo WHERE video_id NOT IN (SELECT video_id FROM shadowingstatus WHERE member_id = {user_id})"
     df = pd.read_sql_query(query, engine)
     unwatched_videos = [video for video in df['video_id'].tolist() if video not in recommended_videos]
     return unwatched_videos
 
-@app.get("/fast/recommendations/{member_id}/{start_index}/{end_index}")
-async def get_recommendations_api(member_id: int, start_index: int, end_index: int):
-    update_ratings()
+async def get_recommendations_api(nickname: str, start_index: int, end_index: int):
+    member_id = await get_member_id(nickname)
+    if member_id is None:
+        return {"error": f"No member found with the nickname {nickname}."}
+
+    await update_ratings()
     
-    recommended_videos, recommended_length = get_recommendations(member_id)
-    unwatched_videos = get_all_unwatched_videos(member_id, recommended_videos)
+    recommended_videos, recommended_length = await get_recommendations(member_id)
+    unwatched_videos = await get_all_unwatched_videos(member_id, recommended_videos)
     
     all_videos = recommended_videos + unwatched_videos
-    all_length = recommended_length + len(unwatched_videos)
+    all_length = int(recommended_length) + len(unwatched_videos)  # Convert numpy.int64 to int
+    
+    if start_index > all_length:
+        return {"error": "start_index is greater than the length of all videos."}
+    
+    end_index = min(end_index, all_length)
+    
+    videos_data = [await get_video_data(int(video)) for video in all_videos[start_index:end_index]]
 
-    # 선택한 인덱스 범위의 비디오만 반환합니다.
-    selected_videos = all_videos[start_index:end_index]
-    selected_videos_info = pd.read_sql_query(f"SELECT video_id, thumbnail_url, eng_sentence, kor_sentence FROM shadowingvideo WHERE video_id IN ({','.join(map(str, selected_videos))})", engine)
-    
-    # Get the videos in the same order as in selected_videos
-    selected_videos_info.set_index('video_id', inplace=True)
-    selected_videos_info = selected_videos_info.loc[selected_videos]
-    selected_videos_info.reset_index(inplace=True)
-    
-    return {'length': all_length, 'videos': selected_videos_info.to_dict('records')}
+    return {"length": all_length, "videos": videos_data}
