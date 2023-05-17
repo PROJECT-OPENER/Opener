@@ -221,8 +221,8 @@ const ShootingVideo = ({ originalId }: Props) => {
     navigator.mediaDevices
       .getUserMedia({
         video: {
-          width: 477, // 영상 사이즈 변경 테스트
-          height: 848,
+          width: 396, // 영상 사이즈 변경 테스트
+          height: 704,
         },
         audio: false,
       })
@@ -248,13 +248,17 @@ const ShootingVideo = ({ originalId }: Props) => {
   };
 
   const stopRecording = () => {
+    console.log('진입');
+    console.log(previewPlayer);
     if (previewPlayer.current && previewPlayer.current.srcObject) {
+      console.log('해제시작');
       const srcObj = previewPlayer.current.srcObject;
       if ('getTracks' in srcObj) {
         srcObj
           .getTracks()
           .forEach((track: { stop: () => any }) => track.stop());
-        // console.log(srcObj.getTracks());
+        console.log(srcObj.getTracks());
+        console.log('해제완료');
       }
     }
     recorderRef.current?.stop();
@@ -320,6 +324,19 @@ const ShootingVideo = ({ originalId }: Props) => {
       }
     }
   }, [recordedChunks]);
+
+  // -------------------
+  useEffect(() => {
+    const handlePopstate = () => {
+      stopRecording();
+      console.log('뒤로가기 이벤트 발생');
+    };
+    window.addEventListener('popstate', handlePopstate);
+
+    return () => {
+      window.removeEventListener('popstate', handlePopstate); // 언마운트 이벤트
+    };
+  }, []);
 
   return (
     <div className="w-full h-full">

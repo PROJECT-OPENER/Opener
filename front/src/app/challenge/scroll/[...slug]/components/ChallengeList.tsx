@@ -22,7 +22,7 @@ const ChallengeList = ({ originalId, startIdx }: Props) => {
     useSWRInfinite<challengeIdSwrData>(
       (index) =>
         `${BASE_URL}challenge-service/challenges/${originalId}?startIndex=${startIdx}&endIndex=${
-          startIdx > index + 3 ? startIdx + 3 : index + 3
+          startIdx > index + 5 ? startIdx + 5 : index + 5
         }`,
       fetcher,
     );

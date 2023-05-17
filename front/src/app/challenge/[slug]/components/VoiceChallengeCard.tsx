@@ -30,16 +30,16 @@ const VoiceChallengeCard = ({
             >
               <Link
                 href={`challenge/scroll/${originalId}/${index}`}
-                className="relative block rounded-lg w-full h-full"
+                className="relative rounded-lg w-full h-full bg-black flex justify-center items-center overflow-hidden"
               >
                 <img
-                  className="w-full h-full rounded-lg relative shadow-xl"
+                  className="w-auto h-auto relative shadow-xl"
                   src={memberChallenge.memberChallengeImg}
                   alt=""
                 />
-                <div className="absolute inset-x-0 bottom-0 left-0 h-8 ml-2 flex text-white">
+                <div className="absolute inset-x-0 bottom-0 left-0 h-8 ml-2 flex text-white items-center">
                   <AiFillHeart
-                    size={'2rem'}
+                    size={'1rem'}
                     className="fill-white mr-2"
                     style={{
                       filter: 'drop-shadow(3px 3px 5px rgba(0, 0, 0, 0.3))',
