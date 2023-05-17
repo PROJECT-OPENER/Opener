@@ -100,3 +100,22 @@ body {
     display: none;
   }
 }
+
+.p_scrollbar_right {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 100;
+  width: 5%;
+  height: 100%;
+  background-image: linear-gradient(90deg, transparent 0%, #f8f8f8 70%);
+}
+.p_scrollbar_left {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  width: 5%;
+  height: 100%;
+  background-image: linear-gradient(90deg, #f8f8f8 30%, transparent 100%);
+}

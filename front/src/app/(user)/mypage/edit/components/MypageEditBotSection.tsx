@@ -68,10 +68,9 @@ const MypageEditBotSection = () => {
             text="수정"
             className="modification-submit top-3"
             onClick={() => {
-              changeNickname(nickname)
-                .then((response) => {
-                  mutate();
-                });
+              changeNickname(nickname).then((response) => {
+                mutate();
+              });
             }}
           />
         </div>
