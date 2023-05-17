@@ -2,7 +2,8 @@ from starlette.middleware.cors import CORSMiddleware
 from youtube_transcript_api import YouTubeTranscriptApi
 from typing import Union
 from fastapi import FastAPI
-
+from InterestRecommendations import get_recommendations_api
+from Sentence import update_ratings, get_recommendations
 
 def int_to_str(time):
     if (time == 0):
@@ -23,6 +24,11 @@ def convert_msec(time):
         return "0" + str(time)
     else:
         return str(time)
+    
+async def get_video_data(video_id):
+    query = f"SELECT * FROM shadowingvideo WHERE video_id = {video_id}"
+    df = pd.read_sql_query(query, engine)
+    return df.to_dict(orient='records')[0]  # Return the first record as a dict
 
 
 def get_caption(video_id):
@@ -69,3 +75,16 @@ app.add_middleware(
 @app.get("/fast/caption/{video_id}")
 def read_item(video_id: str):
     return get_caption(video_id)
+
+@app.get("/fast/recommendations/{nickname}/{start_index}/{end_index}")
+async def get_recommendations_main_api(nickname: str, start_index: int, end_index: int):
+    return await get_recommendations_api(nickname, start_index, end_index)
+
+@app.get("/fast/recommendations/{nickname}")
+async def get_sentence_api(nickname: str):
+    # ratings를 갱신합니다.
+    update_ratings()
+    # 추천 비디오를 가져옵니다.
+    recommended_videos = get_recommendations(nickname)
+
+    return recommended_videos
