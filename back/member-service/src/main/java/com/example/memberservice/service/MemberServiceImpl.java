@@ -402,6 +402,7 @@ public class MemberServiceImpl implements MemberService {
 			.nickname(member.getNickname())
 			.profile(member.getProfile() == null ? baseImgUrl : member.getProfile())
 			.score(member.getScore())
+			.rank(memberRepository.countMembersWithScoreGreaterThan(member.getScore()) + 1)
 			.interests(interests)
 			.build();
 	}
