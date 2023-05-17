@@ -32,5 +32,6 @@ export const config = {
     '/chat',
     '/userChat(.*)',
     '/aiChat(.*)',
+    '/challenge/shooting(.*)',
   ],
 };

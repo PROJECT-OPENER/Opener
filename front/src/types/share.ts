@@ -161,6 +161,7 @@ export interface originalVideo {
   joinCount: number;
   startTime: string;
   title: string;
+  caption: string;
 }
 
 // 채팅

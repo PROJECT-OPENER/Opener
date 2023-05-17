@@ -1,9 +1,5 @@
 'use client';
 
-type Props = {
-  challengeId: number;
-};
-
 import React, { useRef, useEffect, useState } from 'react';
 import YouTube, { YouTubeProps } from 'react-youtube';
 import { memberChallenge, challengeDetail } from '@/types/share';
@@ -15,11 +11,25 @@ import {
 } from '@/app/api/challengeApi';
 import useUser from '@/app/hooks/userHook';
 import { AiFillHeart } from 'react-icons/ai';
+import { TfiAngleLeft } from 'react-icons/tfi';
 import { RiShareForwardFill, RiDeleteBin5Fill } from 'react-icons/ri';
 import useSWR from 'swr';
+import TopNavPc from '@/app/components/TopNavPc';
+import TopNav from '@/app/components/TopNav';
+type Props = {
+  challengeId: number;
+};
+
+type videoInfoType = {
+  start: number;
+  end: number;
+  engCaption: any;
+  videoUrl: string;
+};
 
 const SingleChallengeView = ({ challengeId }: Props) => {
   const BASE_URL = process.env.NEXT_PUBLIC_SERVER_URL;
+
   const fetcher = async (url: string) => {
     const response = await fetch(url);
     return response.json();
@@ -33,20 +43,18 @@ const SingleChallengeView = ({ challengeId }: Props) => {
     fetcher,
   );
   const challengeInfo: challengeDetail = data?.data;
+  console.log(challengeInfo);
   const youtubePlayRef = useRef<YouTube>(null);
   const videoRef = useRef<HTMLDivElement>(null);
   const memberPlayerRef = useRef<HTMLVideoElement>(null);
-  const [isView, setIsView] = useState<boolean>(false);
   const [isLike, setIsLike] = useState<boolean>(false);
   const [isDelete, setIsDelete] = useState<boolean>(false);
-  const [isPause, setIsPause] = useState<boolean>(false);
   const options = {
     root: null,
     threshold: [0.9],
   };
   const [detailobserver, setDetailobserver] =
     useState<IntersectionObserver | null>(null);
-
   const onPlayReady: YouTubeProps['onReady'] = (event) => {
     event.target.pauseVideo();
     const iframe = event.target.getIframe();
@@ -113,7 +121,6 @@ const SingleChallengeView = ({ challengeId }: Props) => {
   };
 
   const handleParentClick = async () => {
-    console.log('클릭');
     if (youtubePlayRef.current) {
       const player = youtubePlayRef.current.getInternalPlayer();
       const status = await player.getPlayerState();
@@ -128,37 +135,14 @@ const SingleChallengeView = ({ challengeId }: Props) => {
 
   useEffect(() => {
     // 촬영 영상 실행 준비되면 유튜브 플레이
-    if (isView) {
-      youtubePlayStart();
-    }
-  }, [onPlayReady, isView]);
+    youtubePlayStart();
+  }, [onPlayReady]);
 
   useEffect(() => {
     if (data) {
       setIsLike(challengeInfo?.curMemberChallenge.like);
     }
   }, [data]);
-
-  useEffect(() => {
-    if (!detailobserver) {
-      const newObserver = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting && entry.intersectionRatio > 0.6) {
-            setIsView(true);
-            youtubePlayStart();
-          } else if (entry.intersectionRatio < 0.3) {
-            const player = youtubePlayRef.current?.internalPlayer;
-            player?.pauseVideo();
-            setIsView(false);
-          }
-        });
-      }, options);
-      if (videoRef.current && newObserver) {
-        newObserver.observe(videoRef.current);
-      }
-      setDetailobserver(newObserver);
-    }
-  }, []);
 
   const opts: YouTubeProps['opts'] = {
     height: '224',
@@ -175,97 +159,180 @@ const SingleChallengeView = ({ challengeId }: Props) => {
       iv_load_policy: 3,
     },
   };
+  const [caption, setCaption] = useState<any>();
+  const [videoInfo, setVideoInfo] = useState<videoInfoType>(); // 가져온 영상 정보를 담는 state
+
+  useEffect(() => {
+    if (data) {
+      const convert = (cap: string) => {
+        const resArray = [];
+        if (cap) {
+          const subtitles = cap.replace('WEBVTT\n\n', '');
+          const subtitle = subtitles.split('\n\n');
+          for (let i = 0; i < subtitle.length; i++) {
+            const sub = subtitle[i].split('\n');
+            const subtitleTime = sub[0].split(' --> ');
+            const subtitleText = sub.slice(1).join('\n');
+            if (subtitleTime) {
+              resArray.push({
+                startTime: convertTime(subtitleTime[0]),
+                endTime: convertTime(subtitleTime[1]),
+                text: subtitleText,
+              });
+            }
+          }
+        }
+        return [...resArray];
+      };
+      const getVideo = async () => {
+        setVideoInfo({
+          start: convertTime(
+            challengeInfo.watchOriginalChallengeResponseDto.startTime,
+          ),
+          end: convertTime(
+            challengeInfo.watchOriginalChallengeResponseDto.endTime,
+          ),
+          engCaption: convert(
+            challengeInfo.watchOriginalChallengeResponseDto.caption,
+          ),
+          videoUrl:
+            challengeInfo.watchOriginalChallengeResponseDto.challengeUrl,
+        });
+      };
+      getVideo();
+    }
+
+    return () => {
+      cancelAnimationFrame(animFrame.current);
+    };
+  }, [data]);
+
+  const convertTime = (timeString: string): number => {
+    if (!timeString) return 0;
+    const time = timeString.split('.')[0].split(/[:,]/).map(parseFloat);
+
+    if (time.length > 2) {
+      const [hours, minutes, seconds] = time;
+      return hours * 3600 + minutes * 60 + seconds;
+    } else {
+      const [minutes, seconds] = time;
+      return minutes * 60 + seconds;
+    }
+  };
+
+  const changeSubtitle = (time: number) => {
+    if (videoInfo) {
+      for (let i = 0; i < videoInfo?.engCaption.length; i++) {
+        if (
+          time >= videoInfo?.engCaption[i].startTime &&
+          time < videoInfo?.engCaption[i].endTime
+        ) {
+          setCaption({
+            ...caption,
+            eng: videoInfo.engCaption[i]?.text,
+          });
+          return;
+        }
+      }
+    }
+  };
+  const animFrame = useRef<any>();
+  const youtubeRecordRef = useRef<any>();
+  const tracePlayer = () => {
+    if (youtubeRecordRef.current?.getPlayerState() === 1) {
+      const currentTime = youtubeRecordRef.current.getCurrentTime();
+      changeSubtitle(currentTime);
+      animFrame.current = requestAnimationFrame(tracePlayer);
+    } else {
+      return cancelAnimationFrame(animFrame.current);
+    }
+  };
 
   return (
     <>
       {!isDelete && (
-        <div
-          className="h-[900px] flex flex-col items-center pt-10"
-          ref={videoRef}
-        >
-          <div className="relative overflow-hidden mt-10 rounded-xl z-0 h-[810px]  bg-white">
-            <div className={isView ? 'relative h-[810px]' : 'hidden'}>
-              <video
-                ref={memberPlayerRef}
-                src={challengeInfo?.curMemberChallenge.memberChallengeUrl}
-                className="h-[810px] overflow-hidden relative"
-              ></video>
-              <YouTube
-                videoId="2p7tw_Nzne0"
-                opts={opts}
-                onReady={onPlayReady}
-                ref={youtubePlayRef}
-                onStateChange={playingStateChange}
-                className="absolute bottom-20 left-0 ml-2 mb-2"
-              />
-              {user && (
-                <>
-                  <div className="absolute bottom-20 right-0 mr-2 mb-2">
-                    <div className="grid-rows-2  m-3">
-                      <div className="flex justify-center">
-                        <h1 className="font-semibold text-3xl">
-                          {challengeInfo?.curMemberChallenge.like}
-                        </h1>
-                        {isLike && (
-                          <AiFillHeart
-                            size={'3rem'}
-                            className="fill-[#fb3958]"
-                            style={{
-                              filter:
-                                'drop-shadow(3px 3px 5px rgba(0, 0, 0, 0.3))',
-                            }}
-                            onClick={() => likeClick('delete')}
-                          />
-                        )}
-                        {!isLike && (
-                          <AiFillHeart
-                            size={'3rem'}
-                            className="fill-white"
-                            style={{
-                              filter:
-                                'drop-shadow(3px 3px 5px rgba(0, 0, 0, 0.3))',
-                            }}
-                            onClick={() => likeClick('post')}
-                          />
-                        )}
-                      </div>
-                    </div>
-                    <div className="grid-rows-2 m-3">
-                      <div className="flex justify-center">
-                        <RiShareForwardFill
-                          size={'3rem'}
-                          className="fill-white"
-                          style={{
-                            filter:
-                              'drop-shadow(3px 3px 5px rgba(0, 0, 0, 0.3))',
-                          }}
-                          onClick={() => shareClick()}
-                        />
-                      </div>
-                      <div className="flex justify-center">
-                        <p
-                          className="text-md font-black text-white"
-                          style={{
-                            filter:
-                              'drop-shadow(3px 3px 5px rgba(0, 0, 0, 0.3))',
-                          }}
-                        >
-                          공유하기
-                        </p>
-                      </div>
-                    </div>
-                    {challengeInfo?.curMemberChallenge
-                      .memberChallengeNickname === user?.data.nickname && (
+        <>
+          <div className="hidden md:block h-20 w-screen z-10">
+            <TopNavPc />
+          </div>
+          <div
+            className="md:m-10 h-screen flex flex-col items-center"
+            ref={videoRef}
+          >
+            <div className="relative overflow-hidden rounded-xl z-0 h-[810px]  bg-black">
+              <div className="relative h-[810px]">
+                <video
+                  ref={memberPlayerRef}
+                  src={challengeInfo?.curMemberChallenge.memberChallengeUrl}
+                  className="h-[810px] overflow-hidden relative"
+                ></video>
+                <div className="absolute top-10 w-full  flex justify-center items-center">
+                  <p className="bg-black px-2 h-10 flex items-center bg-opacity-20 font-black text-white md:text-2xl ">
+                    {caption?.eng}
+                  </p>
+                </div>
+                {data && (
+                  <YouTube
+                    videoId={
+                      challengeInfo?.watchOriginalChallengeResponseDto
+                        .challengeUrl
+                    }
+                    opts={opts}
+                    onReady={(event) => {
+                      youtubeRecordRef.current = event.target;
+                      onPlayReady(event);
+                    }}
+                    ref={youtubePlayRef}
+                    onStateChange={(event) => {
+                      playingStateChange(event);
+                      tracePlayer();
+                    }}
+                    className="absolute bottom-20 left-0 ml-2 mb-2"
+                  />
+                )}
+
+                {user && (
+                  <>
+                    <div className="absolute bottom-20 right-0 mr-2 mb-2">
                       <div className="grid-rows-2 m-3">
                         <div className="flex justify-center">
-                          <RiDeleteBin5Fill
+                          <h1 className="font-semibold text-3xl">
+                            {challengeInfo?.curMemberChallenge.like}
+                          </h1>
+                          {isLike && (
+                            <AiFillHeart
+                              size={'3rem'}
+                              className="fill-[#fb3958]"
+                              style={{
+                                filter:
+                                  'drop-shadow(3px 3px 5px rgba(0, 0, 0, 0.3))',
+                              }}
+                              onClick={() => likeClick('delete')}
+                            />
+                          )}
+                          {!isLike && (
+                            <AiFillHeart
+                              size={'3rem'}
+                              className="fill-white"
+                              style={{
+                                filter:
+                                  'drop-shadow(3px 3px 5px rgba(0, 0, 0, 0.3))',
+                              }}
+                              onClick={() => likeClick('post')}
+                            />
+                          )}
+                        </div>
+                      </div>
+                      <div className="grid-rows-2 m-3">
+                        <div className="flex justify-center">
+                          <RiShareForwardFill
                             size={'3rem'}
                             className="fill-white"
                             style={{
                               filter:
                                 'drop-shadow(3px 3px 5px rgba(0, 0, 0, 0.3))',
                             }}
-                            onClick={() => deleteChallenge()}
+                            onClick={() => shareClick()}
                           />
                         </div>
                         <div className="flex justify-center">
@@ -276,17 +343,44 @@ const SingleChallengeView = ({ challengeId }: Props) => {
                                 'drop-shadow(3px 3px 5px rgba(0, 0, 0, 0.3))',
                             }}
                           >
-                            삭제하기
+                            공유하기
                           </p>
                         </div>
                       </div>
-                    )}
-                  </div>
-                </>
-              )}
+                      {challengeInfo?.curMemberChallenge
+                        .memberChallengeNickname === user?.data.nickname && (
+                        <div className="grid-rows-2 m-3">
+                          <div className="flex justify-center">
+                            <RiDeleteBin5Fill
+                              size={'3rem'}
+                              className="fill-white"
+                              style={{
+                                filter:
+                                  'drop-shadow(3px 3px 5px rgba(0, 0, 0, 0.3))',
+                              }}
+                              onClick={() => deleteChallenge()}
+                            />
+                          </div>
+                          <div className="flex justify-center">
+                            <p
+                              className="text-md font-black text-white"
+                              style={{
+                                filter:
+                                  'drop-shadow(3px 3px 5px rgba(0, 0, 0, 0.3))',
+                              }}
+                            >
+                              삭제하기
+                            </p>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </>
+                )}
+              </div>
             </div>
           </div>
-        </div>
+        </>
       )}
     </>
   );

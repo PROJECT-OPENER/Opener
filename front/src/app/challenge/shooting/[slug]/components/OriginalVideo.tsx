@@ -15,7 +15,11 @@ const OriginalVideo = () => {
       controls: 0,
     },
   };
-  return <YouTube videoId="2g811Eo7K8U" opts={opts} onReady={onPlayerReady} />;
+  return (
+    <div className="">
+      <YouTube videoId="2g811Eo7K8U" opts={opts} onReady={onPlayerReady} />
+    </div>
+  );
 };
 
 export default OriginalVideo;
