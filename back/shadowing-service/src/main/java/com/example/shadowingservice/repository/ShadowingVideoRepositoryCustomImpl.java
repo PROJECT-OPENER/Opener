@@ -90,7 +90,7 @@ public class ShadowingVideoRepositoryCustomImpl implements ShadowingVideoReposit
 				.member(member)
 				.shadowingVideo(video)
 				.repeatCount(0)
-				.viewCount(1)
+				.viewCount(0)
 				.build();
 			em.persist(status);
 			em.flush();
