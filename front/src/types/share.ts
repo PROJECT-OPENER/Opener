@@ -173,7 +173,7 @@ export interface Message {
 }
 
 export interface curMemberChallenge {
-  like: boolean;
+  isLike: boolean;
   memberChallengeId: number;
   memberChallengeNickname: string;
   memberChallengeUrl: string;

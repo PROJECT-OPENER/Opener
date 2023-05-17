@@ -10,6 +10,7 @@ type videoInfoType = {
   engCaption: any;
   videoUrl: string;
 };
+import { getSession } from 'next-auth/react';
 import axios from 'axios';
 import React, { useRef, useEffect, useState } from 'react';
 import YouTube, { YouTubeProps } from 'react-youtube';
@@ -23,27 +24,10 @@ import useUser from '@/app/hooks/userHook';
 import { AiFillHeart } from 'react-icons/ai';
 import { RiShareForwardFill, RiDeleteBin5Fill } from 'react-icons/ri';
 import useSWR from 'swr';
+import { fetcher } from '@/app/api/axiosConfig';
 
 const ChallengeDetail = ({ challengeList }: Props) => {
-  const FAST_API_URL = process.env.NEXT_PUBLIC_FAST_API;
-
-  const getCaptionApi = async (videoId: string) => {
-    return await axios({
-      method: 'GET',
-      url: FAST_API_URL + '/fast/caption/' + videoId,
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-      },
-    }).then((res) => {
-      return res.data;
-    });
-  };
   const BASE_URL = process.env.NEXT_PUBLIC_SERVER_URL;
-  const fetcher = async (url: string) => {
-    const response = await fetch(url);
-    return response.json();
-  };
 
   const { user } = useUser();
   const [caption, setCaption] = useState<any>();
@@ -97,7 +81,6 @@ const ChallengeDetail = ({ challengeList }: Props) => {
       cancelAnimationFrame(animFrame.current);
     };
   }, [data]);
-  console.log(challengeInfo);
   const convertTime = (timeString: string): number => {
     if (!timeString) return 0;
     const time = timeString.split('.')[0].split(/[:,]/).map(parseFloat);
@@ -200,13 +183,11 @@ const ChallengeDetail = ({ challengeList }: Props) => {
       // console.log('response', response);
       setIsLike(true);
       setLikeCnt(likeCnt + 1);
-      mutate();
     } else {
       const response = await likeDeleteApi(challengeList.memberChallengeId);
       // console.log('response', response);
       setIsLike(false);
       setLikeCnt(likeCnt - 1);
-      mutate();
     }
   };
 
@@ -243,7 +224,7 @@ const ChallengeDetail = ({ challengeList }: Props) => {
 
   useEffect(() => {
     if (data) {
-      setIsLike(challengeInfo?.curMemberChallenge.like);
+      setIsLike(challengeInfo?.curMemberChallenge.isLike);
       setLikeCnt(challengeList.likeCount);
     }
   }, [data]);
@@ -326,7 +307,7 @@ const ChallengeDetail = ({ challengeList }: Props) => {
                     <div className="grid-rows-2  m-3">
                       <div className="flex justify-center">
                         <h1 className="font-semibold text-3xl">
-                          {challengeInfo?.curMemberChallenge.like}
+                          {challengeInfo?.curMemberChallenge.isLike}
                         </h1>
                         {isLike && (
                           <AiFillHeart
