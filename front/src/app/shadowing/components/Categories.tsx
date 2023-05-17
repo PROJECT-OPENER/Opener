@@ -43,16 +43,17 @@ const Categories = () => {
   };
   const [selected, setSelected] = useState<string>('아이브');
   const categories = [
-    'ALL',
-    '추천',
-    '영화',
-    'bookmark',
-    '여행',
-    '독서',
-    '음악',
-    '오락',
-    '스포츠',
+    ['전체', 'all'],
+    ['추천', 'recommend'],
+    ['영화', 'movie'],
+    ['북마크', 'bookmark'],
+    ['여행', 'travel'],
+    ['독서', 'book'],
+    ['음악', 'music'],
+    ['오락', 'entertain'],
+    ['스포츠', 'sport'],
   ];
+
   const clickCat = (category: string) => {
     setSelected(category);
   };
@@ -60,19 +61,19 @@ const Categories = () => {
     <div>
       <PerfectScrollbar option={option} className="w-full h-full py-4 my-2">
         <ul className={styles.categories}>
-          {categories.map((category: string, index: number) => {
+          {categories.map((category: string[], index: number) => {
             return (
               <li
                 style={{ cursor: 'pointer' }}
                 key={index}
                 className={
-                  category === selected
+                  category[1] === selected
                     ? `${styles.catItem} ${styles.catItemActive}`
                     : `${styles.catItem}`
                 }
-                onClick={() => clickCat(category)}
+                onClick={() => clickCat(category[1])}
               >
-                {category}
+                {category[0]}
               </li>
             );
           })}

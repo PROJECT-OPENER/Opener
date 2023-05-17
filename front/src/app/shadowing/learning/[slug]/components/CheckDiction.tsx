@@ -116,6 +116,8 @@ const CheckDiction = (props: any) => {
     if (recognizerRef.current) {
       console.log('stop');
       setIsRecording(false);
+      props.showCountRef.current = false;
+      props.playerRef.current?.playVideo().unMute();
       recognizerRef.current.stopContinuousRecognitionAsync();
     }
   };
@@ -267,17 +269,26 @@ const CheckDiction = (props: any) => {
       </div>
       <div className="flex flex-row items-end justify-between">
         <div className="w-full">
-          <button className="rounded-full p-2 bg-[#F0F0F0]" onClick={backBtn}>
+          <button
+            className="rounded-full p-2 bg-[#F0F0F0] hover:bg-[#f7f7f7] active:bg-[#f1f1f1]"
+            onClick={backBtn}
+          >
             <BsChevronLeft />
           </button>
         </div>
         <div className="w-full flex flex-col items-center">
           {isRecording ? (
-            <button onClick={stop} className="rounded-full bg-[#F0F0F0] p-4">
+            <button
+              onClick={stop}
+              className="rounded-full bg-[#F0F0F0] hover:bg-[#f7f7f7] active:bg-[#f1f1f1] p-4"
+            >
               <AiOutlinePause size={'2rem'} />
             </button>
           ) : (
-            <button onClick={start} className="rounded-full bg-[#F0F0F0] p-4">
+            <button
+              onClick={start}
+              className="rounded-full bg-[#F0F0F0] hover:bg-[#f7f7f7] active:bg-[#f1f1f1] p-4"
+            >
               <BsMic size={'2rem'} />
             </button>
           )}
