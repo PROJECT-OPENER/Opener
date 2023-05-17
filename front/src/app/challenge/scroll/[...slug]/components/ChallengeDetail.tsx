@@ -25,6 +25,7 @@ import { RiShareForwardFill, RiDeleteBin5Fill } from 'react-icons/ri';
 import useSWR from 'swr';
 import { fetcher } from '@/app/api/axiosConfig';
 import { useRouter } from 'next/navigation';
+import DetailPageNav from '@/app/components/DetailPageNav';
 
 const ChallengeDetail = ({ challengeList }: Props) => {
   const BASE_URL = process.env.NEXT_PUBLIC_SERVER_URL;
@@ -265,12 +266,20 @@ const ChallengeDetail = ({ challengeList }: Props) => {
       iv_load_policy: 3,
     },
   };
+  const handleLeftGame = () => {
+    router.push('/challenge');
+  };
 
   return (
     <div className="py-5">
+      <DetailPageNav
+        className="max-w-[1500px] absolute top-3 left-10 right-10"
+        title="CHALLANGE"
+        propEvent={handleLeftGame}
+      />
       {!isDelete && (
         <div className="h-[800px] flex flex-col items-center" ref={videoRef}>
-          <div className="relative overflow-hidden rounded-xl z-0 h-[800px] w-[450px] bg-black">
+          <div className="relative overflow-hidden rounded-xl h-[800px] w-[450px] bg-black">
             <div className={isView ? 'relative h-[800px]' : 'hidden'}>
               <video
                 ref={memberPlayerRef}

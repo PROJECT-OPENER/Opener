@@ -17,6 +17,8 @@ import { handleChatLog, pushChatLog } from '@/util/AiChat';
 import { BsKeyboard } from 'react-icons/bs';
 import Model from '@/app/three/chat/Model';
 import TopNavPc from '@/app/components/TopNavPc';
+import DetailPageNav from '@/app/components/DetailPageNav';
+import { useRouter } from 'next/navigation';
 
 const AiChatRoom = () => {
   // recoil
@@ -28,6 +30,8 @@ const AiChatRoom = () => {
 
   // ref
   const chatWindowRef = useRef<HTMLDivElement>(null);
+
+  const router = useRouter();
 
   useEffect(() => {
     // 스크롤이 최하단으로 자동으로 이동되도록 chatWindowRef의 scrollTop 속성을 최대값으로 설정합니다.
@@ -58,6 +62,10 @@ const AiChatRoom = () => {
     }
   };
   const handleSendMessage = () => {
+    if (message.length === 0) {
+      alert('메세지를 입력해주세요.');
+      return;
+    }
     console.log('handleSendMessage', message);
     setMessageList((prevState) => [
       ...prevState,
@@ -76,6 +84,9 @@ const AiChatRoom = () => {
   const handleKeyboard = () => {
     setisChat(true);
   };
+  const handleLeftGame = () => {
+    router.push('/chat');
+  };
   return (
     <div>
       <div className="absolute top-0 left-0 w-screen h-screen">
@@ -83,7 +94,11 @@ const AiChatRoom = () => {
       </div>
       <div className="absolute top-0 left-0 w-screen h-screen flex flex-col items-center overflow-hidden">
         <div className="lg:block hidden">
-          <TopNavPc />
+          <DetailPageNav
+            className="max-w-[1500px] absolute top-3 left-10 right-10"
+            title="AI CHAT"
+            propEvent={handleLeftGame}
+          />
         </div>
         <div className="lg:hidden w-full text-sm">
           <AiChatNav />

@@ -40,6 +40,7 @@ import {
   ucScoreInterface,
 } from '@/types/userChatTypes';
 import { Message } from '@/types/share';
+import DetailPageNav from '@/app/components/DetailPageNav';
 
 const ChatRoom = () => {
   const { data: session } = useSession();
@@ -181,7 +182,11 @@ const ChatRoom = () => {
                 setIsRunning(true);
               }
               // 제시어 검사
-              if (content.message.includes(userChatRoom.keyword)) {
+              if (
+                content.message
+                  .toLowerCase()
+                  .includes(userChatRoom.keyword.toLowerCase())
+              ) {
                 if (content.nickname === nickname) updateMyWordUsed();
                 if (content.nickname === userChatRoom.otherNickname)
                   updateOtherWordUsed();
@@ -465,22 +470,22 @@ const ChatRoom = () => {
 
   return (
     <>
+      <div className="absolute top-0 left-0 right-0 h-[100vh] w-full">
+        <UserChatModel />
+      </div>
       {/* 모바일, 440부터 pc */}
-      <div className="h-screen border-2 flex flex-col lg:hidden">
+      <div className="h-screen border-2 flex flex-col lg:hidden absolute left-0 right-0">
         {gameState && (
           <>
             <div className="flex-none">
               <UserChatNav />
             </div>
-            <div
-              ref={chatWindowRef}
-              className="flex-auto h-0 overflow-y-auto bg-blue-200"
-            >
+            <div ref={chatWindowRef} className="flex-auto h-0 overflow-y-auto">
               <div className="min-h-full">
                 <UserChatMessageList />
               </div>
             </div>
-            <div className="flex-none h-fit flex flex-col bg-blue-200">
+            <div className="flex-none h-fit flex flex-col">
               {/* 녹음 시 텍스트 보여주기 */}
               {!isChat && isRecording && (
                 <div className="relative mx-5">
@@ -540,28 +545,12 @@ const ChatRoom = () => {
       {/* pc */}
       {/* pc */}
       <div className="max-lg:hidden">
-        <div className="absolute top-0 left-0 right-0 h-[100vh] w-full">
-          <UserChatModel />
-        </div>
         <div className="absolute top-0 left-0 h-[100vh] w-[100vw] flex flex-row justify-center items-end pb-10 px-8">
-          <div className="absolute top-3 left-10 right-10 grid grid-cols-3 shadow-custom p-3 rounded-xl bg-[#fff6] max-w-[1500px]">
-            <Image
-              src={'/images/logo.png'}
-              alt="Logo"
-              width={100}
-              height={24}
-              priority
-              className="mt-2"
-            />
-            <h1 className="text-center text-3xl font-bold">TREB</h1>
-            <button
-              className="text-end text-xl"
-              onClick={handleLeftGame}
-              type="button"
-            >
-              종료
-            </button>
-          </div>
+          <DetailPageNav
+            className="max-w-[1500px] absolute top-3 left-10 right-10"
+            title="TREB"
+            propEvent={handleLeftGame}
+          />
           <div className="flex flex-row justify-between items-end h-[85%] w-full max-w-[1500px] lg:text-sm">
             {/* 왼쪽, 제시어 및 info */}
             <div className="w-full max-w-[410px] h-full">
@@ -585,7 +574,7 @@ const ChatRoom = () => {
             {/* 중앙, three.js */}
             <div className="w-full h-full flex justify-center items-center"></div>
             {/* 오른쪽, 채팅 */}
-            <div className="w-full max-w-[450px] h-full">
+            <div className="w-full min-w-[450px] max-w-[450px] h-full">
               <div
                 // ref={chatWindowRef}
                 className={`${

@@ -21,32 +21,32 @@ const UserChatMessageList = () => {
       `}
         >
           {message.nickname !== nickname && (
-            <div className="flex mt-2 relative">
-              <ProfileImage
-                className="h-12 w-12 mx-2 hover:cursor-pointer min-w-[48px]"
-                profileUrl={userChatRoom.otherImgUrl}
-                height={500}
-                width={500}
-              />
-              <div className="max-w-[70vw]">
-                <div>{message.nickname}</div>
-                <div className="other-chat overflow-hidden break-words">
-                  {message.message}
+            <div className="flex flex-col">
+              <div className="flex mt-2 relative">
+                <ProfileImage
+                  className="h-12 w-12 mx-2 hover:cursor-pointer min-w-[48px]"
+                  profileUrl={userChatRoom.otherImgUrl}
+                  height={500}
+                  width={500}
+                />
+                <div className="max-w-[70vw]">
+                  <div>{message.nickname}</div>
+                  <div className="other-chat overflow-hidden break-words">
+                    {message.message}
+                  </div>
+                  <div className="">{message.turn - 1}/10</div>
                 </div>
-              </div>
-              <div className="absolute bottom-0 right-0 text-slate-600">
-                {message.turn - 1}/10
               </div>
             </div>
           )}
           {message.nickname === nickname && (
-            <div className="max-w-[70vw] relative">
-              <div className="absolute bottom-0 left-[3.5rem] text-slate-600">
-                {message.turn - 1}/10
+            <div className="flex flex-col">
+              <div className="max-w-[70vw] relative">
+                <div className="my-chat break-words overflow-hidden">
+                  {message.message}
+                </div>
               </div>
-              <div className="my-chat break-words overflow-hidden">
-                {message.message}
-              </div>
+              <div className="text-end mr-3">{message.turn - 1}/10</div>
             </div>
           )}
         </div>

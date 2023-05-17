@@ -133,6 +133,10 @@ const AiChatSendVoice = ({ handleSendMessage }: Props) => {
           onClick={isRecording ? stopAndSendMessage : start}
           className="rounded-full bg-white p-1 text-3xl text-black w-20 lg:w-14 h-20 lg:h-14 flex justify-center items-center"
         >
+          {isRecording && (
+            <div className="absolute h-20 w-20 rounded-full border-4 border-t-brandY border-l-red-300 animate-spin"></div>
+          )}
+
           {isRecording ? <BsArrowUp /> : <BsMic />}
         </button>
       </div>

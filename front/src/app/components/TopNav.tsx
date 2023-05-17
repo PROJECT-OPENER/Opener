@@ -24,7 +24,7 @@ const TopNav = () => {
   };
   if (error) {
     console.log('error');
-    handleLogout();
+    // handleLogout();
   }
   if (isLoading) return <div>loading...</div>;
   for (let i = 0; i < topNavNone.length; i++) {
