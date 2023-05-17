@@ -8,10 +8,11 @@ import Link from 'next/link';
 import { AiFillHeart } from 'react-icons/ai';
 import Image from 'next/image';
 import useUser from '@/app/hooks/userHook';
+import FamousData from './FamousData';
 
 const Famous = () => {
-  const [contents, setContents] = useState<memberChallenge[]>([]);
-  const { removeUserChatStorage } = useUser();
+  // const [contents, setContents] = useState<memberChallenge[]>([]);
+  // const { removeUserChatStorage } = useUser();
   const options = {
     wheelSpeed: 2,
     handlers: ['touch', 'click-rail', 'drag-thumb', 'keyboard', 'wheel'],
@@ -19,24 +20,24 @@ const Famous = () => {
     minScrollbarLength: 2,
   };
 
-  useEffect(() => {
-    const getContent = async () => {
-      const response = await allChallengeApi('LIKE', 0, 5);
-      setContents(response.memberChallengeList);
-    };
-    getContent();
-    removeUserChatStorage();
-  }, []);
+  // useEffect(() => {
+  //   const getContent = async () => {
+  //     const response = await allChallengeApi('LIKE', 0, 5);
+  //     setContents(response.memberChallengeList);
+  //   };
+  //   getContent();
+  //   removeUserChatStorage();
+  // }, []);
 
   return (
     <>
-      {contents && (
-        <div className="pb-4 overflow-hidden mt-6 lg:mt-10">
-          <h1 className="text-lg lg:mb-3 ml-4 font-bold">인기 챌린지</h1>
-          <div className="relative ">
-            <div className="lg:hidden p_scrollbar_right" />
-            <PerfectScrollbar options={options} className="w-full h-full p-4">
-              <div className="flex flex-row relative h-full w-full justify-between">
+      <div className="pb-4 overflow-hidden mt-6 lg:mt-10">
+        <h1 className="text-lg lg:mb-3 ml-4 font-bold">인기 챌린지</h1>
+        <div className="relative ">
+          <div className="lg:hidden p_scrollbar_right" />
+          <PerfectScrollbar options={options} className="w-full h-full p-4">
+            <FamousData />
+            {/* <div className="flex flex-row relative h-full w-full justify-between">
                 {contents.map((content, index) => {
                   return (
                     <Link key={index} href={`/challenge/scroll/LIKE/${index}`}>
@@ -58,11 +59,10 @@ const Famous = () => {
                     더 보기
                   </button>
                 </Link>
-              </div>
-            </PerfectScrollbar>
-          </div>
+              </div> */}
+          </PerfectScrollbar>
         </div>
-      )}
+      </div>
     </>
   );
 };

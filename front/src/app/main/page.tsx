@@ -1,12 +1,26 @@
 import Famous from '@/app/main/components/Famous';
 import Recommended from '@/app/main/components/Recommended';
 import Roadmap from '@/app/main/components/Roadmap';
-import Main from '@/app/three/intro/page';
+// import Main from '@/app/three/intro/page';
 import Rank from './components/Rank';
-import { rankInterface } from '@/types/share';
-import { use } from 'react';
+import dynamic from 'next/dynamic';
+import Image from 'next/image';
+
+const Main = dynamic(() => import('@/app/three/intro/page'), {
+  loading: () => (
+    <div className="relative w-full h-[250px] sm:h-[350px] lg:h-[500px] min-w-[330px] max-w-[1024px]">
+      <Image
+        src="/images/lazyMain.png"
+        alt="main"
+        height={500}
+        width={500}
+        className="h-full w-full"
+      />
+    </div>
+  ),
+});
+
 const Home = () => {
-  const ranks = use(fetchData());
   return (
     <div className="absolute top-0 left-0 w-full flex flex-col items-center lg:pb-10">
       <div className="relative w-full h-[250px] sm:h-[350px] lg:h-[500px] min-w-[330px] max-w-[1024px]">
@@ -16,7 +30,7 @@ const Home = () => {
         <Roadmap />
         <Famous />
         <Recommended />
-        <Rank rank={ranks.data} />
+        <Rank />
       </div>
       <div className="blankbox lg:hidden" />
     </div>
@@ -24,10 +38,3 @@ const Home = () => {
 };
 
 export default Home;
-
-export async function fetchData() {
-  const BASE_URL = process.env.NEXT_PUBLIC_SERVER_URL;
-  const res = await fetch(`${BASE_URL}member-service/members/rank`);
-  const data = await res.json();
-  return data;
-}
