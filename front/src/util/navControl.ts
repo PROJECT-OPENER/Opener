@@ -18,3 +18,5 @@ export const topNavNone = [
   '/userChat/chatRoom',
   '/challenge/p',
 ];
+
+export const notLogin = ['/auth/login', '/register'];

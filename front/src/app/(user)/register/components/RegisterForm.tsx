@@ -152,10 +152,12 @@ const RegisterForm = () => {
   };
   // 이메일 인증 코드 발송
   const handleSendEmailAuthCode = async () => {
+    setIsSendEmail(!isSendEmail);
     try {
       const emailAuthCheck = await emailAuthApi(watchEmail);
-      if (emailAuthCheck) setIsSendEmail(!isSendEmail);
+      console.log(emailAuthCheck);
     } catch (err) {
+      setIsSendEmail(false);
       if (typeof err === 'string') return alert(err);
       if (err instanceof yup.ValidationError) return alert(err.message);
       return alert('예상치 못한 오류가 발생했습니다.');
@@ -205,7 +207,10 @@ const RegisterForm = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit(handleRegister)} className="mt-5 w-[450px]">
+    <form
+      onSubmit={handleSubmit(handleRegister)}
+      className="mt-5 w-full max-w-[600px]"
+    >
       {/* 이메일 */}
       <div className="shadow rounded-md">
         <div className="relative" onBlur={() => setIsEmailActive(false)}>
