@@ -30,7 +30,7 @@ import { handleTurn } from '@/util/Math';
 import { openAiContextScore } from '@/app/api/openAi';
 import { checkGrammer } from '@/util/AiChat';
 import Loading from '@/app/components/Loading';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import UserChatRoundPc from './UserChatRoundPc';
 import UserChatModel from '../../components/UserChatModel';
 import {
@@ -78,6 +78,8 @@ const ChatRoom = () => {
   // ref
   const chatWindowRef = useRef<HTMLDivElement>(null);
   const pingIntervalIdRef = useRef<NodeJS.Timer | null>(null);
+
+  const pathname: string = usePathname();
 
   useEffect(() => {
     console.log('grammerMsg', grammerMsg);
@@ -240,6 +242,16 @@ const ChatRoom = () => {
 
     client.activate();
     setStompClient(client);
+
+    // 로컬스토리지 통한 url 접근 막기
+    const storedUrl = localStorage.getItem('waitRoom');
+    localStorage.setItem('chatRoom', pathname);
+
+    // localStorage에 URL이 저장되어 있으면 해당 URL로 리디렉션
+    if (!storedUrl) {
+      alert('잘못된 접근입니다.');
+      router.push('/chat');
+    }
 
     return () => {
       if (pingIntervalIdRef.current) {

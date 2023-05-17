@@ -9,11 +9,17 @@ const useUser = () => {
     myPageApi,
   );
 
+  const removeUserChatStorage = () => {
+    localStorage.removeItem('chatRoom');
+    localStorage.removeItem('waitRoom');
+  };
+
   return {
     user: data,
     isLoading,
     error,
     mutate,
+    removeUserChatStorage,
   };
 };
 

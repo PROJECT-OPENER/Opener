@@ -2,11 +2,7 @@
 import Button from '@/app/components/Button';
 import React, { useState } from 'react';
 import { useRecoilValue } from 'recoil';
-import {
-  userChatRoomIdState,
-  userChatTimerState,
-  userChatTurnState,
-} from '../../store';
+import { userChatRoomIdState, userChatTurnState } from '../../store';
 import { BsCircleFill } from 'react-icons/bs';
 import { useRouter } from 'next/navigation';
 
@@ -15,7 +11,6 @@ const UserChatNav = () => {
   const userChatRoom = useRecoilValue(userChatRoomIdState);
   const turn = useRecoilValue(userChatTurnState);
   const [isTip, setIsTip] = useState(true);
-  const timer = useRecoilValue(userChatTimerState);
   const handleTip = () => {
     setIsTip(!isTip);
   };

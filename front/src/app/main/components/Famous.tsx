@@ -7,9 +7,11 @@ import { memberChallenge } from '@/types/share';
 import Link from 'next/link';
 import { AiFillHeart } from 'react-icons/ai';
 import Image from 'next/image';
+import useUser from '@/app/hooks/userHook';
 
 const Famous = () => {
   const [contents, setContents] = useState<memberChallenge[]>([]);
+  const { removeUserChatStorage } = useUser();
   const options = {
     wheelSpeed: 2,
     handlers: ['touch', 'click-rail', 'drag-thumb', 'keyboard', 'wheel'],
@@ -23,6 +25,7 @@ const Famous = () => {
       setContents(response.memberChallengeList);
     };
     getContent();
+    removeUserChatStorage();
   }, []);
 
   return (
