@@ -15,12 +15,15 @@ const MypageBotSection = () => {
   const [activeTab, setActiveTab] = useState(0);
   return (
     <div className="bg-white m-3 rounded-3xl">
-      <div className="tab-box flex justify-around p-3 text-3xl border-b-2">
+      <div className="tab-box flex justify-around text-3xl border-b-2 h-full">
         <button
           type="button"
           onClick={() => {
             setActiveTab(0);
           }}
+          className={`${
+            activeTab === 0 ? 'bg-purple-200' : ''
+          } w-full flex justify-center h-full p-3`}
         >
           <CgMenuGridO />
         </button>
@@ -29,6 +32,9 @@ const MypageBotSection = () => {
           onClick={() => {
             setActiveTab(1);
           }}
+          className={`${
+            activeTab === 1 ? 'bg-purple-200' : ''
+          } w-full flex justify-center h-full p-3`}
         >
           <CgHeart />
         </button>
@@ -37,6 +43,9 @@ const MypageBotSection = () => {
           onClick={() => {
             setActiveTab(2);
           }}
+          className={`${
+            activeTab === 2 ? 'bg-purple-200' : ''
+          } w-full flex justify-center h-full p-3`}
         >
           <SlBadge />
         </button>
