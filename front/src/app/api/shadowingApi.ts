@@ -81,12 +81,12 @@ export const setCountVideoApi = async (videoId: string) => {
   }
 };
 
-export const setBookmarkApi = async (videoId: string, isSet: boolean) => {
+export const setBookmarkApi = async (videoId: string) => {
   const session = await getSession();
   const accessToken = session?.user?.user?.accessToken;
   if (accessToken) {
     shadowingApi({
-      method: isSet ? 'POST' : 'DELETE',
+      method: 'POST',
       url: `/auth/videos/${videoId}/bookmark`,
     })
       .then((res) => console.log(res))
