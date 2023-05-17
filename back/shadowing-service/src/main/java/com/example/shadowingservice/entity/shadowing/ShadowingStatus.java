@@ -14,6 +14,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.example.shadowingservice.entity.BaseEntity;
+import com.example.shadowingservice.entity.member.Member;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -29,9 +30,9 @@ import lombok.Setter;
 @Table(name = "shadowingstatus")
 public class ShadowingStatus extends BaseEntity {
 
-	public ShadowingStatus(Long memberId, ShadowingVideo shadowingVideo, int repeatCount,
+	public ShadowingStatus(Member member, ShadowingVideo shadowingVideo, int repeatCount,
 		LocalDate statusDate) {
-		this.memberId = memberId;
+		this.member = member;
 		this.shadowingVideo = shadowingVideo;
 		this.repeatCount = repeatCount;
 		this.statusDate = statusDate;
@@ -40,8 +41,9 @@ public class ShadowingStatus extends BaseEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long statusId;
-	@Column(nullable = false)
-	private Long memberId;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "member_id", nullable = false)
+	private Member member;
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "video_id", nullable = false)
 	private ShadowingVideo shadowingVideo;
@@ -55,6 +57,10 @@ public class ShadowingStatus extends BaseEntity {
 
 	public void updateViewCount(int viewCount) {
 		this.viewCount = viewCount;
+	}
+
+	public void updateStatusDate(LocalDate statusDate) {
+		this.statusDate = statusDate;
 	}
 
 }

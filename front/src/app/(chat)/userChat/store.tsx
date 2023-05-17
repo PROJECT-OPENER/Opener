@@ -50,13 +50,13 @@ export const userChatTurnState = atom({
 
 export const userChatTimerState = atom({
   key: 'userChatTimerState',
-  default: 9999, // 시작 값
+  default: 45, // 시작 값
   effects_UNSTABLE: [persistAtom],
 });
 
 export const userChatTimeState = atom({
   key: 'userChatTimeState',
-  default: 9999,
+  default: 30,
 });
 
 export const userChatMyNicknameState = atom({
@@ -85,13 +85,6 @@ export const userChatScoreState = atom({
   effects_UNSTABLE: [persistAtom],
 });
 
-// 점수 관련 사항 시작
-export const userChatFilteredState = atom({
-  key: 'userChatFilteredState',
-  default: [],
-  effects_UNSTABLE: [persistAtom],
-});
-
 // 문법 검사 문장 리스트
 export const userChatGrammerMsgListState = atom({
   key: 'userChatGrammerMsgListState',
@@ -116,4 +109,9 @@ export const userChatLastChatState = atom({
   key: 'userChatLastChatState',
   default: false,
   effects_UNSTABLE: [persistAtom],
+});
+
+export const bonobonoState = atom({
+  key: 'bonobonoState',
+  default: false,
 });

@@ -34,7 +34,8 @@ const ChallengeCard = () => {
   const [observer, setObserver] = useState<IntersectionObserver | null>(null);
 
   const listEndRef = useRef<HTMLParagraphElement>(null);
-
+  const likeButton = useRef<HTMLButtonElement>(null);
+  const recentButton = useRef<HTMLButtonElement>(null);
   useEffect(() => {
     if (observer && isEnd) {
       console.log('불러오기 끝');
@@ -74,26 +75,42 @@ const ChallengeCard = () => {
         </div>
       )}
       {data && (
-        <>
-          <div className="my-14">
-            <Button
+        <div className="">
+          <div className="my-14 flex">
+            <button
+              ref={likeButton}
               type="button"
-              text="좋아요순"
-              className=" bg-brandP w-32 text-white rounded-xl shadow-xl py-3"
+              className="ml-4 bg-brandP  w-32 text-white rounded-xl shadow-xl py-3"
               onClick={() => {
                 category = 'LIKE';
                 mutate();
+                if (likeButton.current && recentButton.current) {
+                  recentButton.current.className =
+                    'ml-4 bg-white w-32 text-black rounded-xl shadow-xl py-3';
+                  likeButton.current.className =
+                    'ml-4 bg-brandP w-32 text-white rounded-xl shadow-xl py-3';
+                }
               }}
-            />
-            <Button
+            >
+              좋아요순
+            </button>
+            <button
               type="button"
-              text="최신순"
-              className="ml-4 bg-white w-32 text-black rounded-xl shadow-xl py-3"
+              ref={recentButton}
+              className=" ml-4 bg-white w-32 text-black rounded-xl shadow-xl py-3"
               onClick={() => {
                 category = 'RECENT';
                 mutate();
+                if (likeButton.current && recentButton.current) {
+                  likeButton.current.className =
+                    'ml-4 bg-white w-32 text-black rounded-xl shadow-xl py-3';
+                  recentButton.current.className =
+                    'ml-4 bg-brandP w-32 text-white rounded-xl shadow-xl py-3';
+                }
               }}
-            />
+            >
+              최신순
+            </button>
           </div>
           <div className="grid grid-cols-3 gap-4 my-16">
             {challengeList?.map((memberChallenge, index) => (
@@ -124,13 +141,13 @@ const ChallengeCard = () => {
               </div>
             ))}
           </div>
-        </>
+        </div>
       )}
       <p
         className={
           challenges[0]?.data.totalLength <= challengeList?.length
             ? 'hidden'
-            : 'list-end'
+            : 'list-end bottom-0'
         }
         ref={listEndRef}
       ></p>

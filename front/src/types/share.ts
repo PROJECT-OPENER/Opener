@@ -161,6 +161,7 @@ export interface originalVideo {
   joinCount: number;
   startTime: string;
   title: string;
+  caption: string;
 }
 
 // 채팅
@@ -172,7 +173,7 @@ export interface Message {
 }
 
 export interface curMemberChallenge {
-  like: boolean;
+  isLike: boolean;
   memberChallengeId: number;
   memberChallengeNickname: string;
   memberChallengeUrl: string;

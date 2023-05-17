@@ -31,7 +31,7 @@ const ResultTrophy = () => {
       <div className="h-32 w-32">
         <Image
           src={'/images/trophy.png'}
-          alt="Picture of the author"
+          alt="pic"
           className="rounded-full w-full h-full"
           width={500}
           height={500}

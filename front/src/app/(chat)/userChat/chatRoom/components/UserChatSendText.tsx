@@ -1,9 +1,8 @@
 'use client';
-import React, { useEffect, useRef } from 'react';
+import React, { useRef } from 'react';
 import { BsArrowUp, BsMic } from 'react-icons/bs';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import {
-  userChatGameState,
   userChatIsChatState,
   userChatMessageState,
   userChatTimerState,
@@ -62,6 +61,11 @@ const UserChatSendText = ({ handleSendMessage }: Props) => {
       >
         <BsMic className="fill-white" />
       </button>
+      <div
+        className={`absolute h-8 w-8 left-10 bottom-[0.65rem] rounded-full border-2 animate-spin z-50 ${
+          timer < 10 ? 'border-t-red-400 border-l-red-400' : 'border-t-red-300'
+        }`}
+      ></div>
       <span className="bg-white absolute bottom-[0.65rem] left-10 w-8 h-8 rounded-full flex justify-center items-center">
         {timer}
       </span>

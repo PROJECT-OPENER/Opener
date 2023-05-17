@@ -25,6 +25,7 @@ public enum ExceptionEnum {
 	ROOKMARK_NOT_FOUND_EXCEPTION(HttpStatus.BAD_REQUEST, -202, "북마크를 조회할 수 없습니다."),
 	STEP_ID_LIST_NOT_FOUND_EXCEPTION(HttpStatus.BAD_REQUEST, -202, "스텝 아이디 조회에 실패했습니다."),
 	VIDEO_ID_LIST_NOT_FOUND_EXCEPTION(HttpStatus.BAD_REQUEST, -202, "비디오 아이디 조회에 실패했습니다."),
+	MEMBER_NOT_FOUND_EXCEPTION(HttpStatus.BAD_REQUEST, -202, "멤버 조회에 실패했습니다."),
 	SHADOWING_STATUS_NOT_FOUND_EXCEPTION(HttpStatus.BAD_REQUEST, -202, "비디오 아이디 조회에 실패했습니다."),
 	BOOKMARK_ALREADY_EXIST(HttpStatus.BAD_REQUEST, -202, "북마크가 이미 존재합니다."),
 	DICTIONARY_NOT_FOUND_EXIST(HttpStatus.BAD_REQUEST, -202, "존재하지 않는 단어입니다."),

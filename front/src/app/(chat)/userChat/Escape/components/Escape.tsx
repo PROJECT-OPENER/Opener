@@ -1,8 +1,7 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useRecoilValue } from 'recoil';
 import { userChatResultState } from '../../store';
-import { useRouter } from 'next/navigation';
 const Escape = () => {
   const result = useRecoilValue(userChatResultState);
   useEffect(() => {

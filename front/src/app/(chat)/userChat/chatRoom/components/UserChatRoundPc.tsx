@@ -1,12 +1,7 @@
 'use client';
 import React from 'react';
 import { useRecoilValue } from 'recoil';
-import {
-  userChatRoomIdState,
-  userChatTimerState,
-  userChatTurnState,
-} from '../../store';
-import { BsCircleFill } from 'react-icons/bs';
+import { userChatTurnState } from '../../store';
 import UserChatSlider from './UserChatSlider';
 
 const tipText = [
@@ -38,8 +33,8 @@ const warnText = [
 const UserChatRoundPc = () => {
   const turn = useRecoilValue(userChatTurnState);
   return (
-    <div className="max-lg:hidden bg-[#B474FF] rounded-3xl p-5 space-y-3">
-      <h1 className="font-bold text-center xl:text-2xl lg:text-base mb-5 text-white">
+    <div className="max-lg:hidden bg-[#fff6] rounded-3xl p-5 space-y-3 shadow-custom">
+      <h1 className="font-bold text-center xl:text-2xl lg:text-base mb-5 text-black">
         Round {turn === 11 ? '10' : turn === 999 ? '종료' : turn}
       </h1>
       <div className="p-1 xl:text-base lg:text-sm">

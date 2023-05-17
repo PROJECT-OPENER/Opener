@@ -61,7 +61,7 @@ const ChallengeList = ({ originalId, startIdx }: Props) => {
         entries.forEach((entry) => {
           if (entry.intersectionRatio > 0.2 && !isEnd) {
             console.log(isEnd);
-            setSize((prev) => prev + 1);
+            setSize((prev) => prev + 3);
           }
         });
       }, options);
@@ -91,9 +91,9 @@ const ChallengeList = ({ originalId, startIdx }: Props) => {
       )}
       <p
         className={
-          challenges[0]?.data?.totalLength - 1 <= challengeList?.length
+          challenges[0]?.data.totalLength - startIdx <= challengeList?.length
             ? 'hidden'
-            : 'list-end'
+            : 'list-end h-20 bg-red-400'
         }
         ref={listEndRef}
       ></p>

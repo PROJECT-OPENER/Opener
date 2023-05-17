@@ -6,7 +6,9 @@ import YouTube, { YouTubeProps } from 'react-youtube';
 import Button from '@/app/components/Button';
 import { getSession } from 'next-auth/react';
 import { uploadChallenge, originalVideoApi } from '@/app/api/challengeApi';
-import axios from 'axios';
+import { RiArrowGoBackLine } from 'react-icons/ri';
+import { MdOutlineCancel } from 'react-icons/md';
+import TopNavPc from '@/app/components/TopNavPc';
 
 type Props = {
   originalId: number;
@@ -38,43 +40,34 @@ const ShootingVideo = ({ originalId }: Props) => {
       formData.append('memberChallengeImg', blob);
       formData.append('memberChallengeFile', myFile);
       formData.append('nicknasme', nickname || '');
-      const res = await uploadChallenge(originalId, formData);
-      if (res.code === 200) {
-        alert('영상 공유를 성공하였습니다.');
+      try {
+        const res = await uploadChallenge(originalId, formData);
+        if (res.data.code === 200) {
+          alert(res.data.message);
+        }
+      } catch (err) {
+        if (typeof err === 'string') {
+          alert(err);
+        } else {
+          alert('예상치 못한 오류가 발생했습니다.');
+        }
         router.push('/challenge');
       }
     }
   };
 
-  // ========================================
   const [caption, setCaption] = useState<any>();
   const [videoInfo, setVideoInfo] = useState<videoInfoType>(); // 가져온 영상 정보를 담는 state
-  const FAST_API_URL = process.env.NEXT_PUBLIC_FAST_API;
-
-  const getCaptionApi = async (videoId: string) => {
-    return await axios({
-      method: 'GET',
-      url: FAST_API_URL + '/fast/caption/' + videoId,
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-      },
-    }).then((res) => {
-      return res.data;
-    });
-  };
 
   useEffect(() => {
     const getVideo = async () => {
       const originalRes = await originalVideoApi(originalId);
-      const engCaption = await getCaptionApi(originalRes.challengeUrl);
       setVideoInfo({
         start: convertTime(originalRes.startTime),
         end: convertTime(originalRes.endTime),
-        engCaption: convert(engCaption),
+        engCaption: convert(originalRes.caption),
         videoUrl: originalRes.challengeUrl,
       });
-      // console.log(videoInfo);
     };
     getVideo();
     const convert = (cap: string) => {
@@ -228,8 +221,8 @@ const ShootingVideo = ({ originalId }: Props) => {
     navigator.mediaDevices
       .getUserMedia({
         video: {
-          width: 480,
-          height: 853,
+          width: 477, // 영상 사이즈 변경 테스트
+          height: 848,
         },
         audio: false,
       })
@@ -330,13 +323,18 @@ const ShootingVideo = ({ originalId }: Props) => {
 
   return (
     <div className="w-full h-full">
-      <div className="flex justify-center relative">
+      <div className="hidden md:block h-20 w-screen z-10">
+        <TopNavPc />
+      </div>
+      <div className="flex justify-center relative md:mt-5">
         {!isPreview && (
           <>
             <div className={isPreview ? 'hidden' : 'relative'}>
               <video className="" autoPlay muted ref={previewPlayer}></video>
-              <div className="absolute top-10 bg-black  h-14 bg-opacity-20 font-black text-white text-2xl flex justify-center items-center w-full">
-                {caption?.eng}
+              <div className="absolute top-10  w-full  flex justify-center items-center">
+                <div className="bg-black h-10 flex items-center bg-opacity-20 font-black text-white md:text-xl ">
+                  {caption?.eng}
+                </div>
               </div>
               <div className="absolute bottom-0 left-0 ml-2 mb-2">
                 <YouTube
@@ -355,6 +353,17 @@ const ShootingVideo = ({ originalId }: Props) => {
                   className={isRec ? '' : 'hidden'}
                 />
               </div>
+              <button
+                className={
+                  isRec ? ' absolute bottom-10 right-10 mr-2 mb-2' : 'hidden'
+                }
+                onClick={() => {
+                  alert('영상 촬영이 중단되었습니다.');
+                  window.location.reload();
+                }}
+              >
+                <MdOutlineCancel size={'3rem'} color={'white'} />
+              </button>
             </div>
             <div className={loadingDone ? 'absolute bottom-0' : 'hidden'}>
               <button
@@ -380,8 +389,10 @@ const ShootingVideo = ({ originalId }: Props) => {
           <>
             <div className={isPreview ? 'relative' : 'hidden'}>
               <video ref={recordingPlayer}></video>
-              <div className="absolute top-10 bg-black  h-14 bg-opacity-20 font-black text-white text-2xl flex justify-center items-center w-full">
-                {caption?.eng}
+              <div className="absolute top-10 w-full  flex justify-center items-center">
+                <p className="bg-black h-10 flex items-center bg-opacity-20 font-black text-white md:text-2xl ">
+                  {caption?.eng}
+                </p>
               </div>
               <canvas ref={thumbCanvas} className="hidden"></canvas>
               <img ref={thumbnail} />
@@ -400,13 +411,24 @@ const ShootingVideo = ({ originalId }: Props) => {
                   }}
                 />
               </div>
-              <div className="absolute bottom-0 right-0 mr-2 mb-10">
-                <Button
-                  type="button"
-                  text="공유하기"
-                  className=" bg-brandP w-32 text-white rounded-xl shadow-xl py-3"
-                  onClick={uploadClick}
-                />
+              <div className="absolute bottom-0 right-0 mr-2 mb-10 flex">
+                <div className="mx-2">
+                  <button
+                    onClick={() => {
+                      router.push('/challenge');
+                    }}
+                  >
+                    <RiArrowGoBackLine size={'3rem'} color={'white'} />
+                  </button>
+                </div>
+                <div className="mx-2">
+                  <Button
+                    type="button"
+                    text="공유하기"
+                    className=" bg-brandP w-32 text-white rounded-xl shadow-xl py-3"
+                    onClick={uploadClick}
+                  />
+                </div>
               </div>
             </div>
           </>

@@ -5,7 +5,7 @@ import static com.example.challengeservice.messageQueue.Topics.*;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
-import com.example.challengeservice.messageQueue.dto.produce.DeleteMemberChallengeDto;
+import com.example.challengeservice.messageQueue.dto.produce.ChallengeBadgeProduceDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -18,17 +18,14 @@ import lombok.extern.slf4j.Slf4j;
 public class KafkaProducer {
 	private final KafkaTemplate<String, String> kafkaTemplate;
 
-	public void sendDeleteEvent(DeleteMemberChallengeDto deleteMemberChallengeDto) {
-
+	public void sendBadgeEvent(ChallengeBadgeProduceDto challengeBadgeProduceDto) {
 		ObjectMapper mapper = new ObjectMapper();
 		String jsonInString = "";
-		String value = null;
 		try {
-			jsonInString = mapper.writeValueAsString(deleteMemberChallengeDto);
+			jsonInString = mapper.writeValueAsString(challengeBadgeProduceDto);
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 		}
-
-		kafkaTemplate.send(DELETE_MEMBER_CHALLENGE_TO_MEMBER.getTopic(), jsonInString, value);
+		kafkaTemplate.send(SEND_CHALLENGE_BADGE_TO_MEMBER.getTopic(), jsonInString);
 	}
 }

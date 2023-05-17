@@ -27,6 +27,7 @@ const WaitRoom = () => {
   const router = useRouter();
   const { data: session } = useSession();
   const { user } = useUser();
+  console.log('user', user);
   const nickname =
     session && session.user.user && session.user.user.data.nickname;
   const token = session?.user.user?.accessToken as string;
@@ -133,13 +134,14 @@ const WaitRoom = () => {
 
   return (
     <div>
-      <div className="bg-white rounded-3xl my-5 mx-5 p-5">
-        <p className="text-center">매칭중입니다...</p>
-        <Loading />
-      </div>
       <div className="flex flex-col items-center mx-5 my-5 bg-white rounded-3xl p-5">
         <h1 className="h1 text-3xl font-bold">TREB</h1>
         <h2 className="">Ten Round English Battle</h2>
+      </div>
+      <div className="bg-white rounded-3xl my-5 mx-5 p-5">
+        <p className="text-center text-2xl font-bold">{user?.data.score}점</p>
+        <Loading />
+        <p className="text-center">매칭중입니다...</p>
       </div>
       <InfoSlider />
     </div>

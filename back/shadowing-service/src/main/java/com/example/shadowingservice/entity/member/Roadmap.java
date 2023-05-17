@@ -29,12 +29,10 @@ public class Roadmap extends BaseEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "roadmap_id")
 	private Long roadmapId;
-
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "member_id", nullable = false)
 	private Member member;
-
 	private int stepNo;
-
 	private int stepTheme;
+	private int sentenceNo;
 }

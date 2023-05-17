@@ -67,6 +67,25 @@ const setAuthTokenHeader = async (
   return config;
 };
 
+export const fetcher = async (url: string, token: string) => {
+  const session = await getSession();
+  const accessToken = session?.user.user?.accessToken;
+  if (accessToken) {
+    console.log(accessToken);
+    const response = await fetch(url, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`, // 토큰을 헤더에 추가
+      },
+    });
+    const data = await response.json();
+    return data;
+  } else {
+    const response = await fetch(url);
+    const data = await response.json();
+    return data;
+  }
+};
+
 // Function to handle request errors
 const handleRequestError = (error: AxiosError): Promise<AxiosError> => {
   // console.log('handleRequestError', error);
@@ -100,6 +119,9 @@ const handleResponseError = (error: AxiosError): Promise<AxiosError> => {
   const errMsg = (error.response?.data as responseInterface)?.message;
   // custom error handling : member-service
   if (errCode >= -121 && errCode <= -100) return Promise.reject(errMsg);
+
+  // custom error handling : challenge-service / shooting
+  if (errCode <= -411 && errCode >= -413) return Promise.reject(errMsg);
 
   return Promise.reject(error);
 };

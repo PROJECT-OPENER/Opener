@@ -22,12 +22,13 @@ const ChallengeCategoryList = ({ category, startIdx }: Props) => {
     useSWRInfinite<challengeCategorySwrData>(
       (index) =>
         `${BASE_URL}challenge-service/member-challenges?category=${category}&startIndex=${startIdx}&endIndex=${
-          startIdx > index + 3 ? startIdx + 3 : index + 3
+          startIdx > index + 5 ? startIdx + 5 : index + 5
         }`,
       fetcher,
     );
 
   const challenges = data ? data.flat() : [];
+
   const endIndex = challenges[0]?.data.totalLength - 1;
   const challengeList: memberChallenge[] =
     challenges[challenges.length - 1]?.data.memberChallengeList;
@@ -55,7 +56,7 @@ const ChallengeCategoryList = ({ category, startIdx }: Props) => {
       const newObserver = new IntersectionObserver((entries, observer) => {
         entries.forEach((entry) => {
           if (entry.intersectionRatio > 0.2) {
-            setSize((prev) => prev + 1);
+            setSize((prev) => prev + 3);
           }
         });
       }, options);
@@ -77,14 +78,14 @@ const ChallengeCategoryList = ({ category, startIdx }: Props) => {
           ))}
         </div>
       )}
-      <p>{challenges[0]?.data.totalLength}</p>
+      <p>{challenges[0]?.data.totalLength - startIdx}</p>
       <p>{challengeList?.length}</p>
 
       <p
         className={
           challenges[0]?.data.totalLength - startIdx <= challengeList?.length
             ? 'hidden'
-            : 'list-end'
+            : 'list-end h-20 bg-slate-200'
         }
         ref={listEndRef}
       ></p>

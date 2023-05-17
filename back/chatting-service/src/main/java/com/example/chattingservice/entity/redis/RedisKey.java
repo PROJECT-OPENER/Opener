@@ -6,6 +6,7 @@ import lombok.Getter;
 public enum RedisKey {
 	WAITING("WAITING"),
 	GAMING("GAMING"),
+	EXPIRED("EXPIRED"),
 	;
 
 	private String key;

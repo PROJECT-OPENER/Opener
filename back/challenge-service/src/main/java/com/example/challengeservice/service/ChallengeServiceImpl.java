@@ -16,7 +16,7 @@ import com.example.challengeservice.entity.challenge.Love;
 import com.example.challengeservice.entity.challenge.MemberChallenge;
 import com.example.challengeservice.entity.member.Member;
 import com.example.challengeservice.messageQueue.KafkaProducer;
-import com.example.challengeservice.messageQueue.dto.produce.DeleteMemberChallengeDto;
+import com.example.challengeservice.messageQueue.dto.produce.ChallengeBadgeProduceDto;
 import com.example.challengeservice.repository.LoveRepository;
 import com.example.challengeservice.repository.MemberRepository;
 import com.google.firebase.auth.FirebaseAuthException;
@@ -149,9 +149,11 @@ public class ChallengeServiceImpl implements ChallengeService {
 		WatchOriginalChallengeResponseDto watchOriginalChallengeResponseDto = WatchOriginalChallengeResponseDto.from(
 			challenge, joinCount);
 		int isLove = 0;
+		log.info("curMemberId is : {}", memberId);
 		if (memberId != null) {
 			isLove = loveRepository.countByMemberChallengeAndMember_MemberIdAndIsLove(memberChallenge,
 				Long.parseLong(memberId), true);
+			log.info("curMemberId is : {}", memberId);
 		}
 		SelectMemberChallengeResponseDto selectMemberChallengeResponseDto = SelectMemberChallengeResponseDto.from(
 			memberChallenge, isLove);
@@ -166,7 +168,7 @@ public class ChallengeServiceImpl implements ChallengeService {
 			throw new ApiException(ExceptionEnum.CATEGORY_NOT_FOUND_EXCEPTION);
 		}
 		List<MemberChallengeResponseDto> memberChallengeResponseDtoList = new ArrayList<>();
-		List<MemberChallenge> memberChallengeList = memberChallengeRepository.findAll();
+		List<MemberChallenge> memberChallengeList = memberChallengeRepository.findAllByIsDelete(false);
 		if (memberChallengeList.isEmpty()) {
 			throw new ApiException(ExceptionEnum.MEMBER_CHALLENGES_NOT_FOUND_EXCEPTION);
 		}
@@ -220,10 +222,6 @@ public class ChallengeServiceImpl implements ChallengeService {
 		Member member = memberRepository.findByMemberId(memberId)
 			.orElseThrow(() -> new ApiException(ExceptionEnum.WRONG_MEMBER_EXCEPTION));
 		String fileName = challenge.getTitle() + "_" + memberChallengeRequestDto.getNickName() + LocalDateTime.now();
-		if (memberChallengeRepository.findByChallenge_ChallengeIdAndMember_MemberIdAndIsDelete(challengeId,
-			member.getMemberId(), false).isPresent()) {
-			throw new ApiException(ExceptionEnum.MEMBER_CHALLENGE_EXIST_EXCEPTION);
-		}
 		if (memberChallengeRequestDto.getMemberChallengeFile().isEmpty()) {
 			throw new ApiException(ExceptionEnum.FILE_NOT_FOUND_EXCEPTION);
 		}
@@ -236,6 +234,7 @@ public class ChallengeServiceImpl implements ChallengeService {
 			fileName + "_img");
 		MemberChallenge memberChallenge = MemberChallenge.from(challenge, member, imgUrl, fileUrl);
 		memberChallengeRepository.save(memberChallenge);
+		kafkaProducer.sendBadgeEvent(new ChallengeBadgeProduceDto(member.getMemberId()));
 	}
 
 	/**
@@ -258,7 +257,6 @@ public class ChallengeServiceImpl implements ChallengeService {
 		}
 
 		memberChallenge.updateIsDelete(true);
-		kafkaProducer.sendDeleteEvent(new DeleteMemberChallengeDto(memberChallenge.getMemberChallengeId()));
 	}
 
 	/**

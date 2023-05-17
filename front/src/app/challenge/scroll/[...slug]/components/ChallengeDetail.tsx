@@ -10,7 +10,7 @@ type videoInfoType = {
   engCaption: any;
   videoUrl: string;
 };
-import axios from 'axios';
+
 import React, { useRef, useEffect, useState } from 'react';
 import YouTube, { YouTubeProps } from 'react-youtube';
 import { memberChallenge, challengeDetail } from '@/types/share';
@@ -23,43 +23,43 @@ import useUser from '@/app/hooks/userHook';
 import { AiFillHeart } from 'react-icons/ai';
 import { RiShareForwardFill, RiDeleteBin5Fill } from 'react-icons/ri';
 import useSWR from 'swr';
+import { fetcher } from '@/app/api/axiosConfig';
+import { useRouter } from 'next/navigation';
 
 const ChallengeDetail = ({ challengeList }: Props) => {
-  // ㄱㅂㅈㄱ ========================================
-  const FAST_API_URL = process.env.NEXT_PUBLIC_FAST_API;
-
-  const getCaptionApi = async (videoId: string) => {
-    return await axios({
-      method: 'GET',
-      url: FAST_API_URL + '/fast/caption/' + videoId,
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-      },
-    }).then((res) => {
-      return res.data;
-    });
-  };
   const BASE_URL = process.env.NEXT_PUBLIC_SERVER_URL;
-  const fetcher = async (url: string) => {
-    const response = await fetch(url);
-    return response.json();
-  };
+  const router = useRouter();
   const { user } = useUser();
   const [caption, setCaption] = useState<any>();
   const [videoInfo, setVideoInfo] = useState<videoInfoType>(); // 가져온 영상 정보를 담는 state
-  const { data, isLoading, error } = useSWR(
+  const { data, isLoading, error, mutate } = useSWR(
     `${BASE_URL}challenge-service/watch/member-challenges/${challengeList.memberChallengeId}/video`,
     fetcher,
   );
   const challengeInfo: challengeDetail = data?.data;
-
   useEffect(() => {
+    const convert = (cap: string) => {
+      const resArray = [];
+      if (cap) {
+        const subtitles = cap.replace('WEBVTT\n\n', '');
+        const subtitle = subtitles.split('\n\n');
+        for (let i = 0; i < subtitle.length; i++) {
+          const sub = subtitle[i].split('\n');
+          const subtitleTime = sub[0].split(' --> ');
+          const subtitleText = sub.slice(1).join('\n');
+          if (subtitleTime) {
+            resArray.push({
+              startTime: convertTime(subtitleTime[0]),
+              endTime: convertTime(subtitleTime[1]),
+              text: subtitleText,
+            });
+          }
+        }
+      }
+      return [...resArray];
+    };
     if (data) {
       const getVideo = async () => {
-        data.engCaption = await getCaptionApi(
-          challengeInfo.watchOriginalChallengeResponseDto.challengeUrl,
-        );
         setVideoInfo({
           start: convertTime(
             challengeInfo.watchOriginalChallengeResponseDto.startTime,
@@ -67,39 +67,20 @@ const ChallengeDetail = ({ challengeList }: Props) => {
           end: convertTime(
             challengeInfo.watchOriginalChallengeResponseDto.endTime,
           ),
-          engCaption: convert(data.engCaption),
+          engCaption: convert(
+            challengeInfo.watchOriginalChallengeResponseDto.caption,
+          ),
           videoUrl:
             challengeInfo.watchOriginalChallengeResponseDto.challengeUrl,
         });
       };
       getVideo();
-      const convert = (cap: string) => {
-        const resArray = [];
-        if (cap) {
-          const subtitles = cap.replace('WEBVTT\n\n', '');
-          const subtitle = subtitles.split('\n\n');
-          for (let i = 0; i < subtitle.length; i++) {
-            const sub = subtitle[i].split('\n');
-            const subtitleTime = sub[0].split(' --> ');
-            const subtitleText = sub.slice(1).join('\n');
-            if (subtitleTime) {
-              resArray.push({
-                startTime: convertTime(subtitleTime[0]),
-                endTime: convertTime(subtitleTime[1]),
-                text: subtitleText,
-              });
-            }
-          }
-        }
-        return [...resArray];
-      };
     }
 
     return () => {
       cancelAnimationFrame(animFrame.current);
     };
   }, [data]);
-
   const convertTime = (timeString: string): number => {
     if (!timeString) return 0;
     const time = timeString.split('.')[0].split(/[:,]/).map(parseFloat);
@@ -140,8 +121,6 @@ const ChallengeDetail = ({ challengeList }: Props) => {
       return cancelAnimationFrame(animFrame.current);
     }
   };
-
-  // ==================
 
   const youtubePlayRef = useRef<YouTube>(null);
   const videoRef = useRef<HTMLDivElement>(null);
@@ -218,7 +197,7 @@ const ChallengeDetail = ({ challengeList }: Props) => {
     );
     if (response.code === 200) {
       alert('영상이 삭제되었습니다.');
-      setIsDelete(true);
+      router.push('/challenge');
     } else {
       console.log(response);
     }
@@ -245,7 +224,7 @@ const ChallengeDetail = ({ challengeList }: Props) => {
 
   useEffect(() => {
     if (data) {
-      setIsLike(challengeInfo?.curMemberChallenge.like);
+      setIsLike(challengeInfo?.curMemberChallenge.isLike);
       setLikeCnt(challengeList.likeCount);
     }
   }, [data]);
@@ -290,40 +269,45 @@ const ChallengeDetail = ({ challengeList }: Props) => {
   return (
     <div className="py-5">
       {!isDelete && (
-        <div className="h-[800px]  flex flex-col items-center" ref={videoRef}>
-          <div className="relative overflow-hidden rounded-xl z-0 h-[810px]">
-            <div className={isView ? 'relative h-[810px]' : 'hidden'}>
+        <div className="h-[800px] flex flex-col items-center" ref={videoRef}>
+          <div className="relative overflow-hidden rounded-xl z-0 h-[800px] w-[450px] bg-black">
+            <div className={isView ? 'relative h-[800px]' : 'hidden'}>
               <video
                 ref={memberPlayerRef}
                 src={challengeInfo?.curMemberChallenge.memberChallengeUrl}
-                className="h-[810px] overflow-hidden relative"
+                className="h-[800px] overflow-hidden relative"
               ></video>
-              <div className="absolute top-10 bg-black  h-14 bg-opacity-20 font-black text-white text-2xl flex justify-center items-center w-full">
-                {caption?.eng}
+              <div className="absolute top-10 w-full  flex justify-center items-center">
+                <div className="bg-black h-10 flex items-center bg-opacity-20 font-black text-white md:text-xl ">
+                  {caption?.eng}
+                </div>
               </div>
-              <YouTube
-                videoId={
-                  challengeInfo?.watchOriginalChallengeResponseDto?.challengeUrl
-                }
-                opts={opts}
-                onReady={(event) => {
-                  youtubeRecordRef.current = event.target;
-                  onPlayReady(event);
-                }}
-                ref={youtubePlayRef}
-                onStateChange={(event) => {
-                  playingStateChange(event);
-                  tracePlayer();
-                }}
-                className="absolute bottom-20 left-0 ml-2 mb-2"
-              />
+              {data && (
+                <YouTube
+                  videoId={
+                    challengeInfo?.watchOriginalChallengeResponseDto
+                      ?.challengeUrl
+                  }
+                  opts={opts}
+                  onReady={(event) => {
+                    youtubeRecordRef.current = event.target;
+                    onPlayReady(event);
+                  }}
+                  ref={youtubePlayRef}
+                  onStateChange={(event) => {
+                    playingStateChange(event);
+                    tracePlayer();
+                  }}
+                  className="absolute bottom-20 left-0 ml-2 mb-2"
+                />
+              )}
               {user && (
                 <>
                   <div className="absolute bottom-20 right-0 mr-2 mb-2">
                     <div className="grid-rows-2  m-3">
                       <div className="flex justify-center">
                         <h1 className="font-semibold text-3xl">
-                          {challengeInfo?.curMemberChallenge.like}
+                          {challengeInfo?.curMemberChallenge.isLike}
                         </h1>
                         {isLike && (
                           <AiFillHeart
@@ -417,7 +401,7 @@ const ChallengeDetail = ({ challengeList }: Props) => {
             </div>
             <div className={isView ? 'hidden' : 'relative rounded-xl'}>
               <img
-                src={challengeList.memberChallengeImg}
+                src={challengeList?.memberChallengeImg}
                 alt=""
                 className="h-[810px] overflow-hidden relative"
               />

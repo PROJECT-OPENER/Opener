@@ -6,7 +6,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum Topics {
-	DELETE_MEMBER_CHALLENGE_TO_MEMBER("challenge_topic_delete_member_challenge"),
+	SEND_CHALLENGE_BADGE_TO_MEMBER("challenge_topic_badge"),
 	;
 
 	private String topic;
