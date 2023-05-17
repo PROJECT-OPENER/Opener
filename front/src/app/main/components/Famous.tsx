@@ -74,15 +74,15 @@ const Famous = () => {
                 {contents.map((content, index) => {
                   return (
                     <Link key={index} href={`/challenge/scroll/LIKE/${index}`}>
-                      <div className="relative shadow-custom mr-2 w-[110px] sm:w-[137.5px] h-[160px] sm:h-[200px] rounded-3xl bg-brandP">
+                      <div className="relative shadow-custom mr-2 w-[110px] sm:w-[137.5px] h-[160px] sm:h-[200px] rounded-3xl bg-black flex justify-center items-center">
                         <img
                           src={content.memberChallengeImg}
                           alt=""
                           className="rounded-3xl relative"
                         />
-                        <div className="absolute inset-x-0 bottom-0 left-0 h-8 ml-2 flex text-white">
+                        <div className="absolute inset-x-0 bottom-0 left-0 h-8 ml-2 flex text-white items-center">
                           <AiFillHeart
-                            size={'2rem'}
+                            size={'1rem'}
                             className="fill-white mr-2"
                             style={{
                               filter:

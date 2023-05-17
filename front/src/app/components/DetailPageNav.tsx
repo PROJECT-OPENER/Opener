@@ -10,7 +10,7 @@ type Props = {
 const DetailPageNav = ({ className, title, propEvent }: Props) => {
   return (
     <div
-      className={`${className} grid grid-cols-3 shadow-custom p-3 rounded-xl bg-[#fff6]`}
+      className={`${className} hidden sm:grid md:grid-cols-3 grid-cols-2 shadow-custom p-3 rounded-xl bg-[#fff6]`}
     >
       <Image
         src={'/images/logo.png'}
@@ -20,8 +20,10 @@ const DetailPageNav = ({ className, title, propEvent }: Props) => {
         priority
         className="mt-2"
       />
-      <h1 className="text-center text-3xl font-bold">{title}</h1>
-      <button className="text-end text-xl" onClick={propEvent} type="button">
+      <h1 className="text-center text-3xl font-bold hidden md:block">
+        {title}
+      </h1>
+      <button className="text-end md:text-xl" onClick={propEvent} type="button">
         종료
       </button>
     </div>

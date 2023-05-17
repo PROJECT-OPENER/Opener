@@ -72,7 +72,7 @@ const ChallengeInfo = ({ voiceId }: Props) => {
   }, []);
 
   return (
-    <div className="md:w-2/3 w-full flex flex-col justify-center">
+    <div className="lg:w-1/2 w-full flex flex-col justify-center">
       {isLoading && (
         <div className="h-screen w-screen">
           <h1>로딩중</h1>

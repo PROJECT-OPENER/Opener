@@ -12,8 +12,8 @@ type Props = {
 const OriginalVideo = ({ challengeId }: Props) => {
   const [originVideo, setOriginVideo] = useState<originalVideo>();
   const opts: YouTubeProps['opts'] = {
-    height: '800',
-    width: '450',
+    height: '640',
+    width: '360',
     playerVars: {
       controls: 1,
       loop: 1,
@@ -43,7 +43,7 @@ const OriginalVideo = ({ challengeId }: Props) => {
     getData();
   }, []);
   return (
-    <div className="">
+    <div className="md:p-5 rounded-xl bg-white shadow-lg flex">
       <YouTube videoId={originVideo?.challengeUrl} opts={opts} className="" />
     </div>
   );
