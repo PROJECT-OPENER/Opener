@@ -14,16 +14,18 @@ public class BadgeDto {
 	public BadgeDto(int count) {
 		int level = 1;
 		int standard = 10;
-		int threshold = standard - 1;
+		int beforeLevelScore = 0;
+		int nextLevelScore = 10;
 
-		while (threshold < count) {
+		while (nextLevelScore <= count) {
 			level++;
-			threshold += standard * level;
+			beforeLevelScore = nextLevelScore;
+			nextLevelScore = ((level * (level + 1)) / 2) * standard;
 		}
-
-		int max = (level * (level - 1) / 2) * standard;
-
+		int myScore = count - beforeLevelScore;
+		int interval = nextLevelScore - beforeLevelScore;
+		double pct = ((double)myScore / interval) * 100;
 		this.level = level;
-		this.score = max == 0 ? count : count % max;
+		this.score = (int)Math.round(pct);
 	}
 }
