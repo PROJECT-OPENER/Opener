@@ -1,13 +1,22 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Button from '@/app/components/Button';
 import useSWR from 'swr';
 import { getInterestListApi } from '@/app/api/chatApi';
 import { interestInterface } from '@/types/share';
 import { interestUpdateApi } from '@/app/api/userApi';
+import useUser from '@/app/hooks/userHook';
 
 const InterestsEdit = () => {
+  const { user, mutate } = useUser();
+  useEffect(() => {
+    let useIndex: number[] = [];
+    user.data.interests.map((item: interestInterface) => {
+      useIndex.push(item.interestId);
+    });
+    setActiveIndex(useIndex);
+  }, []);
   const { data, isLoading } = useSWR('get/interest', getInterestListApi, {
     focusThrottleInterval: 5000,
   });
@@ -27,7 +36,7 @@ const InterestsEdit = () => {
     try {
       await interestUpdateApi(activeIndex);
       alert('관심사 수정이 완료되었습니다.');
-      setActiveIndex([]);
+      mutate();
     } catch (err) {
       alert(err);
     }

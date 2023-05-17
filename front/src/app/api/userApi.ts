@@ -73,10 +73,17 @@ export const myPageApi = async () => {
 
 // 닉네임 수정
 export const updateNicknameApi = async (payload: string) => {
-  const response = await memberApi.patch(`/auth/members/mypage/nickname`, {
-    nickname: payload,
-  });
-  return response.data;
+  return memberApi
+    .patch(`/auth/members/mypage/nickname`, {
+      nickname: payload,
+    })
+    .then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      alert(error);
+      throw error;
+    });
 };
 
 // 비밀번호
