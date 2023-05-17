@@ -2,7 +2,6 @@
 import CheckDiction from './CheckDiction';
 import ViewDict from './ViewDict';
 import { useRef, useState, useEffect } from 'react';
-import { WordTokenizer } from 'natural';
 import styles from './ViewScript.module.css';
 import YouTube, { YouTubePlayer } from 'react-youtube';
 import {
@@ -44,7 +43,7 @@ const ViewScript = ({ params }: { params: { slug: string } }) => {
   const [checkDiction, setCheckDiction] = useState<boolean>(false);
   const [searchWord, setSearchWord] = useState<searchWordInterface>();
   const [caption, setCaption] = useState<{
-    eng: string[] | null;
+    eng: string;
     kor: string;
   }>();
   const [count, setCount] = useState<number>(1);
@@ -53,7 +52,6 @@ const ViewScript = ({ params }: { params: { slug: string } }) => {
   const [isMarked, setIsMarked] = useState<boolean>(false); // 북마크 여부를 담는 state
   const [isRepeat, setIsRepeat] = useState<boolean>(false); // 구간반복 상태 변경 시 css 변경을 위한 state
   const isRepeatRef = useRef<boolean>(false); // 구간반복 여부를 담는 참조값
-  const tokenizer = new WordTokenizer(); // 단어 형태소 분석
   const subRangeRef = useRef<{ start: number; end: number }>(); // 현재 자막이 나오는 구간(시간)을 담는 참조값
   const [second, setSecond] = useState<number>(); // 발음체크 시 카운트를 담을 state
   const [videoInfo, setVideoInfo] = useState<videoInfoType>(); // 가져온 영상 정보를 담는 state
@@ -120,11 +118,7 @@ const ViewScript = ({ params }: { params: { slug: string } }) => {
   };
 
   const bookMark = () => {
-    if (isMarked) {
-      setBookmarkApi(videoId, false);
-    } else {
-      setBookmarkApi(videoId, true);
-    }
+    setBookmarkApi(videoId);
     setIsMarked(!isMarked);
   };
 
@@ -198,9 +192,7 @@ const ViewScript = ({ params }: { params: { slug: string } }) => {
             };
             setCaption({
               ...caption,
-              eng: tokenizer.tokenize(
-                videoInfo?.engCaption[i].text,
-              ) as string[],
+              eng: videoInfo?.engCaption[i].text,
               kor: videoInfo.korCaption[i].text,
             });
           }
@@ -260,6 +252,7 @@ const ViewScript = ({ params }: { params: { slug: string } }) => {
       cancelAnimationFrame(raf.current); // requestAnimationFrame(tracePlayer) 후 clear <= 메모리 누수 방지
     };
   }, []);
+  const reg = /[`~!@#$%^&*()_|+\-=?;:'",.<>{}[\]\\/]/gim;
 
   return (
     <div className="relative flex flex-col justify-center items-center lg:absolute lg:top-0 lg:left-0 w-full h-full">
@@ -318,7 +311,7 @@ const ViewScript = ({ params }: { params: { slug: string } }) => {
                   subRangeRef={subRangeRef}
                   showCountRef={showCountRef}
                   isRepeatRef={isRepeatRef}
-                  captionArray={caption?.eng}
+                  engCaption={caption?.eng.replace(reg, '')}
                 />
               </>
             ) : (
@@ -365,14 +358,14 @@ const ViewScript = ({ params }: { params: { slug: string } }) => {
                   <div className="english_subtitle">
                     {count > 3 &&
                       count <= 13 &&
-                      caption?.eng?.map((word, index) => {
+                      caption?.eng?.split(' ').map((word, index) => {
                         return (
                           <span key={index}>
                             <span
                               onClick={() => searchDict(word)}
                               className={styles.word}
                             >
-                              {word}
+                              {word.toLowerCase()}
                             </span>{' '}
                           </span>
                         );

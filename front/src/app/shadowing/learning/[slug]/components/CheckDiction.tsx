@@ -11,6 +11,7 @@ import {
 } from 'microsoft-cognitiveservices-speech-sdk';
 import { Chart } from './chart';
 const CheckDiction = (props: any) => {
+  console.log(props.engCaption);
   const [assessmentResult, setAssessmentResult] = useState<any>();
 
   const backBtn = () => {
@@ -23,7 +24,7 @@ const CheckDiction = (props: any) => {
   const [isRecording, setIsRecording] = useState<boolean>(false);
 
   const context = {
-    referenceText: props.text,
+    referenceText: props.engCaption,
     gradingSystem: 'HundredMark',
     granularity: 'Phoneme',
     phonemeAlphabet: 'IPA',
@@ -131,10 +132,10 @@ const CheckDiction = (props: any) => {
   }, []);
 
   const result = async (result: any) => {
-    if (props.captionArray && result.RecognitionStatus === 'Success') {
+    if (props.engCaption && result.RecognitionStatus === 'Success') {
       const res = result.NBest[0];
       const Lexical = res.Lexical.split(' ');
-      const caption = props.captionArray;
+      const caption = props.engCaption.split(' ');
       // caption과 Lexical 비교 =>  최장공통부분수열 LCS(Longest Common Subsequence)
       // 1. 2차원 배열 초기화
       const n = caption.length;
@@ -197,7 +198,7 @@ const CheckDiction = (props: any) => {
         list: recognized,
       }); // 발음 결과
     } else if (
-      props.captionArray &&
+      props.engCaption &&
       result.RecognitionStatus === 'EndOfDictation'
     ) {
       console.log('EndOfDictation');
@@ -206,7 +207,7 @@ const CheckDiction = (props: any) => {
   return (
     <div className="relative flex flex-col justify-between h-full">
       <div className="mb-4 min-h-[60px]">
-        <p className="font-bold mb-2">{props.captionArray?.join(' ')}</p>
+        <p className="font-bold mb-2">{props.engCaption}</p>
         <p className="font-semibold">
           {assessmentResult?.list.map((caption: any, index: number) => {
             return (
@@ -214,27 +215,20 @@ const CheckDiction = (props: any) => {
                 <span>
                   {caption.isPron ||
                   caption.pronunciationAssessment?.AccuracyScore > 70 ? (
-                    <span className="text-[#04ff00] cursor-pointer">
+                    <span className="text-[#2da15e] cursor-pointer">
                       {caption.word}
                     </span>
                   ) : caption.isPron ||
-                    caption.pronunciationAssessment?.AccuracyScore > 50 ? (
-                    <span className="text-[#ffbd08] cursor-pointer">
-                      {caption.word}
-                    </span>
-                  ) : caption.isPron ||
-                    caption.pronunciationAssessment?.ErrorType !== 'None' ? (
-                    <span className="text-[#ff1b1b] cursor-pointer">
+                    caption.pronunciationAssessment?.AccuracyScore < 50 ? (
+                    <span className="text-[#ff7142] cursor-pointer">
                       {caption.word}
                     </span>
                   ) : (
-                    <span className="text-[#808080] cursor-pointer">
+                    <span className="text-[#a7a7a7] cursor-pointer">
                       {caption.word}
                     </span>
                   )}
                 </span>{' '}
-                {/* AccuracyScore: 100
-                    ErrorType: "None" */}
               </span>
             );
           })}
@@ -242,7 +236,7 @@ const CheckDiction = (props: any) => {
       </div>
       <div className="flex flex-col justify-center items-center mb-3">
         {assessmentResult?.assessment ? (
-          <div className="bg-slate-50 rounded-md border py-3 px-2">
+          <div className="bg-slate-50 rounded-md border py-3 px-2 w-full">
             <p className="text-center font-semibold">발음 평가 결과</p>
             <div className="flex flex-row justify-center items-center">
               <div className="w-[100px] ">
