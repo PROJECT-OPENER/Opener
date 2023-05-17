@@ -71,6 +71,7 @@ export const getRecommendListApi = async () => {
 
 export const setCountVideoApi = async (videoId: string) => {
   const session = await getSession();
+  console.log('????');
   const accessToken = session?.user?.user?.accessToken;
   if (accessToken) {
     return await shadowingApi
@@ -133,4 +134,9 @@ export const translateCaptionApi = async (data: string) => {
   );
   console.log(response);
   return response.data.choices[0].text;
+};
+
+export const patchCaptionApi = async (payload: any, videoId: string) => {
+  const res = await shadowingApi.patch(`/videos/${videoId}`, payload);
+  console.log(res, 'payload :', payload);
 };

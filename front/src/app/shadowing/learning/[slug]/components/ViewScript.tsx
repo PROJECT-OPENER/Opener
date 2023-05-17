@@ -11,6 +11,8 @@ import {
   setBookmarkApi,
   getCaptionApi,
   translateCaptionApi,
+  dictionaryApi,
+  patchCaptionApi,
 } from '@/app/api/shadowingApi';
 import {
   BsMic,
@@ -23,7 +25,6 @@ import {
 import { TfiAngleLeft } from 'react-icons/tfi';
 import { scriptInterface, searchWordInterface } from '@/types/share';
 import Link from 'next/link';
-import { dictionaryApi } from '@/app/api/shadowingApi';
 
 type videoInfoType =
   | {
@@ -65,6 +66,14 @@ const ViewScript = ({ params }: { params: { slug: string } }) => {
         data.engCaption = await getCaptionApi(data.videoUrl);
         data.korCaption = await translateCaptionApi(
           data.engCaption.replace('WEBVTT\n\n', ''),
+        );
+        // 자막 업데이트
+        patchCaptionApi(
+          {
+            engCaption: data.engCaption,
+            korCaption: data.korCaption,
+          },
+          videoId,
         );
       }
       setVideoInfo({
@@ -125,6 +134,7 @@ const ViewScript = ({ params }: { params: { slug: string } }) => {
   };
 
   const addCount = () => {
+    console.log('addcound');
     setCount(count + 1);
     setCountVideoApi(videoId);
   };
@@ -314,13 +324,23 @@ const ViewScript = ({ params }: { params: { slug: string } }) => {
             ) : (
               <>
                 <div>
-                  <button
-                    className="rounded-2xl border w-[4rem]"
-                    onClick={setPlayerSpeed}
-                  >
-                    {speed}x
-                  </button>
-                  {/* <button>drill</button> */}
+                  <div className="flex flex-row justify-between">
+                    <button
+                      className="rounded-2xl border w-[4rem] hover:bg-[#f7f7f7] active:bg-[#f1f1f1]"
+                      onClick={setPlayerSpeed}
+                    >
+                      {speed}x
+                    </button>
+                    <div className="text-sm text-blue-500">
+                      {count >= 0 && count <= 3 && (
+                        <p>한글 자막만 표시됩니다</p>
+                      )}
+                      {count > 3 && count <= 13 && (
+                        <p>한글 자막과 영어 자막이 함께 표시됩니다</p>
+                      )}
+                      {count > 13 && <p>이제부터는 자막 없이 재생됩니다</p>}
+                    </div>
+                  </div>
                   <div className="flex flex-row justify-between ">
                     <button
                       className="p-2 absolute top-0 left-[-2rem]
@@ -343,24 +363,28 @@ const ViewScript = ({ params }: { params: { slug: string } }) => {
                 </div>
                 <div className="mt-2 mb-5 min-h-[60px]">
                   <div className="english_subtitle">
-                    {caption?.eng?.map((word, index) => {
-                      return (
-                        <span key={index}>
-                          <span
-                            onClick={() => searchDict(word)}
-                            className={styles.word}
-                          >
-                            {word}
-                          </span>{' '}
-                        </span>
-                      );
-                    })}
+                    {count > 3 &&
+                      count <= 13 &&
+                      caption?.eng?.map((word, index) => {
+                        return (
+                          <span key={index}>
+                            <span
+                              onClick={() => searchDict(word)}
+                              className={styles.word}
+                            >
+                              {word}
+                            </span>{' '}
+                          </span>
+                        );
+                      })}
                   </div>
-                  <div className="korean_subtitle">{caption?.kor}</div>
+                  <div className="korean_subtitle">
+                    {count >= 0 && count <= 7 && caption?.kor}
+                  </div>
                 </div>
                 <div className="flex flex-row justify-between items-center">
                   <button
-                    className="rounded-full p-2 bg-[#EFEFEF]"
+                    className="rounded-full p-2 bg-[#EFEFEF] hover:bg-[#f7f7f7] active:bg-[#f1f1f1]"
                     onClick={() => {
                       isRepeatRef.current = true;
                       setCheckDiction(true);
@@ -373,8 +397,8 @@ const ViewScript = ({ params }: { params: { slug: string } }) => {
                       onClick={bookMark}
                       className={
                         isMarked
-                          ? 'rounded-full p-2 bg-brandP'
-                          : 'rounded-full p-2 bg-[#EFEFEF]'
+                          ? 'rounded-full p-2 bg-brandP hover:bg-[#8e38ff] active:bg-[#6110ca]'
+                          : 'rounded-full p-2 bg-[#EFEFEF] hover:bg-[#f7f7f7] active:bg-[#f1f1f1]'
                       }
                     >
                       {isMarked ? (
@@ -387,8 +411,8 @@ const ViewScript = ({ params }: { params: { slug: string } }) => {
                       onClick={repeat}
                       className={
                         isRepeat
-                          ? 'rounded-full p-2 ml-2 bg-brandP'
-                          : 'rounded-full p-2 ml-2 bg-[#EFEFEF]'
+                          ? 'rounded-full p-2 ml-2 bg-brandP hover:bg-[#8e38ff] active:bg-[#6110ca]'
+                          : 'rounded-full p-2 ml-2 bg-[#EFEFEF] hover:bg-[#f7f7f7] active:bg-[#f1f1f1]'
                       }
                     >
                       {isRepeat ? (

@@ -15,12 +15,17 @@ const ShowList = (props: { category: string }) => {
   const getKey = (pageIndex: number) => {
     const startIndex = pageIndex * 10;
     const endIndex = pageIndex * 10 + 9;
-    return `/shadowings?category=${category}&startIndex=${startIndex}&endIndex=${endIndex}`; // SWR 키
+    if (props.category === 'recommend') {
+      console.log('추천');
+      return '/fast/recommendations/{member-id}/${startIndex}/${endIndex}';
+    } else {
+      return `/shadowings?category=${category}&startIndex=${startIndex}&endIndex=${endIndex}`; // SWR 키
+    }
   };
 
   const { data, size, setSize } = useSWRInfinite(getKey, getShadowingListApi);
   const [contents, setContents] = useState<any>([]);
-  console.log('재 랜더링');
+  // console.log('재 랜더링');
   useEffect(() => {
     if (data) {
       const arr = [];
