@@ -13,5 +13,6 @@ public class LoginMemberResponseDto {
 	private String email;
 	private String nickname;
 	private String profile;
+	private int score;
 	private List<InterestDto> interests;
 }
