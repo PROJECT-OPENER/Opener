@@ -62,21 +62,12 @@ const TopNavPc = () => {
         <div className="ml-[5rem]">
           {session ? (
             <div className="flex space-x-3">
-              <button
-                type="button"
-                className="border-2 p-3 bg-red-200"
-                onClick={handleLogout}
-              >
-                로그아웃
-              </button>
-              <Link href={'/mypage'}>
-                <ProfileImage
-                  className="h-10 w-10 lg:h-12 lg:w-12 hover:cursor-pointer shadow-custom rounded-full"
-                  profileUrl={user?.data.profile || null}
-                  height={500}
-                  width={500}
-                />
-              </Link>
+              <ProfileImage
+                className="h-10 w-10 lg:h-12 lg:w-12 hover:cursor-pointer shadow-custom rounded-full"
+                profileUrl={user?.data.profile || null}
+                height={500}
+                width={500}
+              />
             </div>
           ) : (
             <div>

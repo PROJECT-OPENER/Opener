@@ -5,14 +5,14 @@ import { useRouter } from 'next/navigation';
 import useSWR from 'swr';
 import { getInterestListApi } from '@/app/api/chatApi';
 import { interestInterface } from '@/types/share';
-import { useSetRecoilState } from 'recoil';
-import { aiChatSub } from '../store';
+import { useRecoilState, useSetRecoilState } from 'recoil';
+import { aiChatMessageListState, aiChatSub } from '../store';
 
 const ChoiceBox = () => {
   const { data, isLoading } = useSWR('get/interest', getInterestListApi, {
     focusThrottleInterval: 5000,
   });
-
+  const aiChatMessageList = useSetRecoilState(aiChatMessageListState);
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [selected, setSelected] = useState<string>('');
   const setAiSub = useSetRecoilState(aiChatSub);
@@ -21,6 +21,7 @@ const ChoiceBox = () => {
   useEffect(() => {
     setActiveIndex(null);
     setAiSub({ subIndex: 0, name: '' });
+    aiChatMessageList([]);
   }, []);
 
   const handleClick = () => {

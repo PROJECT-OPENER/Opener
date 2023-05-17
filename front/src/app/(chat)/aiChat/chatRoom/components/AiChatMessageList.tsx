@@ -55,10 +55,12 @@ const AiChatMessageList = ({ handleReceiveMessage }: Props) => {
     }
   };
   const textToSpeech = (text: string) => {
+    // const voice = window.speechSynthesis.getVoices();
+    // console.log(voice);
     const speech = new SpeechSynthesisUtterance(text);
+    console.log(synth);
     speech.lang = 'en-US';
-    speech.rate = 0.8;
-    speech.voice = synth[4];
+    speech.voice = synth[2];
     console.log(speech);
     window.speechSynthesis.speak(speech);
   };
@@ -86,7 +88,7 @@ const AiChatMessageList = ({ handleReceiveMessage }: Props) => {
                 onClick={handleRobotClick}
               />
               <div className="">
-                <div>AI</div>
+                <div className="text-black">AI</div>
                 <div className="other-chat">
                   {message.text}
                   <button

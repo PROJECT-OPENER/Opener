@@ -8,10 +8,13 @@ import { useSession, signOut } from 'next-auth/react';
 import { topNavNone } from '@/util/navControl';
 import useUser from '../hooks/userHook';
 import { logoutApi } from '../api/userApi';
+import NavDropdown from './NavDropdown';
+import { useState } from 'react';
 
 const TopNav = () => {
   const { data: session } = useSession();
   const pathname: string = usePathname();
+  const [isOpen, setIsOpen] = useState(false);
   const { user, isLoading, error } = useUser();
   if (user) {
     if (user.data.interests.length === 0 && pathname !== '/interest') {
@@ -36,7 +39,7 @@ const TopNav = () => {
         <Image src={logo.src} alt="Logo" width={100} height={24} priority />
       </Link>
       <div className="flex flex-row">
-        <div className="hidden lg:flex flex-row space-x-12 items-center text-medium">
+        <div className="hidden lg:flex flex-row space-x-12 items-center text-medium rounded-xl">
           <Link
             className={
               'hover:text-brandP  active:text-black hover:underline underline-offset-4'
@@ -73,21 +76,7 @@ const TopNav = () => {
         <div className="ml-[5rem]">
           {session ? (
             <div className="flex space-x-3">
-              <button
-                type="button"
-                className="border-2 p-3 bg-red-200"
-                onClick={handleLogout}
-              >
-                로그아웃
-              </button>
-              <Link href={'/mypage'}>
-                <ProfileImage
-                  className="h-10 w-10 lg:h-12 lg:w-12 hover:cursor-pointer shadow-custom rounded-full"
-                  profileUrl={user?.data.profile || null}
-                  height={500}
-                  width={500}
-                />
-              </Link>
+              <NavDropdown />
             </div>
           ) : (
             <div>

@@ -31,7 +31,6 @@ import { openAiContextScore } from '@/app/api/openAi';
 import { checkGrammer } from '@/util/AiChat';
 import Loading from '@/app/components/Loading';
 import { useRouter } from 'next/navigation';
-import Image from 'next/image';
 import UserChatRoundPc from './UserChatRoundPc';
 import UserChatModel from '../../components/UserChatModel';
 import {
@@ -547,7 +546,7 @@ const ChatRoom = () => {
       <div className="max-lg:hidden">
         <div className="absolute top-0 left-0 h-[100vh] w-[100vw] flex flex-row justify-center items-end pb-10 px-8">
           <DetailPageNav
-            className="max-w-[1500px] absolute top-3 left-10 right-10"
+            className="max-w-[1500px] absolute top-3 left-10 right-10 mx-auto"
             title="TREB"
             propEvent={handleLeftGame}
           />
