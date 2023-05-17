@@ -204,8 +204,13 @@ public class ChallengeServiceImpl implements ChallengeService {
 		if (endIndex > memberChallengeResponseDtoList.size()) {
 			endIndex = memberChallengeResponseDtoList.size();
 		}
-		return MemberChallengeListResponseDto.from(memberChallengeResponseDtoList.size(),
-			memberChallengeResponseDtoList.subList(startIndex, endIndex));
+		List<MemberChallengeResponseDto> memberChallengeResultList = memberChallengeResponseDtoList.subList(
+			startIndex, endIndex);
+		if(startIndex>0) {
+			memberChallengeResultList.addAll(memberChallengeResponseDtoList.subList(0,startIndex));
+		}
+		return MemberChallengeListResponseDto.from(memberChallengeResultList.size(),
+			memberChallengeResultList);
 	}
 
 	/**
