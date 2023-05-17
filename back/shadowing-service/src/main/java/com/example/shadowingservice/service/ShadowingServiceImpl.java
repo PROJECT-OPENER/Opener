@@ -1,6 +1,8 @@
 package com.example.shadowingservice.service;
 
+import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,6 +18,7 @@ import com.example.shadowingservice.common.StepMap;
 import com.example.shadowingservice.common.exception.ApiException;
 import com.example.shadowingservice.common.exception.ExceptionEnum;
 import com.example.shadowingservice.dto.request.CaptionDto;
+import com.example.shadowingservice.dto.request.ThumbnailRequestDto;
 import com.example.shadowingservice.dto.response.AuthMainThemeRoadMapResponseDto;
 import com.example.shadowingservice.dto.response.AuthNoRoadMapResponseDto;
 import com.example.shadowingservice.dto.response.AuthRoadMapResponseDto;
@@ -50,6 +53,7 @@ import com.example.shadowingservice.repository.ShadowingStatusRepository;
 import com.example.shadowingservice.repository.ShadowingVideoInterestRepository;
 import com.example.shadowingservice.repository.ShadowingVideoRepository;
 import com.example.shadowingservice.repository.StepRepository;
+import com.google.firebase.auth.FirebaseAuthException;
 
 import lombok.RequiredArgsConstructor;
 
@@ -66,6 +70,7 @@ public class ShadowingServiceImpl implements ShadowingService {
 	private final RoadmapRepository roadmapRepository;
 	private final MemberRepository memberRepository;
 	private final KafkaProducer kafkaProducer;
+	private final FireBaseService fireBaseService;
 
 	/**
 	 * 이우승
@@ -553,6 +558,35 @@ public class ShadowingServiceImpl implements ShadowingService {
 	public Roadmap getMemberRoadmap(Long memberId) {
 		Roadmap roadmap = roadmapRepository.findByMember_MemberId(memberId);
 		return roadmap;
+	}
+
+	/**
+	 * 이우승
+	 * explain : 파이어베이스 썸네일 등록
+	 * @param videoId
+	 * @param thumbnailRequestDto
+	 * @param memberId
+	 * @throws IOException
+	 * @throws FirebaseAuthException
+	 */
+
+	@Override
+	public void updateShadowingThumbnail(Long videoId, ThumbnailRequestDto thumbnailRequestDto, Long memberId) throws
+		IOException,
+		FirebaseAuthException {
+		ShadowingVideo shadowingVideo = shadowingVideoRepository.findByVideoId(videoId)
+			.orElseThrow(() -> new ApiException(ExceptionEnum.SHADOWING_NOT_FOUND_EXCEPTION));
+		Member member = memberRepository.findById(memberId)
+			.orElseThrow(() -> new ApiException(ExceptionEnum.MEMBER_NOT_FOUND_EXCEPTION));
+		String fileName = "shadowingVideo_" + shadowingVideo.getVideoId()  +  LocalDateTime.now();
+		if (thumbnailRequestDto.getThumbnailFile().isEmpty()) {
+			throw new ApiException(ExceptionEnum.FILE_NOT_FOUND_EXCEPTION);
+		}
+
+		String imgUrl = fireBaseService.uploadFiles(thumbnailRequestDto.getThumbnailFile(),
+			fileName + "_img");
+		shadowingVideo.updateThumbnailUrl(imgUrl);
+		shadowingVideoRepository.save(shadowingVideo);
 	}
 
 }
