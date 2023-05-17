@@ -317,7 +317,7 @@ public class ShadowingServiceImpl implements ShadowingService {
 		int themeCount = stepRepository.getThemeCount(roadmap.getStepNo());
 		int sentenceNoLength = stepRepository.getSentenceCount(roadmap.getStepNo(), roadmap.getStepTheme());
 
-		if(shadowingVideo.getStepId() != null) {
+		if (shadowingVideo.getStepId() != null) {
 			if (step.getStepNo() == roadmap.getStepNo() && step.getStepTheme() == roadmap.getStepTheme()
 				&& step.getSentenceNo() == roadmap.getSentenceNo()) {
 
@@ -349,7 +349,6 @@ public class ShadowingServiceImpl implements ShadowingService {
 						.sentenceNo(roadmap.getSentenceNo() + 1)
 						.build());
 				}
-
 			}
 		}
 
@@ -567,20 +566,19 @@ public class ShadowingServiceImpl implements ShadowingService {
 	 * explain : 파이어베이스 썸네일 등록
 	 * @param videoId
 	 * @param thumbnailRequestDto
-	 * @param memberId
 	 * @throws IOException
 	 * @throws FirebaseAuthException
 	 */
 
 	@Override
-	public void updateShadowingThumbnail(Long videoId, ThumbnailRequestDto thumbnailRequestDto, Long memberId) throws
+	@Transactional
+	public void updateShadowingThumbnail(Long videoId, ThumbnailRequestDto thumbnailRequestDto) throws
 		IOException,
 		FirebaseAuthException {
 		ShadowingVideo shadowingVideo = shadowingVideoRepository.findByVideoId(videoId)
 			.orElseThrow(() -> new ApiException(ExceptionEnum.SHADOWING_NOT_FOUND_EXCEPTION));
-		Member member = memberRepository.findById(memberId)
-			.orElseThrow(() -> new ApiException(ExceptionEnum.MEMBER_NOT_FOUND_EXCEPTION));
-		String fileName = "shadowingVideo_" + shadowingVideo.getVideoId()  +  LocalDateTime.now();
+
+		String fileName = "shadowingVideo_" + shadowingVideo.getVideoId() + LocalDateTime.now();
 		if (thumbnailRequestDto.getThumbnailFile().isEmpty()) {
 			throw new ApiException(ExceptionEnum.FILE_NOT_FOUND_EXCEPTION);
 		}
@@ -588,7 +586,6 @@ public class ShadowingServiceImpl implements ShadowingService {
 		String imgUrl = fireBaseService.uploadFiles(thumbnailRequestDto.getThumbnailFile(),
 			fileName + "_img");
 		shadowingVideo.updateThumbnailUrl(imgUrl);
-		shadowingVideoRepository.save(shadowingVideo);
 	}
 
 }

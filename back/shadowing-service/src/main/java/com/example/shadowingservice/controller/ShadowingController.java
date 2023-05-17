@@ -182,12 +182,19 @@ public class ShadowingController {
 			.body(new BaseResponseDto<>(200, "단어 조회 성공", dictionaryResponseDto));
 	}
 
-	@PostMapping("/challenges/{challengeId}/member-challenge")
-	public ResponseEntity<BaseResponseDto> createMemberChallenge(HttpServletRequest request,
-		@PathVariable Long videoId, @ModelAttribute ThumbnailRequestDto thumbnailRequestDto)
+	/**
+	 * 이우승
+	 * explain : 썸네일 파이어베이스에 등록
+	 * @param videoId
+	 * @param thumbnailRequestDto
+	 * @return
+	 * @throws IOException
+	 * @throws FirebaseAuthException
+	 */
+	@PostMapping("/shadowings/{video-id}")
+	public ResponseEntity<BaseResponseDto> createMemberChallenge(@PathVariable("video-id") Long videoId, @ModelAttribute ThumbnailRequestDto thumbnailRequestDto)
 		throws IOException, FirebaseAuthException {
-		Long memberId = Long.parseLong(request.getHeader("memberId"));
-		shadowingService.updateShadowingThumbnail(videoId, thumbnailRequestDto, memberId);
+		shadowingService.updateShadowingThumbnail(videoId, thumbnailRequestDto);
 		return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseDto<>(200, "썸네일 저장 완료"));
 	}
 
