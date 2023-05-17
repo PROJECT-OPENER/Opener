@@ -10,8 +10,7 @@ type videoInfoType = {
   engCaption: any;
   videoUrl: string;
 };
-import { getSession } from 'next-auth/react';
-import axios from 'axios';
+
 import React, { useRef, useEffect, useState } from 'react';
 import YouTube, { YouTubeProps } from 'react-youtube';
 import { memberChallenge, challengeDetail } from '@/types/share';
@@ -25,10 +24,11 @@ import { AiFillHeart } from 'react-icons/ai';
 import { RiShareForwardFill, RiDeleteBin5Fill } from 'react-icons/ri';
 import useSWR from 'swr';
 import { fetcher } from '@/app/api/axiosConfig';
+import { useRouter } from 'next/navigation';
 
 const ChallengeDetail = ({ challengeList }: Props) => {
   const BASE_URL = process.env.NEXT_PUBLIC_SERVER_URL;
-
+  const router = useRouter();
   const { user } = useUser();
   const [caption, setCaption] = useState<any>();
   const [videoInfo, setVideoInfo] = useState<videoInfoType>(); // 가져온 영상 정보를 담는 state
@@ -197,7 +197,7 @@ const ChallengeDetail = ({ challengeList }: Props) => {
     );
     if (response.code === 200) {
       alert('영상이 삭제되었습니다.');
-      setIsDelete(true);
+      router.push('/challenge');
     } else {
       console.log(response);
     }
@@ -270,17 +270,17 @@ const ChallengeDetail = ({ challengeList }: Props) => {
     <div className="py-5">
       {!isDelete && (
         <div className="h-[800px] flex flex-col items-center" ref={videoRef}>
-          <div className="relative overflow-hidden rounded-xl z-0 h-[810px]  bg-black">
-            <div className={isView ? 'relative h-[810px]' : 'hidden'}>
+          <div className="relative overflow-hidden rounded-xl z-0 h-[800px] w-[450px] bg-black">
+            <div className={isView ? 'relative h-[800px]' : 'hidden'}>
               <video
                 ref={memberPlayerRef}
                 src={challengeInfo?.curMemberChallenge.memberChallengeUrl}
-                className="h-[810px] overflow-hidden relative"
+                className="h-[800px] overflow-hidden relative"
               ></video>
               <div className="absolute top-10 w-full  flex justify-center items-center">
-                <p className="bg-black px-2 h-10 flex items-center bg-opacity-20 font-black text-white md:text-2xl ">
+                <div className="bg-black h-10 flex items-center bg-opacity-20 font-black text-white md:text-xl ">
                   {caption?.eng}
-                </p>
+                </div>
               </div>
               {data && (
                 <YouTube

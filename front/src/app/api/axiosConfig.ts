@@ -120,6 +120,9 @@ const handleResponseError = (error: AxiosError): Promise<AxiosError> => {
   // custom error handling : member-service
   if (errCode >= -121 && errCode <= -100) return Promise.reject(errMsg);
 
+  // custom error handling : challenge-service / shooting
+  if (errCode <= -411 && errCode >= -413) return Promise.reject(errMsg);
+
   return Promise.reject(error);
 };
 
