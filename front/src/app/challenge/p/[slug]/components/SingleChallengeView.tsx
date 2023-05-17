@@ -140,7 +140,7 @@ const SingleChallengeView = ({ challengeId }: Props) => {
 
   useEffect(() => {
     if (data) {
-      setIsLike(challengeInfo?.curMemberChallenge.like);
+      setIsLike(challengeInfo?.curMemberChallenge.isLike);
     }
   }, [data]);
 
@@ -297,7 +297,7 @@ const SingleChallengeView = ({ challengeId }: Props) => {
                       <div className="grid-rows-2 m-3">
                         <div className="flex justify-center">
                           <h1 className="font-semibold text-3xl">
-                            {challengeInfo?.curMemberChallenge.like}
+                            {challengeInfo?.curMemberChallenge.isLike}
                           </h1>
                           {isLike && (
                             <AiFillHeart
