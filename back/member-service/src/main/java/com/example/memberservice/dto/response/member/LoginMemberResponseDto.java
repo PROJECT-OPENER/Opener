@@ -14,5 +14,6 @@ public class LoginMemberResponseDto {
 	private String nickname;
 	private String profile;
 	private int score;
+	private Long rank;
 	private List<InterestDto> interests;
 }
