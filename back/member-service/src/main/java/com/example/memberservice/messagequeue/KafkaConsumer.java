@@ -91,4 +91,34 @@ public class KafkaConsumer {
 
 		badge.updateChallengeCount();
 	}
+
+	@KafkaListener(topics = "shadowing_topic_badge")
+	@Transactional
+	public void processShadowingBadge(String kafkaMessage) {
+		log.info("Process Shadowing Badge : ===> " + kafkaMessage);
+
+		Map<Object, Integer> map = new HashMap<>();
+		try {
+			map = objectMapper.readValue(kafkaMessage, new TypeReference<Map<Object, Integer>>() {
+			});
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+		}
+		Long memberId = Long.valueOf(map.get("memberId"));
+		Member member = memberRepository.findById(memberId)
+			.orElseThrow(() -> new ApiException(ExceptionEnum.MEMBER_NOT_FOUND_EXCEPTION));
+
+		Badge badge = badgeRepository.findByMember_MemberId(member.getMemberId()).orElseGet(() -> {
+			Badge newBadge = Badge.builder()
+				.member(member)
+				.attendanceCount(0)
+				.shadowingCount(0)
+				.challengeCount(0)
+				.gameCount(0)
+				.build();
+			return badgeRepository.save(newBadge);
+		});
+
+		badge.updateShadowingCount();
+	}
 }
