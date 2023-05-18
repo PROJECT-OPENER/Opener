@@ -41,18 +41,31 @@ const Categories = () => {
     wheelPropagation: true,
     minScrollbarLength: 2,
   };
-  const [selected, setSelected] = useState<string>('아이브');
+  const [selected, setSelected] = useState<string>('전체');
   const categories = [
-    ['전체', 'all'],
+    ['전체', '전체'],
     ['추천', 'recommend'],
-    ['영화', 'movie'],
-    ['북마크', 'bookmark'],
-    ['여행', 'travel'],
-    ['독서', 'book'],
-    ['음악', 'music'],
-    ['오락', 'entertain'],
-    ['스포츠', 'sport'],
+    ['영화', '영화'],
+    ['북마크', '북마크'],
+    ['여행', '여행'],
+    ['애니메이션', '애니메이션'],
+    ['음악', '음악'],
+    ['음식', '음식'],
+    ['일상', '일상'],
+    ['비즈니스', '비즈니스'],
+    ['스포츠', '스포츠'],
   ];
+
+  // 영화;
+  // 여행;
+  // 음악;
+  // 스포츠;
+  // 음식;
+  // 일상;
+  // 애니메이션;
+  // 비즈니스;
+  // 전체;
+  // 북마크;
 
   const clickCat = (category: string) => {
     setSelected(category);

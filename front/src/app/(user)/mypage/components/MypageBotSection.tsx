@@ -21,33 +21,27 @@ const MypageBotSection = () => {
           onClick={() => {
             setActiveTab(0);
           }}
-          className={`${
-            activeTab === 0 ? 'bg-purple-200' : ''
-          } w-full flex justify-center h-full p-3`}
+          className="w-full flex justify-center h-full p-3"
         >
-          <CgMenuGridO />
+          <CgMenuGridO color={activeTab === 0 ? '#7D17FF' : ''} />
         </button>
         <button
           type="button"
           onClick={() => {
             setActiveTab(1);
           }}
-          className={`${
-            activeTab === 1 ? 'bg-purple-200' : ''
-          } w-full flex justify-center h-full p-3`}
+          className="w-full flex justify-center h-full p-3"
         >
-          <CgHeart />
+          <CgHeart color={activeTab === 1 ? '#7D17FF' : ''} />
         </button>
         <button
           type="button"
           onClick={() => {
             setActiveTab(2);
           }}
-          className={`${
-            activeTab === 2 ? 'bg-purple-200' : ''
-          } w-full flex justify-center h-full p-3`}
+          className="w-full flex justify-center h-full p-3"
         >
-          <SlBadge />
+          <SlBadge color={activeTab === 2 ? '#7D17FF' : ''} />
         </button>
       </div>
       <div className="content-box px-10 py-3">{tabList[activeTab]}</div>
