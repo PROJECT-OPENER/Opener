@@ -10,6 +10,7 @@ import {
   aiChatIsRecordingState,
   aiChatMessageListState,
   aiChatMessageState,
+  aiChatModelState,
   aiChatPromptState,
 } from '../../store';
 import { useRecoilState } from 'recoil';
@@ -18,6 +19,7 @@ import { BsKeyboard } from 'react-icons/bs';
 import Model from '@/app/three/chat/Model';
 import DetailPageNav from '@/app/components/DetailPageNav';
 import { useRouter } from 'next/navigation';
+import AiModel from '../../components/AiModel';
 
 const AiChatRoom = () => {
   // recoil
@@ -26,6 +28,7 @@ const AiChatRoom = () => {
   const [promptData, setPromptData] = useRecoilState(aiChatPromptState);
   const [isRecording, setIsRecording] = useRecoilState(aiChatIsRecordingState);
   const [isChat, setisChat] = useRecoilState(aiChatIsChatState);
+  const [aiChatModel, setAiChatModel] = useRecoilState(aiChatModelState);
 
   // ref
   const chatWindowRef = useRef<HTMLDivElement>(null);
@@ -40,7 +43,7 @@ const AiChatRoom = () => {
     // messageList 변경되면 promptData를 messageList에 추가합니다.
     const prompt = handleChatLog(messageList);
     setPromptData(prompt);
-    console.log('prompt', prompt);
+    console.log('prompt', messageList);
   }, [messageList]);
 
   // function
@@ -89,7 +92,7 @@ const AiChatRoom = () => {
   return (
     <div>
       <div className="absolute top-0 left-0 w-screen h-screen">
-        <Model />
+        <AiModel />
       </div>
       <div className="absolute top-0 left-0 w-screen h-screen flex flex-col items-center overflow-hidden">
         <div className="lg:block hidden">
@@ -107,8 +110,18 @@ const AiChatRoom = () => {
           <div className="lg:w-full lg:max-w-[410px] lg:block hidden text-sm ">
             <AiChatNav />
           </div>
+          <div
+            className="h-full w-full lg:block hidden text-center"
+            onClick={() => {
+              setAiChatModel(!aiChatModel);
+            }}
+          >
+            <span className={`p-3 rounded ${aiChatModel ? '' : 'hidden'}`}>
+              hello?
+            </span>
+          </div>
           {/* 오른쪽, 채팅 */}
-          <div className="h-full w-full lg:max-w-[410px] lg:max-h-[700px]">
+          <div className="h-full w-full lg:max-w-[410px] lg:max-h-[700px] lg:min-w-[410px]">
             <div className="flex flex-col justify-between h-full overflow-y-auto lg:bg-[#fff6] lg:border lg:rounded-3xl shadow-custom">
               <div
                 ref={chatWindowRef}

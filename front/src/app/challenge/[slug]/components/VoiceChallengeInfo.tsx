@@ -39,7 +39,7 @@ const VoiceChallengeInfo = ({ originalChallengeResponseDto }: Props) => {
           </Link>
           <Link
             href={`challenge/shooting/${originalChallengeResponseDto.challengeId}`}
-            className="bg-white text-base font-semibold rounded-3xl flex justify-center items-center shadow-custom px-3 py-1 hover:bg-brandP active:bg-[#7113ea] hover:text-white"
+            className="bg-white text-base font-semibold rounded-3xl hidden sm:flex justify-center items-center shadow-custom px-3 py-1 hover:bg-brandP active:bg-[#7113ea] hover:text-white"
           >
             <BsCameraVideo className="mr-2" />
             참여하기

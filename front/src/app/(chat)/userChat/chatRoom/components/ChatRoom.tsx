@@ -18,28 +18,21 @@ import {
   userChatTimeState,
   userChatTimerState,
   userChatTurnState,
-  userChatGrammerMsgListState,
   userChatScoreState,
   userChatLastChatState,
   userChatResultState,
+  userChatModelState,
 } from '../../store';
 import UserChatSendText from './UserChatSendText';
 import { BsKeyboard } from 'react-icons/bs';
 import useInterval from '@/app/hooks/useInterval';
 import { handleTurn } from '@/util/Math';
-import { openAiContextScore } from '@/app/api/openAi';
-import { checkGrammer } from '@/util/AiChat';
 import Loading from '@/app/components/Loading';
 import { usePathname, useRouter } from 'next/navigation';
 import UserChatRoundPc from './UserChatRoundPc';
 import UserChatModel from '../../components/UserChatModel';
-import {
-  ucFilterMsgInterface,
-  ucGrammerMsgInterface,
-  ucScoreInterface,
-} from '@/types/userChatTypes';
-import { Message } from '@/types/share';
 import DetailPageNav from '@/app/components/DetailPageNav';
+import useCheck from '../hooks/useCheck';
 
 const ChatRoom = () => {
   const { data: session } = useSession();
@@ -51,6 +44,8 @@ const ChatRoom = () => {
   // recoil
   const nickname = useRecoilValue(userChatMyNicknameState); // 내 닉네임
   const userChatRoom = useRecoilValue(userChatRoomIdState); // 최초 가져온 방 정보
+  const score = useRecoilValue(userChatScoreState); // 점수
+  const isChat = useRecoilValue(userChatIsChatState); // 채팅중인지
   const [gameState, setGameState] = useRecoilState(userChatGameState); // 게임 상태
   const [message, setMessage] = useRecoilState(userChatMessageState); // 메세지
   const [messageList, setMessageList] = useRecoilState(
@@ -59,35 +54,33 @@ const ChatRoom = () => {
   const [isRecording, setIsRecording] = useRecoilState(
     userChatIsRecordingState,
   ); // 녹음중인지
-  const [isChat, setisChat] = useRecoilState(userChatIsChatState); // 채팅중인지
   const [isFirst, setIsFirst] = useRecoilState(userChatFirstState); // 첫 턴이 누구인지
   const [turn, setTurn] = useRecoilState(userChatTurnState); // 현재 턴
   const [timer, setTimer] = useRecoilState(userChatTimerState); // 타이머
   const userChatTime = useRecoilValue(userChatTimeState); // 타이머 시간 설정
   const delay = 1000; // 1초
   const [isRunning, setIsRunning] = useState(false); // 타이머 실행 여부
-  const setGrammerMsgState = useSetRecoilState(userChatGrammerMsgListState); // 문법 검사 메세지
-  const [score, setScore] = useRecoilState(userChatScoreState); // 점수
   // 라스트 채팅
   const [lastChat, setLastChat] = useRecoilState(userChatLastChatState);
   // 결과
   const setResult = useSetRecoilState(userChatResultState);
-  // const result = useRecoilValue(userChatResultState);
-  // const grammerMsg = useRecoilValue(userChatGrammerMsgListState);
-
+  const [userChatModel, setUserChatModelState] =
+    useRecoilState(userChatModelState);
   // ref
   const chatWindowRef = useRef<HTMLDivElement>(null);
+  const chatMoblieRef = useRef<HTMLDivElement>(null);
   const pingIntervalIdRef = useRef<NodeJS.Timer | null>(null);
 
   const pathname: string = usePathname();
 
-  // useEffect(() => {
-  //   console.log('grammerMsg');
-  // }, [grammerMsg]);
-
-  // useEffect(() => {
-  //   console.log('setResult');
-  // }, [result]);
+  const {
+    handleGrammerCheck,
+    handleContextScore,
+    handleKeyboard,
+    handleLeftGame,
+    updateMyWordUsed,
+    updateOtherWordUsed,
+  } = useCheck();
 
   useEffect(() => {
     console.log('isFirst', turn, lastChat);
@@ -129,6 +122,9 @@ const ChatRoom = () => {
     // 스크롤이 최하단으로 자동으로 이동되도록 chatWindowRef의 scrollTop 속성을 최대값으로 설정합니다.
     if (chatWindowRef.current) {
       chatWindowRef.current.scrollTop = chatWindowRef.current.scrollHeight;
+    }
+    if (chatMoblieRef.current) {
+      chatMoblieRef.current.scrollTop = chatMoblieRef.current.scrollHeight;
     }
     if (turn === 11) setTurn(999);
   }, [messageList]);
@@ -175,7 +171,7 @@ const ChatRoom = () => {
           (message) => {
             try {
               const content = JSON.parse(message.body);
-              // console.log('subscribe : ', content);
+              console.log('subscribe');
               if (content.message === '탈주발생') {
                 console.log('탈주발생');
                 // console.log('탈주발생', content);
@@ -207,7 +203,7 @@ const ChatRoom = () => {
                 if (isFirst === false) {
                   // console.log('isFirst22222', isFirst);
                   handleContextScore(
-                    updatedMessageList,
+                    updatedMessageList as [],
                     content.nickname,
                     content.message,
                   ); // setMessageList 호출 이후에 handleContextScore 호출
@@ -265,133 +261,6 @@ const ChatRoom = () => {
       setIsFirst(false);
     };
   }, []);
-  // 마무리
-  const checkAndSendResult = () => {
-    console.log('checkAndSendResult');
-    if (turn === 999 && lastChat) {
-      handleSendResult();
-    }
-  };
-
-  //문법 검사
-  const handleGrammerCheck = (
-    text: string,
-    chatNickname: string,
-    msgTurn: number,
-  ) => {
-    if (text === 'pass') {
-      const pass = async () => {
-        const payload = {
-          type: 'pass',
-          nickname: chatNickname,
-          message: 'pass',
-          turn: msgTurn,
-          score: 0,
-        };
-        await setGrammerMsgState((prev: ucGrammerMsgInterface[]) => {
-          const isTurnExist = prev.some(
-            (item: ucGrammerMsgInterface) => item.turn === payload.turn,
-          );
-          if (isTurnExist) return prev;
-          return [...prev, payload];
-        });
-      };
-      pass();
-    } else {
-      // 문법 검사
-      const check = async () => {
-        // console.log('checkGrammer', text, chatNickname, msgTurn);
-        const res = await checkGrammer(text, chatNickname, msgTurn);
-        await setGrammerMsgState((prev: ucGrammerMsgInterface[]) => {
-          const isTurnExist = prev.some(
-            (item: ucGrammerMsgInterface) => item.turn === res.turn,
-          );
-          if (isTurnExist) return prev;
-          return [...prev, res];
-        });
-        if (chatNickname === nickname) {
-          updateMyGrammerScore(res.score);
-        } else {
-          updateotherGrammarScore(res.score);
-        }
-        // console.log('res', res);
-        // console.log('score', score);
-      };
-      check();
-    }
-  };
-  // 문맥 점수 메서드
-  const handleContextScore = async (
-    updatedMessageList: Message[],
-    chatNickname: string,
-    msg: string,
-  ) => {
-    // console.log('handleContextScore', updatedMessageList, chatNickname, msg);
-    // console.log('contextScore', score.myContextScore, score.otherContextScore);
-    // 패스
-    if (msg === 'pass') {
-      return;
-    } else {
-      // 문맥 점수
-      const filteredMessages = updatedMessageList.map(
-        ({ nickname, message }: ucFilterMsgInterface) => ({
-          nickname,
-          message,
-        }),
-      );
-      const res = await openAiContextScore(filteredMessages);
-      const text = res.data.choices[0].text;
-      // console.log('text', text);
-      const number = parseFloat(text.replace(/[^0-9.]/g, ''));
-      handleContextState(number, msg, chatNickname);
-    }
-  };
-  // 문맥 점수 메서드 - 일반
-  const handleContextState = (
-    number: number,
-    msg: string,
-    chatNickname: string,
-  ) => {
-    if (typeof number !== 'number') {
-      if (chatNickname === nickname) {
-        if (msg.length < 5) {
-          updateMyContextScore(8);
-        } else if (msg.length >= 5 && msg.length < 10) {
-          updateMyContextScore(14);
-        } else {
-          updateMyContextScore(20);
-        }
-      }
-      if (chatNickname !== nickname) {
-        if (msg.length < 5) {
-          updateOtherContextScore(8);
-        } else if (msg.length >= 5 && msg.length < 10) {
-          updateOtherContextScore(14);
-        } else {
-          updateOtherContextScore(20);
-        }
-      }
-    } else {
-      if (chatNickname === nickname) {
-        if (msg.length < 5) {
-          updateMyContextScore(number - 10);
-        } else if (msg.length >= 5 && msg.length < 10) {
-          updateMyContextScore(number - 5);
-        } else {
-          updateMyContextScore(number);
-        }
-      }
-      if (chatNickname !== nickname) {
-        if (msg.length < 5) {
-          updateOtherContextScore(number - 10);
-        } else if (msg.length >= 5 && msg.length < 10) {
-          updateOtherContextScore(number - 5);
-        } else {
-          updateOtherContextScore(number);
-        }
-      }
-    }
-  };
   // 결과 전송
   const handleSendResult = () => {
     console.log('handleSendResult');
@@ -442,69 +311,26 @@ const ChatRoom = () => {
       setLastChat(true);
     }
   };
-  const handleKeyboard = () => {
-    setisChat(true);
-  };
-
-  const updateMyGrammerScore = (score: number) => {
-    setScore((prevState: ucScoreInterface) => ({
-      ...prevState,
-      myGrammarScore: prevState.myGrammarScore + score,
-    }));
-  };
-  const updateotherGrammarScore = (score: number) => {
-    setScore((prevState: ucScoreInterface) => ({
-      ...prevState,
-      otherGrammarScore: prevState.otherGrammarScore + score,
-    }));
-  };
-  const updateMyContextScore = (score: number) => {
-    // console.log('updateMyContextScore', score);
-    setScore((prevState: ucScoreInterface) => ({
-      ...prevState,
-      myContextScore: prevState.myContextScore + score,
-    }));
-  };
-  const updateOtherContextScore = (score: number) => {
-    // console.log('updateOtherContextScore', score);
-    setScore((prevState: ucScoreInterface) => ({
-      ...prevState,
-      otherContextScore: prevState.otherContextScore + score,
-    }));
-  };
-  const updateMyWordUsed = () => {
-    setScore((prevState: ucScoreInterface) => ({
-      ...prevState,
-      myWordUsed: true,
-    }));
-  };
-  const updateOtherWordUsed = () => {
-    setScore((prevState: ucScoreInterface) => ({
-      ...prevState,
-      otherWordUsed: true,
-    }));
-  };
-  const handleLeftGame = () => {
-    const confirmed = window.confirm('게임을 나가시겠습니까?');
-    if (confirmed) {
-      router.push('/chat');
+  const checkAndSendResult = () => {
+    console.log('checkAndSendResult');
+    if (turn === 999 && lastChat) {
+      handleSendResult();
     }
   };
-
   return (
     <>
       <div className="absolute top-0 left-0 right-0 h-[100vh] w-full">
         <UserChatModel />
       </div>
       {/* 모바일, 440부터 pc */}
-      <div className="h-screen border-2 flex flex-col lg:hidden absolute left-0 right-0">
+      <div className="border-2 flex flex-col lg:hidden absolute left-0 right-0 top-0 bottom-0">
         {gameState && (
           <>
             <div className="flex-none">
               <UserChatNav />
             </div>
-            <div ref={chatWindowRef} className="flex-auto h-0 overflow-y-auto">
-              <div className="min-h-full">
+            <div className="flex flex-col justify-between h-full overflow-y-auto">
+              <div className="overflow-y-auto px-4 mt-6" ref={chatMoblieRef}>
                 <UserChatMessageList />
               </div>
             </div>
@@ -595,7 +421,12 @@ const ChatRoom = () => {
               )}
             </div>
             {/* 중앙, three.js */}
-            <div className="w-full h-full flex justify-center items-center"></div>
+            <div
+              className="w-full h-full flex justify-center items-center"
+              onClick={() => {
+                setUserChatModelState(!userChatModel);
+              }}
+            ></div>
             {/* 오른쪽, 채팅 */}
             <div className="w-full min-w-[450px] max-w-[450px] h-full">
               <div

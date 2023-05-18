@@ -10,14 +10,12 @@ public class StepMap {
 		hashMap = new HashMap<>();
 
 		// 여기서 초기값을 설정합니다.
-		hashMap.put(1, "영화");
-		hashMap.put(2, "여행");
-		hashMap.put(3, "음악");
-		hashMap.put(4, "스포츠");
-		hashMap.put(5, "음식");
-		hashMap.put(6, "일상");
-		hashMap.put(7, "애니메이션");
-		hashMap.put(8, "비즈니스");
+		hashMap.put(1, "처음 만났을 때");
+		hashMap.put(2, "오랜만에 만났을 때");
+		hashMap.put(3, "인사 대답하기");
+		hashMap.put(4, "작별인사하기");
+		hashMap.put(5, "자기소개하기");
+		hashMap.put(6, "감정표현하기");
 	}
 
 	public static StepMap getInstance() {

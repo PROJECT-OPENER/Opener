@@ -1,25 +1,20 @@
 'use client';
 import Button from '@/app/components/Button';
-import React, { useState } from 'react';
+import React from 'react';
 import { useRecoilValue } from 'recoil';
-import { userChatRoomIdState, userChatTurnState } from '../../store';
+import {
+  userChatRoomIdState,
+  userChatTipState,
+  userChatTurnState,
+} from '../../store';
 import { BsCircleFill } from 'react-icons/bs';
-import { useRouter } from 'next/navigation';
+import useCheck from '../hooks/useCheck';
 
 const UserChatNav = () => {
-  const router = useRouter();
+  const { handleLeftGame, handleTip } = useCheck();
   const userChatRoom = useRecoilValue(userChatRoomIdState);
   const turn = useRecoilValue(userChatTurnState);
-  const [isTip, setIsTip] = useState(true);
-  const handleTip = () => {
-    setIsTip(!isTip);
-  };
-  const handleLeftGame = () => {
-    const confirmed = window.confirm('게임을 나가시겠습니까?');
-    if (confirmed) {
-      router.push('/chat');
-    }
-  };
+  const isTip = useRecoilValue(userChatTipState);
   return (
     <>
       {/* 모바일 */}

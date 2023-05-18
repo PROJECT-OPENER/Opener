@@ -40,3 +40,8 @@ export const aiChatSub = atom({
   default: { subIndex: 0, name: '' },
   effects_UNSTABLE: [persistAtom],
 });
+
+export const aiChatModelState = atom({
+  key: 'aiChatModelState',
+  default: false,
+});

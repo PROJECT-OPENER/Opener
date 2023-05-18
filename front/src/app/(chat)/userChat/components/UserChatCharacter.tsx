@@ -3,11 +3,30 @@
 import { useAnimations, useGLTF, OrbitControls } from '@react-three/drei';
 import * as THREE from 'three';
 import { useEffect, useRef } from 'react';
-import { useControls } from 'leva';
+import { useRecoilValue } from 'recoil';
+import { userChatMessageListState, userChatModelState } from '../store';
+// import { useControls } from 'leva';
+
+const modelActions = [
+  'Angry',
+  'Bored',
+  'Female Laying Pose',
+  'Hip Hop Dancing',
+  'Idle',
+  'Standing Arguing',
+  'standing pose',
+  'Standing Idle',
+  'Standing W_Briefcase Idle',
+  'Talking',
+  'Thoughtful Head Shake',
+];
 
 const UserChatCharacter = () => {
   const directionalLight = useRef<THREE.DirectionalLight>(null);
   const model = useGLTF('/models/Michelle.glb');
+
+  const msgList = useRecoilValue(userChatMessageListState);
+  const userChatModel = useRecoilValue(userChatModelState);
 
   model.scene.traverse((child) => {
     if (child instanceof THREE.Mesh) {
@@ -17,17 +36,29 @@ const UserChatCharacter = () => {
 
   const animations = useAnimations(model.animations, model.scene);
   animations.actions['standing pose']?.play();
-  const { animationName } = useControls({
-    animationName: { options: animations.names },
-  });
 
   useEffect(() => {
-    const action = animations.actions[animationName];
+    const action = animations.actions[modelActions[3]]?.play();
     action?.reset().fadeIn(0.5).play();
-    return () => {
+    const timeoutId = setTimeout(() => {
       action?.fadeOut(0.5);
-    };
-  }, [animationName]);
+    }, 5000); // 3000 milliseconds = 3 seconds
+
+    return () => clearTimeout(timeoutId);
+  }, [userChatModel]);
+
+  useEffect(() => {
+    // animations.actions['Hip Hop Dancing']?.play();
+    const randomIndex = Math.floor(Math.random() * modelActions.length);
+    const action = animations.actions[modelActions[randomIndex]]?.play();
+    action?.reset().fadeIn(0.5).play();
+    const timeoutId = setTimeout(() => {
+      action?.fadeOut(0.5);
+    }, 5000); // 3000 milliseconds = 3 seconds
+
+    // 컴포넌트 unmount 시 타이머를 정리해줍니다.
+    return () => clearTimeout(timeoutId);
+  }, [msgList]);
 
   return (
     <>

@@ -82,7 +82,7 @@ const ChallengeCategoryList = ({ category, startIdx }: Props) => {
         className={
           challenges[0]?.data.totalLength - startIdx <= challengeList?.length
             ? 'hidden'
-            : 'list-end h-20 bg-blue-200'
+            : 'list-end h-20'
         }
         ref={listEndRef}
       ></p>
