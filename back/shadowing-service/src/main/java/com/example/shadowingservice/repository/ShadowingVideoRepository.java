@@ -8,7 +8,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import com.example.shadowingservice.dto.response.ShadowingCategoryDto;
 import com.example.shadowingservice.entity.shadowing.ShadowingVideo;
 
 public interface ShadowingVideoRepository extends JpaRepository<ShadowingVideo, Long>,
@@ -20,5 +19,11 @@ public interface ShadowingVideoRepository extends JpaRepository<ShadowingVideo, 
 
 	@Query("select s from ShadowingVideo s")
 	List<ShadowingVideo> findRecommendation(Pageable pageable);
+
+	@Query("SELECT s.videoId FROM ShadowingVideo s")
+	List<Long> findAllVideoIds();
+
+	@Query("SELECT COUNT(s) FROM ShadowingVideo s")
+	int countAllRecords();
 
 }

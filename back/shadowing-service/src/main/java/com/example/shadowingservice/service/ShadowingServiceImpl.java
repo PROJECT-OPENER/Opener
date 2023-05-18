@@ -188,9 +188,16 @@ public class ShadowingServiceImpl implements ShadowingService {
 	 */
 	@Override
 	public List<ShadowingCategoryDto> getShadowingCategoryList(String category, Pageable pageable) {
-		Optional<Interest> interest = interestRepository.findByInterest(category);
-		List<Long> videoIdList = shadowingVideoInterestRepository.findAllVideoId(interest.get().getInterestId());
-		List<ShadowingCategoryDto> shadowingVideoList = shadowingVideoRepository.getCategoryDotoList(videoIdList,
+		List<Long> videoIdList;
+		List<ShadowingCategoryDto> shadowingVideoList;
+		if (category.equals("전체")) {
+			videoIdList = shadowingVideoRepository.findAllVideoIds();
+		} else {
+			Interest interest = interestRepository.findByInterest(category)
+				.orElseThrow(() -> new ApiException(ExceptionEnum.CATEGORY_NOT_FOUND_EXCEPTION));
+			videoIdList = shadowingVideoInterestRepository.findAllVideoId(interest.getInterestId());
+		}
+		shadowingVideoList = shadowingVideoRepository.getCategoryDotoList(videoIdList,
 			pageable);
 		return shadowingVideoList;
 	}
@@ -206,13 +213,18 @@ public class ShadowingServiceImpl implements ShadowingService {
 	@Override
 	public List<AuthShadowingCategoryDto> getAuthShadowingCategoryList(Long memberId, String category,
 		Pageable pageable) {
-
-		Optional<Interest> interest = interestRepository.findByInterest(category);
-		List<Long> videoIdList = shadowingVideoInterestRepository.findAllVideoId(interest.get().getInterestId());
+		List<Long> videoIdList;
+		List<AuthShadowingCategoryDto> shadowingVideoList;
+		if (category.equals("전체")) {
+			videoIdList = shadowingVideoRepository.findAllVideoIds();
+		} else {
+			Interest interest = interestRepository.findByInterest(category)
+				.orElseThrow(() -> new ApiException(ExceptionEnum.CATEGORY_NOT_FOUND_EXCEPTION));
+			videoIdList = shadowingVideoInterestRepository.findAllVideoId(interest.getInterestId());
+		}
 		Member member = memberRepository.findById(memberId)
 			.orElseThrow(() -> new ApiException(ExceptionEnum.MEMBER_NOT_FOUND_EXCEPTION));
-		List<AuthShadowingCategoryDto> shadowingVideoList =
-			shadowingVideoRepository.getAuthCategoryDtoList(member, videoIdList, pageable);
+		shadowingVideoList = shadowingVideoRepository.getAuthCategoryDtoList(member, videoIdList, pageable);
 
 		return shadowingVideoList;
 	}
@@ -349,6 +361,7 @@ public class ShadowingServiceImpl implements ShadowingService {
 						.sentenceNo(roadmap.getSentenceNo() + 1)
 						.build());
 				}
+
 			}
 		}
 
@@ -571,7 +584,6 @@ public class ShadowingServiceImpl implements ShadowingService {
 	 */
 
 	@Override
-	@Transactional
 	public void updateShadowingThumbnail(Long videoId, ThumbnailRequestDto thumbnailRequestDto) throws
 		IOException,
 		FirebaseAuthException {
@@ -583,9 +595,19 @@ public class ShadowingServiceImpl implements ShadowingService {
 			throw new ApiException(ExceptionEnum.FILE_NOT_FOUND_EXCEPTION);
 		}
 
-		String imgUrl = fireBaseService.uploadFiles(thumbnailRequestDto.getThumbnailFile(),
-			fileName + "_img");
+		String imgUrl = fireBaseService.uploadFiles(thumbnailRequestDto.getThumbnailFile(), fileName + "_img");
 		shadowingVideo.updateThumbnailUrl(imgUrl);
+		shadowingVideoRepository.save(shadowingVideo);
+	}
+
+	/**
+	 * 이우승
+	 * explain : 쉐도잉 비디오 전체 개수 조회
+	 * @return
+	 */
+	@Override
+	public int getShadowingVideoCount() {
+		return shadowingVideoRepository.countAllRecords();
 	}
 
 }

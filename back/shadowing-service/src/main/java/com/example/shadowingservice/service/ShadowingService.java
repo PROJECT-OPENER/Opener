@@ -81,4 +81,6 @@ public interface ShadowingService {
 	/** 파이어베이스 썸네일 등록 **/
 	void updateShadowingThumbnail(Long videoId, ThumbnailRequestDto thumbnailRequestDto)
 		throws IOException, FirebaseAuthException;
+	/** 쉐도잉 전체 개수 조회 **/
+	int getShadowingVideoCount();
 }
