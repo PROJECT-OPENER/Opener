@@ -81,15 +81,11 @@ export const dictionaryApi = (word: string) => {
   return shadowingApi.get(`/dictionary/${word}`);
 };
 
-export const getCaptionApi = async (videoId: string) => {
+export const getCaptionApi = async (videoUrl: string) => {
   console.log('get caption');
   return await axios({
     method: 'GET',
-    url: FAST_API_URL + '/fast/caption/' + videoId,
-    headers: {
-      'Content-Type': 'application/json',
-      Accept: 'application/json',
-    },
+    url: FAST_API_URL + '/fast/caption/' + videoUrl,
   }).then((res) => res.data);
 };
 
@@ -146,4 +142,5 @@ export const translateCaptionApi = async (data: string) => {
 export const patchCaptionApi = async (payload: any, videoId: string) => {
   const res = await shadowingApi.patch(`/videos/${videoId}`, payload);
   console.log(res, 'payload :', payload);
+  return res;
 };
