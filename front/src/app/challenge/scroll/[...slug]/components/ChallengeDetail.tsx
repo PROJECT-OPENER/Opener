@@ -297,20 +297,20 @@ const ChallengeDetail = ({ challengeList }: Props) => {
           ref={videoRef}
         >
           <div
-            className="relative overflow-hidden rounded-xl z-0 sm:h-[736px] sm:w-[414px] h-[640px] w-[360px] bg-black lg:mt-20"
+            className="relative overflow-hidden rounded-xl z-0 sm:h-fit sm:w-[414px] h-fit w-[360px] bg-black lg:mt-20"
             ref={parentRef}
           >
             <div
               className={
                 isView
-                  ? 'relative sm:h-[736px] sm:w-[414px]  h-[640px] w-[360px] flex justify-center items-center overflow-hidden'
+                  ? 'relative sm:h-fit sm:w-[414px]  h-fit w-[360px] flex justify-center items-center overflow-hidden'
                   : 'hidden'
               }
             >
               <video
                 ref={memberPlayerRef}
                 src={challengeInfo?.curMemberChallenge.memberChallengeUrl}
-                className="sm:h-[736px] sm:w-[414px]   h-[640px] w-[360px] relative"
+                className="sm:h-fit sm:w-[414px] h-fit w-[360px] relative"
               ></video>
               <div className="absolute top-10 w-full max-w-[90%] break-keep">
                 <pre
