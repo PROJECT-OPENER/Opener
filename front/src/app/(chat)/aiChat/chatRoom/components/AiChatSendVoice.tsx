@@ -67,10 +67,25 @@ const AiChatSendVoice = ({ handleSendMessage }: Props) => {
     // recognizer.recognizing = (s, e) => {
     //   // console.log(`인식된 글자 : ${e.result.text}`);
     // };
-    recognizer.recognized = (s, e) => {
-      setText((prevText) => [...prevText, e.result.text]);
+    let lastRecognizedText = '';
+    recognizer.recognizing = (s, e) => {
+      // setText((prevText) => [...prevText, e.result.text]);
       // console.log('recognized : ', e.result.text);
+      const newText = e.result.text;
+
+      // 새로운 텍스트에서 마지막에 인식된 텍스트를 제거합니다.
+      const withoutOldText = newText.replace(lastRecognizedText, '').trim();
+
+      // 결과 텍스트를 추가합니다.
+      setText((prevText) => [...prevText, withoutOldText]);
+
+      // 마지막으로 인식된 텍스트를 업데이트합니다.
+      lastRecognizedText = newText;
     };
+    // recognizer.recognized = (s, e) => {
+    //   setText((prevText) => [...prevText, e.result.text]);
+    //   // console.log('recognized : ', e.result.text);
+    // };
     recognizer.sessionStopped = () => {
       if (recognizer) {
         recognizer.close();

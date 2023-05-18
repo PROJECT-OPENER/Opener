@@ -21,6 +21,7 @@ import {
   userChatScoreState,
   userChatLastChatState,
   userChatResultState,
+  userChatModelState,
 } from '../../store';
 import UserChatSendText from './UserChatSendText';
 import { BsKeyboard } from 'react-icons/bs';
@@ -63,7 +64,8 @@ const ChatRoom = () => {
   const [lastChat, setLastChat] = useRecoilState(userChatLastChatState);
   // 결과
   const setResult = useSetRecoilState(userChatResultState);
-
+  const [userChatModel, setUserChatModelState] =
+    useRecoilState(userChatModelState);
   // ref
   const chatWindowRef = useRef<HTMLDivElement>(null);
   const chatMoblieRef = useRef<HTMLDivElement>(null);
@@ -328,7 +330,7 @@ const ChatRoom = () => {
               <UserChatNav />
             </div>
             <div className="flex flex-col justify-between h-full overflow-y-auto">
-              <div className="overflow-y-auto px-4 mt-6" ref={chatWindowRef}>
+              <div className="overflow-y-auto px-4 mt-6" ref={chatMoblieRef}>
                 <UserChatMessageList />
               </div>
             </div>
@@ -419,7 +421,12 @@ const ChatRoom = () => {
               )}
             </div>
             {/* 중앙, three.js */}
-            <div className="w-full h-full flex justify-center items-center"></div>
+            <div
+              className="w-full h-full flex justify-center items-center"
+              onClick={() => {
+                setUserChatModelState(!userChatModel);
+              }}
+            ></div>
             {/* 오른쪽, 채팅 */}
             <div className="w-full min-w-[450px] max-w-[450px] h-full">
               <div

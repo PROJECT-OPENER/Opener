@@ -5,7 +5,7 @@ import * as THREE from 'three';
 import { useEffect, useRef, useState } from 'react';
 // import { useControls } from 'leva';
 import { useRecoilValue } from 'recoil';
-import { aiChatMessageListState } from '../store';
+import { aiChatMessageListState, aiChatModelState } from '../store';
 
 const modelActions = [
   'Angry',
@@ -26,6 +26,7 @@ const AiCharacter = () => {
   const model = useGLTF('/models/Michelle.glb');
   // 추가
   const msgList = useRecoilValue(aiChatMessageListState);
+  const aiChatModel = useRecoilValue(aiChatModelState);
 
   model.scene.traverse((child) => {
     if (child instanceof THREE.Mesh) {
@@ -37,8 +38,19 @@ const AiCharacter = () => {
   animations.actions['standing pose']?.play();
 
   useEffect(() => {
+    const action = animations.actions[modelActions[3]]?.play();
+    action?.reset().fadeIn(0.5).play();
+    const timeoutId = setTimeout(() => {
+      action?.fadeOut(0.5);
+    }, 5000); // 3000 milliseconds = 3 seconds
+
+    return () => clearTimeout(timeoutId);
+  }, [aiChatModel]);
+
+  useEffect(() => {
     // animations.actions['Hip Hop Dancing']?.play();
-    const action = animations.actions['Hip Hop Dancing']?.play();
+    const randomIndex = Math.floor(Math.random() * modelActions.length);
+    const action = animations.actions[modelActions[randomIndex]]?.play();
     action?.reset().fadeIn(0.5).play();
     const timeoutId = setTimeout(() => {
       action?.fadeOut(0.5);

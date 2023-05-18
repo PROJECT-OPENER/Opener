@@ -120,3 +120,8 @@ export const userChatTipState = atom({
   key: 'userChatTipState',
   default: true,
 });
+
+export const userChatModelState = atom({
+  key: 'userChatModelState',
+  default: false,
+});
