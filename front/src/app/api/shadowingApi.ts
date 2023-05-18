@@ -112,8 +112,34 @@ export const getCaptionApi = async (videoId: string) => {
   }).then((res) => res.data);
 };
 
+export const translate = async (data: string) => {
+  console.log(data);
+  if (data.length > 500) {
+    const len = Math.ceil(data.split('\n\n').length / 2);
+    console.log(len);
+    const left = data.split('\n\n').splice(0, len).join('\n\n');
+    const right = data.split('\n\n').splice(len).join('\n\n');
+    console.log('left:', left, 'right:', right);
+    const l: string[] = await translate(left);
+    const r: string[] = await translate(right);
+    // translate();
+    return l.concat(r);
+  }
+  return await translateCaptionApi(data);
+  // const tmp = data.split('\n\n');
+  // if ()
+  // const res: any = [];
+  // const promise = data.split('\n\n').map(async (subtitle: string) => {
+  //   const response = await translateCaptionApi(subtitle);
+  //   res.push(response);
+  // });
+  // const result = await Promise.all(promise);
+
+  // return result;
+};
+
 export const translateCaptionApi = async (data: string) => {
-  console.log('translate');
+  console.log('translate 요청', data);
   const response = await axios.post(
     'https://api.openai.com/v1/completions',
     {

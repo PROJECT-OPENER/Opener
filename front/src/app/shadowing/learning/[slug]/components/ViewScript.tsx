@@ -9,7 +9,7 @@ import {
   setCountVideoApi,
   setBookmarkApi,
   getCaptionApi,
-  translateCaptionApi,
+  // translate,
   dictionaryApi,
   patchCaptionApi,
 } from '@/app/api/shadowingApi';
@@ -24,6 +24,7 @@ import {
 import { TfiAngleLeft } from 'react-icons/tfi';
 import { scriptInterface, searchWordInterface } from '@/types/share';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 type videoInfoType =
   | {
@@ -56,24 +57,31 @@ const ViewScript = ({ params }: { params: { slug: string } }) => {
   const [second, setSecond] = useState<number>(); // 발음체크 시 카운트를 담을 state
   const [videoInfo, setVideoInfo] = useState<videoInfoType>(); // 가져온 영상 정보를 담는 state
 
+  const router = useRouter();
   useEffect(() => {
     const getVideo = async (videoId: string) => {
       const data = await getVideoApi(videoId);
       console.log(data);
       if (data.engCaption === null || data.engCaption === '') {
         data.engCaption = await getCaptionApi(data.videoUrl);
-        data.korCaption = await translateCaptionApi(
-          data.engCaption.replace('WEBVTT\n\n', ''),
-        );
-        // 자막 업데이트
-        patchCaptionApi(
-          {
-            engCaption: data.engCaption,
-            korCaption: data.korCaption,
-          },
-          videoId,
-        );
       }
+      if (data.korCaption === null || data.korCaption === '') {
+        console.log('예외 처리');
+        alert('한글 자막 필요');
+        router.push('/edit/' + params.slug + '/' + data.videoUrl);
+        return;
+        // data.korCaption = await translate(
+        //   data.engCaption.replace('WEBVTT\n\n', ''),
+        // );
+      }
+      // 자막 업데이트
+      patchCaptionApi(
+        {
+          engCaption: data.engCaption,
+          korCaption: data.korCaption,
+        },
+        videoId,
+      );
       setVideoInfo({
         start: convertTime(data.start),
         end: convertTime(data.end),
@@ -175,6 +183,10 @@ const ViewScript = ({ params }: { params: { slug: string } }) => {
 
   const changeSubtitle = (time: number) => {
     if (videoInfo) {
+      const tmpCaption = {
+        eng: '',
+        kor: '',
+      };
       for (let i = 0; i < videoInfo?.engCaption.length; i++) {
         if (
           time >= videoInfo?.engCaption[i].startTime &&
@@ -190,15 +202,18 @@ const ViewScript = ({ params }: { params: { slug: string } }) => {
               start: videoInfo?.engCaption[i].startTime,
               end: videoInfo?.engCaption[i].endTime,
             };
-            setCaption({
-              ...caption,
-              eng: videoInfo?.engCaption[i].text,
-              kor: videoInfo.korCaption[i].text,
-            });
           }
-          return;
+          tmpCaption.eng += videoInfo?.engCaption[i].text;
+          tmpCaption.kor += videoInfo?.korCaption[i].text;
+
+          // return;
         }
       }
+      setCaption({
+        ...caption,
+        eng: tmpCaption.eng,
+        kor: tmpCaption.kor,
+      });
     }
   };
 

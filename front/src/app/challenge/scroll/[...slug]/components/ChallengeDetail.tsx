@@ -40,6 +40,7 @@ const ChallengeDetail = ({ challengeList }: Props) => {
   const challengeInfo: challengeDetail = data?.data;
   useEffect(() => {
     const convert = (cap: string) => {
+      console.log(cap);
       const resArray = [];
       if (cap) {
         const subtitles = cap.replace('WEBVTT\n\n', '');
@@ -48,6 +49,7 @@ const ChallengeDetail = ({ challengeList }: Props) => {
           const sub = subtitle[i].split('\n');
           const subtitleTime = sub[0].split(' --> ');
           const subtitleText = sub.slice(1).join('\n');
+          console.log(subtitleTime);
           if (subtitleTime) {
             resArray.push({
               startTime: convertTime(subtitleTime[0]),
@@ -84,39 +86,47 @@ const ChallengeDetail = ({ challengeList }: Props) => {
   }, [data]);
   const convertTime = (timeString: string): number => {
     if (!timeString) return 0;
-    const time = timeString.split('.')[0].split(/[:,]/).map(parseFloat);
+    const wholetime = timeString.split('.');
+    const m_sec = Number(wholetime[1]) / 1000;
+    console.log(timeString, m_sec, wholetime[1]);
+    const time = wholetime[0].split(/[:,]/).map(parseFloat);
 
     if (time.length > 2) {
       const [hours, minutes, seconds] = time;
-      return hours * 3600 + minutes * 60 + seconds;
+      return hours * 3600 + minutes * 60 + seconds + m_sec;
     } else {
       const [minutes, seconds] = time;
-      return minutes * 60 + seconds;
+      return minutes * 60 + seconds + m_sec;
     }
   };
 
-  const changeSubtitle = (time: number) => {
+  const changeSubtitle = () => {
     if (videoInfo) {
+      const tmpCaption = {
+        eng: '',
+      };
+      const time = youtubeRecordRef.current.getCurrentTime();
       for (let i = 0; i < videoInfo?.engCaption.length; i++) {
         if (
-          time >= videoInfo?.engCaption[i].startTime &&
+          time > videoInfo?.engCaption[i].startTime &&
           time < videoInfo?.engCaption[i].endTime
         ) {
-          setCaption({
-            ...caption,
-            eng: videoInfo.engCaption[i]?.text,
-          });
-          return;
+          tmpCaption.eng += '\n';
+          tmpCaption.eng += videoInfo?.engCaption[i].text;
         }
       }
+      setCaption({
+        ...caption,
+        eng: tmpCaption.eng,
+      });
     }
   };
   const animFrame = useRef<any>();
   const youtubeRecordRef = useRef<any>();
   const tracePlayer = () => {
     if (youtubeRecordRef.current?.getPlayerState() === 1) {
-      const currentTime = youtubeRecordRef.current.getCurrentTime();
-      changeSubtitle(currentTime);
+      // const currentTime = youtubeRecordRef.current.getCurrentTime();
+      changeSubtitle();
       animFrame.current = requestAnimationFrame(tracePlayer);
     } else {
       return cancelAnimationFrame(animFrame.current);
@@ -302,15 +312,15 @@ const ChallengeDetail = ({ challengeList }: Props) => {
                 src={challengeInfo?.curMemberChallenge.memberChallengeUrl}
                 className="sm:h-[736px] sm:w-[414px]   h-[640px] w-[360px] relative"
               ></video>
-              <div className="absolute top-10 w-full  flex justify-center items-center">
-                <div
-                  className="flex items-center justify-center font-black text-white md:text-xl "
+              <div className="absolute top-10 w-full max-w-[90%] break-keep">
+                <pre
+                  className="text-left font-black text-white md:text-xl whitespace-pre-wrap"
                   style={{
                     filter: 'drop-shadow(3px 3px 5px rgba(0, 0, 0, 0.9))',
                   }}
                 >
                   {caption?.eng}
-                </div>
+                </pre>
               </div>
               {data && (
                 <YouTube

@@ -110,7 +110,11 @@ export const imageUpdateApi = async (payload: FormData) => {
 };
 
 // 마이페이지 - 나의 뱃지 조회 - 은혁
-export const getMyBadgesApi = () => memberApi.get('/auth/members/mypage/badge');
+export const getMyBadgesApi = async () => {
+  const response = await memberApi.get('/auth/members/mypage/badge');
+  console.log('???');
+  return response;
+};
 
 // 마이페이지 - 내가 업로드(또는 좋아요)한 챌린지 목록 조회 - 은혁
 export const fetcher = (url: string) =>

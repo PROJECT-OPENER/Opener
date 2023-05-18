@@ -28,6 +28,7 @@ const Home = () => {
       </div>
       <div className="relative w-full h-full min-w-[330px] max-w-[1024px] pb-4 lg:p-0">
         <Roadmap />
+        {/* @ts-expect-error Async Server Component */}
         <Famous />
         <Recommended />
         <Rank />
