@@ -21,7 +21,7 @@ export const openAiChatApi = async (data: string) => {
       },
     },
   );
-  console.log(response);
+  // console.log(response);
   return response;
 };
 
@@ -44,7 +44,7 @@ export const openAiUserChatApi = async (data: []) => {
       },
     },
   );
-  console.log(response);
+  // console.log(response);
   return response;
 };
 
@@ -68,7 +68,7 @@ export const bingGrammerCheckApi = async (text: string) => {
 };
 
 export const openAiContextScore = async (data: ucFilterMsgInterface[]) => {
-  console.log(data);
+  // console.log(data);
   const payload = convertArrayToChatString(data);
   const response = await axios.post(
     'https://api.openai.com/v1/completions',
@@ -88,6 +88,6 @@ export const openAiContextScore = async (data: ucFilterMsgInterface[]) => {
       },
     },
   );
-  console.log(response);
+  // console.log(response);
   return response;
 };

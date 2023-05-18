@@ -72,8 +72,8 @@ const ChatRoom = () => {
   const [lastChat, setLastChat] = useRecoilState(userChatLastChatState);
   // 결과
   const setResult = useSetRecoilState(userChatResultState);
-  const result = useRecoilValue(userChatResultState);
-  const grammerMsg = useRecoilValue(userChatGrammerMsgListState);
+  // const result = useRecoilValue(userChatResultState);
+  // const grammerMsg = useRecoilValue(userChatGrammerMsgListState);
 
   // ref
   const chatWindowRef = useRef<HTMLDivElement>(null);
@@ -81,19 +81,23 @@ const ChatRoom = () => {
 
   const pathname: string = usePathname();
 
-  useEffect(() => {
-    console.log('grammerMsg', grammerMsg);
-  }, [grammerMsg]);
+  // useEffect(() => {
+  //   console.log('grammerMsg');
+  // }, [grammerMsg]);
+
+  // useEffect(() => {
+  //   console.log('setResult');
+  // }, [result]);
 
   useEffect(() => {
-    console.log('setResult', result);
-  }, [result]);
-
-  useEffect(() => {
-    // console.log('isFirst', isFirst);
+    console.log('isFirst', turn, lastChat);
     if (turn === 999 && lastChat) {
-      console.log('score', score);
+      // console.log('score', score);
       handleSendResult();
+      const timer = setInterval(checkAndSendResult, 5000);
+      return () => {
+        clearInterval(timer);
+      };
     }
   }, [score]);
 
@@ -174,7 +178,7 @@ const ChatRoom = () => {
               // console.log('subscribe : ', content);
               if (content.message === '탈주발생') {
                 console.log('탈주발생');
-                console.log('탈주발생', content);
+                // console.log('탈주발생', content);
                 setResult(content);
                 router.push('/userChat/Escape');
                 return;
@@ -261,6 +265,14 @@ const ChatRoom = () => {
       setIsFirst(false);
     };
   }, []);
+  // 마무리
+  const checkAndSendResult = () => {
+    console.log('checkAndSendResult');
+    if (turn === 999 && lastChat) {
+      handleSendResult();
+    }
+  };
+
   //문법 검사
   const handleGrammerCheck = (
     text: string,
@@ -288,7 +300,7 @@ const ChatRoom = () => {
     } else {
       // 문법 검사
       const check = async () => {
-        console.log('checkGrammer', text, chatNickname, msgTurn);
+        // console.log('checkGrammer', text, chatNickname, msgTurn);
         const res = await checkGrammer(text, chatNickname, msgTurn);
         await setGrammerMsgState((prev: ucGrammerMsgInterface[]) => {
           const isTurnExist = prev.some(
@@ -302,8 +314,8 @@ const ChatRoom = () => {
         } else {
           updateotherGrammarScore(res.score);
         }
-        console.log('res', res);
-        console.log('score', score);
+        // console.log('res', res);
+        // console.log('score', score);
       };
       check();
     }
@@ -388,7 +400,7 @@ const ChatRoom = () => {
       score: score,
       messageList: messageList,
     };
-    console.log('payload', payload);
+    // console.log('payload', payload);
     stompClient?.publish({
       destination: `/pub/user-chat/rooms/result/${userChatRoom.roomId}`,
       body: JSON.stringify(payload),
@@ -400,7 +412,7 @@ const ChatRoom = () => {
   // 메세지 전송
   const handleSendMessage = () => {
     console.log('handleSendMessage');
-    if (message.length === 0) {
+    if (timer !== 0 && message.length === 0) {
       alert('메세지를 입력해주세요.');
       return;
     }
@@ -542,12 +554,12 @@ const ChatRoom = () => {
           </>
         )}
         {!gameState && (
-          <div className="flex justify-center items-center flex-col h-screen font-bold">
+          <div
+            onClick={handleSendResult}
+            className="flex justify-center items-center flex-col h-screen font-bold"
+          >
             <Loading />
             <div>잠시만 기다려주세요.</div>
-            <button type="button" onClick={handleSendResult}>
-              버튼
-            </button>
             <div>대화가 분석되면 결과 화면으로 이동합니다.</div>
           </div>
         )}
@@ -572,12 +584,12 @@ const ChatRoom = () => {
                 </div>
               )}
               {!gameState && (
-                <div className="font-bold bg-white rounded-3xl text-center p-3 flex justify-center items-center flex-col my-auto">
+                <div
+                  onClick={handleSendResult}
+                  className="font-bold bg-white rounded-3xl text-center p-3 flex justify-center items-center flex-col my-auto"
+                >
                   <Loading />
                   <div>잠시만 기다려주세요.</div>
-                  <button type="button" onClick={handleSendResult}>
-                    버튼
-                  </button>
                   <div>대화가 분석되면 결과 화면으로 이동합니다.</div>
                 </div>
               )}
