@@ -43,7 +43,7 @@ const ChallengeList = ({ originalId, startIdx }: Props) => {
   useEffect(() => {
     console.log(challengeList?.length, endIndex);
     if (observer && isEnd) {
-      console.log('불러오기 끝');
+      // console.log('불러오기 끝');
       observer.unobserve;
       if (listEndRef.current) {
         listEndRef.current.className = 'hidden';
@@ -60,7 +60,7 @@ const ChallengeList = ({ originalId, startIdx }: Props) => {
       const newObserver = new IntersectionObserver((entries, observer) => {
         entries.forEach((entry) => {
           if (entry.intersectionRatio > 0.2 && !isEnd) {
-            console.log(isEnd);
+            // console.log(isEnd);
             setSize((prev) => prev + 3);
           }
         });

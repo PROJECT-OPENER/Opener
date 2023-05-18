@@ -1,5 +1,7 @@
 import Image from 'next/image';
 import React from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 type Props = {
   className: string;
@@ -8,6 +10,8 @@ type Props = {
 };
 
 const DetailPageNav = ({ className, title, propEvent }: Props) => {
+  const router = useRouter();
+
   return (
     <div
       className={`${className} hidden lg:grid lg:grid-cols-3 grid-cols-2 shadow-custom p-3 rounded-xl bg-[#fff6]`}
@@ -19,6 +23,7 @@ const DetailPageNav = ({ className, title, propEvent }: Props) => {
         height={24}
         priority
         className="mt-2"
+        onClick={() => router.push('/')}
       />
       <h1 className="text-center text-3xl font-bold hidden md:block">
         {title}

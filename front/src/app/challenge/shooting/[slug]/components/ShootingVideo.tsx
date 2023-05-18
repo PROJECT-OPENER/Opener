@@ -51,8 +51,8 @@ const ShootingVideo = ({ originalId }: Props) => {
         } else {
           alert('예상치 못한 오류가 발생했습니다.');
         }
-        router.push('/challenge');
       }
+      router.push('/challenge');
     }
   };
 
@@ -226,8 +226,8 @@ const ShootingVideo = ({ originalId }: Props) => {
     navigator.mediaDevices
       .getUserMedia({
         video: {
-          width: 396, // 영상 사이즈 변경 테스트
-          height: 704,
+          width: 480, // 영상 사이즈 변경 테스트
+          height: 640,
         },
         audio: false,
       })
@@ -253,15 +253,15 @@ const ShootingVideo = ({ originalId }: Props) => {
   };
 
   const stopRecording = () => {
-    console.log(previewPlayer);
+    // console.log(previewPlayer);
     if (previewPlayer.current && previewPlayer.current.srcObject) {
       const srcObj = previewPlayer.current.srcObject;
       if ('getTracks' in srcObj) {
         srcObj
           .getTracks()
           .forEach((track: { stop: () => any }) => track.stop());
-        console.log(srcObj.getTracks());
-        console.log('해제완료');
+        // console.log(srcObj.getTracks());
+        // console.log('해제완료');
       }
     }
     recorderRef.current?.stop();
@@ -353,14 +353,14 @@ const ShootingVideo = ({ originalId }: Props) => {
               className={
                 isPreview
                   ? 'hidden'
-                  : 'relative sm:h-[736px] sm:w-[414px]  h-[640px] w-[360px] flex justify-center items-center overflow-hidden'
+                  : 'relative sm:h-[736px] sm:w-[414px]  h-[640px] w-[360px] flex justify-center items-center overflow-hidden bg-black'
               }
             >
               <video
                 autoPlay
                 muted
                 ref={previewPlayer}
-                className="sm:h-[736px] sm:w-[414px]   h-[640px] w-[360px] relative"
+                className="sm:h-[736px] sm:w-[414px] h-[640px] w-[360px] relative"
               ></video>
               <div className="absolute top-10 w-full max-w-[90%] break-keep">
                 <pre
