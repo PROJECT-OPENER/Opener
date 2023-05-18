@@ -109,20 +109,25 @@ const ShootingVideo = ({ originalId }: Props) => {
     }
   };
 
-  const changeSubtitle = (time: number) => {
+  const changeSubtitle = () => {
     if (videoInfo) {
+      const tmpCaption = {
+        eng: '',
+      };
+      const time = youtubeSubscribeRef.current.getCurrentTime();
       for (let i = 0; i < videoInfo?.engCaption.length; i++) {
         if (
-          time >= videoInfo?.engCaption[i].startTime &&
+          time > videoInfo?.engCaption[i].startTime &&
           time < videoInfo?.engCaption[i].endTime
         ) {
-          setCaption({
-            ...caption,
-            eng: videoInfo.engCaption[i]?.text,
-          });
-          return;
+          tmpCaption.eng += '\n';
+          tmpCaption.eng += videoInfo?.engCaption[i].text;
         }
       }
+      setCaption({
+        ...caption,
+        eng: tmpCaption.eng,
+      });
     }
   };
   const animFrame = useRef<any>();
@@ -130,7 +135,7 @@ const ShootingVideo = ({ originalId }: Props) => {
   const tracePlayer = () => {
     if (youtubeSubscribeRef.current?.getPlayerState() === 1) {
       const currentTime = youtubeSubscribeRef.current.getCurrentTime();
-      changeSubtitle(currentTime);
+      changeSubtitle();
       animFrame.current = requestAnimationFrame(tracePlayer);
     } else {
       return cancelAnimationFrame(animFrame.current);
@@ -348,15 +353,15 @@ const ShootingVideo = ({ originalId }: Props) => {
           <>
             <div className={isPreview ? 'hidden' : 'relative'}>
               <video className="" autoPlay muted ref={previewPlayer}></video>
-              <div className="absolute top-10  w-full  flex justify-center items-center">
-                <div
-                  className="flex justify-center items-center font-black text-white md:text-xl"
+              <div className="absolute top-10 w-full max-w-[90%] break-keep">
+                <pre
+                  className="text-left font-black text-white md:text-xl whitespace-pre-wrap"
                   style={{
                     filter: 'drop-shadow(3px 3px 5px rgba(0, 0, 0, 0.9))',
                   }}
                 >
                   {caption?.eng}
-                </div>
+                </pre>
               </div>
               <div className="absolute bottom-0 left-0 ml-2 mb-2">
                 <YouTube
@@ -420,15 +425,15 @@ const ShootingVideo = ({ originalId }: Props) => {
           <>
             <div className={isPreview ? 'relative' : 'hidden'}>
               <video ref={recordingPlayer}></video>
-              <div className="absolute top-10 w-full  flex justify-center items-center">
-                <p
-                  className="\flex items-center justify-center font-black text-white md:text-2xl"
+              <div className="absolute top-10 w-full max-w-[90%] break-keep">
+                <pre
+                  className="text-left font-black text-white md:text-xl whitespace-pre-wrap"
                   style={{
                     filter: 'drop-shadow(3px 3px 5px rgba(0, 0, 0, 0.9))',
                   }}
                 >
                   {caption?.eng}
-                </p>
+                </pre>
               </div>
               <canvas ref={thumbCanvas} className="hidden"></canvas>
               <img ref={thumbnail} />

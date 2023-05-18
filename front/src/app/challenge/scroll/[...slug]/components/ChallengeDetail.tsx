@@ -142,7 +142,7 @@ const ChallengeDetail = ({ challengeList }: Props) => {
   const [isDelete, setIsDelete] = useState<boolean>(false);
   const options = {
     root: null,
-    threshold: [0.3, 0.9],
+    threshold: [0.3, 0.7],
   };
   const [detailobserver, setDetailobserver] =
     useState<IntersectionObserver | null>(null);
@@ -285,7 +285,7 @@ const ChallengeDetail = ({ challengeList }: Props) => {
   };
 
   return (
-    <div className="md:py-5 min-w-[360px]">
+    <div className="md:py-5">
       <DetailPageNav
         className="lg:inline fixed top-3 left-10 right-10 z-10 hidden"
         title="CHALLANGE"
@@ -293,7 +293,7 @@ const ChallengeDetail = ({ challengeList }: Props) => {
       />
       {!isDelete && (
         <div
-          className="h-screen flex flex-col items-center overflow-hidden"
+          className="h-screen w-screen flex flex-col items-center overflow-hidden bg-blue-200  border-2 border-rose-600"
           ref={videoRef}
         >
           <div

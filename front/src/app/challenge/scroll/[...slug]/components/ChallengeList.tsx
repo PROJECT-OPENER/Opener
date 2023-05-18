@@ -73,7 +73,7 @@ const ChallengeList = ({ originalId, startIdx }: Props) => {
   }, []);
 
   return (
-    <div className="overflow-scroll h-screen snap-mandatory snap-y scrollbar-hide">
+    <div className="absolute top-0 left-0 overflow-scroll h-screen snap-mandatory snap-y scrollbar-hide">
       {isEmpty ? <p>조회된 챌린지가 없습니다.</p> : null}
       {isLoading && (
         <div className="h-screen w-screen">
@@ -81,7 +81,7 @@ const ChallengeList = ({ originalId, startIdx }: Props) => {
         </div>
       )}
       {challengeList && (
-        <div className="">
+        <div className="relative">
           {challengeList.map((chal) => (
             <div key={chal.memberChallengeId} className="snap-center">
               <ChallengeDetail challengeList={chal}></ChallengeDetail>
