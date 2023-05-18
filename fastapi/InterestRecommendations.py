@@ -28,7 +28,7 @@ async def update_ratings():
     df.to_sql('ratings', engine, if_exists='replace', index=False)
 
 async def get_video_data(video_id):
-    query = f"SELECT video_id, thumbnail_url, eng_sentence, kor_sentence FROM shadowingvideo WHERE video_id = {video_id}"
+    query = f"SELECT video_id as videoId, thumbnail_url as thumbnailUrl, eng_sentence as engSentence, kor_sentence as korSentence FROM shadowingvideo WHERE video_id = {video_id}"
     df = pd.read_sql_query(query, engine)
     return df.to_dict(orient='records')[0]  # Return the first record as a dict
 
