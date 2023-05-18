@@ -1,4 +1,4 @@
-![logo (2)](https://github.com/imnooy/MSA/assets/75800620/8cf4a8ce-2018-456f-ad49-3e53a4acd2c8)
+![logo (2)](docs/images/%EB%A1%9C%EA%B3%A0.png)
 
 # Opener - 영어 회화 연습을 위한 웹 사이트
 
@@ -49,28 +49,29 @@
 
 ## 📐아키텍처 설계
 
-여기에 아키텍처구조도
+![image](docs/images/%EC%95%84%ED%82%A4%ED%85%8D%EC%B2%98.png)
 
 </br>
 
 ## 💻피그마 설계
 
-![image](https://github.com/imnooy/MSA/assets/75800620/8ba945a5-e944-4b46-9a5f-f2510b3d6b00)
+![image](docs/images/%ED%94%BC%EA%B7%B8%EB%A7%88.png)
 
 </br>
 
 ## 💽ERD 설계
-### Member Service
-![member](https://github.com/imnooy/MSA/assets/75800620/fff9edef-9503-46d6-b0fb-3ab6aacf92cf)
 
-### Shaodowing Service
-![shadowing](https://github.com/imnooy/MSA/assets/75800620/887a2db8-ac9a-4278-9518-2572e85eb3f7)
+### Member Service / Shaodowing Service
+<p align="center">
+<img src=docs/images/%EB%A9%A4%EB%B2%84erd.png width="350" height="200">
+<img src=docs/images/%EC%89%90%EB%8F%84%EC%9E%89erd.png width="350" height="200">
+</p>
 
-### Challenge Service
-![challenge](https://github.com/imnooy/MSA/assets/75800620/4b76c472-a959-48b3-b3cd-94c333d1196f)
-)
-### Chatting Service
-![chatting](https://github.com/imnooy/MSA/assets/75800620/29978e5b-e27a-4403-8957-901f00b5ce81)
+### Challenge Service / Chatting Service
+<p align="center">
+<img src=docs/images/%EC%B1%8C%EB%A6%B0%EC%A7%80erd.png width="350" height="200">
+<img src=docs/images/%EC%B1%84%ED%8C%85erd.png width="350" height="200">
+</p>
 
 </br>
 
@@ -78,50 +79,34 @@
 
 ## 메인 페이지
 
-### 학습 로드맵
-
-</br>
-
-여기에 로드맵 사진
+### 학습 로드맵 / 인기 챌린지
 
 </br>
 
 - 자신이 현재 학습 중인 쉐도잉 영상 진도가 나타납니다.
-
-</br>
-
-### 인기 챌린지
-
-</br>
-
-여기에 인기챌린지 사진
-
-</br>
-
 - 좋아요 순 인기 챌린지 목록이 나타납니다.
 
+<p align="center">
+<img src=docs/images/%EB%82%B4%EB%A1%9C%EB%93%9C%EB%A7%B5.png width="550" height="200">
+<img src=docs/images/%EC%9D%B8%EA%B8%B0%EC%B1%8C%EB%A6%B0%EC%A7%80.png width="350" height="200">
+</p>
+
+
 </br>
 
-### 추천 문장
+### 추천 문장 / TREB 랭킹
 
 </br>
 
-여기에 추천 문장
+<p align="center">
+<img src=docs/images/%EC%B6%94%EC%B2%9C%EB%AC%B8%EC%9E%A5.png width="450" height="200">
+<img src=docs/images/%EB%9E%AD%ED%82%B9.png width="450" height="200">
+</p>
+
 
 </br>
 
 - 사용자 정보를 기반으로 영어 문장을 추천해줍니다.
-
-</br>
-
-### TREB 랭킹
-
-</br>
-
-![메인페이지랭크](https://github.com/imnooy/MSA/assets/75800620/bcdad44a-9506-45fc-9262-d8d01d60b2c5)
-
-</br>
-
 - 유저 게임 상위 10위권 사용자들이 나타납니다.
 
 </br>
@@ -132,13 +117,11 @@
 
 </br>
 
-여기에 쉐도잉 목록 리스트 사진
+![쉐도잉목록](docs/images/%EC%89%90%EB%8F%84%EC%9E%89%EB%AA%A9%EB%A1%9D.gif)
 
 </br>
 
 - 카테고리 별로 쉐도잉 영상 목록을 볼 수 있습니다.
-- 추천 탭을 누르면 추천되는 쉐도잉 영상 목록이 나타납니다.
-- 북마크 탭을 내가 북마크한 쉐도잉 영상 목록이 나타납니다.
 
 </br>
 
@@ -146,7 +129,7 @@
 
 </br>
 
-여기에 stt 녹음해서 발음평가 나오는 움짤
+![발음평가](docs/images/%EB%B0%9C%EC%9D%8C%ED%8F%89%EA%B0%80.gif)
 
 </br>
 
@@ -155,7 +138,7 @@
 
 </br>
 
-여기에 쉐도잉 학습 반복해서 영상 재생 움짤, 단어장 보여줌
+![쉐도잉학습상세](docs/images/%EC%89%90%EB%8F%84%EC%9E%89%ED%95%99%EC%8A%B5%EC%83%81%EC%84%B8.png)
 
 </br>
 
@@ -164,7 +147,7 @@
 
 </br>
 
-여기에 다음 자막으로 넘어가는 움짤
+![다음자막](docs/images/%EC%89%90%EB%8F%84%EC%9E%89%ED%95%99%EC%8A%B5%EC%83%81%EC%84%B8.gif)
 
 - 화살표 버튼으로 다음 자막으로 이동해 학습할 수 있습니다.
 - 구간 영상을 20번 반복 학습하게 되면 학습이 완료됩니다.
@@ -177,7 +160,7 @@
 
 </br>
 
-여기에 챌린지목록 내리는 움짤
+![챌린지목록](docs/images/%EC%B1%8C%EB%A6%B0%EC%A7%80%EB%AA%A9%EB%A1%9D.gif)
 
 </br>
 
@@ -189,7 +172,7 @@
 
 </br>
 
-여기에 사람들 챌린지 목록 내리는 움짤
+![챌린지참여하기](docs/images/%EC%B1%8C%EB%A6%B0%EC%A7%80%EC%83%81%EC%84%B8.png)
 
 </br>
 
@@ -203,7 +186,7 @@
 
 </br>
 
-사용자챌린지영상 재생되는 움짤
+![챌린지재생](docs/images/%EC%B1%8C%EB%A6%B0%EC%A7%80%EC%9E%AC%EC%83%9D.gif)
 
 </br>
 
@@ -218,7 +201,7 @@
 
 </br>
 
-![채팅페이지](https://github.com/imnooy/MSA/assets/75800620/091e2bb4-88cc-4baf-ada0-bb364536cd83)
+![채팅페이지](docs/images/%EC%B1%84%ED%8C%85%EC%84%A0%ED%83%9D.png)
 
 </br>
 
@@ -230,7 +213,7 @@
 
 </br>
 
-![AI채팅주제선택](https://github.com/imnooy/MSA/assets/75800620/1aa37c72-dc4f-4441-9483-3451e2006e36)
+![AI채팅주제선택](docs/images/%EC%B1%84%ED%8C%85%EA%B4%80%EC%8B%AC%EC%82%AC%EC%84%A0%ED%83%9D.png)
 
 </br>
 
@@ -238,7 +221,7 @@
 
 </br>
 
-![ai채팅시작](https://github.com/imnooy/MSA/assets/75800620/fed51081-178e-4d94-a10b-2e7798498079)
+![ai채팅시작](docs/images/ai%EC%B1%84%ED%8C%85%EC%8B%9C%EC%9E%91.gif)
 
 </br>
 
@@ -246,7 +229,7 @@
 
 </br>
 
-![ai채팅](https://github.com/imnooy/MSA/assets/75800620/c3918ba3-57ba-487d-a6a8-f8091f3069f3)
+![ai채팅](docs/images/ai%EC%B1%84%ED%8C%85%EB%B3%B4%EB%83%84.gif)
 
 -  마이크 버튼을 눌러 말한 내용이 대화창에 표시됩니다.
 -  인식을 잘못한 부분이 있다면 키보드 버튼을 눌러 수정할 수 있습니다.
@@ -257,7 +240,7 @@
 
 ### 유저와 채팅 게임
 
-![유저게임매칭](https://github.com/imnooy/MSA/assets/75800620/fa986b3b-5e4b-4a58-8255-2cec74c6469b)
+![유저게임매칭](docs/images/%EB%A7%A4%EC%B9%AD%EA%B8%B0%EB%8B%A4%EB%A6%BC.gif)
 
 </br>
 
@@ -266,7 +249,7 @@
 
 </br>
 
-![매칭성공](https://github.com/imnooy/MSA/assets/75800620/8701e0c2-e09a-4886-83ec-c4d88632384d)
+![매칭성공](docs/images/%EB%A7%A4%EC%B9%AD%EB%90%A8.gif)
 
 </br>
 
@@ -274,8 +257,8 @@
 
 </br>
 
-![내가보냄](https://github.com/imnooy/MSA/assets/75800620/ad4b1202-344d-4417-b045-d2c3d2519eba)
-![상대방이보냄](https://github.com/imnooy/MSA/assets/75800620/52bef0ef-f68f-4f11-9891-33830d3aff75)
+![내가보냄](docs/images/%EC%9C%A0%EC%A0%80%EC%B1%84%ED%8C%85%EB%A7%90%ED%95%A8.gif)
+![상대방이보냄](docs/images/%EB%8B%B5%EC%9E%A5%EC%98%B4.gif)
 
 </br>
 
@@ -284,7 +267,7 @@
 
 </br>
 
-![패스](https://github.com/imnooy/MSA/assets/75800620/971a1fed-1a57-40c3-9cd6-47d44a239eea)
+![패스](docs/images/pass.gif)
 
 </br>
 
@@ -296,7 +279,7 @@
 
 </br>
 
-![결과창이동](https://github.com/imnooy/MSA/assets/75800620/b3fd4543-465e-439c-8180-0905d15c9d15)
+![결과창이동](docs/images/%EA%B2%B0%EA%B3%BC%EB%A1%9C%EC%9D%B4%EB%8F%99.gif)
 
 </br>
 
@@ -306,7 +289,7 @@
 - 
 </br>
 
-![문법피드백](https://github.com/imnooy/MSA/assets/75800620/0372841b-8dc2-4012-afee-b7ce04aa96f6)
+![문법피드백](docs/images/%EA%B2%B0%EA%B3%BC%ED%8E%98%EC%9D%B4%EC%A7%80.gif)
 
 </br>
 
@@ -318,7 +301,7 @@
 
 </br>
 
-여기에 로드맵페이지 움짤? 사진?
+![로드맵](docs/images/%EB%A1%9C%EB%93%9C%EB%A7%B5.gif)
 
 </br>
 
