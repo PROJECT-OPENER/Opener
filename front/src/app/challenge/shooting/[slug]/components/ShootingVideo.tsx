@@ -226,8 +226,8 @@ const ShootingVideo = ({ originalId }: Props) => {
     navigator.mediaDevices
       .getUserMedia({
         video: {
-          width: 480, // 영상 사이즈 변경 테스트
-          height: 640,
+          width: 396, // 영상 사이즈 변경 테스트
+          height: 704,
         },
         audio: false,
       })
