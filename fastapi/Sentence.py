@@ -82,10 +82,10 @@ def get_recommendations(nickname):
 
     # 추천된 비디오의 정보를 데이터베이스에서 가져옵니다.
     recommended_videos = [video for video, rating in estimated_ratings]
-    recommended_videos_info = pd.read_sql_query(f"SELECT video_id, thumbnail_url, eng_sentence, kor_sentence FROM shadowingvideo WHERE video_id IN ({','.join(map(str, recommended_videos))})", engine)
+    recommended_videos_info = pd.read_sql_query(f"SELECT video_id as videoId, thumbnail_url as thumbnailUrl, eng_sentence as engSentence, kor_sentence as korSentence FROM shadowingvideo WHERE video_id IN ({','.join(map(str, recommended_videos))})", engine)
 
     # 비디오 정보를 예상 평점 순으로 정렬합니다.
-    recommended_videos_info['estimated_rating'] = recommended_videos_info['video_id'].map(dict(estimated_ratings))
+    recommended_videos_info['estimated_rating'] = recommended_videos_info['videoId'].map(dict(estimated_ratings))
     recommended_videos_info.sort_values('estimated_rating', ascending=False, inplace=True)
     recommended_videos_info.drop('estimated_rating', axis=1, inplace=True)
 
