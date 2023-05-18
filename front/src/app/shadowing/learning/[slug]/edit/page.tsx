@@ -71,7 +71,7 @@ const Edit = ({ params }: { params: { slug: string } }) => {
         </div>
       </div>
       <button className="bg-brandY w-full p-3" onClick={action}>
-        변형하기
+        변경하기
       </button>
     </div>
   );
