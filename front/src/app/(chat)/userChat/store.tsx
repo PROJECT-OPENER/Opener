@@ -115,3 +115,8 @@ export const bonobonoState = atom({
   key: 'bonobonoState',
   default: false,
 });
+
+export const userChatTipState = atom({
+  key: 'userChatTipState',
+  default: true,
+});
