@@ -12,7 +12,7 @@ const VoiceList = () => {
     const getData = async () => {
       const response = await originalChallengeApi();
       setChallengeList(response);
-      console.log(response);
+      // console.log(response);
     };
     getData();
   }, []);

@@ -76,11 +76,11 @@ const SingleChallengeView = ({ challengeId }: Props) => {
   const likeClick = async (method: string) => {
     if (method == 'post') {
       const response = await likeCreateApi(challengeId);
-      console.log('response', response);
+      // console.log('response', response);
       setIsLike(true);
     } else {
       const response = await likeDeleteApi(challengeId);
-      console.log('response', response);
+      // console.log('response', response);
       setIsLike(false);
     }
   };
@@ -91,7 +91,7 @@ const SingleChallengeView = ({ challengeId }: Props) => {
       alert('영상이 삭제되었습니다.');
       router.push('/challenge');
     } else {
-      console.log(response);
+      // console.log(response);
     }
   };
 
@@ -309,7 +309,7 @@ const SingleChallengeView = ({ challengeId }: Props) => {
                               className="fill-[#fb3958]"
                               style={{
                                 filter:
-                                  'drop-shadow(3px 3px 5px rgba(0, 0, 0, 0.3))',
+                                  'drop-shadow(3px 3px 5px rgba(0, 0, 0, 0.9))',
                               }}
                               onClick={() => likeClick('delete')}
                             />
@@ -320,7 +320,7 @@ const SingleChallengeView = ({ challengeId }: Props) => {
                               className="fill-white"
                               style={{
                                 filter:
-                                  'drop-shadow(3px 3px 5px rgba(0, 0, 0, 0.3))',
+                                  'drop-shadow(3px 3px 5px rgba(0, 0, 0, 0.9))',
                               }}
                               onClick={() => likeClick('post')}
                             />
@@ -334,7 +334,7 @@ const SingleChallengeView = ({ challengeId }: Props) => {
                             className="fill-white"
                             style={{
                               filter:
-                                'drop-shadow(3px 3px 5px rgba(0, 0, 0, 0.3))',
+                                'drop-shadow(3px 3px 5px rgba(0, 0, 0, 0.9))',
                             }}
                             onClick={() => shareClick()}
                           />
@@ -344,7 +344,7 @@ const SingleChallengeView = ({ challengeId }: Props) => {
                             className="text-md font-black text-white"
                             style={{
                               filter:
-                                'drop-shadow(3px 3px 5px rgba(0, 0, 0, 0.3))',
+                                'drop-shadow(3px 3px 5px rgba(0, 0, 0, 0.9))',
                             }}
                           >
                             공유하기

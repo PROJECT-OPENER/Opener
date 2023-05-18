@@ -40,7 +40,7 @@ const ChallengeDetail = ({ challengeList }: Props) => {
   const challengeInfo: challengeDetail = data?.data;
   useEffect(() => {
     const convert = (cap: string) => {
-      console.log(cap);
+      // console.log(cap);
       const resArray = [];
       if (cap) {
         const subtitles = cap.replace('WEBVTT\n\n', '');
@@ -49,7 +49,7 @@ const ChallengeDetail = ({ challengeList }: Props) => {
           const sub = subtitle[i].split('\n');
           const subtitleTime = sub[0].split(' --> ');
           const subtitleText = sub.slice(1).join('\n');
-          console.log(subtitleTime);
+          // console.log(subtitleTime);
           if (subtitleTime) {
             resArray.push({
               startTime: convertTime(subtitleTime[0]),
@@ -88,7 +88,7 @@ const ChallengeDetail = ({ challengeList }: Props) => {
     if (!timeString) return 0;
     const wholetime = timeString.split('.');
     const m_sec = Number(wholetime[1]) / 1000;
-    console.log(timeString, m_sec, wholetime[1]);
+    // console.log(timeString, m_sec, wholetime[1]);
     const time = wholetime[0].split(/[:,]/).map(parseFloat);
 
     if (time.length > 2) {
@@ -156,17 +156,17 @@ const ChallengeDetail = ({ challengeList }: Props) => {
   };
 
   const handleParentClick = async () => {
-    console.log('클릭');
+    // console.log('클릭');
     if (youtubePlayRef.current) {
       const player = youtubePlayRef.current.getInternalPlayer();
       const status = await player.getPlayerState();
       if (status === 1) {
         player.pauseVideo();
-        console.log('정지');
+        // console.log('정지');
         // detailobserver?.disconnect();
       } else {
         player.playVideo();
-        console.log('시작');
+        // console.log('시작');
       }
     }
   };
@@ -214,7 +214,7 @@ const ChallengeDetail = ({ challengeList }: Props) => {
       alert('영상이 삭제되었습니다.');
       router.push('/challenge');
     } else {
-      console.log(response);
+      // console.log(response);
     }
   };
   const youtubePlayStart = async () => {
@@ -308,8 +308,6 @@ const ChallengeDetail = ({ challengeList }: Props) => {
               }
             >
               <video
-                playsInline
-                controls
                 ref={memberPlayerRef}
                 src={challengeInfo?.curMemberChallenge.memberChallengeUrl}
                 className="sm:h-[736px] sm:w-[414px]   h-[640px] w-[360px] relative"
@@ -357,7 +355,7 @@ const ChallengeDetail = ({ challengeList }: Props) => {
                             className="fill-[#fb3958]"
                             style={{
                               filter:
-                                'drop-shadow(3px 3px 5px rgba(0, 0, 0, 0.3))',
+                                'drop-shadow(3px 3px 5px rgba(0, 0, 0, 0.9))',
                             }}
                             onClick={() => likeClick('delete')}
                           />
@@ -368,7 +366,7 @@ const ChallengeDetail = ({ challengeList }: Props) => {
                             className="fill-white"
                             style={{
                               filter:
-                                'drop-shadow(3px 3px 5px rgba(0, 0, 0, 0.3))',
+                                'drop-shadow(3px 3px 5px rgba(0, 0, 0, 0.9))',
                             }}
                             onClick={() => likeClick('post')}
                           />
@@ -379,7 +377,7 @@ const ChallengeDetail = ({ challengeList }: Props) => {
                           className="text-lg font-black text-white"
                           style={{
                             filter:
-                              'drop-shadow(3px 3px 5px rgba(0, 0, 0, 0.3))',
+                              'drop-shadow(3px 3px 5px rgba(0, 0, 0, 0.9))',
                           }}
                         >
                           {likeCnt}
@@ -393,7 +391,7 @@ const ChallengeDetail = ({ challengeList }: Props) => {
                           className="fill-white"
                           style={{
                             filter:
-                              'drop-shadow(3px 3px 5px rgba(0, 0, 0, 0.3))',
+                              'drop-shadow(3px 3px 5px rgba(0, 0, 0, 0.9))',
                           }}
                           onClick={() => shareClick()}
                         />
@@ -403,7 +401,7 @@ const ChallengeDetail = ({ challengeList }: Props) => {
                           className="text-md font-black text-white"
                           style={{
                             filter:
-                              'drop-shadow(3px 3px 5px rgba(0, 0, 0, 0.3))',
+                              'drop-shadow(3px 3px 5px rgba(0, 0, 0, 0.9))',
                           }}
                         >
                           공유하기
