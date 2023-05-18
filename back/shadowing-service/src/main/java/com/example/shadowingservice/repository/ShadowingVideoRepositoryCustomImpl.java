@@ -89,7 +89,7 @@ public class ShadowingVideoRepositoryCustomImpl implements ShadowingVideoReposit
 			ShadowingStatus status = ShadowingStatus.builder()
 				.member(member)
 				.shadowingVideo(video)
-				.repeatCount(0)
+				.repeatCount(1)
 				.viewCount(0)
 				.build();
 			em.persist(status);
