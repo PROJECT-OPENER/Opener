@@ -33,8 +33,8 @@ const ShootingVideo = ({ originalId }: Props) => {
     const nickname = session?.user.user?.data.nickname;
 
     if (recordingPlayer.current && thumbCanvas.current && challengeFile) {
-      const myFile = new File([challengeFile], 'demo.webm', {
-        type: 'video/webm',
+      const myFile = new File([challengeFile], 'demo.mp4', {
+        type: 'video/mp4',
       });
       const blob = await fetch(thumbImg).then((res) => res.blob()); // 이미지 데이터를 multipart 형식으로 변환
       formData.append('memberChallengeImg', blob);
@@ -253,10 +253,8 @@ const ShootingVideo = ({ originalId }: Props) => {
   };
 
   const stopRecording = () => {
-    console.log('진입');
     console.log(previewPlayer);
     if (previewPlayer.current && previewPlayer.current.srcObject) {
-      console.log('해제시작');
       const srcObj = previewPlayer.current.srcObject;
       if ('getTracks' in srcObj) {
         srcObj
@@ -300,7 +298,7 @@ const ShootingVideo = ({ originalId }: Props) => {
 
   // recordedChunks 입력되면 바로 영상 출력 준비 완료.
   useEffect(() => {
-    const recordedBlob = new Blob(recordedChunks, { type: 'video/webm' });
+    const recordedBlob = new Blob(recordedChunks, { type: 'video/mp4' });
     if (recordingPlayer.current) {
       recordingPlayer.current.src = URL.createObjectURL(recordedBlob);
       setChallengeFile(recordedBlob); // 영상 변수에 저장
@@ -322,7 +320,7 @@ const ShootingVideo = ({ originalId }: Props) => {
             setThumbImg(imageData);
           }
         }
-      }, 50);
+      }, 500);
       if (downloadButton.current) {
         downloadButton.current.href = recordingPlayer.current.src;
         downloadButton.current.download = `recording_${new Date()}.webm`;
@@ -351,8 +349,19 @@ const ShootingVideo = ({ originalId }: Props) => {
       <div className="flex justify-center relative md:mt-5">
         {!isPreview && (
           <>
-            <div className={isPreview ? 'hidden' : 'relative'}>
-              <video className="" autoPlay muted ref={previewPlayer}></video>
+            <div
+              className={
+                isPreview
+                  ? 'hidden'
+                  : 'relative sm:h-[736px] sm:w-[414px]  h-[640px] w-[360px] flex justify-center items-center overflow-hidden'
+              }
+            >
+              <video
+                autoPlay
+                muted
+                ref={previewPlayer}
+                className="sm:h-[736px] sm:w-[414px]   h-[640px] w-[360px] relative"
+              ></video>
               <div className="absolute top-10 w-full max-w-[90%] break-keep">
                 <pre
                   className="text-left font-black text-white md:text-xl whitespace-pre-wrap"
@@ -424,7 +433,10 @@ const ShootingVideo = ({ originalId }: Props) => {
         {isPreview && (
           <>
             <div className={isPreview ? 'relative' : 'hidden'}>
-              <video ref={recordingPlayer}></video>
+              <video
+                ref={recordingPlayer}
+                className="sm:h-[736px] sm:w-[414px]   h-[640px] w-[360px] relative"
+              ></video>
               <div className="absolute top-10 w-full max-w-[90%] break-keep">
                 <pre
                   className="text-left font-black text-white md:text-xl whitespace-pre-wrap"
