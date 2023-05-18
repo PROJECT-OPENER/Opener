@@ -36,14 +36,14 @@ const RecommendData = () => {
               ) : (
                 <div className="w-full h-[188px] rounded-xl bg-brandY" />
               )}
-              <div className="mt-2 px-1 lg:mt-4 lg:p-1">
-                <p className="text-base font-semibold mb-1 lg:text-base lg:font-semibold lg:mb-1">
-                  {content.engSentence}
-                </p>
-                <p className="text-sm font-light lg:text-sm lg:font-light">
-                  {content.korSentence}
-                </p>
-              </div>
+            </div>
+            <div className="mt-2 p-1 lg:mt-4 lg:p-1">
+              <p className="text-base font-semibold mb-1 lg:text-base lg:font-semibold lg:mb-1">
+                {content.engSentence}
+              </p>
+              <p className="text-sm font-light lg:text-sm lg:font-light">
+                {content.korSentence}
+              </p>
             </div>
           </Link>
         );
@@ -53,7 +53,7 @@ const RecommendData = () => {
           onClick={() => {
             router.push('/shadowing');
           }}
-          className="shadow-custom mr-10 w-[110px] h-[250px] sm:h-[285px] rounded-3xl bg-[#fff] hover:text-white active:text-white hover:bg-brandP active:bg-[#620fcf]"
+          className="shadow-custom mr-10 w-[110px] h-full rounded-3xl bg-[#fff] hover:text-white active:text-white hover:bg-brandP active:bg-[#620fcf]"
         >
           더 보기
         </button>
