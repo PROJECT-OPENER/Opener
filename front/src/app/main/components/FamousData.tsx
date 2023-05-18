@@ -6,13 +6,13 @@ import { AiFillHeart } from 'react-icons/ai';
 const FamousData = () => {
   const data = use(fetchData('LIKE', 0, 5));
   return (
-    <div className="flex flex-row relative h-full w-full justify-between">
+    <div className="flex flex-row relative h-full justify-between">
       {data.memberChallengeList.map((content: any, index: number) => {
         return (
           <Link
             key={index}
             href={`/challenge/scroll/LIKE/${index}`}
-            className="shadow-custom lg:mr-0 mr-2 relative w-[110px] h-[195.5px] rounded-3xl bg-[#4b4b4b] flex justify-center items-center sm:w-[130px] sm:h-[230px] lg:w-[155px] lg:h-[275.5px] overflow-hidden"
+            className="shadow-custom lg:mr-0 mr-2 w-[110px] h-[195.5px] rounded-3xl bg-[#4b4b4b] flex justify-center items-center sm:w-[130px] sm:h-[230px] lg:w-[155px] lg:h-[275.5px] overflow-hidden"
           >
             <div className="">
               <Image

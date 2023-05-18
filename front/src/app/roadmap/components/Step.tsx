@@ -1,6 +1,6 @@
 import { stepInterface } from '@/types/share';
 import Theme from './Theme';
-const Step = ({ data }: { data: stepInterface }) => {
+const Step = ({ data, unlocked }: { data: stepInterface; unlocked: any }) => {
   const stepList = data.themeRoadMapResponseDtoList
     ? data.themeRoadMapResponseDtoList
     : data.authThemeRoadMapResponseDtoList;
@@ -11,7 +11,14 @@ const Step = ({ data }: { data: stepInterface }) => {
         STEP {data.stepNo}
       </p>
       {stepList?.map((theme, index) => {
-        return <Theme data={theme} key={index} />;
+        return (
+          <Theme
+            data={theme}
+            key={index}
+            step={Number(data.stepNo)}
+            unlocked={unlocked}
+          />
+        );
       })}
     </>
   );

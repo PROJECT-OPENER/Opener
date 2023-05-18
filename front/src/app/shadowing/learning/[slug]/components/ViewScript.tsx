@@ -74,7 +74,7 @@ const ViewScript = ({ params }: { params: { slug: string } }) => {
       if (data.korCaption === null || data.korCaption === '') {
         console.log('예외 처리');
         alert('한글 자막 필요');
-        router.push('/edit/' + params.slug);
+        router.push(`/shadowing/learning/${params.slug}/edit`);
         // return;
         // data.korCaption = await translate(
         //   data.engCaption.replace('WEBVTT\n\n', ''),

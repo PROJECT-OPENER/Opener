@@ -13,6 +13,7 @@ const Edit = ({ params }: { params: { slug: string } }) => {
   const videoId = params.slug;
 
   useEffect(() => {
+    console.log(videoId);
     const getVideo = async () => {
       const res = await getVideoApi(videoId);
       setVideo({
@@ -20,14 +21,20 @@ const Edit = ({ params }: { params: { slug: string } }) => {
         end: res?.end,
         videoUrl: res?.videoUrl,
       });
+      console.log(res);
       if (res.engCaption === null || res.engCaption === undefined) {
+        console.log('영어 자막 요청');
         const eng = await getCaptionApi(video.videoUrl);
         console.log(eng);
         setEngCaption(eng);
       } else {
         setEngCaption(res?.engCaption);
       }
-      setKorCaption(res?.korCaption);
+      if (res.korCaption === null || res.korCaption === undefined) {
+        setKorCaption(res?.engCaption);
+      } else {
+        setKorCaption(res?.korCaption);
+      }
     };
     getVideo();
   }, []);
@@ -46,7 +53,7 @@ const Edit = ({ params }: { params: { slug: string } }) => {
   };
 
   return (
-    <div className="h-[500px] w-full">
+    <div className="h-full w-full flex flex-col">
       <p className="text-xl font-bold">
         {video?.start} ~ {video?.end}
       </p>

@@ -86,7 +86,7 @@ const ShowList = (props: { category: string }) => {
     return <p>loading...</p>;
   } else {
     return (
-      <div className={styles.content}>
+      <div className="flex flex-col">
         {/* <p>카테고리 : {category}</p> */}
         {contents.map((content: any, index: number) => {
           return (
@@ -95,20 +95,22 @@ const ShowList = (props: { category: string }) => {
               key={index}
               className={styles.contentItem}
             >
-              <div className={styles.ItemImage}>
-                {content.thumbnailUrl && (
-                  <Image src={content.thumbnailUrl} fill alt="" />
-                )}
-                {!content.thumbnailUrl && (
-                  // <Image src={content.thumbnailUrl} fill alt="" />
-                  <Image src={defaultImage.src} fill alt="" />
-                )}
-              </div>
-              <div className="px-5 flex flex-row w-full justify-between items-center">
+              <div className="flex flex-row w-full items-center">
+                <div className={styles.ItemImage}>
+                  {content.thumbnailUrl && (
+                    <Image src={content.thumbnailUrl} fill alt="" />
+                  )}
+                  {!content.thumbnailUrl && (
+                    // <Image src={content.thumbnailUrl} fill alt="" />
+                    <Image src={defaultImage.src} fill alt="" />
+                  )}
+                </div>
                 <div className="">
                   <p className="text-lg font-medium">{content.engSentence}</p>
                   <p className="text-xs">{content.korSentence}</p>
                 </div>
+              </div>
+              <div className="p-3">
                 {content.marked ? (
                   <BsBookmarkPlusFill color="#7D17FF" size="1.5rem" />
                 ) : (

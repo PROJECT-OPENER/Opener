@@ -40,25 +40,26 @@ const ChoiceBox = () => {
         <div className="grid grid-cols-2">
           {data.data.map((item: interestInterface) => {
             return (
-              <div
-                key={item.interestId}
-                className={`m-5 h-[150px] w-[150px] rounded-xl flex justify-center items-center shadow-xl hover:cursor-pointer ${
-                  activeIndex === item.interestId
-                    ? 'bg-brandP text-white'
-                    : 'bg-white'
-                }`}
-                onClick={() => {
-                  setActiveIndex(item.interestId);
-                  setSelected(item.interest);
-                }}
-              >
-                <span
-                  className={
-                    activeIndex === item.interestId ? 'text-white' : ''
-                  }
+              <div key={item.interestId} className=" p-2">
+                <div
+                  className={`h-full w-full aspect-[1/1] rounded-xl flex justify-center items-center shadow-xl cursor-pointer active:bg-brandPhover hover:bg-brandP hover:text-white ${
+                    activeIndex === item.interestId
+                      ? 'bg-brandP text-white'
+                      : 'bg-white'
+                  }`}
+                  onClick={() => {
+                    setActiveIndex(item.interestId);
+                    setSelected(item.interest);
+                  }}
                 >
-                  {item.interest}
-                </span>
+                  <span
+                    className={
+                      activeIndex === item.interestId ? 'text-white' : ''
+                    }
+                  >
+                    {item.interest}
+                  </span>
+                </div>
               </div>
             );
           })}
@@ -67,7 +68,7 @@ const ChoiceBox = () => {
       <Button
         type="button"
         text="시작하기"
-        className="bg-brandP w-full text-white rounded-xl shadow-xl py-3 mt-5"
+        className="bg-brandP active:bg-brandPhover w-full text-white rounded-xl shadow-xl py-3 mt-5"
         onClick={handleClick}
       />
     </div>

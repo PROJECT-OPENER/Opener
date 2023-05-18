@@ -2,13 +2,20 @@ import { themeInterface } from '@/types/share';
 import Sentence from './Sentence';
 import { BiLockAlt } from 'react-icons/bi';
 
-const Theme = ({ data }: { data: themeInterface }) => {
+const Theme = ({
+  data,
+  step,
+  unlocked,
+}: {
+  data: themeInterface;
+  step: number;
+  unlocked: any;
+}) => {
   const themeList = data.roadMapResponseDtoList
     ? data.roadMapResponseDtoList
     : data.authRoadMapResponseDtoList;
-  console.log(themeList);
-  let isLocked = true;
 
+  let isLocked = true;
   const blankSentence = {
     videoId: '',
     engSentence: '',
@@ -19,9 +26,17 @@ const Theme = ({ data }: { data: themeInterface }) => {
   };
 
   for (let i = 0; i < themeList!.length; i++) {
-    if (themeList![i].statusDate !== null) {
+    if (
+      themeList![i].statusDate !== null &&
+      data.stepTheme === unlocked.theme
+    ) {
       isLocked = false;
       break;
+    } else if (unlocked.theme === data.stepTheme && step === 1) {
+      isLocked = false;
+      break;
+    } else if (unlocked.step > step) {
+      isLocked = false;
     }
   }
 
