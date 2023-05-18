@@ -1,0 +1,59 @@
+-- MySQL dump 10.13  Distrib 8.0.31, for Win64 (x86_64)
+--
+-- Host: k8c1041.p.ssafy.io    Database: opener
+-- ------------------------------------------------------
+-- Server version	8.0.32
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!50503 SET NAMES utf8 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `badge`
+--
+
+DROP TABLE IF EXISTS `badge`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `badge` (
+  `badge_id` bigint NOT NULL AUTO_INCREMENT,
+  `create_date` datetime DEFAULT NULL,
+  `last_modified_date` datetime NOT NULL,
+  `attendance_count` int NOT NULL,
+  `challenge_count` int NOT NULL,
+  `game_count` int NOT NULL,
+  `shadowing_count` int NOT NULL,
+  `member_id` bigint NOT NULL,
+  PRIMARY KEY (`badge_id`),
+  KEY `FK9jwqow5rdtd7l1kbullfogdeu` (`member_id`),
+  CONSTRAINT `FK9jwqow5rdtd7l1kbullfogdeu` FOREIGN KEY (`member_id`) REFERENCES `member` (`member_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `badge`
+--
+
+LOCK TABLES `badge` WRITE;
+/*!40000 ALTER TABLE `badge` DISABLE KEYS */;
+INSERT INTO `badge` VALUES (1,'2023-05-16 14:10:13','2023-05-18 18:49:02',2,3,42,0,1),(2,'2023-05-16 14:10:50','2023-05-18 18:18:30',2,0,86,1,2),(3,'2023-05-16 14:12:26','2023-05-18 15:31:25',2,2,27,0,3),(4,'2023-05-16 15:02:43','2023-05-18 00:22:05',2,0,2,0,6),(5,'2023-05-17 01:16:06','2023-05-18 18:49:02',2,1,2,0,4),(6,'2023-05-17 01:49:43','2023-05-18 00:10:41',2,0,3,0,9),(7,'2023-05-17 02:01:37','2023-05-18 01:48:03',2,1,3,0,8),(8,'2023-05-17 09:46:08','2023-05-18 18:18:30',2,0,45,0,10),(9,'2023-05-17 09:46:59','2023-05-18 00:24:59',2,0,2,0,11),(10,'2023-05-17 09:48:19','2023-05-18 21:10:37',2,9,1,0,12),(11,'2023-05-17 10:31:04','2023-05-17 23:51:51',2,0,2,0,13),(12,'2023-05-17 10:32:09','2023-05-18 17:06:46',2,4,4,0,14),(13,'2023-05-18 00:13:25','2023-05-18 00:13:25',1,0,0,0,7);
+/*!40000 ALTER TABLE `badge` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2023-05-19  7:38:45
