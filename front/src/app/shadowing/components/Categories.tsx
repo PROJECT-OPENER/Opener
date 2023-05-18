@@ -4,7 +4,7 @@ import ShowList from './ShowList';
 import styles from './categories.module.css';
 import 'react-perfect-scrollbar/dist/css/styles.css';
 import PerfectScrollbar from 'react-perfect-scrollbar';
-
+import { getSession } from 'next-auth/react';
 // type listType = {
 //   video_id: string;
 //   thumbnail_url: string;
@@ -35,6 +35,8 @@ import PerfectScrollbar from 'react-perfect-scrollbar';
 // ];
 
 const Categories = () => {
+  const session: any = getSession();
+
   const option = {
     wheelSpeed: 2,
     handlers: ['touch', 'click-rail', 'drag-thumb', 'keyboard', 'wheel'],
@@ -55,7 +57,10 @@ const Categories = () => {
     ['비즈니스', '비즈니스'],
     ['스포츠', '스포츠'],
   ];
-
+  if (session) {
+    categories.splice(1, 1);
+    categories.splice(2, 1);
+  }
   // 영화;
   // 여행;
   // 음악;
