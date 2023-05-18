@@ -26,7 +26,7 @@ const Home = () => {
       <div className="relative w-full h-[250px] sm:h-[350px] lg:h-[500px] min-w-[330px] max-w-[1024px]">
         <Main />
       </div>
-      <div className="relative w-full h-full min-w-[330px] max-w-[1024px] pb-4 lg:p-0">
+      <div className="relative w-full h-full min-w-[330px] max-w-[1024px] pb-4 lg:p-0 overflow-x-hidden">
         <Roadmap />
         <Famous />
         <Recommended />

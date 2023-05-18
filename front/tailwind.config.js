@@ -17,6 +17,7 @@ module.exports = {
       },
       colors: {
         brandP: '#7D17FF',
+        brandPhover: '#630dd3',
         brandY: '#FFD600',
         brandText: '#4b4b4b',
       },
@@ -26,6 +27,7 @@ module.exports = {
       },
       aspectRatio: {
         '7.25/10': '7.25 / 10',
+        '1/1': '1/1',
       },
     },
   },

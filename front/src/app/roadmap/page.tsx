@@ -1,121 +1,62 @@
 'use client';
 import Step from './components/Step';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { getRoadMapApi } from '../api/shadowingApi';
 import { stepInterface } from '@/types/share';
-// const data = [
-//   {
-//     step_no: '1',
-//     list: [
-//       {
-//         step_theme: '가벼운 인사말',
-//         list: [
-//           {
-//             video_id: '0',
-//             eng_sentence: 'Hello, world',
-//             kor_sentence: '안녕, 세상아',
-//             step_theme: '가벼운 인사말',
-//             sentence_no: '1',
-//             status_date: '12',
-//           },
-//           {
-//             video_id: '0',
-//             eng_sentence: 'Hello, world',
-//             kor_sentence: '안녕, 세상아',
-//             step_theme: '가벼운 인사말',
-//             sentence_no: '2',
-//             status_date: '',
-//           },
-//           {
-//             video_id: '0',
-//             eng_sentence: 'Hello, world',
-//             kor_sentence: '안녕, 세상아',
-//             step_theme: '가벼운 인사말',
-//             sentence_no: '3',
-//             status_date: '',
-//           },
-//         ],
-//       },
-//     ],
-//   },
-//   {
-//     step_no: '2',
-//     list: [
-//       {
-//         step_theme: '가벼운 인사말',
-//         list: [
-//           {
-//             video_id: '0',
-//             eng_sentence: 'Hello, world',
-//             kor_sentence: '안녕, 세상아',
-//             step_theme: '가벼운 인사말',
-//             sentence_no: '1',
-//             status_date: '',
-//           },
-//           {
-//             video_id: '0',
-//             eng_sentence: 'Hello, world',
-//             kor_sentence: '안녕, 세상아',
-//             step_theme: '가벼운 인사말',
-//             sentence_no: '2',
-//             status_date: '',
-//           },
-//           {
-//             video_id: '0',
-//             eng_sentence: 'Hello, world',
-//             kor_sentence: '안녕, 세상아',
-//             step_theme: '가벼운 인사말',
-//             sentence_no: '3',
-//             status_date: '',
-//           },
-//         ],
-//       },
-//       {
-//         step_theme: '가벼운 인사말22',
-//         list: [
-//           {
-//             video_id: '0',
-//             eng_sentence: 'Hello, world',
-//             kor_sentence: '안녕, 세상아',
-//             step_theme: '가벼운 인사말',
-//             sentence_no: '1',
-//             status_date: '',
-//           },
-//           {
-//             video_id: '0',
-//             eng_sentence: 'Hello, world',
-//             kor_sentence: '안녕, 세상아',
-//             step_theme: '가벼운 인사말',
-//             sentence_no: '2',
-//             status_date: '',
-//           },
-//           {
-//             video_id: '0',
-//             eng_sentence: 'Hello, world',
-//             kor_sentence: '안녕, 세상아',
-//             step_theme: '가벼운 인사말',
-//             sentence_no: '3',
-//             status_date: '',
-//           },
-//         ],
-//       },
-//     ],
-//   },
-// ];
 
 const page = () => {
   const [data, setData] = useState<stepInterface[] | undefined>();
+  const unlockedRef = useRef({
+    step: 1,
+    theme: null,
+  });
   const getRoadmap = async () => {
     const res = await getRoadMapApi();
+    let flag = false;
+    for (const step of res) {
+      const stepList = step.themeRoadMapResponseDtoList
+        ? step.themeRoadMapResponseDtoList
+        : step.authThemeRoadMapResponseDtoList;
+      for (const theme of stepList) {
+        let isCompleted = true;
+        const themeList = theme.roadMapResponseDtoList
+          ? theme.roadMapResponseDtoList
+          : theme.authRoadMapResponseDtoList;
+        if (unlockedRef.current.theme === null) {
+          unlockedRef.current.theme = theme.stepTheme;
+        }
+        for (const sentence of themeList) {
+          if (
+            sentence.statusDate === null &&
+            sentence.statusDate === undefined
+          ) {
+            isCompleted = false;
+          }
+          if (isCompleted) {
+            unlockedRef.current.theme = theme.stepTheme;
+            unlockedRef.current.step = step.stepNo;
+            flag = true;
+            break;
+          }
+        }
+        if (flag) {
+          break;
+        }
+      }
+      if (flag) {
+        break;
+      }
+    }
     setData(res);
   };
   useEffect(() => {
     getRoadmap();
   }, []);
+
   return (
     <div className="inner-content">
       {data?.map((step: stepInterface, index: number) => {
-        return <Step data={step} key={index} />;
+        return <Step data={step} key={index} unlocked={unlockedRef.current} />;
       })}
     </div>
   );

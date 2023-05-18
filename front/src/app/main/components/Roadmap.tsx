@@ -15,30 +15,30 @@ const Roadmap = () => {
   const getRoadmap = async () => {
     const res = await getMainRoadMapApi();
     console.log(res);
-    // const roadmap = res.themeRoadMapResponseDto
-    //   ? res.themeRoadMapResponseDto.roadMapResponseDtoList
-    //   : res.authRoadMapResponseDtoList;
+    const roadmap = res.themeRoadMapResponseDto
+      ? res.themeRoadMapResponseDto.roadMapResponseDtoList
+      : res.authRoadMapResponseDtoList;
 
-    const roadmap = [
-      {
-        videoId: '',
-        engSentence: 'hello world',
-        korSentence: '안녕 세상아',
-        status_date: null,
-      },
-      {
-        videoId: '',
-        engSentence: 'hello world',
-        korSentence: '안녕 세상아',
-        status_date: '2022.01.01',
-      },
-      {
-        videoId: '',
-        engSentence: 'hello world',
-        korSentence: '안녕 세상아',
-        status_date: null,
-      },
-    ];
+    // const roadmap = [
+    //   {
+    //     videoId: '',
+    //     engSentence: 'hello world',
+    //     korSentence: '안녕 세상아',
+    //     status_date: null,
+    //   },
+    //   {
+    //     videoId: '',
+    //     engSentence: 'hello world',
+    //     korSentence: '안녕 세상아',
+    //     status_date: '2022.01.01',
+    //   },
+    //   {
+    //     videoId: '',
+    //     engSentence: 'hello world',
+    //     korSentence: '안녕 세상아',
+    //     status_date: null,
+    //   },
+    // ];
     setData(roadmap);
   };
 
@@ -48,7 +48,7 @@ const Roadmap = () => {
   }, []);
 
   return (
-    <div className="w-full h-full p-4">
+    <div className="w-full h-full px-4 pb-4">
       <div className="shadow-custom min-h-[160px] flex flex-col lg:flex-row justify-around rounded-3xl py-5 px-2 lg:py-8 sm:px-10 bg-white">
         <p className="lg:text-xl text-center text-lg font-bold mb-3 w-full flex flex-col justify-center ">
           학습 로드맵
