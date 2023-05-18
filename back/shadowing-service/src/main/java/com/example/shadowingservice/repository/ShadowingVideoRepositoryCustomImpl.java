@@ -125,10 +125,12 @@ public class ShadowingVideoRepositoryCustomImpl implements ShadowingVideoReposit
 	public List<RoadMapResponseDto> getThemeRoadMapResponseDtoList(List<Long> stepIdList) {
 
 		Expression<String> idString = new CaseBuilder()
-			.when(step.stepTheme.eq(1)).then("아이브")
-			.when(step.stepTheme.eq(2)).then("뉴진스")
-			.when(step.stepTheme.eq(3)).then("엔믹스")
-			.when(step.stepTheme.eq(4)).then("블랙핑크")
+			.when(step.stepTheme.eq(1)).then("처음 만났을 때")
+			.when(step.stepTheme.eq(2)).then("오랜만에 만났을 때")
+			.when(step.stepTheme.eq(3)).then("인사 대답하기")
+			.when(step.stepTheme.eq(4)).then("작별인사하기")
+			.when(step.stepTheme.eq(5)).then("자기소개하기")
+			.when(step.stepTheme.eq(6)).then("감정표현하기")
 			.otherwise("");
 
 		return queryFactory.select(Projections.constructor(RoadMapResponseDto.class,
@@ -157,10 +159,12 @@ public class ShadowingVideoRepositoryCustomImpl implements ShadowingVideoReposit
 	@Override
 	public List<AuthRoadMapResponseDto> getAuthThemeRoadMapResponseDtoList(Member member, List<Long> stepIdList) {
 		Expression<String> idString = new CaseBuilder()
-			.when(step.stepTheme.eq(1)).then("아이브")
-			.when(step.stepTheme.eq(2)).then("뉴진스")
-			.when(step.stepTheme.eq(3)).then("엔믹스")
-			.when(step.stepTheme.eq(4)).then("블랙핑크")
+			.when(step.stepTheme.eq(1)).then("처음 만났을 때")
+			.when(step.stepTheme.eq(2)).then("오랜만에 만났을 때")
+			.when(step.stepTheme.eq(3)).then("인사 대답하기")
+			.when(step.stepTheme.eq(4)).then("작별인사하기")
+			.when(step.stepTheme.eq(5)).then("자기소개하기")
+			.when(step.stepTheme.eq(6)).then("감정표현하기")
 			.otherwise("");
 
 		return queryFactory.select(Projections.constructor(AuthRoadMapResponseDto.class,
@@ -195,7 +199,7 @@ public class ShadowingVideoRepositoryCustomImpl implements ShadowingVideoReposit
 					shadowingVideo.engSentence,
 					shadowingVideo.korSentence,
 					Expressions.cases()
-						.when(step.stepTheme.eq(1)).then("아이브")
+						.when(step.stepTheme.eq(1)).then("처음 만났을 때")
 						.otherwise("Unknown"),
 					step.sentenceNo
 				)
@@ -225,10 +229,12 @@ public class ShadowingVideoRepositoryCustomImpl implements ShadowingVideoReposit
 					shadowingVideo.engSentence,
 					shadowingVideo.korSentence,
 					Expressions.cases()
-						.when(step.stepTheme.eq(1)).then("아이브")
-						.when(step.stepTheme.eq(2)).then("뉴진스")
-						.when(step.stepTheme.eq(3)).then("엔믹스")
-						.when(step.stepTheme.eq(4)).then("블랙핑크")
+						.when(step.stepTheme.eq(1)).then("처음 만났을 때")
+						.when(step.stepTheme.eq(2)).then("오랜만에 만났을 때")
+						.when(step.stepTheme.eq(3)).then("인사 대답하기")
+						.when(step.stepTheme.eq(4)).then("작별인사하기")
+						.when(step.stepTheme.eq(5)).then("자기소개하기")
+						.when(step.stepTheme.eq(6)).then("감정표현하기")
 						.otherwise("Unknown"),
 					step.sentenceNo,
 					shadowingStatus.statusDate
