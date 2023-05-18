@@ -217,7 +217,9 @@ public class ShadowingServiceImpl implements ShadowingService {
 		List<AuthShadowingCategoryDto> shadowingVideoList;
 		if (category.equals("전체")) {
 			videoIdList = shadowingVideoRepository.findAllVideoIds();
-		} else {
+		}else if(category.equals("북마크")) {
+			videoIdList = bookmarkRepository.findBookmarkVideoIdList(memberId);
+		}else {
 			Interest interest = interestRepository.findByInterest(category)
 				.orElseThrow(() -> new ApiException(ExceptionEnum.CATEGORY_NOT_FOUND_EXCEPTION));
 			videoIdList = shadowingVideoInterestRepository.findAllVideoId(interest.getInterestId());
@@ -608,6 +610,17 @@ public class ShadowingServiceImpl implements ShadowingService {
 	@Override
 	public int getShadowingVideoCount() {
 		return shadowingVideoRepository.countAllRecords();
+	}
+
+	/**
+	 * 이우승
+	 * explain : 사용자 북마크 개수 조회
+	 * @param memberId
+	 * @return
+	 */
+	@Override
+	public int getBookmarkCount(Long memberId) {
+		return bookmarkRepository.countMemberId(memberId);
 	}
 
 }
