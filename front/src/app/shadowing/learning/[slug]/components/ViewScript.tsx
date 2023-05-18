@@ -338,9 +338,9 @@ const ViewScript = ({ params }: { params: { slug: string } }) => {
             width: '640',
             playerVars: {
               loop: 0,
-              // start: videoInfo?.start,
-              // end: (videoInfo?.end || 0) + 1,
-              controls: 1, // 컨트롤바(1: 표시, 0: 미표시)
+              start: videoInfo?.start,
+              end: (videoInfo?.end || 0) + 1,
+              controls: 0, // 컨트롤바(1: 표시, 0: 미표시)
               autoplay: 1, // 자동재생(1: 설정, 0: 취소)
               rel: 0, // 관련 동영상(1: 표시, 0: 미표시)
               modestbranding: 1, // 컨트롤 바 youtube 로고(1: 미표시, 0: 표시)
