@@ -4,6 +4,8 @@ import VoiceChallengeCard from './VoiceChallengeCard';
 import VoiceChallengeInfo from './VoiceChallengeInfo';
 import useSWRInfinite from 'swr/infinite';
 import { memberChallenge, challengeIdSwrData } from '@/types/share';
+import { TfiAngleLeft } from 'react-icons/tfi';
+import Link from 'next/link';
 
 type Props = {
   voiceId: number;
@@ -88,6 +90,12 @@ const ChallengeInfo = ({ voiceId }: Props) => {
             totalLength={endIndex + 1 || 0}
             originalId={originalChallenge?.challengeId}
           ></VoiceChallengeCard>
+          <Link
+            href={`/challenge`}
+            className="hidden lg:block fixed left-4 bottom-5 bg-[#fff] hover:bg-brandY p-3 rounded-full shadow-custom"
+          >
+            <TfiAngleLeft size="1.8rem" />
+          </Link>
         </div>
       )}
       <p
