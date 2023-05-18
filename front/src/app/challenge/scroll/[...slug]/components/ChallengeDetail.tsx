@@ -293,7 +293,7 @@ const ChallengeDetail = ({ challengeList }: Props) => {
       />
       {!isDelete && (
         <div
-          className="h-screen w-screen flex flex-col items-center overflow-hidden"
+          className="h-screen w-screen min-h-max min-w-max flex flex-col items-center"
           ref={videoRef}
         >
           <div
@@ -303,11 +303,13 @@ const ChallengeDetail = ({ challengeList }: Props) => {
             <div
               className={
                 isView
-                  ? 'relative sm:h-[736px] sm:w-[414px]   h-[640px] w-[360px] flex justify-center items-center overflow-hidden'
+                  ? 'relative sm:h-[736px] sm:w-[414px]  h-[640px] w-[360px] flex justify-center items-center overflow-hidden'
                   : 'hidden'
               }
             >
               <video
+                playsInline
+                controls
                 ref={memberPlayerRef}
                 src={challengeInfo?.curMemberChallenge.memberChallengeUrl}
                 className="sm:h-[736px] sm:w-[414px]   h-[640px] w-[360px] relative"
