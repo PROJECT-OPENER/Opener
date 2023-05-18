@@ -66,7 +66,9 @@ const Roadmap = () => {
                 </p>
                 <p className="text-start text-sm">{content.korSentence}</p>
               </div>
-              {content.status_date !== null ? (
+              {content.status_date !== null &&
+              content.status_date !== undefined &&
+              content.status_date !== '' ? (
                 <div className="w-[30px] h-[30px] rounded-full flex justify-center items-center bg-[#FFD600]">
                   <RiCheckFill size="1.7rem" color="#ffffff" />
                 </div>

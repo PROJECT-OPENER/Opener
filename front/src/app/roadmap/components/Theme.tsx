@@ -54,7 +54,9 @@ const Theme = ({
         <div className="h-[calc(100%-50px)] w-[3px] bg-[#F0F0F0] rounded"></div>
       </div>
       <div className="w-[calc(100%-60px)]">
-        <p className="text-lg mb-5 mt-[12px] pl-2">{data.stepTheme}</p>
+        <p className="text-md sm:text-lg mb-5 mt-[12px] pl-2">
+          {data.stepTheme}
+        </p>
         {themeList!.map((sentence, index) => {
           return !isLocked ? (
             <Sentence data={sentence} isLocked={false} key={index} />

@@ -10,7 +10,7 @@ type Props = {
 const DetailPageNav = ({ className, title, propEvent }: Props) => {
   return (
     <div
-      className={`${className} hidden lg:grid lg:grid-cols-3 grid-cols-2 shadow-custom p-3 rounded-xl bg-[#fff6]`}
+      className={`${className} hidden lg:grid lg:grid-cols-3 grid-cols-2 shadow-custom py-2 px-4 rounded-xl bg-[#fff]`}
     >
       <button onClick={propEvent}>
         <Image
@@ -23,7 +23,7 @@ const DetailPageNav = ({ className, title, propEvent }: Props) => {
         />
       </button>
 
-      <h1 className="text-center text-3xl font-bold hidden md:block">
+      <h1 className="text-center text-2xl font-semibold hidden md:block">
         {title}
       </h1>
       <button className="text-end md:text-xl" onClick={propEvent} type="button">

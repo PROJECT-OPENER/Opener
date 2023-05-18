@@ -96,7 +96,7 @@ const ShowList = (props: { category: string }) => {
               className={styles.contentItem}
             >
               <div className="flex flex-row w-full items-center">
-                <div className={styles.ItemImage}>
+                <div className="flex-none w-[105px] h-[59px] sm:w-[150px] sm:h-[84.375px] lg:w-[180px] lg:h-[101.25px] relative mr-2 rounded-md overflow-hidden">
                   {content.thumbnailUrl && (
                     <Image src={content.thumbnailUrl} fill alt="" />
                   )}
@@ -105,17 +105,19 @@ const ShowList = (props: { category: string }) => {
                     <Image src={defaultImage.src} fill alt="" />
                   )}
                 </div>
-                <div className="">
-                  <p className="text-lg font-medium">{content.engSentence}</p>
-                  <p className="text-xs">{content.korSentence}</p>
+                <div className="ml-3 lg:ml-5 shrink">
+                  <p className="text-md lg:text-xl font-medium mb-2">
+                    {content.engSentence}
+                  </p>
+                  <p className="text-xs lg:text-md">{content.korSentence}</p>
                 </div>
-              </div>
-              <div className="p-3">
-                {content.marked ? (
-                  <BsBookmarkPlusFill color="#7D17FF" size="1.5rem" />
-                ) : (
-                  <BsBookmarkPlus color="#D9D9D9" size="1.5rem" />
-                )}
+                {/* <div className="p-3">
+                  {content.marked ? (
+                    <BsBookmarkPlusFill color="#7D17FF" size="1.5rem" />
+                  ) : (
+                    <BsBookmarkPlus color="#D9D9D9" size="1.5rem" />
+                  )}
+                </div> */}
               </div>
             </Link>
           );
