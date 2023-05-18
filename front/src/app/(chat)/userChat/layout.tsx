@@ -10,7 +10,7 @@ const UserChatLayout = ({ children }: { children: React.ReactNode }) => {
 
   if (!target) return <div></div>;
   return (
-    <div className="">
+    <div className="font-nexon">
       <RecoilRoot>{children}</RecoilRoot>
     </div>
   );
