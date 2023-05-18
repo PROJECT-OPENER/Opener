@@ -56,7 +56,7 @@ const ShowList = (props: { category: string }) => {
     const startIndex = pageIndex * 10;
     const endIndex = pageIndex * 10 + 9;
     if (props.category === 'recommend') {
-      console.log('추천');
+      // console.log('추천');
       if (user.data.nickname) {
         return `/fast/recommendations/${user.data.nickname}/${startIndex}/${endIndex}`;
       }
@@ -87,7 +87,7 @@ const ShowList = (props: { category: string }) => {
   } else {
     return (
       <div className={styles.content}>
-        <p>카테고리 : {category}</p>
+        {/* <p>카테고리 : {category}</p> */}
         {contents.map((content: any, index: number) => {
           return (
             <Link

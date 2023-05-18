@@ -10,6 +10,7 @@ import {
   PronunciationAssessmentConfig,
 } from 'microsoft-cognitiveservices-speech-sdk';
 import { Chart } from './chart';
+
 const CheckDiction = (props: any) => {
   console.log(props.engCaption);
   const [assessmentResult, setAssessmentResult] = useState<any>();
@@ -215,7 +216,7 @@ const CheckDiction = (props: any) => {
                 <span>
                   {caption.isPron ||
                   caption.pronunciationAssessment?.AccuracyScore > 70 ? (
-                    <span className="text-[#2da15e] cursor-pointer">
+                    <span className="text-[#7adf70] cursor-pointer">
                       {caption.word}
                     </span>
                   ) : caption.isPron ||
@@ -224,7 +225,7 @@ const CheckDiction = (props: any) => {
                       {caption.word}
                     </span>
                   ) : (
-                    <span className="text-[#a7a7a7] cursor-pointer">
+                    <span className="text-[#bbbbbb] cursor-pointer">
                       {caption.word}
                     </span>
                   )}
@@ -235,31 +236,27 @@ const CheckDiction = (props: any) => {
         </p>
       </div>
       <div className="flex flex-col justify-center items-center mb-3">
-        {assessmentResult?.assessment ? (
-          <div className="bg-slate-50 rounded-md border py-3 px-2 w-full">
-            <p className="text-center font-semibold">발음 평가 결과</p>
-            <div className="flex flex-row justify-center items-center">
-              <div className="w-[100px] ">
-                <Chart value={assessmentResult.assessment.pron} />
-                <p className="text-center text-xs">발음 점수</p>
-              </div>
-              <div className="w-[70px] ">
-                <Chart value={assessmentResult.assessment.accuracy} />
-                <p className="text-center text-xs">정확성</p>
-              </div>
-              <div className="w-[70px] ">
-                <Chart value={assessmentResult.assessment.fluency} />
-                <p className="text-center text-xs">유창성</p>
-              </div>
-              <div className="w-[70px] ">
-                <Chart value={assessmentResult.assessment.completeness} />
-                <p className="text-center text-xs">완성도</p>
-              </div>
+        <div className="bg-[#fcfffb] rounded-md border border-[#e5e5e5] py-3 px-2 w-full">
+          <p className="text-center font-semibold">발음 평가 결과</p>
+          <div className="flex flex-row justify-center items-center">
+            <div className="w-[100px] ">
+              <Chart value={assessmentResult?.assessment?.pron} />
+              <p className="text-center text-xs">발음 점수</p>
+            </div>
+            <div className="w-[70px] ">
+              <Chart value={assessmentResult?.assessment?.accuracy} />
+              <p className="text-center text-xs">정확성</p>
+            </div>
+            <div className="w-[70px] ">
+              <Chart value={assessmentResult?.assessment?.fluency} />
+              <p className="text-center text-xs">유창성</p>
+            </div>
+            <div className="w-[70px] ">
+              <Chart value={assessmentResult?.assessment?.completeness} />
+              <p className="text-center text-xs">완성도</p>
             </div>
           </div>
-        ) : (
-          ''
-        )}
+        </div>
       </div>
       <div className="flex flex-row items-end justify-between">
         <div className="w-full">

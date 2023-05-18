@@ -293,7 +293,7 @@ const ChallengeDetail = ({ challengeList }: Props) => {
       />
       {!isDelete && (
         <div
-          className="h-screen w-screen flex flex-col items-center overflow-hidden bg-blue-200  border-2 border-rose-600"
+          className="h-screen w-screen flex flex-col items-center overflow-hidden"
           ref={videoRef}
         >
           <div

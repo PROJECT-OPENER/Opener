@@ -9,13 +9,17 @@ const FamousData = () => {
     <div className="flex flex-row relative h-full w-full justify-between">
       {data.memberChallengeList.map((content: any, index: number) => {
         return (
-          <Link key={index} href={`/challenge/scroll/LIKE/${index}`}>
-            <div className="lg:mr-0 mr-2 relative shadow-custom w-[110px] sm:w-[137.5px] h-full sm:h-[200px] rounded-3xl bg-brandP flex justify-center items-center lg:w-[155px] lg:h-[225.5px] overflow-hidden">
+          <Link
+            key={index}
+            href={`/challenge/scroll/LIKE/${index}`}
+            className="shadow-custom lg:mr-0 mr-2 relative w-[110px] h-[195.5px] rounded-3xl bg-[#4b4b4b] flex justify-center items-center sm:w-[130px] sm:h-[230px] lg:w-[155px] lg:h-[275.5px] overflow-hidden"
+          >
+            <div className="">
               <Image
                 src={content.memberChallengeImg}
                 alt=""
-                width={500}
-                height={500}
+                width={360}
+                height={640}
               />
               <div className="absolute inset-x-0 bottom-2 left-3 h-8 flex text-white items-center">
                 <AiFillHeart size={'1.4rem'} className="fill-white mr-2" />
@@ -26,7 +30,7 @@ const FamousData = () => {
         );
       })}
       <Link className="lg:hidden" href={`/challenge/all`}>
-        <button className="shadow-custom mr-10 w-[110px] h-[160px] sm:h-[200px] rounded-3xl bg-[#fff] hover:text-white active:text-white hover:bg-brandP active:bg-[#620fcf]">
+        <button className="shadow-custom mr-10 w-[110px] h-[195.5px] sm:w-[130px] sm:h-[230px] lg:w-[155px] lg:h-[275.5px] rounded-3xl bg-[#fff] hover:text-white active:text-white hover:bg-brandP active:bg-[#620fcf]">
           더 보기
         </button>
       </Link>

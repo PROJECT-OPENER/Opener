@@ -10,9 +10,7 @@ const Edit = ({ params }: { params: { slug: string } }) => {
   const [video, setVideo] = useState<any>({ start: '', end: '' });
   const [engCaption, setEngCaption] = useState<string>('');
   const [korCaption, setKorCaption] = useState<string>('');
-  const tmp = params.slug.split('.');
-  const videoId = tmp[0];
-  const videoUrl = tmp[1];
+  const videoId = params.slug;
 
   useEffect(() => {
     const getVideo = async () => {
@@ -20,9 +18,10 @@ const Edit = ({ params }: { params: { slug: string } }) => {
       setVideo({
         start: res?.start,
         end: res?.end,
+        videoUrl: res?.videoUrl,
       });
       if (res.engCaption === null || res.engCaption === undefined) {
-        const eng = await getCaptionApi(videoUrl);
+        const eng = await getCaptionApi(video.videoUrl);
         console.log(eng);
         setEngCaption(eng);
       } else {
@@ -72,7 +71,7 @@ const Edit = ({ params }: { params: { slug: string } }) => {
         </div>
       </div>
       <button className="bg-brandY w-full p-3" onClick={action}>
-        변형하기
+        변경하기
       </button>
     </div>
   );

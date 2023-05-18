@@ -72,14 +72,14 @@ const ChallengeInfo = ({ voiceId }: Props) => {
   }, []);
 
   return (
-    <div className="lg:w-1/2 w-full flex flex-col justify-center">
+    <div className="w-full max-w-[900px] flex flex-col justify-center items-center">
       {isLoading && (
         <div className="h-screen w-screen">
           <h1>로딩중</h1>
         </div>
       )}
       {data && (
-        <div className="">
+        <div>
           <VoiceChallengeInfo
             originalChallengeResponseDto={originalChallenge}
           ></VoiceChallengeInfo>
