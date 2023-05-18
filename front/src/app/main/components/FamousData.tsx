@@ -6,13 +6,13 @@ import { AiFillHeart } from 'react-icons/ai';
 const FamousData = () => {
   const data = use(fetchData('LIKE', 0, 5));
   return (
-    <div className="flex flex-row relative h-full justify-between">
+    <div className="flex flex-row  justify-between relative w-[calc(100%+130px)] ">
       {data.memberChallengeList.map((content: any, index: number) => {
         return (
           <Link
             key={index}
             href={`/challenge/scroll/LIKE/${index}`}
-            className="shadow-custom lg:mr-0 mr-2 w-[110px] h-[195.5px] rounded-3xl bg-[#4b4b4b] flex justify-center items-center sm:w-[130px] sm:h-[230px] lg:w-[155px] lg:h-[275.5px] overflow-hidden"
+            className="relative shadow-custom lg:mr-0 mr-2 w-[110px] h-fit rounded-3xl bg-[#4b4b4b] flex justify-center items-center sm:w-[130px] sm:h-[230px] lg:w-[155px] lg:h-[275.5px] overflow-hidden"
           >
             <div className="">
               <Image
@@ -29,11 +29,11 @@ const FamousData = () => {
           </Link>
         );
       })}
-      <Link className="lg:hidden" href={`/challenge/all`}>
+      {/* <Link className="lg:hidden" href={`/challenge/all`}>
         <button className="shadow-custom mr-10 w-[110px] h-[195.5px] sm:w-[130px] sm:h-[230px] lg:w-[155px] lg:h-[275.5px] rounded-3xl bg-[#fff] hover:text-white active:text-white hover:bg-brandP active:bg-[#620fcf]">
           더 보기
         </button>
-      </Link>
+      </Link> */}
     </div>
   );
 };
