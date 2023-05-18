@@ -58,7 +58,7 @@ const Roadmap = () => {
             <Link
               href={'/shadowing/learning/' + content.videoId}
               key={index}
-              className="flex flex-row lg:flex-col-reverse justify-between items-center w-full py-3 px-6 hover:bg-[#f7f7f7] rounded-xl"
+              className="flex flex-row lg:flex-col-reverse lg:justify-end items-center w-full py-3 px-6 hover:bg-[#f7f7f7] rounded-xl"
             >
               <div className="lg:mt-3">
                 <p className="text-start text-lg font-semibold">
