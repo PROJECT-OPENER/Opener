@@ -56,7 +56,6 @@ const Edit = ({ params }: { params: { slug: string } }) => {
         <div className="w-full ">
           <p className="text-center bg-[#f2f2f2] p-3">영어 자막</p>
           <textarea
-            disabled
             className="h-[400px] w-full"
             value={engCaption}
             onChange={(e) => setEngCaption(e.target.value)}

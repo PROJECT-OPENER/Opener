@@ -101,7 +101,7 @@ export default function Main() {
       </Float>
       <primitive object={model.scene} scale={5} position={[-1.5, -7, -1]} />
       <ambientLight />
-      <OrbitControls makeDefault enabled={true} />
+      <OrbitControls makeDefault enabled={false} />
       {/* <EffectComposer multisampling={0}></EffectComposer> */}
     </>
   );
