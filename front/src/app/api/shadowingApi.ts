@@ -43,25 +43,6 @@ export const getVideoApi = async (videoId: string) => {
   }
 };
 
-export const getShadowingListApi = async (url: string) => {
-  const session = await getSession();
-  const accessToken = session?.user?.user?.accessToken;
-  const URL = accessToken ? '/auth/' + url : url;
-  try {
-    const res = await shadowingApi.get(URL);
-    console.log(res);
-    return accessToken
-      ? res.data.data.authShadowingCategoryDtoList
-      : res.data.data.shadowingCategoryDtoList;
-  } catch (err) {
-    console.log(err);
-  }
-  // return await shadowingApi
-  //   .get(url)
-  //   .then((res) => res.data.data.shadowingCategoryDtoList)
-  //   .catch((err) => console.log(err));
-};
-
 export const getRecommendListApi = async () => {
   return await shadowingApi
     .get('/main-recommendation')

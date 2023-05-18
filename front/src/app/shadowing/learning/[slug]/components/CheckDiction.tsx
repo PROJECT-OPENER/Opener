@@ -118,7 +118,7 @@ const CheckDiction = (props: any) => {
       console.log('stop');
       setIsRecording(false);
       props.showCountRef.current = false;
-      props.playerRef.current?.playVideo().unMute();
+      props.playerRef.current?.playVideo();
       recognizerRef.current.stopContinuousRecognitionAsync();
     }
   };

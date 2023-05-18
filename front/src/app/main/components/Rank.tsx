@@ -10,13 +10,13 @@ const Rank = () => {
   return (
     <div className="mt-6 lg:mt-10">
       <h1 className="text-lg lg:mb-3 ml-4 font-bold">TREB 랭킹</h1>
-      <div className="bg-white mx-3 p-3 rounded-xl shadow-custom">
+      <div className="bg-white m-4 p-3 rounded-xl shadow-custom">
         <div className="flex lg:flex-row max-lg:flex-col">
           <div className="lg:w-1/2 max-lg:w-full">
             {leftRankings.map((content: rankInterface, index: number) => (
               <div
                 key={index}
-                className="flex flex-row items-center p-3 border-b-2 justify-between"
+                className="flex flex-row items-center p-3 border-b-2 lg:last:border-none justify-between"
               >
                 <div className="flex flex-row items-center ">
                   <p className="font-bold text-2xl">{content.rank}</p>
@@ -43,7 +43,7 @@ const Rank = () => {
             {rightRankings.map((content: rankInterface, index: number) => (
               <div
                 key={index}
-                className="flex flex-row items-center p-3 border-b-2 justify-between"
+                className="flex flex-row items-center p-3 border-b-2 last:border-none justify-between"
               >
                 <div className="flex flex-row items-center ">
                   <p className="font-bold text-2xl w-5">{content.rank}</p>
