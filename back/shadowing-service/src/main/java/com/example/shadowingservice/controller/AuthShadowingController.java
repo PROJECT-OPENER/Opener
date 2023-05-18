@@ -87,6 +87,12 @@ public class AuthShadowingController {
 
 		if(category.equals("전체")) {
 			length = shadowingService.getShadowingVideoCount();
+		}else if(category.equals("북마크")){
+			length = shadowingService.getBookmarkCount(memberId);
+			if(length == 0) {
+				return ResponseEntity.status(HttpStatus.OK)
+					.body(new BaseResponseDto<>(200, "영상 조회 완료", null));
+			}
 		}else {
 			Long interestId = shadowingService.getInterestByName(category).getInterestId();
 			length = shadowingService.getShadowingCategoryListCount(interestId);

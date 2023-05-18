@@ -83,4 +83,7 @@ public interface ShadowingService {
 		throws IOException, FirebaseAuthException;
 	/** 쉐도잉 전체 개수 조회 **/
 	int getShadowingVideoCount();
+
+	/** 북마크 개수 조회 **/
+	int getBookmarkCount(Long memberId);
 }
