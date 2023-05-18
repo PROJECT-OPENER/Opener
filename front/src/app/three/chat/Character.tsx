@@ -7,8 +7,7 @@ import { useControls } from 'leva';
 
 export default function Character() {
   const directionalLight = useRef<THREE.DirectionalLight>(null);
-  const model = useGLTF('/models/Michelle.glb');
-
+  const model = useGLTF('/models/Michelle.glb', '/draco/');
   model.scene.traverse((child) => {
     if (child instanceof THREE.Mesh) {
       child.castShadow = true;

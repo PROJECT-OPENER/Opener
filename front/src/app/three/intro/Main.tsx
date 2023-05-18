@@ -15,8 +15,7 @@ import { useFrame, useThree } from '@react-three/fiber';
 
 export default function Main() {
   const directionalLight = useRef<THREE.DirectionalLight>(null);
-  const model = useGLTF('/models/Michelle.glb');
-
+  const model = useGLTF('/models/Michelle.glb', '/draco/');
   model.scene.traverse((child) => {
     if (child instanceof THREE.Mesh) {
       child.castShadow = true;
@@ -80,23 +79,34 @@ export default function Main() {
         <Text3D
           // ref={textRef}
           font="/font/BlackHanSans.json"
-          size={1}
-          position={[1, 0, -1.5]}
+          size={0.8}
+          position={[0, 0, -1.5]}
         >
-          어서와
-          <meshStandardMaterial color="black" />
+          Welcome
+          <meshStandardMaterial color="#FFD600" />
         </Text3D>
       </Float>
       <Float>
         <Text3D
           // ref={textRef}
           font="/font/BlackHanSans.json"
-          size={2}
-          rotation={[0, -Math.PI / 2, 0]}
-          position={[10, 0, 1]}
+          size={0.95}
+          position={[0.5, -2, -1.5]}
         >
-          어서와
-          <meshNormalMaterial />
+          to
+          <meshStandardMaterial color="#FFD600" />
+        </Text3D>
+      </Float>
+      <Float>
+        <Text3D
+          // ref={textRef}
+          font="/font/BlackHanSans.json"
+          size={1.8}
+          rotation={[0, -Math.PI / 2, 0]}
+          position={[10, 0, 0.3]}
+        >
+          Opener
+          <meshStandardMaterial color="#630dd3" />
         </Text3D>
       </Float>
       <primitive object={model.scene} scale={5} position={[-1.5, -7, -1]} />

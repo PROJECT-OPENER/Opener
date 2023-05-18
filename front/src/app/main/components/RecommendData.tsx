@@ -1,7 +1,8 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import React, { use } from 'react';
+import React, { useState, useEffect } from 'react';
+import { getRecommendListApi } from '@/app/api/shadowingApi';
 
 interface dataInterface {
   videoId: string;
@@ -11,9 +12,26 @@ interface dataInterface {
 }
 
 const RecommendData = () => {
-  const data = use(fetchData());
+  const [data, setData] = useState<dataInterface[]>();
+
+  const getRecommendList = async () => {
+    try {
+      const res = await getRecommendListApi();
+      console.log(res.data);
+      setData(res.data);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  useEffect(() => {
+    getRecommendList();
+    console.log(data);
+  }, []);
+
   const router = useRouter();
   console.log(data);
+
   return (
     <div className="flex flex-row relative w-[calc(100%+100px)] p-4">
       {data?.map((content: dataInterface, index: number) => {
