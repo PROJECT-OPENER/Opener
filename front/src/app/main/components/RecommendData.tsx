@@ -1,6 +1,6 @@
-import { getSession } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import React, { use } from 'react';
 
 interface dataInterface {
@@ -12,6 +12,8 @@ interface dataInterface {
 
 const RecommendData = () => {
   const data = use(fetchData());
+  const router = useRouter();
+  console.log(data);
   return (
     <div className="flex flex-row relative w-[calc(100%+100px)] p-4">
       {data?.map((content: dataInterface, index: number) => {
@@ -22,13 +24,14 @@ const RecommendData = () => {
             className="shadow-custom mr-4 p-3 rounded-3xl bg-[#ffffff] hover:shadow-customhover"
           >
             {/* next.config.js에서 remotePatterns안에 user-images.githubusercontent.com 삭제해야함 */}
-            <div className="w-[254px]">
+            <div className="w-[254px] h-[188px]">
               {content.thumbnailUrl ? (
                 <Image
                   src={content.thumbnailUrl}
                   alt=""
-                  fill
-                  className="rounded-xl"
+                  width={500}
+                  height={500}
+                  className="rounded-xl w-full h-full"
                 />
               ) : (
                 <div className="w-full h-[188px] rounded-xl bg-brandY" />
@@ -46,7 +49,12 @@ const RecommendData = () => {
         );
       })}
       <div>
-        <button className="shadow-custom mr-10 w-[110px] h-[250px] sm:h-[285px] rounded-3xl bg-[#fff] hover:text-white active:text-white hover:bg-brandP active:bg-[#620fcf]">
+        <button
+          onClick={() => {
+            router.push('/shadowing');
+          }}
+          className="shadow-custom mr-10 w-[110px] h-[250px] sm:h-[285px] rounded-3xl bg-[#fff] hover:text-white active:text-white hover:bg-brandP active:bg-[#620fcf]"
+        >
           더 보기
         </button>
       </div>
@@ -57,15 +65,9 @@ const RecommendData = () => {
 export default RecommendData;
 
 export async function fetchData() {
-  const session = await getSession();
-  const accessToken = session?.user.user?.accessToken;
-
   const BASE_URL = process.env.NEXT_PUBLIC_SERVER_URL;
   const res = await fetch(`${BASE_URL}shadowing-service/main-recommendation`, {
     next: { revalidate: 10 },
-    headers: {
-      Authorization: `${accessToken ? `Bearer ${accessToken}` : null}`,
-    },
   });
   const data = await res.json();
   return data.data;
