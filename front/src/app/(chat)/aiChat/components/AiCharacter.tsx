@@ -3,9 +3,23 @@
 import { useAnimations, useGLTF, OrbitControls } from '@react-three/drei';
 import * as THREE from 'three';
 import { useEffect, useRef, useState } from 'react';
-import { useControls } from 'leva';
+// import { useControls } from 'leva';
 import { useRecoilValue } from 'recoil';
 import { aiChatMessageListState } from '../store';
+
+const modelActions = [
+  'Angry',
+  'Bored',
+  'Female Laying Pose',
+  'Hip Hop Dancing',
+  'Idle',
+  'Standing Arguing',
+  'standing pose',
+  'Standing Idle',
+  'Standing W_Briefcase Idle',
+  'Talking',
+  'Thoughtful Head Shake',
+];
 
 const AiCharacter = () => {
   const directionalLight = useRef<THREE.DirectionalLight>(null);
@@ -21,10 +35,7 @@ const AiCharacter = () => {
 
   const animations = useAnimations(model.animations, model.scene);
   animations.actions['standing pose']?.play();
-  const { animationName } = useControls({
-    animationName: { options: animations.names },
-  });
-  // 추가
+
   useEffect(() => {
     // animations.actions['Hip Hop Dancing']?.play();
     const action = animations.actions['Hip Hop Dancing']?.play();
@@ -36,14 +47,6 @@ const AiCharacter = () => {
     // 컴포넌트 unmount 시 타이머를 정리해줍니다.
     return () => clearTimeout(timeoutId);
   }, [msgList]);
-
-  useEffect(() => {
-    const action = animations.actions[animationName];
-    action?.reset().fadeIn(0.5).play();
-    return () => {
-      action?.fadeOut(0.5);
-    };
-  }, [animationName]);
 
   return (
     <>

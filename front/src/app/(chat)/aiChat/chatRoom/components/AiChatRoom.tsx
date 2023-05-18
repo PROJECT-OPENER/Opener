@@ -18,6 +18,7 @@ import { BsKeyboard } from 'react-icons/bs';
 import Model from '@/app/three/chat/Model';
 import DetailPageNav from '@/app/components/DetailPageNav';
 import { useRouter } from 'next/navigation';
+import AiModel from '../../components/AiModel';
 
 const AiChatRoom = () => {
   // recoil
@@ -89,7 +90,7 @@ const AiChatRoom = () => {
   return (
     <div>
       <div className="absolute top-0 left-0 w-screen h-screen">
-        <Model />
+        <AiModel />
       </div>
       <div className="absolute top-0 left-0 w-screen h-screen flex flex-col items-center overflow-hidden">
         <div className="lg:block hidden">

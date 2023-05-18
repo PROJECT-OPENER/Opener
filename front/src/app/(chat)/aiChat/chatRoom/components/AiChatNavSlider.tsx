@@ -25,7 +25,7 @@ const AiChatNavSlider = () => {
   const subject = useRecoilValue(aiChatSub);
   const { data, isLoading } = useSWR(
     'get/tip',
-    () => getTipApi(subject.subIndex),
+    () => getTipApi(subject.subIndex + 1),
     {
       focusThrottleInterval: 5000,
     },

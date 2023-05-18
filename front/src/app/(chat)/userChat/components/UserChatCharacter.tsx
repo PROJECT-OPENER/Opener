@@ -2,8 +2,8 @@
 'use client';
 import { useAnimations, useGLTF, OrbitControls } from '@react-three/drei';
 import * as THREE from 'three';
-import { useEffect, useRef } from 'react';
-import { useControls } from 'leva';
+import { useRef } from 'react';
+// import { useControls } from 'leva';
 
 const UserChatCharacter = () => {
   const directionalLight = useRef<THREE.DirectionalLight>(null);
@@ -17,17 +17,17 @@ const UserChatCharacter = () => {
 
   const animations = useAnimations(model.animations, model.scene);
   animations.actions['standing pose']?.play();
-  const { animationName } = useControls({
-    animationName: { options: animations.names },
-  });
+  // const { animationName } = useControls({
+  //   animationName: { options: animations.names },
+  // });
 
-  useEffect(() => {
-    const action = animations.actions[animationName];
-    action?.reset().fadeIn(0.5).play();
-    return () => {
-      action?.fadeOut(0.5);
-    };
-  }, [animationName]);
+  // useEffect(() => {
+  //   const action = animations.actions[animationName];
+  //   action?.reset().fadeIn(0.5).play();
+  //   return () => {
+  //     action?.fadeOut(0.5);
+  //   };
+  // }, [animationName]);
 
   return (
     <>
