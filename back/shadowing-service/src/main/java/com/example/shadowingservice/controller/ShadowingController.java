@@ -78,12 +78,17 @@ public class ShadowingController {
 		@RequestParam("endIndex") int endIndex) {
 
 		IndexDto indexDto = new IndexDto(startIndex, endIndex);
-		Long interestId = shadowingService.getInterestByName(category).getInterestId();
+		int length;
+
+		if(category.equals("전체")) {
+			length = shadowingService.getShadowingVideoCount();
+		}else {
+			Long interestId = shadowingService.getInterestByName(category).getInterestId();
+			length = shadowingService.getShadowingCategoryListCount(interestId);
+		}
 
 		List<ShadowingCategoryDto> shadowingCategoryDtoList = shadowingService.getShadowingCategoryList(category,
 			indexDto.toPageable());
-
-		int length = shadowingService.getShadowingCategoryListCount(interestId);
 
 		return ResponseEntity.status(HttpStatus.OK)
 			.body(new BaseResponseDto<>(200, "영상 조회 완료", ShadowingCategoryResponseDto

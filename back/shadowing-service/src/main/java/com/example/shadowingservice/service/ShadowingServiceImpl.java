@@ -349,6 +349,7 @@ public class ShadowingServiceImpl implements ShadowingService {
 						.sentenceNo(roadmap.getSentenceNo() + 1)
 						.build());
 				}
+
 			}
 		}
 
@@ -571,7 +572,6 @@ public class ShadowingServiceImpl implements ShadowingService {
 	 */
 
 	@Override
-	@Transactional
 	public void updateShadowingThumbnail(Long videoId, ThumbnailRequestDto thumbnailRequestDto) throws
 		IOException,
 		FirebaseAuthException {
@@ -583,9 +583,19 @@ public class ShadowingServiceImpl implements ShadowingService {
 			throw new ApiException(ExceptionEnum.FILE_NOT_FOUND_EXCEPTION);
 		}
 
-		String imgUrl = fireBaseService.uploadFiles(thumbnailRequestDto.getThumbnailFile(),
-			fileName + "_img");
+		String imgUrl = fireBaseService.uploadFiles(thumbnailRequestDto.getThumbnailFile(), fileName + "_img");
 		shadowingVideo.updateThumbnailUrl(imgUrl);
+		shadowingVideoRepository.save(shadowingVideo);
+	}
+
+	/**
+	 * 이우승
+	 * explain : 쉐도잉 비디오 전체 개수 조회
+	 * @return
+	 */
+	@Override
+	public int getShadowingVideoCount() {
+		return shadowingVideoRepository.countAllRecords();
 	}
 
 }
