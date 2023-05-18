@@ -33,8 +33,8 @@ const Famous = () => {
     <>
       <div className="pb-4 mt-6 lg:mt-10">
         <h1 className="text-lg lg:mb-3 ml-4 font-bold">인기 챌린지</h1>
-        <div className="relative p-4">
-          <div className=" p_scrollbar_right" />
+        <div className="relative">
+          <div className="lg:hidden p_scrollbar_right" />
           <PerfectScrollbar options={options} className="w-full">
             <FamousData />
             {/* <div className="flex flex-row relative h-full w-full justify-between">
