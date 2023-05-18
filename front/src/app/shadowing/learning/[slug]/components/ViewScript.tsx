@@ -135,6 +135,7 @@ const ViewScript = ({ params }: { params: { slug: string } }) => {
 
   const repeat = () => {
     isRepeatRef.current = !isRepeatRef.current;
+    console.log(isRepeatRef.current);
     setIsRepeat(!isRepeat);
   };
 
@@ -225,7 +226,6 @@ const ViewScript = ({ params }: { params: { slug: string } }) => {
         });
       }
     }
-    raf.current = requestAnimationFrame(changeSubtitle);
   };
   const tracePlayer = () => {
     if (playerRef.current?.getPlayerState() === 1) {
@@ -237,6 +237,7 @@ const ViewScript = ({ params }: { params: { slug: string } }) => {
           playerRef.current.seekTo(subRangeRef.current?.start, true);
         }
       }
+      raf.current = requestAnimationFrame(tracePlayer);
     } else {
       console.log('cancel, state :', playerRef.current?.getPlayerState());
       return cancelAnimationFrame(raf.current);
