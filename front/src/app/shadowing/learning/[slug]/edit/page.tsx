@@ -13,36 +13,27 @@ const Edit = ({ params }: { params: { slug: string } }) => {
   const videoId = params.slug;
 
   useEffect(() => {
-    console.log(videoId);
     const getVideo = async () => {
       const res = await getVideoApi(videoId);
-      console.log(res);
       setVideo({
         start: res?.start,
         end: res?.end,
         videoUrl: res?.videoUrl,
       });
-      console.log(res);
-
       if (res.engCaption === null || res.engCaption === undefined) {
-        console.log('영어 자막 요청');
         const eng = await getCaptionApi(video.videoUrl);
         console.log(eng);
         setEngCaption(eng);
       } else {
         setEngCaption(res?.engCaption);
       }
-
-      if (res.korCaption === null || res.korCaption === undefined) {
-        setKorCaption(res?.engCaption);
-      } else {
-        setKorCaption(res?.korCaption);
-      }
+      setKorCaption(res?.korCaption);
     };
     getVideo();
   }, []);
 
   const action = async () => {
+    // console.log(korCaption, engCaption);
     const payload = {
       korCaption: korCaption,
       engCaption: engCaption,
@@ -56,7 +47,7 @@ const Edit = ({ params }: { params: { slug: string } }) => {
   };
 
   return (
-    <div className="h-full w-full flex flex-col">
+    <div className="h-full w-full">
       <p className="text-xl font-bold">
         {video?.start} ~ {video?.end}
       </p>
@@ -65,9 +56,10 @@ const Edit = ({ params }: { params: { slug: string } }) => {
         <div className="w-full ">
           <p className="text-center bg-[#f2f2f2] p-3">영어 자막</p>
           <textarea
+            disabled
             className="h-[400px] w-full"
             value={engCaption}
-            onChange={(e) => setKorCaption(e.target.value)}
+            onChange={(e) => setEngCaption(e.target.value)}
           ></textarea>
         </div>
         <div className="w-full ">
@@ -75,7 +67,7 @@ const Edit = ({ params }: { params: { slug: string } }) => {
           <textarea
             value={korCaption}
             className="h-[400px] w-full"
-            onChange={(e) => setEngCaption(e.target.value)}
+            onChange={(e) => setKorCaption(e.target.value)}
           ></textarea>
         </div>
       </div>
