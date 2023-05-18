@@ -1,4 +1,4 @@
-![logo (2)](docs/images/%EB%A1%9C%EA%B3%A0.png)
+![logo (2)](exec/images/%EB%A1%9C%EA%B3%A0.png)
 
 # Opener - 영어 회화 연습을 위한 웹 사이트
 
@@ -49,13 +49,13 @@
 
 ## 📐아키텍처 설계
 
-![image](docs/images/%EC%95%84%ED%82%A4%ED%85%8D%EC%B2%98.png)
+![image](exec/images/%EC%95%84%ED%82%A4%ED%85%8D%EC%B2%98.png)
 
 </br>
 
 ## 💻피그마 설계
 
-![image](docs/images/%ED%94%BC%EA%B7%B8%EB%A7%88.png)
+![image](exec/images/%ED%94%BC%EA%B7%B8%EB%A7%88.png)
 
 </br>
 
@@ -63,14 +63,14 @@
 
 ### Member Service / Shaodowing Service
 <p align="center">
-<img src=docs/images/%EB%A9%A4%EB%B2%84erd.png width="350" height="200">
-<img src=docs/images/%EC%89%90%EB%8F%84%EC%9E%89erd.png width="350" height="200">
+<img src=exec/images/%EB%A9%A4%EB%B2%84erd.png width="350" height="200">
+<img src=exec/images/%EC%89%90%EB%8F%84%EC%9E%89erd.png width="350" height="200">
 </p>
 
 ### Challenge Service / Chatting Service
 <p align="center">
-<img src=docs/images/%EC%B1%8C%EB%A6%B0%EC%A7%80erd.png width="350" height="200">
-<img src=docs/images/%EC%B1%84%ED%8C%85erd.png width="350" height="200">
+<img src=exec/images/%EC%B1%8C%EB%A6%B0%EC%A7%80erd.png width="350" height="200">
+<img src=exec/images/%EC%B1%84%ED%8C%85erd.png width="350" height="200">
 </p>
 
 </br>
@@ -87,8 +87,8 @@
 - 좋아요 순 인기 챌린지 목록이 나타납니다.
 
 <p align="center">
-<img src=docs/images/%EB%82%B4%EB%A1%9C%EB%93%9C%EB%A7%B5.png width="550" height="200">
-<img src=docs/images/%EC%9D%B8%EA%B8%B0%EC%B1%8C%EB%A6%B0%EC%A7%80.png width="350" height="200">
+<img src=exec/images/%EB%82%B4%EB%A1%9C%EB%93%9C%EB%A7%B5.png width="550" height="200">
+<img src=exec/images/%EC%9D%B8%EA%B8%B0%EC%B1%8C%EB%A6%B0%EC%A7%80.png width="350" height="200">
 </p>
 
 
@@ -99,8 +99,8 @@
 </br>
 
 <p align="center">
-<img src=docs/images/%EC%B6%94%EC%B2%9C%EB%AC%B8%EC%9E%A5.png width="450" height="200">
-<img src=docs/images/%EB%9E%AD%ED%82%B9.png width="450" height="200">
+<img src=exec/images/%EC%B6%94%EC%B2%9C%EB%AC%B8%EC%9E%A5.png width="450" height="200">
+<img src=exec/images/%EB%9E%AD%ED%82%B9.png width="450" height="200">
 </p>
 
 
@@ -117,7 +117,7 @@
 
 </br>
 
-![쉐도잉목록](docs/images/%EC%89%90%EB%8F%84%EC%9E%89%EB%AA%A9%EB%A1%9D.gif)
+![쉐도잉목록](exec/images/%EC%89%90%EB%8F%84%EC%9E%89%EB%AA%A9%EB%A1%9D.gif)
 
 </br>
 
@@ -129,7 +129,7 @@
 
 </br>
 
-![발음평가](docs/images/%EB%B0%9C%EC%9D%8C%ED%8F%89%EA%B0%80.gif)
+![발음평가](exec/images/%EB%B0%9C%EC%9D%8C%ED%8F%89%EA%B0%80.gif)
 
 </br>
 
@@ -138,7 +138,7 @@
 
 </br>
 
-![쉐도잉학습상세](docs/images/%EC%89%90%EB%8F%84%EC%9E%89%ED%95%99%EC%8A%B5%EC%83%81%EC%84%B8.png)
+![쉐도잉학습상세](exec/images/%EC%89%90%EB%8F%84%EC%9E%89%ED%95%99%EC%8A%B5%EC%83%81%EC%84%B8.png)
 
 </br>
 
@@ -147,7 +147,7 @@
 
 </br>
 
-![다음자막](docs/images/%EC%89%90%EB%8F%84%EC%9E%89%ED%95%99%EC%8A%B5%EC%83%81%EC%84%B8.gif)
+![다음자막](exec/images/%EC%89%90%EB%8F%84%EC%9E%89%ED%95%99%EC%8A%B5%EC%83%81%EC%84%B8.gif)
 
 - 화살표 버튼으로 다음 자막으로 이동해 학습할 수 있습니다.
 - 구간 영상을 20번 반복 학습하게 되면 학습이 완료됩니다.
@@ -160,7 +160,7 @@
 
 </br>
 
-![챌린지목록](docs/images/%EC%B1%8C%EB%A6%B0%EC%A7%80%EB%AA%A9%EB%A1%9D.gif)
+![챌린지목록](exec/images/%EC%B1%8C%EB%A6%B0%EC%A7%80%EB%AA%A9%EB%A1%9D.gif)
 
 </br>
 
@@ -172,7 +172,7 @@
 
 </br>
 
-![챌린지참여하기](docs/images/%EC%B1%8C%EB%A6%B0%EC%A7%80%EC%83%81%EC%84%B8.png)
+![챌린지참여하기](exec/images/%EC%B1%8C%EB%A6%B0%EC%A7%80%EC%83%81%EC%84%B8.png)
 
 </br>
 
@@ -186,7 +186,7 @@
 
 </br>
 
-![챌린지재생](docs/images/%EC%B1%8C%EB%A6%B0%EC%A7%80%EC%9E%AC%EC%83%9D.gif)
+![챌린지재생](exec/images/%EC%B1%8C%EB%A6%B0%EC%A7%80%EC%9E%AC%EC%83%9D.gif)
 
 </br>
 
@@ -201,7 +201,7 @@
 
 </br>
 
-![채팅페이지](docs/images/%EC%B1%84%ED%8C%85%EC%84%A0%ED%83%9D.png)
+![채팅페이지](exec/images/%EC%B1%84%ED%8C%85%EC%84%A0%ED%83%9D.png)
 
 </br>
 
@@ -213,7 +213,7 @@
 
 </br>
 
-![AI채팅주제선택](docs/images/%EC%B1%84%ED%8C%85%EA%B4%80%EC%8B%AC%EC%82%AC%EC%84%A0%ED%83%9D.png)
+![AI채팅주제선택](exec/images/%EC%B1%84%ED%8C%85%EA%B4%80%EC%8B%AC%EC%82%AC%EC%84%A0%ED%83%9D.png)
 
 </br>
 
@@ -221,7 +221,7 @@
 
 </br>
 
-![ai채팅시작](docs/images/ai%EC%B1%84%ED%8C%85%EC%8B%9C%EC%9E%91.gif)
+![ai채팅시작](exec/images/ai%EC%B1%84%ED%8C%85%EC%8B%9C%EC%9E%91.gif)
 
 </br>
 
@@ -229,7 +229,7 @@
 
 </br>
 
-![ai채팅](docs/images/ai%EC%B1%84%ED%8C%85%EB%B3%B4%EB%83%84.gif)
+![ai채팅](exec/images/ai%EC%B1%84%ED%8C%85%EB%B3%B4%EB%83%84.gif)
 
 -  마이크 버튼을 눌러 말한 내용이 대화창에 표시됩니다.
 -  인식을 잘못한 부분이 있다면 키보드 버튼을 눌러 수정할 수 있습니다.
@@ -240,7 +240,7 @@
 
 ### 유저와 채팅 게임
 
-![유저게임매칭](docs/images/%EB%A7%A4%EC%B9%AD%EA%B8%B0%EB%8B%A4%EB%A6%BC.gif)
+![유저게임매칭](exec/images/%EB%A7%A4%EC%B9%AD%EA%B8%B0%EB%8B%A4%EB%A6%BC.gif)
 
 </br>
 
@@ -249,7 +249,7 @@
 
 </br>
 
-![매칭성공](docs/images/%EB%A7%A4%EC%B9%AD%EB%90%A8.gif)
+![매칭성공](exec/images/%EB%A7%A4%EC%B9%AD%EB%90%A8.gif)
 
 </br>
 
@@ -257,8 +257,8 @@
 
 </br>
 
-![내가보냄](docs/images/%EC%9C%A0%EC%A0%80%EC%B1%84%ED%8C%85%EB%A7%90%ED%95%A8.gif)
-![상대방이보냄](docs/images/%EB%8B%B5%EC%9E%A5%EC%98%B4.gif)
+![내가보냄](exec/images/%EC%9C%A0%EC%A0%80%EC%B1%84%ED%8C%85%EB%A7%90%ED%95%A8.gif)
+![상대방이보냄](exec/images/%EB%8B%B5%EC%9E%A5%EC%98%B4.gif)
 
 </br>
 
@@ -267,7 +267,7 @@
 
 </br>
 
-![패스](docs/images/pass.gif)
+![패스](exec/images/pass.gif)
 
 </br>
 
@@ -279,7 +279,7 @@
 
 </br>
 
-![결과창이동](docs/images/%EA%B2%B0%EA%B3%BC%EB%A1%9C%EC%9D%B4%EB%8F%99.gif)
+![결과창이동](exec/images/%EA%B2%B0%EA%B3%BC%EB%A1%9C%EC%9D%B4%EB%8F%99.gif)
 
 </br>
 
@@ -289,7 +289,7 @@
 - 
 </br>
 
-![문법피드백](docs/images/%EA%B2%B0%EA%B3%BC%ED%8E%98%EC%9D%B4%EC%A7%80.gif)
+![문법피드백](exec/images/%EA%B2%B0%EA%B3%BC%ED%8E%98%EC%9D%B4%EC%A7%80.gif)
 
 </br>
 
@@ -301,7 +301,7 @@
 
 </br>
 
-![로드맵](docs/images/%EB%A1%9C%EB%93%9C%EB%A7%B5.gif)
+![로드맵](exec/images/%EB%A1%9C%EB%93%9C%EB%A7%B5.gif)
 
 </br>
 
