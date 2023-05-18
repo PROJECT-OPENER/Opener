@@ -232,20 +232,19 @@ public class MemberServiceImpl implements MemberService {
 			throw new ApiException(ExceptionEnum.WRONG_PASSWORD_EXCEPTION);
 		}
 
-		int memberInterests = memberInterestRepository.countDistinctInterestIdsByMember(member);
-		boolean hasInterest = memberInterests >= 2 ? true : false;
-
 		LocalDate loginDate = member.getLoginDate();
 		if (loginDate == null || LocalDate.now().isAfter(loginDate)) {
 			member.updateLoginDate(LocalDate.now());
 			badge.updateAttendanceCount();
 		}
 
+		LoginMemberResponseDto loginMemberResponseDto = getMyInfo(member);
+
 		String accessToken = jwtTokenProvider.createToken(email);
 		redisService.setMemberWithDuration(accessToken, member.getMemberId(), JwtTokenProvider.ACCESS_TOKEN_VALID_TIME);
 		return LoginResponseDto.builder()
 			.accessToken(accessToken)
-			.hasInterest(hasInterest)
+			.hasInterest(loginMemberResponseDto.getInterests().size() >= 2 ? true : false)
 			.loginMemberResponseDto(getMyInfo(member))
 			.build();
 	}
@@ -447,7 +446,8 @@ public class MemberServiceImpl implements MemberService {
 	public List<ChallengeResponseDto> getMyChallenges(Long memberId, Pageable pageable) {
 		memberRepository.findById(memberId)
 			.orElseThrow(() -> new ApiException(ExceptionEnum.MEMBER_NOT_FOUND_EXCEPTION));
-		return memberChallengeRepository.findByMember_MemberIdAndIsDeleteOrderByCreateDateDesc(memberId, false, pageable)
+		return memberChallengeRepository.findByMember_MemberIdAndIsDeleteOrderByCreateDateDesc(memberId, false,
+				pageable)
 			.getContent()
 			.stream()
 			.map(ChallengeResponseDto::new)
