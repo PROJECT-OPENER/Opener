@@ -7,7 +7,7 @@ const Step = ({ data, unlocked }: { data: stepInterface; unlocked: any }) => {
 
   return (
     <>
-      <p className="text-center text-2xl my-10 lg:mb-3 lg:mt-10 sm:text-3xl lg:text-4xl">
+      <p className="text-center text-xl sm:text-2xl lg:text-3xl my-10 lg:mb-3 lg:mt-10">
         STEP {data.stepNo}
       </p>
       {stepList?.map((theme, index) => {

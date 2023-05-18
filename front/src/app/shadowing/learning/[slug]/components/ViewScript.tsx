@@ -149,16 +149,37 @@ const ViewScript = ({ params }: { params: { slug: string } }) => {
 
   const convertTime = (timeString: string): number => {
     if (!timeString) return 0;
-    const time = timeString.split('.')[0].split(/[:,]/).map(parseFloat);
+    const wholetime = timeString.split('.');
+    const m_sec = Number(wholetime[1]) / 1000;
+    // console.log(timeString, m_sec, wholetime[1]);
+    const time = wholetime[0].split(/[:,]/).map(parseFloat);
+    // console.log(time, m_sec);
 
     if (time.length > 2) {
       const [hours, minutes, seconds] = time;
-      return hours * 3600 + minutes * 60 + seconds;
+      return hours * 3600 + minutes * 60 + seconds + m_sec;
     } else {
       const [minutes, seconds] = time;
-      return minutes * 60 + seconds;
+      return minutes * 60 + seconds + m_sec;
     }
   };
+
+  // const convertTime = (timeString: string): number => {
+  //   if (!timeString) return 0;
+  //   const wholetime = timeString.split('.');
+  //   const m_sec = Number(wholetime[1]) / 1000;
+  //   console.log(timeString, m_sec, wholetime[1]);
+  //   const time = wholetime[0].split(/[:,]/).map(parseFloat);
+  //   console.log(time, m_sec);
+
+  //   if (time.length > 2) {
+  //     const [hours, minutes, seconds] = time;
+  //     return hours * 3600 + minutes * 60 + seconds + m_sec;
+  //   } else {
+  //     const [minutes, seconds] = time;
+  //     return minutes * 60 + seconds + m_sec;
+  //   }
+  // };
 
   const findCaptionTime = (opt: string) => {
     const time = playerRef.current.getCurrentTime();
@@ -187,7 +208,9 @@ const ViewScript = ({ params }: { params: { slug: string } }) => {
     }
   };
 
-  const changeSubtitle = (time: number) => {
+  const raf = useRef<any>();
+  const changeSubtitle = () => {
+    const time = playerRef.current?.getCurrentTime();
     if (videoInfo) {
       const tmpCaption = {
         eng: '',
@@ -209,35 +232,38 @@ const ViewScript = ({ params }: { params: { slug: string } }) => {
               end: videoInfo?.engCaption[i].endTime,
             };
           }
-          setSelected(null);
-          tmpCaption.eng += videoInfo?.engCaption[i].text;
           tmpCaption.kor += videoInfo?.korCaption[i].text;
-
-          // return;
+          tmpCaption.eng += videoInfo?.engCaption[i].text;
+          if (tmpCaption.eng !== videoInfo?.engCaption[i].text) {
+            tmpCaption.eng += '\n';
+            tmpCaption.kor += '\n';
+          }
         }
       }
-      setCaption({
-        ...caption,
-        eng: tmpCaption.eng,
-        kor: tmpCaption.kor,
-      });
+      console.log('ds');
+      if (tmpCaption.eng !== caption?.eng || tmpCaption.kor !== caption?.kor) {
+        setCaption({
+          ...caption,
+          eng: tmpCaption.eng,
+          kor: tmpCaption.kor,
+        });
+      }
     }
+    raf.current = requestAnimationFrame(changeSubtitle);
   };
-
-  const raf = useRef<any>();
   const tracePlayer = () => {
-    console.log('tracePlayer');
+    // console.log('tracePlayer');
     if (playerRef.current?.getPlayerState() === 1) {
       const current = playerRef.current.getCurrentTime();
       if (!isRepeatRef.current) {
-        changeSubtitle(current);
+        changeSubtitle();
       } else {
         // console.log(current, subRangeRef.current?.end);
         if (subRangeRef.current && current >= subRangeRef.current.end + 1) {
           playerRef.current.seekTo(subRangeRef.current?.start, true);
         }
       }
-      raf.current = requestAnimationFrame(tracePlayer);
+      // raf.current = requestAnimationFrame(tracePlayer);
     } else {
       console.log('cancel, state :', playerRef.current?.getPlayerState());
       return cancelAnimationFrame(raf.current);
@@ -248,7 +274,7 @@ const ViewScript = ({ params }: { params: { slug: string } }) => {
   const playerSeekTo = (time: number) => {
     // 빠르게 연타하는 경우 무시하고 한 번만 처리(디바운싱)
     if (!debounceRef.current && time > 0) {
-      changeSubtitle(time);
+      changeSubtitle();
       playerRef.current.seekTo(time, true);
       const timeout = setTimeout(() => {
         return (debounceRef.current = undefined);
@@ -275,6 +301,8 @@ const ViewScript = ({ params }: { params: { slug: string } }) => {
     };
   }, []);
   const reg = /[`~!@#$%^&*()_|+\-=?;:'",.<>{}[\]\\/]/gim;
+
+  //
 
   return (
     <div className="relative flex flex-col justify-center items-center lg:absolute lg:top-0 lg:left-0 w-full h-full">
@@ -310,9 +338,9 @@ const ViewScript = ({ params }: { params: { slug: string } }) => {
             width: '640',
             playerVars: {
               loop: 0,
-              start: videoInfo?.start,
-              end: (videoInfo?.end || 0) + 1,
-              controls: 0, // 컨트롤바(1: 표시, 0: 미표시)
+              // start: videoInfo?.start,
+              // end: (videoInfo?.end || 0) + 1,
+              controls: 1, // 컨트롤바(1: 표시, 0: 미표시)
               autoplay: 1, // 자동재생(1: 설정, 0: 취소)
               rel: 0, // 관련 동영상(1: 표시, 0: 미표시)
               modestbranding: 1, // 컨트롤 바 youtube 로고(1: 미표시, 0: 표시)
@@ -322,7 +350,7 @@ const ViewScript = ({ params }: { params: { slug: string } }) => {
         />
       </div>
       <div className="w-full lg:w-[85%] py-5 px-8 max-w-[1024px]">
-        <div className="relative w-full lg:h-[250px] rounded-lg bg-white shadow-custom py-6 px-8 flex flex-col lg:flex-row justify-between">
+        <div className="relative w-full rounded-lg bg-white shadow-custom py-6 px-8 flex flex-col lg:flex-row justify-between">
           <div className="w-full flex flex-col justify-between h-full">
             {checkDiction ? (
               <CheckDiction
@@ -375,7 +403,7 @@ const ViewScript = ({ params }: { params: { slug: string } }) => {
                   </div>
                 </div>
                 <div className="mt-2 mb-5 min-h-[60px]">
-                  <div className="english_subtitle">
+                  <div className="english_subtitle whitespace-pre-wrap">
                     {caption?.eng?.split(' ').map((word, index) => {
                       return (
                         <span key={index}>
@@ -397,7 +425,7 @@ const ViewScript = ({ params }: { params: { slug: string } }) => {
                     })}
                   </div>
                   <div className="korean_subtitle">
-                    <p className="text-[#c9c9c9]">
+                    <p className="text-[#c9c9c9] whitespace-pre-wrap">
                       {isShowKorCap && caption?.kor}
                     </p>
                   </div>

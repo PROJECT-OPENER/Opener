@@ -116,11 +116,10 @@ const CheckDiction = (props: any) => {
 
   const stop = () => {
     if (recognizerRef.current) {
-      console.log('stop');
+      recognizerRef.current.stopContinuousRecognitionAsync();
       setIsRecording(false);
       props.showCountRef.current = false;
       props.playerRef.current?.playVideo();
-      recognizerRef.current.stopContinuousRecognitionAsync();
     }
   };
 
@@ -128,7 +127,7 @@ const CheckDiction = (props: any) => {
     start();
 
     return () => {
-      stop();
+      recognizerRef.current?.stopContinuousRecognitionAsync();
     };
   }, []);
 

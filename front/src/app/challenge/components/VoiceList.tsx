@@ -20,7 +20,7 @@ const VoiceList = () => {
   const [challengeList, setChallengeList] = useState<ChallengeList>([]);
 
   return (
-    <div className="">
+    <div className="relative w-full p-4">
       {challengeList.map((challenge) => (
         <VoiceCard
           key={challenge.challengeId}
