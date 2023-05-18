@@ -1,15 +1,3 @@
-.word {
-  color: red;
-  cursor: pointer;
-}
-.word:hover {
-  background: lightgrey;
-  color: white;
-}
-.word:active {
-  color: green;
-}
-
 @media screen and (min-width: 1024px) {
   .videoContainer {
     padding: 0;

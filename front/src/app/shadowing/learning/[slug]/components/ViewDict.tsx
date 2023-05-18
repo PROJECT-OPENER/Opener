@@ -4,7 +4,7 @@ const ViewDict = (props: { word: searchWordInterface }) => {
   const wordInfo = props.word;
   const meaning = wordInfo.meaning.split(',');
   return (
-    <div className="lg:overflow-y-scroll lg:max-h-[150px]">
+    <div className="lg:overflow-y-scroll h-full lg:max-h-[180px]">
       <p className="mb-5">
         <span className="text-lg font-semibold text-[#0B8AFF]">
           {wordInfo.word}

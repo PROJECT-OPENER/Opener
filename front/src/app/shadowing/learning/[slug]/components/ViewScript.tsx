@@ -4,6 +4,7 @@ import ViewDict from './ViewDict';
 import { useRef, useState, useEffect } from 'react';
 import styles from './ViewScript.module.css';
 import YouTube, { YouTubePlayer } from 'react-youtube';
+import Switch from '@mui/material/Switch';
 import {
   getVideoApi,
   setCountVideoApi,
@@ -48,6 +49,10 @@ const ViewScript = ({ params }: { params: { slug: string } }) => {
     kor: string;
   }>();
   const [count, setCount] = useState<number>(1);
+  const [isShowKorCap, setIsShowKorCap] = useState<boolean>(
+    count > 10 ? false : true,
+  );
+
   const showCountRef = useRef<boolean>(false);
   const [speed, setSpeed] = useState<number>(1);
   const [isMarked, setIsMarked] = useState<boolean>(false); // 북마크 여부를 담는 state
@@ -56,6 +61,7 @@ const ViewScript = ({ params }: { params: { slug: string } }) => {
   const subRangeRef = useRef<{ start: number; end: number }>(); // 현재 자막이 나오는 구간(시간)을 담는 참조값
   const [second, setSecond] = useState<number>(); // 발음체크 시 카운트를 담을 state
   const [videoInfo, setVideoInfo] = useState<videoInfoType>(); // 가져온 영상 정보를 담는 state
+  const [selected, setSelected] = useState<number | null>(null);
 
   const router = useRouter();
   useEffect(() => {
@@ -68,7 +74,7 @@ const ViewScript = ({ params }: { params: { slug: string } }) => {
       if (data.korCaption === null || data.korCaption === '') {
         console.log('예외 처리');
         alert('한글 자막 필요');
-        router.push('/edit/' + params.slug + '.' + data.videoUrl);
+        router.push('/edit/' + params.slug);
         // return;
         // data.korCaption = await translate(
         //   data.engCaption.replace('WEBVTT\n\n', ''),
@@ -203,6 +209,7 @@ const ViewScript = ({ params }: { params: { slug: string } }) => {
               end: videoInfo?.engCaption[i].endTime,
             };
           }
+          setSelected(null);
           tmpCaption.eng += videoInfo?.engCaption[i].text;
           tmpCaption.kor += videoInfo?.korCaption[i].text;
 
@@ -299,7 +306,7 @@ const ViewScript = ({ params }: { params: { slug: string } }) => {
           }}
           videoId={videoInfo?.videoUrl}
           opts={{
-            height: '390',
+            height: '360',
             width: '640',
             playerVars: {
               loop: 0,
@@ -315,38 +322,36 @@ const ViewScript = ({ params }: { params: { slug: string } }) => {
         />
       </div>
       <div className="w-full lg:w-[85%] py-5 px-8 max-w-[1024px]">
-        <div className="relative w-full rounded-lg bg-white shadow-custom py-6 px-8 flex flex-col lg:flex-row justify-between">
+        <div className="relative w-full lg:h-[250px] rounded-lg bg-white shadow-custom py-6 px-8 flex flex-col lg:flex-row justify-between">
           <div className="w-full flex flex-col justify-between h-full">
             {checkDiction ? (
-              <>
-                <CheckDiction
-                  setSecond={setSecond}
-                  setCheckDiction={setCheckDiction}
-                  playerRef={playerRef}
-                  subRangeRef={subRangeRef}
-                  showCountRef={showCountRef}
-                  isRepeatRef={isRepeatRef}
-                  engCaption={caption?.eng.replace(reg, '')}
-                />
-              </>
+              <CheckDiction
+                setSecond={setSecond}
+                setCheckDiction={setCheckDiction}
+                playerRef={playerRef}
+                subRangeRef={subRangeRef}
+                showCountRef={showCountRef}
+                isRepeatRef={isRepeatRef}
+                engCaption={caption?.eng.replace(reg, '')}
+              />
             ) : (
               <>
                 <div>
-                  <div className="flex flex-row justify-between">
+                  <div className="flex flex-row justify-between items-center">
                     <button
-                      className="rounded-2xl border w-[4rem] hover:bg-[#f7f7f7] active:bg-[#f1f1f1]"
+                      className="h-[2rem] rounded-2xl border w-[4rem] hover:bg-[#f7f7f7] active:bg-[#f1f1f1]"
                       onClick={setPlayerSpeed}
                     >
                       {speed}x
                     </button>
-                    <div className="text-sm text-blue-500">
-                      {count >= 0 && count <= 3 && (
-                        <p>한글 자막만 표시됩니다</p>
-                      )}
-                      {count > 3 && count <= 13 && (
-                        <p>한글 자막과 영어 자막이 함께 표시됩니다</p>
-                      )}
-                      {count > 13 && <p>이제부터는 자막 없이 재생됩니다</p>}
+                    <div className="flex flex-row items-center">
+                      <span className="text-sm text-[#787878]">한글 자막</span>
+                      <Switch
+                        checked={isShowKorCap}
+                        onChange={() => setIsShowKorCap(!isShowKorCap)}
+                        inputProps={{ 'aria-label': 'controlled' }}
+                        color="secondary"
+                      />
                     </div>
                   </div>
                   <div className="flex flex-row justify-between ">
@@ -371,23 +376,30 @@ const ViewScript = ({ params }: { params: { slug: string } }) => {
                 </div>
                 <div className="mt-2 mb-5 min-h-[60px]">
                   <div className="english_subtitle">
-                    {count > 3 &&
-                      count <= 13 &&
-                      caption?.eng?.split(' ').map((word, index) => {
-                        return (
-                          <span key={index}>
-                            <span
-                              onClick={() => searchDict(word)}
-                              className={styles.word}
-                            >
-                              {word.toLowerCase()}
-                            </span>{' '}
-                          </span>
-                        );
-                      })}
+                    {caption?.eng?.split(' ').map((word, index) => {
+                      return (
+                        <span key={index}>
+                          <span
+                            onClick={(e) => {
+                              searchDict(word);
+                              setSelected(index);
+                            }}
+                            className={`${
+                              selected === index
+                                ? 'text-[#8224ca] font-semibold underline'
+                                : ''
+                            } cursor-pointer hover:bg-[#e8e8e8]`}
+                          >
+                            {word.toLowerCase()}
+                          </span>{' '}
+                        </span>
+                      );
+                    })}
                   </div>
                   <div className="korean_subtitle">
-                    {count >= 0 && count <= 7 && caption?.kor}
+                    <p className="text-[#c9c9c9]">
+                      {isShowKorCap && caption?.kor}
+                    </p>
                   </div>
                 </div>
                 <div className="flex flex-row justify-between items-center">
