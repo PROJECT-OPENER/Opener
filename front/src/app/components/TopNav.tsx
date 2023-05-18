@@ -46,7 +46,7 @@ const TopNav = () => {
         <Image src={logo.src} alt="Logo" width={100} height={24} priority />
       </Link>
       <div className="flex flex-row">
-        <div className="hidden lg:flex flex-row space-x-12 items-center text-medium rounded-xl">
+        <div className="hidden lg:flex flex-row space-x-12 items-center text-medium rounded-xl font-nexon font-bold">
           <Link
             className={
               'hover:text-brandP  active:text-black hover:underline underline-offset-4'
@@ -89,7 +89,7 @@ const TopNav = () => {
             <div>
               <Link
                 href={'/auth/login'}
-                className="rounded-lg bg-[#636363] py-1 px-4 text-white hover:bg-[#4f4f4f] active:bg-[#2f2f2f]"
+                className="rounded-lg bg-[#636363] py-1 px-4 text-white hover:bg-[#4f4f4f] active:bg-[#2f2f2f] font-nexon"
               >
                 로그인
               </Link>

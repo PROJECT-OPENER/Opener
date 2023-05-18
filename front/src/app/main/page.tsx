@@ -10,7 +10,7 @@ const Main = dynamic(() => import('@/app/three/intro/page'), {
   loading: () => (
     <div className="relative w-full h-[250px] sm:h-[350px] lg:h-[500px] min-w-[330px] max-w-[1024px]">
       <Image
-        src="/images/lazyMain.png"
+        src="https://opener-bucket.s3.ap-northeast-2.amazonaws.com/static/66017c43-7c15-4bc7-8292-77042914ae42.lazyMain.png"
         alt="main"
         height={500}
         width={500}

@@ -11,7 +11,12 @@ const FamousData = () => {
         return (
           <Link key={index} href={`/challenge/scroll/LIKE/${index}`}>
             <div className="lg:mr-0 mr-2 relative shadow-custom w-[110px] sm:w-[137.5px] h-full sm:h-[200px] rounded-3xl bg-brandP flex justify-center items-center lg:w-[155px] lg:h-[225.5px] overflow-hidden">
-              <Image src={content.memberChallengeImg} alt="" fill />
+              <Image
+                src={content.memberChallengeImg}
+                alt=""
+                width={500}
+                height={500}
+              />
               <div className="absolute inset-x-0 bottom-2 left-3 h-8 flex text-white items-center">
                 <AiFillHeart size={'1.4rem'} className="fill-white mr-2" />
                 <p>{content.likeCount}</p>
