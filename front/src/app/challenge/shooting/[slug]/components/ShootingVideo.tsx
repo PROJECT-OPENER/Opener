@@ -7,9 +7,11 @@ import Button from '@/app/components/Button';
 import { getSession } from 'next-auth/react';
 import { uploadChallenge, originalVideoApi } from '@/app/api/challengeApi';
 import { RiArrowGoBackLine } from 'react-icons/ri';
-import { MdOutlineCancel } from 'react-icons/md';
 import TopNavPc from '@/app/components/TopNavPc';
 import { HiArrowLeftOnRectangle } from 'react-icons/hi2';
+import { TfiAngleLeft } from 'react-icons/tfi';
+import Link from 'next/link';
+
 type Props = {
   originalId: number;
 };
@@ -177,7 +179,8 @@ const ShootingVideo = ({ originalId }: Props) => {
     if (event.data === YouTube.PlayerState.PAUSED) {
       stopRecording();
       alert('영상 촬영이 중단되었습니다.');
-      window.location.reload();
+      // window.location.reload();
+      router.push(`/challenge/${originalId}`);
     }
   };
   const playingStateChange = (event: any) => {
@@ -395,7 +398,7 @@ const ShootingVideo = ({ originalId }: Props) => {
                 }
                 onClick={() => {
                   alert('영상 촬영이 중단되었습니다.');
-                  window.location.reload();
+                  router.push(`/challenge/${originalId}`);
                 }}
               >
                 <HiArrowLeftOnRectangle
@@ -493,6 +496,12 @@ const ShootingVideo = ({ originalId }: Props) => {
           </>
         )}
       </div>
+      <Link
+        href={`/challenge/${originalId}`}
+        className="hidden lg:block fixed left-4 bottom-5 bg-[#fff] hover:bg-brandY p-3 rounded-full shadow-custom"
+      >
+        <TfiAngleLeft size="1.8rem" />
+      </Link>
     </div>
   );
 };

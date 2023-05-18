@@ -26,6 +26,8 @@ import useSWR from 'swr';
 import { fetcher } from '@/app/api/axiosConfig';
 import { useRouter } from 'next/navigation';
 import DetailPageNav from '@/app/components/DetailPageNav';
+import { TfiAngleLeft } from 'react-icons/tfi';
+import Link from 'next/link';
 
 const ChallengeDetail = ({ challengeList }: Props) => {
   const BASE_URL = process.env.NEXT_PUBLIC_SERVER_URL;
@@ -455,6 +457,12 @@ const ChallengeDetail = ({ challengeList }: Props) => {
           </div>
         </div>
       )}
+      <Link
+        href={`/challenge/${challengeInfo?.watchOriginalChallengeResponseDto?.challengeId}`}
+        className="hidden lg:block fixed left-4 bottom-5 bg-[#fff] hover:bg-brandY p-3 rounded-full shadow-custom"
+      >
+        <TfiAngleLeft size="1.8rem" />
+      </Link>
     </div>
   );
 };

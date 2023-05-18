@@ -4,6 +4,8 @@ import React, { useEffect, useState } from 'react';
 import VoiceCard from './VoiceCard';
 import { originalChallenge } from '@/types/share';
 import { originalChallengeApi } from '@/app/api/challengeApi';
+import { TfiAngleLeft } from 'react-icons/tfi';
+import Link from 'next/link';
 
 type ChallengeList = originalChallenge[];
 
@@ -27,6 +29,12 @@ const VoiceList = () => {
           challenge={challenge}
         ></VoiceCard>
       ))}
+      <Link
+        href={`/`}
+        className="hidden lg:block fixed left-4 bottom-5 bg-[#fff] hover:bg-brandY p-3 rounded-full shadow-custom"
+      >
+        <TfiAngleLeft size="1.8rem" />
+      </Link>
     </div>
   );
 };
