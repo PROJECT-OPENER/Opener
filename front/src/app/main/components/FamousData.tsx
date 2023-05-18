@@ -25,7 +25,7 @@ const FamousData = () => {
           <Link
             key={index}
             href={`/challenge/scroll/LIKE/${index}`}
-            className="shadow-custom lg:mr-0 mr-2  bg-[#4b4b4b] rounded-3xl"
+            className="shadow-custom lg:mr-0 mr-2 bg-[#4b4b4b] rounded-3xl hover:shadow-customhover"
           >
             <div className="relative w-[110px] h-[195.5px] sm:w-[130px] sm:h-[230px] lg:w-[155px] lg:h-[275.5px] overflow-hidden rounded-3xl">
               <Image
@@ -34,8 +34,11 @@ const FamousData = () => {
                 width={360}
                 height={640}
               />
-              <div className="absolute inset-x-0 bottom-2 left-3 h-8 flex text-white items-center">
-                <AiFillHeart size={'1.4rem'} className="fill-white mr-2" />
+              <div className="absolute inset-x-0 bottom-2 left-3 h-8 flex text-[#ffffffc1] items-center">
+                <AiFillHeart
+                  size={'1.4rem'}
+                  className="fill-[#ffffffc1] mr-2"
+                />
                 <p>{content.likeCount}</p>
               </div>
             </div>
