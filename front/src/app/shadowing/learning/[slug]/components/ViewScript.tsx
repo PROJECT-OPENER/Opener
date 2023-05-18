@@ -67,12 +67,10 @@ const ViewScript = ({ params }: { params: { slug: string } }) => {
   useEffect(() => {
     const getVideo = async (videoId: string) => {
       const data = await getVideoApi(videoId);
-      console.log(data);
       if (data.engCaption === null || data.engCaption === '') {
         data.engCaption = await getCaptionApi(data.videoUrl);
       }
       if (data.korCaption === null || data.korCaption === '') {
-        console.log('예외 처리');
         alert('한글 자막 필요');
         router.push(`/shadowing/learning/${params.slug}/edit`);
         // return;
@@ -125,7 +123,6 @@ const ViewScript = ({ params }: { params: { slug: string } }) => {
 
   const searchDict = async (word: string) => {
     const res = await dictionaryApi(word);
-    console.log(res);
     if (res.status === 200) {
       setSearchWord(res.data.data);
     }
@@ -150,36 +147,17 @@ const ViewScript = ({ params }: { params: { slug: string } }) => {
   const convertTime = (timeString: string): number => {
     if (!timeString) return 0;
     const wholetime = timeString.split('.');
-    const m_sec = Number(wholetime[1]) / 1000;
-    // console.log(timeString, m_sec, wholetime[1]);
+    // const m_sec = Number(wholetime[1]) / 1000;
     const time = wholetime[0].split(/[:,]/).map(parseFloat);
-    // console.log(time, m_sec);
 
     if (time.length > 2) {
       const [hours, minutes, seconds] = time;
-      return hours * 3600 + minutes * 60 + seconds + m_sec;
+      return hours * 3600 + minutes * 60 + seconds;
     } else {
       const [minutes, seconds] = time;
-      return minutes * 60 + seconds + m_sec;
+      return minutes * 60 + seconds;
     }
   };
-
-  // const convertTime = (timeString: string): number => {
-  //   if (!timeString) return 0;
-  //   const wholetime = timeString.split('.');
-  //   const m_sec = Number(wholetime[1]) / 1000;
-  //   console.log(timeString, m_sec, wholetime[1]);
-  //   const time = wholetime[0].split(/[:,]/).map(parseFloat);
-  //   console.log(time, m_sec);
-
-  //   if (time.length > 2) {
-  //     const [hours, minutes, seconds] = time;
-  //     return hours * 3600 + minutes * 60 + seconds + m_sec;
-  //   } else {
-  //     const [minutes, seconds] = time;
-  //     return minutes * 60 + seconds + m_sec;
-  //   }
-  // };
 
   const findCaptionTime = (opt: string) => {
     const time = playerRef.current.getCurrentTime();
@@ -191,9 +169,6 @@ const ViewScript = ({ params }: { params: { slug: string } }) => {
           if (time < subtitle.startTime && min_time > subtitle.startTime) {
             min_time = subtitle.startTime;
           }
-          // else if (time < subtitle.endTime && min_time > subtitle.endTime) {
-          //   min_time = subtitle.endTime;
-          // }
         }
         return min_time === Infinity ? -1 : min_time; //
       } else {
@@ -226,21 +201,22 @@ const ViewScript = ({ params }: { params: { slug: string } }) => {
             time < subRangeRef.current?.start ||
             time > subRangeRef.current?.end
           ) {
-            console.log('change');
             subRangeRef.current = {
               start: videoInfo?.engCaption[i].startTime,
               end: videoInfo?.engCaption[i].endTime,
             };
           }
-          tmpCaption.kor += videoInfo?.korCaption[i].text;
-          tmpCaption.eng += videoInfo?.engCaption[i].text;
-          if (tmpCaption.eng !== videoInfo?.engCaption[i].text) {
+          if (
+            tmpCaption.eng !== '' &&
+            tmpCaption.eng !== videoInfo?.engCaption[i].text
+          ) {
             tmpCaption.eng += '\n';
             tmpCaption.kor += '\n';
           }
+          tmpCaption.kor += videoInfo?.korCaption[i].text;
+          tmpCaption.eng += videoInfo?.engCaption[i].text;
         }
       }
-      console.log('ds');
       if (tmpCaption.eng !== caption?.eng || tmpCaption.kor !== caption?.kor) {
         setCaption({
           ...caption,
@@ -252,18 +228,15 @@ const ViewScript = ({ params }: { params: { slug: string } }) => {
     raf.current = requestAnimationFrame(changeSubtitle);
   };
   const tracePlayer = () => {
-    // console.log('tracePlayer');
     if (playerRef.current?.getPlayerState() === 1) {
       const current = playerRef.current.getCurrentTime();
       if (!isRepeatRef.current) {
         changeSubtitle();
       } else {
-        // console.log(current, subRangeRef.current?.end);
         if (subRangeRef.current && current >= subRangeRef.current.end + 1) {
           playerRef.current.seekTo(subRangeRef.current?.start, true);
         }
       }
-      // raf.current = requestAnimationFrame(tracePlayer);
     } else {
       console.log('cancel, state :', playerRef.current?.getPlayerState());
       return cancelAnimationFrame(raf.current);
@@ -318,7 +291,6 @@ const ViewScript = ({ params }: { params: { slug: string } }) => {
         <YouTube
           onReady={(event) => {
             playerRef.current = event.target;
-            // tracePlayer();
           }}
           onStateChange={tracePlayer}
           onEnd={() => {
@@ -425,7 +397,7 @@ const ViewScript = ({ params }: { params: { slug: string } }) => {
                     })}
                   </div>
                   <div className="korean_subtitle">
-                    <p className="text-[#c9c9c9] whitespace-pre-wrap">
+                    <p className="text-[#787878] text-sm">
                       {isShowKorCap && caption?.kor}
                     </p>
                   </div>
