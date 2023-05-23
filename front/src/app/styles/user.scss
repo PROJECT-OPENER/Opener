@@ -1,0 +1,86 @@
+.validator-input {
+  @apply p-3 w-full border-slate-100 focus:outline-none focus:border-[1px] focus:border-brandP pl-12;
+}
+
+.validator-submit {
+  @apply w-full bg-brandP text-white font-bold py-3 rounded-md text-xl mt-5;
+}
+
+.other-chat {
+  @apply lg:bg-brandP bg-[#7d17ffe6] text-white rounded-tl-none rounded-2xl p-4 mr-[4.5rem];
+}
+
+.my-chat {
+  @apply bg-[#ffd600de] text-black rounded-br-none rounded-2xl p-4 ml-24 mr-3 break-words mt-3;
+}
+.my-chat,
+.other-chat {
+  @apply max-w-[500px];
+}
+.modification-submit {
+  @apply absolute max-sm:w-16 max-sm:text-sm right-5 w-24 bg-brandP text-white font-bold py-1 rounded-md text-xl;
+}
+
+.highlight {
+  @apply text-brandP rounded-md font-bold;
+}
+
+@keyframes animate-bounce-right {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(3px);
+  }
+}
+
+.animate-bounce-right {
+  animation: animate-bounce-right 1s ease-in-out infinite;
+}
+
+.button-spin {
+  border: 2px solid #000; /* 블랙 border 추가 */
+  animation: spin 2s linear infinite; /* spin 애니메이션 추가 */
+}
+
+.button-container {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.button-container::before {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border: 2px solid black;
+  border-radius: 50%;
+  animation: spin 2s linear infinite;
+  z-index: -1;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.fade-out {
+  /* animation : 효과(@keyframes 이름) 동작시간 */
+  animation: fadeout 3s;
+}
+@keyframes fadeout {
+  /* 효과를 동작시간 동안 0 ~ 1까지 */
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
