@@ -51,13 +51,13 @@
 <table>
   <tbody>
     <tr>
-      <td align="center"><a href="https://github.com/daydeuk"><img src="https://github.com/PROJECT-OPENER/Opener/assets/75800620/5727c2a0-fcc7-4e34-b541-e05e7be963dc" width="100px;" height="100px;" alt=""/><br /><sub><b>👑신대득</b></sub></a><br />Backend</td>
-      <td align="center"><a href="https://github.com/imnooy"><img src="https://github.com/PROJECT-OPENER/Opener/assets/75800620/b4548dd1-ec6e-47b7-8631-eb8bd1e4a14e" width="100px;" height="100px;" alt=""/><br /><sub><b>⭐김윤미</b></sub></a><br />Backend</td>
-      <td align="center"><a href="https://github.com/L-Woo"><img src="https://github.com/PROJECT-OPENER/Opener/assets/75800620/78c4b438-ad20-4105-b832-8babe2c8abd9" width="100px;" height="100px;" alt=""/><br /><sub><b>이우승</b></sub></a><br />Backend</td>
+      <td align="center"><img src="https://github.com/PROJECT-OPENER/Opener/assets/75800620/5727c2a0-fcc7-4e34-b541-e05e7be963dc" width="100px;" height="100px;" alt=""/><br /><sub><b><a href="https://github.com/daydeuk">👑신대득</a></b></sub><br />Backend</td>
+      <td align="center"><img src="https://github.com/PROJECT-OPENER/Opener/assets/75800620/b4548dd1-ec6e-47b7-8631-eb8bd1e4a14e" width="100px;" height="100px;" alt=""/><br /><sub><b><a href="https://github.com/imnooy">⭐김윤미</a></b></sub><br />Backend</td>
+      <td align="center"><img src="https://github.com/PROJECT-OPENER/Opener/assets/75800620/78c4b438-ad20-4105-b832-8babe2c8abd9" width="100px;" height="100px;" alt=""/><br /><sub><b><a href="https://github.com/L-Woo">이우승</a></b></sub><br />Backend</td>
     </tr>
-      <td align="center"><a href="https://github.com/moonthree"><img src="https://github.com/PROJECT-OPENER/Opener/assets/75800620/c783324c-5f10-4a47-92f6-0db2b01b227a" width="100px;" height="100px;" alt=""/><br /><sub><b>⭐이문삼</b></sub></a><br />Frontend</td>
-      <td align="center"><a href="https://github.com/itmakesmesoft"><img src="https://github.com/PROJECT-OPENER/Opener/assets/75800620/e28b6567-1e86-4f5c-8f97-58269dcdae99" width="100px;" height="100px;" alt=""/><br /><sub><b>이은혁</b></sub></a><br />Frontend</td>
-      <td align="center"><a href="https://github.com/sooyeonlee127"><img src="https://github.com/PROJECT-OPENER/Opener/assets/75800620/c1f66998-b3e5-49fe-8e96-fa761e591d1a" width="100px;" height="100px;" alt=""/><br /><sub><b>이수연</b></sub></a><br />Frontend</td>
+      <td align="center"><img src="https://github.com/PROJECT-OPENER/Opener/assets/75800620/c783324c-5f10-4a47-92f6-0db2b01b227a" width="100px;" height="100px;" alt=""/><br /><sub><b><a href="https://github.com/moonthree">⭐이문삼</a></b></sub><br />Frontend</td>
+      <td align="center"><img src="https://github.com/PROJECT-OPENER/Opener/assets/75800620/e28b6567-1e86-4f5c-8f97-58269dcdae99" width="100px;" height="100px;" alt=""/><br /><sub><b><a href="https://github.com/itmakesmesoft">이은혁</a></b></sub><br />Frontend</td>
+      <td align="center"><img src="https://github.com/PROJECT-OPENER/Opener/assets/75800620/c1f66998-b3e5-49fe-8e96-fa761e591d1a" width="100px;" height="100px;" alt=""/><br /><sub><b><a href="https://github.com/sooyeonlee127">이수연</a></b></sub><br />Frontend</td>
    </tr>  
   </tbody>
 </table>
